@@ -8,6 +8,7 @@ This MCP gives Claude full access to your Obsidian vault:
 
 - **Read & Write Notes** - Create, edit, and delete markdown files
 - **Search** - Full-text search, tag search, find recent notes
+- **RAG Search** - Semantic search using AI embeddings (find by meaning, not keywords!)
 - **Wiki Links** - Find backlinks, check broken links
 - **Frontmatter** - Read and update YAML metadata
 - **Templates** - Create notes from templates
@@ -88,6 +89,15 @@ Add to your MCP settings:
 | `get_recent_notes` | Recently modified notes |
 | `list_tags` | All tags with counts |
 
+### RAG / Semantic Search
+| Tool | Description |
+|------|-------------|
+| `rag_status` | Check RAG availability and index status |
+| `index_vault` | Build embeddings for semantic search |
+| `semantic_search` | Search by meaning, not just keywords |
+| `build_context` | Auto-retrieve relevant context for a query |
+| `clear_index` | Reset the RAG index |
+
 ### Links
 | Tool | Description |
 |------|-------------|
@@ -125,6 +135,62 @@ You can configure these via environment variables:
 | `OBSIDIAN_VAULT_PATH` | `C:/Obsidian/MyVault` | Path to your vault |
 | `OBSIDIAN_TEMPLATES_FOLDER` | `Templates` | Templates folder name |
 | `OBSIDIAN_DAILY_FOLDER` | `Daily Notes` | Daily notes folder name |
+| `OBSIDIAN_RAG_INDEX` | `{vault}/.obsidian/rag_index` | Where to store the search index |
+| `OBSIDIAN_EMBEDDING_MODEL` | `all-MiniLM-L6-v2` | Sentence transformer model |
+| `OBSIDIAN_CHUNK_SIZE` | `500` | Characters per chunk |
+| `OBSIDIAN_CHUNK_OVERLAP` | `50` | Overlap between chunks |
+
+---
+
+## RAG / Semantic Search
+
+RAG (Retrieval-Augmented Generation) lets Claude search your vault by **meaning**, not just keywords. Ask "notes about productivity" and it finds relevant notes even if they don't contain that exact word.
+
+### Setup
+
+Install the optional dependencies:
+
+```bash
+pip install sentence-transformers chromadb
+```
+
+### First-Time Indexing
+
+Before semantic search works, you need to index your vault:
+
+```
+"Index my vault for semantic search"
+→ Claude runs index_vault() to create embeddings
+```
+
+This only needs to be done once. The index is stored in your vault's `.obsidian` folder and persists across restarts. Re-running `index_vault` automatically skips unchanged files.
+
+### How It Works
+
+1. **index_vault** - Splits your notes into chunks, creates AI embeddings for each
+2. **semantic_search** - Finds chunks similar to your query by meaning
+3. **build_context** - Automatically assembles relevant context for Claude to use
+
+### Example Usage
+
+**"Find notes related to my morning routine"**
+```
+Claude uses semantic_search() - finds notes about habits,
+daily rituals, wake-up schedules, etc. even without exact matches
+```
+
+**"What have I written about machine learning?"**
+```
+Claude uses build_context() to gather relevant snippets,
+then summarizes what's in your vault about ML
+```
+
+### Performance Notes
+
+- First indexing takes a bit (creating embeddings for all notes)
+- Subsequent re-indexes are fast (skips unchanged files)
+- The `all-MiniLM-L6-v2` model runs locally on CPU, no API keys needed
+- Index size is roughly 10-20% of your vault size
 
 ---
 
@@ -189,6 +255,16 @@ See the Filesystem MCP README for detailed tunnel setup instructions.
 ### YAML frontmatter not parsing
 - Install PyYAML: `pip install pyyaml`
 - Without it, frontmatter features are limited
+
+### RAG not available
+- Install: `pip install sentence-transformers chromadb`
+- First run downloads the embedding model (~90MB)
+- Check status with the `rag_status` tool
+
+### Semantic search returns nothing
+- Run `index_vault` first to create the index
+- Check `rag_status` to see how many chunks are indexed
+- Try lowering `min_score` parameter in semantic_search
 
 ---
 
