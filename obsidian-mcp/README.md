@@ -25,9 +25,60 @@ This MCP gives Claude full access to your Obsidian vault:
 pip install -r requirements.txt
 ```
 
-### 2. Set Your Vault Path
+### 2. Connect to Claude Desktop
 
-Either edit `server.py` or set an environment variable:
+Add this to your Claude Desktop config file:
+
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+- **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+**Windows (use forward slashes - easiest!):**
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "python",
+      "args": ["C:/path/to/obsidian-mcp/server.py"],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "C:/Users/YourName/Documents/ObsidianVault"
+      }
+    }
+  }
+}
+```
+
+**Mac/Linux:**
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "python3",
+      "args": ["/path/to/obsidian-mcp/server.py"],
+      "env": {
+        "OBSIDIAN_VAULT_PATH": "/Users/YourName/Documents/ObsidianVault"
+      }
+    }
+  }
+}
+```
+
+**Important:**
+- Replace the paths with your actual locations
+- Windows users: use forward slashes (`/`) to avoid JSON escaping issues
+- If you must use backslashes on Windows, double them: `C:\\Users\\...`
+- Mac/Linux typically uses `python3` instead of `python`
+
+### 3. Restart Claude Desktop
+
+Close and reopen Claude Desktop. The Obsidian tools should now be available!
+
+---
+
+## Alternative: HTTP Server Mode
+
+If you want to run the server separately (useful for remote access or multiple clients):
+
+### 1. Set Your Vault Path
 
 **Windows:**
 ```batch
@@ -39,7 +90,7 @@ set OBSIDIAN_VAULT_PATH=C:\Users\YourName\Documents\ObsidianVault
 export OBSIDIAN_VAULT_PATH=/path/to/your/vault
 ```
 
-### 3. Run the Server
+### 2. Run the HTTP Server
 
 ```bash
 python run_server.py
@@ -47,9 +98,7 @@ python run_server.py
 
 The server runs on `http://localhost:8080/mcp`
 
-### 4. Connect Claude
-
-Add to your MCP settings:
+### 3. Connect Claude (HTTP mode)
 
 ```json
 {
@@ -60,6 +109,8 @@ Add to your MCP settings:
   }
 }
 ```
+
+**Note:** URL-based config requires the server to be running before Claude connects. The stdio mode (first method) is simpler for local use.
 
 ---
 
