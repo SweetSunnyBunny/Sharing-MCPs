@@ -23,11 +23,12 @@ except ImportError:
     print("pip install google-auth-oauthlib")
     exit(1)
 
-# Scopes for Drive, Docs, and Sheets access
+# Scopes for Drive, Docs, Sheets, and Calendar access
 SCOPES = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/documents',
-    'https://www.googleapis.com/auth/spreadsheets'
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/calendar.readonly'
 ]
 
 AUTH_DIR = Path(__file__).parent / "auth"
@@ -46,7 +47,7 @@ def main():
         print("\nTo set up:")
         print("1. Go to https://console.cloud.google.com")
         print("2. Create a project (or select existing)")
-        print("3. Enable APIs: Drive API, Docs API, Sheets API")
+        print("3. Enable APIs: Drive API, Docs API, Sheets API, Calendar API")
         print("4. Go to Credentials > Create Credentials > OAuth client ID")
         print("5. Application type: Desktop app")
         print("6. Download the JSON file")

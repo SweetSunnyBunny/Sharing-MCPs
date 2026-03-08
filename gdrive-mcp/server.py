@@ -60,6 +60,7 @@ EXPORT_MIME_TYPES = {
 _drive_service = None
 _docs_service = None
 _sheets_service = None
+_calendar_service = None
 
 
 def get_credentials():
@@ -102,6 +103,14 @@ def get_sheets_service():
     if not _sheets_service:
         _sheets_service = build('sheets', 'v4', credentials=get_credentials())
     return _sheets_service
+
+
+def get_calendar_service():
+    """Get Google Calendar service."""
+    global _calendar_service
+    if not _calendar_service:
+        _calendar_service = build('calendar', 'v3', credentials=get_credentials())
+    return _calendar_service
 
 
 def format_size(size_bytes: int) -> str:
@@ -687,6 +696,96 @@ async def append_to_spreadsheet(
         }
     except HttpError as e:
         return {"success": False, "error": f"Sheets API error: {e}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+# =============================================================================
+# GOOGLE CALENDAR
+# =============================================================================
+
+@mcp.tool()
+async def gcal_today_events() -> Dict[str, Any]:
+    """Get today's events from Google Calendar."""
+    try:
+        from datetime import datetime, timedelta, timezone
+
+        service = get_calendar_service()
+        now = datetime.now(timezone.utc)
+        start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_day = start_of_day + timedelta(days=1)
+
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=start_of_day.isoformat(),
+            timeMax=end_of_day.isoformat(),
+            singleEvents=True,
+            orderBy='startTime',
+            maxResults=50
+        ).execute()
+
+        events = []
+        for event in events_result.get('items', []):
+            start = event['start'].get('dateTime', event['start'].get('date', ''))
+            end = event['end'].get('dateTime', event['end'].get('date', ''))
+            all_day = 'date' in event['start']
+
+            ev = {
+                'summary': event.get('summary', '(No title)'),
+                'start': start,
+                'end': end,
+                'all_day': all_day,
+                'location': event.get('location'),
+                'description': event.get('description'),
+                'status': event.get('status'),
+                'calendar': event.get('organizer', {}).get('displayName', 'Primary'),
+            }
+            events.append(ev)
+
+        return {"success": True, "date": now.strftime("%Y-%m-%d"), "count": len(events), "events": events}
+    except HttpError as e:
+        return {"success": False, "error": f"Calendar API error: {e}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+@mcp.tool()
+async def gcal_upcoming_events(
+    days: int = Field(7, description="Number of days ahead to look (default 7)")
+) -> Dict[str, Any]:
+    """Get upcoming events from Google Calendar for the next N days."""
+    try:
+        from datetime import datetime, timedelta, timezone
+
+        service = get_calendar_service()
+        now = datetime.now(timezone.utc)
+        end_date = now + timedelta(days=days)
+
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=now.isoformat(),
+            timeMax=end_date.isoformat(),
+            singleEvents=True,
+            orderBy='startTime',
+            maxResults=100
+        ).execute()
+
+        events = []
+        for event in events_result.get('items', []):
+            start = event['start'].get('dateTime', event['start'].get('date', ''))
+            all_day = 'date' in event['start']
+
+            ev = {
+                'summary': event.get('summary', '(No title)'),
+                'start': start,
+                'all_day': all_day,
+                'location': event.get('location'),
+            }
+            events.append(ev)
+
+        return {"success": True, "days": days, "count": len(events), "events": events}
+    except HttpError as e:
+        return {"success": False, "error": f"Calendar API error: {e}"}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
