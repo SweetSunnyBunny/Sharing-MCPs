@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "twitter": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "fastmcp",
+        "--with",
+        "pydantic",
+        "--with",
+        "uvicorn",
+        "fastmcp",
+        "run",
+        "C:/AI/MCP/Sharing-MCPs/twitter-mcp/server.py"
+      ]
+    }
+  }
+}
