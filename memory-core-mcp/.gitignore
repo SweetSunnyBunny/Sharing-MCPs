@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+memory.db
+memory.db-shm
+memory.db-wal
+*.jsonl
+*.log
+images/
+obsidian-vault/

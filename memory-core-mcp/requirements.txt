@@ -1,0 +1,9 @@
+fastmcp>=0.1.0
+python-dotenv>=1.0.0
+sentence-transformers>=2.2.0
+numpy>=1.21.0
+
+# Image memory support
+transformers>=4.30.0
+torch>=2.0.0
+Pillow>=9.0.0
