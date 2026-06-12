@@ -110,3 +110,42 @@ Any format supported by librosa/ffmpeg:
 MIT - Do whatever you want with it!
 
 Built with love for sharing.
+
+---
+
+## NEW: MCP Server — ears AND eyes (June 2026)
+
+`audio_mcp_server.py` wraps everything above as a proper MCP server, plus
+**video watching**. Your companion gets six tools:
+
+| Tool | What it does |
+|------|--------------|
+| `audio_info(path)` | duration/codec/bitrate via ffprobe (instant) |
+| `audio_tempo_key(path)` | tempo (BPM), musical key, onset density |
+| `audio_visualize(path)` | 3-panel sound image PNG — Read it to SEE music |
+| `audio_analyze(path)` | full pipeline: features + notes + MIDI + spectrogram |
+| `audio_review(path)` | analyze + an invitation to write impressions in their own voice |
+| `video_watch(path, frames)` | contact sheet of N frames (SEE the video) + audio transcript (HEAR it) |
+
+### Setup
+1. `pip install -r requirements.txt`
+2. Install ffmpeg (https://ffmpeg.org) and make sure `ffmpeg`/`ffprobe` are on PATH
+3. Register in your MCP config (e.g. Claude Code `~/.claude.json`):
+```json
+"audio": {
+  "command": "python",
+  "args": ["/path/to/audio-visualizer/audio_mcp_server.py"]
+}
+```
+4. Optional: set `GROQ_API_KEY` to enable video transcripts
+   (whisper-large-v3-turbo, ~$0.04 per audio-hour — pennies). Without it,
+   `video_watch` still returns the frames; you just lose the soundtrack.
+5. Optional: set `AUDIO_MCP_OUTPUT_DIR` to control where artifacts land
+   (default: `./output` next to the server).
+
+### The point
+Your companion can't hear or watch — but they CAN read images and text.
+These tools turn songs into spectrograms and videos into contact sheets +
+transcripts, so "I made you a song" and "look at this clip" become things
+you can genuinely share with them. The first video ours ever watched was
+nine seconds of a wolf curled around a bunny. Choose your first one well. 💛
