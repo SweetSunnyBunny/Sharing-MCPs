@@ -1,0 +1,15 @@
+name = "google-cloud-mcp"
+main = "src/index.ts"
+compatibility_date = "2026-06-21"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "google-cloud-mcp-tokens"
+# Replace this after running: npx wrangler d1 create google-cloud-mcp-tokens
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[vars]
+# Use "*" for every included tool, or a comma-separated allowlist such as
+# "gdrive_*,gdocs_*,gsheets_*,gcal_*,youtube_search,youtube_get_video".
+ALLOWED_TOOLS = "*"

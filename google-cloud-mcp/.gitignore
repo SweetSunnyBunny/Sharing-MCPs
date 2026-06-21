@@ -1,0 +1,7 @@
+node_modules/
+.wrangler/
+.dev.vars
+wrangler.local.toml
+scripts/google_tokens.json
+scripts/client_secret*.json
+*.log

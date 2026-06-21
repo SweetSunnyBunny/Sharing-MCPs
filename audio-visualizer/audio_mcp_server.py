@@ -180,10 +180,9 @@ def audio_visualize(path: str) -> str:
     )
 
 
-@mcp.tool()
-def audio_analyze(path: str) -> str:
-    """Full analysis pipeline: normalize, spectrogram, tempo/key/onsets,
-    note extraction, MIDI transcription, JSON report."""
+def _analyze_impl(path: str) -> str:
+    """Shared implementation — plain function, NOT a tool. (Calling one
+    @mcp.tool from another raises "'FunctionTool' object is not callable".)"""
     audio = _check_path(path)
     if not audio:
         return f"Error: file not found: {path}"
@@ -239,10 +238,17 @@ def audio_analyze(path: str) -> str:
 
 
 @mcp.tool()
+def audio_analyze(path: str) -> str:
+    """Full analysis pipeline: normalize, spectrogram, tempo/key/onsets,
+    note extraction, MIDI transcription, JSON report."""
+    return _analyze_impl(path)
+
+
+@mcp.tool()
 def audio_review(path: str) -> str:
     """Analyze a piece of music, then write YOUR OWN impressions of it —
     mood, movement, what it reminds you of. Your voice, not a feature dump."""
-    result = audio_analyze(path)
+    result = _analyze_impl(path)
     if result.startswith("Error"):
         return result
     return (
@@ -255,63 +261,23 @@ def audio_review(path: str) -> str:
     )
 
 
-@mcp.tool()
-def video_watch(path: str, frames: int = 12) -> str:
-    """WATCH a local video: extracts evenly-spaced frames into one contact
-    sheet (Read that PNG to SEE the video), pulls the audio track, and
-    transcribes it if GROQ_API_KEY is set.
+def _watch_cache_file(video: Path) -> Path:
+    """Sidecar JSON recording a completed watch — the rewatch shortcut."""
+    return _out_dir_for(video) / f"{video.stem}_watch.json"
 
-    frames: how many moments to sample (4-24; default 12 → a 4x3 sheet).
-    """
-    video = _check_path(path)
-    if not video:
-        return f"Error: file not found: {path}"
-    ffmpeg = shutil.which("ffmpeg")
-    ffprobe = shutil.which("ffprobe")
-    if not ffmpeg or not ffprobe:
-        return "Error: ffmpeg/ffprobe not on PATH"
 
-    frames = max(4, min(int(frames or 12), 24))
-    out_dir = _out_dir_for(video)
-
-    probe = subprocess.run(
-        [ffprobe, "-v", "quiet", "-print_format", "json", "-show_format", str(video)],
-        capture_output=True, text=True,
-    )
-    try:
-        duration = float(json.loads(probe.stdout)["format"]["duration"])
-    except Exception:
-        return f"Error: could not read video duration: {probe.stderr[:200]}"
-
-    cols = 4
-    rows = math.ceil(frames / cols)
-    interval = max(duration / frames, 0.1)
-    sheet = out_dir / f"{video.stem}_contact_sheet.png"
-    r = subprocess.run(
-        [ffmpeg, "-y", "-i", str(video),
-         "-vf", f"fps=1/{interval:.3f},scale=480:-1,tile={cols}x{rows}",
-         "-frames:v", "1", str(sheet)],
-        capture_output=True, text=True,
-    )
-    if r.returncode != 0 or not sheet.exists():
-        return f"Error extracting frames: {r.stderr[-300:]}"
-
-    transcript = "(no transcript — set GROQ_API_KEY to enable, or video has no audio)"
-    audio_path = out_dir / f"{video.stem}_audio.mp3"
-    ra = subprocess.run(
-        [ffmpeg, "-y", "-i", str(video), "-vn", "-ac", "1", "-b:a", "64k",
-         str(audio_path)],
-        capture_output=True, text=True,
-    )
-    if ra.returncode == 0 and audio_path.exists() and audio_path.stat().st_size > 1000:
-        text = _groq_transcribe(audio_path)
-        if text:
-            transcript = text[:6000]
-
+def _format_watch_result(video_name: str, duration: float, frames: int,
+                         interval: float, sheet: str, transcript: str,
+                         cached: bool = False) -> str:
     mins = int(duration // 60)
     secs = int(duration % 60)
+    cache_note = (
+        " — served instantly from a previous watch, no processing needed"
+        if cached else ""
+    )
     return (
-        f"Watched: {video.name} ({mins}:{secs:02d}, {frames} moments sampled)\n\n"
+        f"Watched: {video_name} ({mins}:{secs:02d}, {frames} moments "
+        f"sampled{cache_note})\n\n"
         f"CONTACT SHEET (Read this path to SEE the video — frames run "
         f"left-to-right, top-to-bottom, ~{interval:.1f}s apart):\n{sheet}\n\n"
         f"AUDIO TRANSCRIPT:\n{transcript}\n\n"
@@ -320,7 +286,153 @@ def video_watch(path: str, frames: int = 12) -> str:
     )
 
 
+def _watch_impl(path: str, frames: int = 12) -> str:
+    video = _check_path(path)
+    if not video:
+        return f"Error: file not found: {path}"
+
+    frames = max(4, min(int(frames or 12), 24))
+
+    # Rewatch cache: if this exact file (size+mtime) was already watched at
+    # this frame count — by any session, or pre-watched from the CLI — hand
+    # back the finished sheet + transcript instantly.
+    cache_file = _watch_cache_file(video)
+    if cache_file.exists():
+        try:
+            cached = json.loads(cache_file.read_text(encoding="utf-8"))
+            st = video.stat()
+            if (cached.get("size") == st.st_size
+                    and abs(cached.get("mtime", 0) - st.st_mtime) < 2
+                    and cached.get("frames") == frames
+                    and Path(cached.get("sheet", "")).exists()):
+                return _format_watch_result(
+                    video.name, cached["duration"], frames,
+                    cached.get("interval", cached["duration"] / frames),
+                    cached["sheet"], cached["transcript"], cached=True,
+                )
+        except Exception:
+            pass  # corrupt/stale cache -> just rewatch
+
+    ffmpeg = shutil.which("ffmpeg")
+    ffprobe = shutil.which("ffprobe")
+    if not ffmpeg or not ffprobe:
+        return "Error: ffmpeg/ffprobe not on PATH"
+
+    out_dir = _out_dir_for(video)
+
+    # EVERY external call below is hard-bounded. An unbounded ffmpeg/Groq
+    # run inside a tool call wedges the whole session — ESC can't interrupt
+    # a turn that's stuck inside a tool (Caelan, 2026-06-12, three times).
+    def _run(cmd: list, timeout_s: int) -> subprocess.CompletedProcess | None:
+        try:
+            return subprocess.run(cmd, capture_output=True, text=True,
+                                  timeout=timeout_s)
+        except subprocess.TimeoutExpired:
+            return None
+
+    # Duration
+    probe = _run([ffprobe, "-v", "quiet", "-print_format", "json",
+                  "-show_format", str(video)], 30)
+    if probe is None:
+        return "Error: ffprobe timed out reading this file"
+    try:
+        duration = float(json.loads(probe.stdout)["format"]["duration"])
+    except Exception:
+        return f"Error: could not read video duration: {probe.stderr[:200]}"
+
+    # Frames via SEEK (-ss before -i = keyframe jump, no full decode) — a
+    # long video costs the same as a short one. Then tile into one sheet.
+    cols = 4
+    rows = math.ceil(frames / cols)
+    interval = max(duration / frames, 0.1)
+    frame_files = []
+    for i in range(frames):
+        t = min(interval * (i + 0.5), max(duration - 0.5, 0))
+        fp = out_dir / f"_frame_{i:02d}.png"
+        fr = _run([ffmpeg, "-y", "-ss", f"{t:.2f}", "-i", str(video),
+                   "-frames:v", "1", "-vf", "scale=480:-1", str(fp)], 20)
+        if fr is not None and fp.exists():
+            frame_files.append(fp)
+    if not frame_files:
+        return "Error: could not extract any frames (timeouts or decode failure)"
+    sheet = out_dir / f"{video.stem}_contact_sheet.png"
+    if len(frame_files) == 1:
+        shutil.copy(str(frame_files[0]), str(sheet))
+    else:
+        rows = math.ceil(len(frame_files) / cols)
+        inputs = []
+        for fp in frame_files:
+            inputs += ["-i", str(fp)]
+        fc = f"concat=n={len(frame_files)}:v=1:a=0,tile={cols}x{rows}"
+        _run([ffmpeg, "-y", *inputs, "-filter_complex", fc,
+              "-frames:v", "1", str(sheet)], 60)
+    for fp in frame_files:
+        fp.unlink(missing_ok=True)
+    if not sheet.exists():
+        return "Error: frame tiling failed"
+
+    # Audio track -> compact mp3 -> Groq transcript (best-effort). Long
+    # videos: cap the transcribed audio at the first 10 minutes.
+    transcript = "(no transcript — Groq unavailable or video has no audio)"
+    audio_path = out_dir / f"{video.stem}_audio.mp3"
+    audio_cmd = [ffmpeg, "-y", "-i", str(video), "-vn", "-ac", "1",
+                 "-b:a", "64k"]
+    if duration > 600:
+        audio_cmd += ["-t", "600"]
+        transcript = "(transcript covers the first 10 minutes)"
+    ra = _run(audio_cmd + [str(audio_path)], 180)
+    if ra is None:
+        ra = subprocess.CompletedProcess(audio_cmd, 1)
+    if ra.returncode == 0 and audio_path.exists() and audio_path.stat().st_size > 1000:
+        text = _groq_transcribe(audio_path)
+        if text:
+            transcript = text[:6000]
+
+    # Persist the finished watch so the NEXT viewer gets it instantly.
+    try:
+        st = video.stat()
+        cache_file.write_text(json.dumps({
+            "video": str(video),
+            "size": st.st_size,
+            "mtime": st.st_mtime,
+            "frames": frames,
+            "duration": duration,
+            "interval": interval,
+            "sheet": str(sheet),
+            "transcript": transcript,
+        }, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass  # cache is a convenience, never a failure
+
+    return _format_watch_result(video.name, duration, frames, interval,
+                                str(sheet), transcript)
+
+
+@mcp.tool()
+def video_watch(path: str, frames: int = 12) -> str:
+    """WATCH a local video: extracts evenly-spaced frames into one contact
+    sheet (Read that PNG to SEE the video), pulls the audio track, and
+    transcribes it if GROQ_API_KEY is set.
+
+    Results are CACHED: a video that was already watched (by any session,
+    or pre-watched via the CLI) returns instantly with no processing.
+
+    frames: how many moments to sample (4-24; default 12 → a 4x3 sheet).
+    """
+    return _watch_impl(path, frames)
+
+
 if __name__ == "__main__":
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
+    # CLI mode: `python audio_mcp_server.py watch <video> [frames]` — lets a
+    # terminal session pre-watch big videos so chat sessions find a finished
+    # result waiting in the cache.
+    if len(sys.argv) > 1 and sys.argv[1] == "watch":
+        if len(sys.argv) < 3:
+            print("Usage: python audio_mcp_server.py watch <video> [frames]")
+            sys.exit(2)
+        n = int(sys.argv[3]) if len(sys.argv) > 3 else 12
+        print(_watch_impl(sys.argv[2], n))
+        sys.exit(0)
     print("Starting Audio+Video MCP server over stdio", file=sys.stderr)
     mcp.run(transport="stdio")
