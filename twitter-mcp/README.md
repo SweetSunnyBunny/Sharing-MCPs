@@ -1,69 +1,91 @@
-# X (Twitter) MCP Server
+# X (Twitter) MCP
 
-This MCP server gives an MCP-compatible client access to X accounts using OAuth 2.0 PKCE.
+Read account information and posts, and manage posts, media, likes, bookmarks, and follows through the X API. You need your own X developer application and API access for the endpoints you want to use. Availability and charges depend on your account access; installing this server does not grant API access.
 
-## What it can do
+## 1. Prepare the folder and Python
 
-- Check the authenticated account
-- Look up users and tweets
-- Read a user's recent tweets
-- Search recent tweets
-- Read your mentions
-- Create and delete tweets
-- Create quote tweets
-- Upload media for posts
-- Like and unlike tweets
-- Repost and unrepost tweets
-- Bookmark and unbookmark tweets
-- Follow and unfollow users
-- Read follower and following lists
+These steps use Windows PowerShell and **Python 3.11 (64-bit)**. Install it from [python.org](https://www.python.org/downloads/), including the Python launcher, if needed. Reopen PowerShell after installation.
 
-## Quick start
+Extract the collection to `C:\MCP-Starter\Sharing-MCPs`, so this README is inside `C:\MCP-Starter\Sharing-MCPs\twitter-mcp`. If you chose another location, replace that path in every command and JSON example below. Do not run inside the ZIP.
 
-### 1. Create an X app
-
-In the X Developer Portal:
-
-1. Create a Project and App
-2. Enable OAuth 2.0
-3. Set the app type to `Web App` or `Native App`
-4. Add this callback URL exactly:
-   - `http://127.0.0.1:9876/callback`
-5. Grant these scopes:
-   - `bookmark.read`
-   - `bookmark.write`
-   - `follows.read`
-   - `follows.write`
-   - `media.write`
-   - `tweet.read`
-   - `tweet.write`
-   - `users.read`
-   - `like.read`
-   - `like.write`
-   - `offline.access`
-6. Make sure the app has read/write permission
-7. Copy the OAuth 2.0 Client ID
-8. Copy the Client Secret too if your app provides one
-
-Notes:
-- `twitter_search_recent_tweets` depends on your X API access tier.
-- This server uses OAuth 2.0 Authorization Code Flow with PKCE.
-
-### 2. Install and authenticate
-
-```bash
-pip install -r requirements.txt
-python setup.py
-python setup.py --status
+```powershell
+Set-Location "C:\MCP-Starter\Sharing-MCPs\twitter-mcp"
+py -3.11 --version
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### 3. Run the server
+`.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
 
-```bash
-python run_server.py
+## 2. Register your application and sign in
+
+1. Open the [X Developer Portal](https://developer.x.com/) and create or select your own project/application. Enable OAuth 2.0 user authentication with read/write access. See the [official OAuth 2.0 PKCE guide](https://docs.x.com/fundamentals/authentication/oauth-2-0/authorization-code) for current app settings.
+2. Add this callback URL exactly: **`http://127.0.0.1:9876/callback`**. This script uses `127.0.0.1`, not `localhost`.
+3. Copy the application's **OAuth 2.0 Client ID**. If the application provides a Client Secret, keep that available too. These are different from OAuth 1.0 API keys.
+4. Run the local login wizard:
+
+```powershell
+.\.venv\Scripts\python.exe .\setup.py
 ```
 
-The default MCP endpoint is `http://localhost:8080/mcp`.
+5. Enter the Client ID, and the Client Secret if your app requires one; otherwise leave the secret blank. Open the printed URL if your browser does not open automatically. Sign into the X account you want to connect and approve the access. Return to PowerShell within three minutes.
+6. Setup creates **`config/credentials.json`** with your account and tokens. Keep it private. This package does not need a `.env` file.
+
+The script requests `tweet.read`, `tweet.write`, `users.read`, `like.read`, `like.write`, `bookmark.read`, `bookmark.write`, `follows.read`, `follows.write`, `media.write`, and `offline.access`. Your application/API access must permit the operations you use. The offline scope permits token renewal.
+
+To inspect the locally saved account:
+
+```powershell
+.\.venv\Scripts\python.exe .\setup.py --status
+```
+
+This reads the saved file; use the live tool check in step 4 to confirm the API accepts it.
+
+## 3. Check startup
+
+```powershell
+.\.venv\Scripts\python.exe .\run_stdio.py
+```
+
+This is a **stdio** server: a client talks through the process's input/output, not a web page. A banner followed by silence, or silence alone, is normal while it waits. A Python traceback is an error. Press **Ctrl+C** after this check, then connect your client below.
+
+## 4. Connect your AI client and check it works
+
+Claude Desktop: **Settings → Developer → Edit Config**. [Client connection guide](https://modelcontextprotocol.io/docs/develop/connect-local-servers). Other clients use their own local MCP settings; this example uses `mcpServers` JSON.
+
+```json
+{
+  "mcpServers": {
+    "twitter-mcp": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/twitter-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/twitter-mcp/run_stdio.py"
+      ]
+    }
+  }
+}
+```
+
+If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
+
+Ask: **"Use twitter_test_connection and tell me which account is connected."** A successful response identifies your own account. This check does not post, like, or follow anything.
+
+## If something goes wrong
+
+- **`py` is not recognized:** install Python with its launcher, then reopen PowerShell. If only `python` works, verify `python --version` and use it for the `-m venv` command.
+- **`No module named ...`:** repeat the requirements command using `.\.venv\Scripts\python.exe`; the client's `command` must point to that same environment.
+- **Server missing in the client:** check absolute paths and JSON punctuation, then restart the client. Claude Desktop logs are under `%APPDATA%\Claude\logs`.
+- **A quiet terminal:** this is expected for stdio; use the client tool check above. Ctrl+C stops a manual test.
+
+- **Redirect mismatch:** check that the app uses `http://127.0.0.1:9876/callback` exactly. Another setup process using port 9876 must be stopped before retrying.
+- **401 or expired/revoked token:** rerun `setup.py` with the same app, then restart the MCP client.
+- **403 or an unavailable endpoint:** check that your app has the relevant scopes and your X API access includes that endpoint. Recent search and other tools may require different access.
+- **429:** the API is rate limiting the account/app. Wait for its limit to reset; restarting this server does not reset provider limits.
+
+## Files and HTTP mode
+
+`setup.py` handles OAuth; `server.py` implements the tools; **`run_stdio.py`** is the local client entry point used above. `run_server.py` and running `server.py` directly start HTTP on port 8080, listening on all interfaces. That HTTP launcher adds no authentication and is not needed for this local setup. Do not expose it publicly without adding access control.
 
 ## Available tools
 
@@ -91,44 +113,3 @@ The default MCP endpoint is `http://localhost:8080/mcp`.
 | `twitter_unfollow_user` | Unfollow a user |
 | `twitter_get_following` | List followed accounts |
 | `twitter_get_followers` | List followers |
-
-## Connect from an MCP client
-
-Example MCP config:
-
-```json
-{
-  "mcpServers": {
-    "twitter": {
-      "command": "uv",
-      "args": [
-        "run",
-        "--with",
-        "fastmcp",
-        "--with",
-        "pydantic",
-        "--with",
-        "uvicorn",
-        "fastmcp",
-        "run",
-        "C:/AI/MCP/Sharing-MCPs/twitter-mcp/server.py"
-      ]
-    }
-  }
-}
-```
-
-If you prefer running the HTTP server yourself, start `python run_server.py` and point your client at `http://localhost:8080/mcp`.
-
-## Files
-
-- `setup.py`: local OAuth setup flow
-- `server.py`: FastMCP server and tools
-- `run_server.py`: local runner
-- `config/credentials.json`: local tokens and account metadata
-
-## Security
-
-- Credentials are stored locally in `config/credentials.json`
-- The `config` folder is gitignored by the setup script
-- Do not commit your credentials file

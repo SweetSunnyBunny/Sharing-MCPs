@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <style name="Theme.AnamCompanion" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/anam_accent</item>
+        <item name="colorPrimaryDark">@color/anam_page_top</item>
+        <item name="colorAccent">@color/anam_accent</item>
+        <item name="android:windowBackground">@color/anam_page_mid</item>
+        <item name="android:textColorPrimary">@color/anam_text_primary</item>
+        <item name="android:textColorSecondary">@color/anam_text_secondary</item>
+    </style>
+</resources>

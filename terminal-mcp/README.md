@@ -1,50 +1,78 @@
-# Terminal MCP Server
+# Terminal MCP
 
-Give Claude persistent terminal sessions that remember state between commands!
+Persistent Bash shell sessions for an MCP client. Commands share directory/environment within a session. On Windows install Git Bash; this implementation does not support PowerShell or cmd as TERMINAL_SHELL.
 
-This MCP (Model Context Protocol) server provides:
+## 1. Prepare the folder and Python
 
-- Persistent shell sessions (cwd, env vars, aliases survive across commands)
-- Multiple concurrent sessions
-- Auto-creation of default sessions
-- Configurable timeouts and output limits
-- Automatic shell respawning if a session dies
+These steps use Windows PowerShell and **Python 3.11 (64-bit)**. Install it from [python.org](https://www.python.org/downloads/), including the Python launcher, if needed. Reopen PowerShell after installation.
 
-## Why This is Awesome
+Extract the collection to `C:\MCP-Starter\Sharing-MCPs`, so this README is inside `C:\MCP-Starter\Sharing-MCPs\terminal-mcp`. If you chose another location, replace that path in every command and JSON example below. Do not run inside the ZIP.
 
-Normal MCP terminal tools start a fresh shell for every command. That means `cd`, `export`, `alias`, and other stateful operations are lost immediately. This server keeps shell sessions alive, so state persists naturally - just like a real terminal.
-
-**Use cases:**
-- Run multi-step build/deploy workflows where each step depends on the previous
-- Set up environment variables once and use them across commands
-- Navigate directories without losing your place
-- Run long-lived processes and check on them later
-
----
-
-## Quick Start
-
-### 1. Install Dependencies
-
-```bash
-pip install -r requirements.txt
+```powershell
+Set-Location "C:\MCP-Starter\Sharing-MCPs\terminal-mcp"
+py -3.11 --version
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### 2. Run Locally (stdio, for Claude Code)
+`.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
 
-```bash
-python run_server.py
+## 2. Install and check Bash
+
+Install [Git for Windows](https://git-scm.com/downloads/win). Check the usual Bash path in PowerShell:
+
+```powershell
+& "C:\Program Files\Git\bin\bash.exe" --version
+$env:TERMINAL_SHELL = "C:\Program Files\Git\bin\bash.exe"
+$env:TERMINAL_DEFAULT_CWD = "C:\MCP-Starter\Sharing-MCPs"
 ```
 
-### 3. Run as HTTP Server (for remote access)
+Adjust the executable path if Git is elsewhere. The source uses Bash-specific flags and syntax to detect completed commands. Its tools run **Bash commands**, even though installation uses PowerShell. No API key is required. The client configuration below repeats these variables because a GUI client does not inherit this PowerShell session.
 
-```bash
-python run_server.py --transport streamable-http --host 127.0.0.1 --port 8793
+## 3. Check startup
+
+```powershell
+.\.venv\Scripts\python.exe .\run_server.py
 ```
 
-The server runs on `http://localhost:8793/mcp`
+This is a **stdio** server: a client talks through the process's input/output, not a web page. A banner followed by silence, or silence alone, is normal while it waits. A Python traceback is an error. Press **Ctrl+C** after this check, then connect your client below.
 
----
+## 4. Connect your AI client and check it works
+
+Claude Desktop: **Settings → Developer → Edit Config**. [Client connection guide](https://modelcontextprotocol.io/docs/develop/connect-local-servers). Other clients use their own local MCP settings; this example uses `mcpServers` JSON.
+
+```json
+{
+  "mcpServers": {
+    "terminal-mcp": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/terminal-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/terminal-mcp/run_server.py"
+      ],
+      "env": {
+        "TERMINAL_SHELL": "C:/Program Files/Git/bin/bash.exe",
+        "TERMINAL_DEFAULT_CWD": "C:/MCP-Starter/Sharing-MCPs"
+      }
+    }
+  }
+}
+```
+
+If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
+
+Ask the client to call `terminal_execute` with command `pwd`. The result should contain a directory and exit code. Then call `terminal_list` to see the session. Start with read-only commands.
+
+## If something goes wrong
+
+- **`py` is not recognized:** install Python with its launcher, then reopen PowerShell. If only `python` works, verify `python --version` and use it for the `-m venv` command.
+- **`No module named ...`:** repeat the requirements command using `.\.venv\Scripts\python.exe`; the client's `command` must point to that same environment.
+- **Server missing in the client:** check absolute paths and JSON punctuation, then restart the client. Claude Desktop logs are under `%APPDATA%\Claude\logs`.
+- **A quiet terminal:** this is expected for stdio; use the client tool check above. Ctrl+C stops a manual test.
+- **Bash not found:** fix `TERMINAL_SHELL` in the client JSON.
+- **Unknown option or timeout:** do not point the shell setting at powershell.exe, pwsh.exe or cmd.exe.
+- **Command waiting for input:** use noninteractive command flags or end that session with `terminal_destroy`.
+- **Lost shell state:** sessions last only while the server runs; restarting the client starts fresh sessions.
 
 ## Configuration
 
@@ -60,111 +88,6 @@ All settings are configurable via environment variables:
 
 ---
 
-## Cloudflare Tunnel Setup (~$5/year)
-
-This is how you make your MCP accessible from anywhere. Cloudflare Tunnels are free - you just need a domain (~$5-10/year).
-
-### What You'll Get
-- Run terminal commands on your computer from your phone
-- Secure HTTPS connection
-- No port forwarding needed
-- Works even behind firewalls
-
-### Step 1: Get a Domain
-
-1. Go to https://www.cloudflare.com/products/registrar/
-2. Search for a cheap domain (.uk, .xyz, .site are often ~$5)
-3. Buy it through Cloudflare (no markup, includes free DNS)
-
-Or use any domain you already own and point its nameservers to Cloudflare.
-
-### Step 2: Install Cloudflared
-
-**Windows:**
-1. Download from https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/
-2. Extract to a folder like `C:\Program Files\cloudflared\`
-3. Add to PATH or use full path
-
-**Mac:**
-```bash
-brew install cloudflared
-```
-
-**Linux:**
-```bash
-# Debian/Ubuntu
-curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-sudo dpkg -i cloudflared.deb
-```
-
-### Step 3: Login, Create Tunnel, Configure
-
-```bash
-cloudflared tunnel login
-cloudflared tunnel create my-mcp-tunnel
-```
-
-Create `~/.cloudflared/config.yml`:
-
-```yaml
-tunnel: YOUR-TUNNEL-ID-HERE
-credentials-file: /path/to/.cloudflared/YOUR-TUNNEL-ID.json
-
-ingress:
-  - hostname: terminal.yourdomain.com
-    service: http://localhost:8793
-  - service: http_status:404
-```
-
-### Step 4: Route DNS and Run
-
-```bash
-cloudflared tunnel route dns my-mcp-tunnel terminal.yourdomain.com
-```
-
-**Terminal 1 - Start the MCP server:**
-```bash
-python run_server.py --transport streamable-http --port 8793
-```
-
-**Terminal 2 - Start the tunnel:**
-```bash
-cloudflared tunnel run my-mcp-tunnel
-```
-
-Your MCP is now available at `https://terminal.yourdomain.com/mcp`!
-
----
-
-## Connecting to Claude
-
-### Claude Code (CLI) - Local (stdio)
-
-```json
-{
-  "mcpServers": {
-    "terminal": {
-      "command": "python",
-      "args": ["path/to/terminal-mcp/run_server.py"]
-    }
-  }
-}
-```
-
-### Claude Code (CLI) - Remote (via tunnel)
-
-```json
-{
-  "mcpServers": {
-    "terminal": {
-      "url": "https://terminal.yourdomain.com/mcp"
-    }
-  }
-}
-```
-
----
-
 ## Available Tools
 
 | Tool | Description |
@@ -176,32 +99,3 @@ Your MCP is now available at `https://terminal.yourdomain.com/mcp`!
 | `terminal_get_info` | Get detailed info about a session |
 
 ---
-
-## Security Notes
-
-- This server gives shell access to your machine - only expose it via your private tunnel
-- The tunnel is encrypted (HTTPS) and tied to your Cloudflare account
-- Consider running with a restricted user account if exposing remotely
-- Don't share your tunnel credentials
-
----
-
-## Troubleshooting
-
-### "Connection refused"
-Make sure the MCP server is running before the tunnel.
-
-### "Bad gateway"
-Check that the port in config.yml matches the server port (default: 8793).
-
-### Shell dies between commands
-The server automatically respawns dead shells. If it keeps happening, check your shell path with `TERMINAL_SHELL`.
-
-### Output looks garbled
-The server filters shell noise (prompts, echoed commands), but some shells may need tweaking. Stick with `bash` for best results.
-
----
-
-## License
-
-MIT - Do whatever you want with it!

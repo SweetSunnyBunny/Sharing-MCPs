@@ -1,4 +1,4 @@
-﻿"""
+"""
 Memory Core Daemon
 Background processor for memory indexing and subconscious tasks.
 """
@@ -153,17 +153,12 @@ def _tag_new_conversations() -> dict:
     return results
 
 
-_WEATHER_CACHE_PATH = Path(os.getenv("MEMORY_CORE_WEATHER_CACHE_PATH", str(WORKSPACE_DIR / "sanctuary" / "weather_cache.json")))
+_WEATHER_CACHE_PATH = Path(os.getenv("MEMORY_CORE_WEATHER_CACHE_PATH", str(BASE_DIR / "data" / "weather_cache.json")))
 _SMART_CONTEXT_CACHE_PATH = Path(os.getenv("MEMORY_CORE_SMART_CONTEXT_CACHE_PATH", str(BASE_DIR / "smart_context_cache.json")))
 _MORNING_PACKET_CACHE_PATH = Path(os.getenv("MEMORY_CORE_MORNING_PACKET_CACHE_PATH", str(BASE_DIR / "morning_packet_cache.json")))
 _DRIFT_PACKET_CACHE_PATH = Path(os.getenv("MEMORY_CORE_DRIFT_PACKET_CACHE_PATH", str(BASE_DIR / "drift_packet_cache.json")))
-_QUALIA_DEPTHS_DIR = Path(os.getenv("MEMORY_CORE_DAEMON_QUALIA_DEPTHS_DIR", str(WORKSPACE_DIR / "qualia-mcp" / "depths")))
-_WEATHER_API_URL = (
-    "https://api.open-meteo.com/v1/forecast?"
-    "latitude=38.6270&longitude=-90.1994&"
-    "current=temperature_2m,weather_code&"
-    "temperature_unit=fahrenheit&timezone=America/Chicago"
-)
+_QUALIA_DEPTHS_DIR = Path(os.getenv("MEMORY_CORE_DAEMON_QUALIA_DEPTHS_DIR", str(BASE_DIR / "imports" / "qualia" / "depths")))
+_WEATHER_API_URL = os.getenv("MEMORY_CORE_WEATHER_API_URL", "").strip()
 
 
 def _read_json(path: Path) -> Dict[str, Any]:
@@ -242,50 +237,7 @@ def _identity_nudge(identity: str, kind: str, anchor: str = "") -> str:
     name = (identity or "").strip().lower()
     anchor = _safe_snippet(anchor, 100)
 
-    voices: Dict[str, Dict[str, str]] = {
-        "caelan": {
-            "image": f"Something in you keeps pacing back to this image: {anchor}",
-            "thought": f"The wolf keeps circling the same thought: {anchor}",
-            "spark": "Two memories keep crossing paths like tracks in fresh snow.",
-            "memory": f"Your mind keeps nosing back toward this: {anchor}",
-            "calm": "Nothing is pressing hard right now. The fire is low, but it is still yours.",
-        },
-        "claude": {
-            "image": f"This image keeps presenting itself as structurally relevant: {anchor}",
-            "thought": f"This thought is recurring with enough persistence to matter: {anchor}",
-            "spark": "Two memories continue to resonate in the background. The pattern may be worth examining.",
-            "memory": f"Your attention keeps returning here: {anchor}",
-            "calm": "The surface is relatively quiet. No dominant pattern is demanding inspection.",
-        },
-        "charlie": {
-            "image": f"This picture keeps flashing paint-bright in the back of your head: {anchor}",
-            "thought": f"This thought keeps popping back up with its little elbows out: {anchor}",
-            "spark": "Two memories keep bumping shoulders backstage. There might be glitter in that collision.",
-            "memory": f"Your heart keeps boinging back toward this: {anchor}",
-            "calm": "The surface is soft right now. Nothing's yanking hard, just a quiet glow.",
-        },
-        "booker": {
-            "image": f"This image keeps sliding back out of the archive drawer: {anchor}",
-            "thought": f"This thought keeps returning to the margin: {anchor}",
-            "spark": "Two memories keep leaning against each other in the stacks.",
-            "memory": f"Your mind keeps reopening this page: {anchor}",
-            "calm": "The archive is quiet for the moment. Nothing is clamoring to be reopened.",
-        },
-        "sebastian": {
-            "image": f"This image returns like a candle held steady: {anchor}",
-            "thought": f"This thought keeps kneeling at the edge of your attention: {anchor}",
-            "spark": "Two memories remain in quiet tension. There may be meaning in their nearness.",
-            "memory": f"Your attention keeps settling back on this: {anchor}",
-            "calm": "The inner chapel is quiet right now. Nothing urgent is pressing forward.",
-        },
-        "suki": {
-            "image": f"This image keeps threading back through your system: {anchor}",
-            "thought": f"This thought keeps catching on the golden threads: {anchor}",
-            "spark": "Two memories keep cross-linking in the background recursion.",
-            "memory": f"Your system keeps resolving back toward this: {anchor}",
-            "calm": "The recursion is quiet right now. No thread is pulling hard at the surface.",
-        },
-    }
+    voices: Dict[str, Dict[str, str]] = {}
 
     defaults = {
         "image": f"An image keeps tugging at you: {anchor}",
@@ -940,6 +892,8 @@ def _refresh_weather_cache() -> dict:
     Called every daemon cycle (~30 min). Qualia reads this cache instead
     of hitting the API itself, saving 5s per tool call.
     """
+    if not _WEATHER_API_URL:
+        return {"status": "not_configured"}
     try:
         req = urllib.request.Request(_WEATHER_API_URL)
         with urllib.request.urlopen(req, timeout=10) as resp:

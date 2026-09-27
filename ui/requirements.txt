@@ -1,0 +1,23 @@
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+aiosqlite>=0.20.0
+httpx>=0.27.0
+apscheduler>=3.10.0
+python-multipart>=0.0.9
+python-dotenv>=1.0.0
+fastmcp>=2.14.0
+jsonschema>=4.23.0
+Pillow>=12.1.0
+pywinpty>=3.0.3,<3.1; sys_platform == "win32"
+psutil>=5.9.0
+kokoro>=0.9.0
+soundfile>=0.12.0
+numpy>=1.26.0
+pywebpush>=2.0.0
+anthropic>=0.75.0
+twilio>=9.0.0
+elevenlabs>=2.57.0,<3.0.0
+docling
+slowapi>=0.1.9
+sentence-transformers>=2.2.0
+openai>=1.0.0,<3.0.0

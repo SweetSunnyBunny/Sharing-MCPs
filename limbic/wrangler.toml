@@ -1,0 +1,17 @@
+# The Limbic Layer — sibling worker to Qualia (mind-backend).
+name = "limbic-backend"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "limbic"
+# Run `wrangler d1 create limbic` once, then paste the returned id here:
+database_id = "00000000-0000-0000-0000-000000000000"
+
+# Workers AI — reserved for later (semantic appraisal). Harmless to bind now.
+[ai]
+binding = "AI"
+
+# Decay is computed lazily at read time; no cron is required.

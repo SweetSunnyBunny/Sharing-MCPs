@@ -12,7 +12,7 @@
         "uvicorn",
         "fastmcp",
         "run",
-        "C:/AI/MCP/Sharing-MCPs/twitter-mcp/server.py"
+        "C:/path/to/twitter-mcp/server.py"
       ]
     }
   }

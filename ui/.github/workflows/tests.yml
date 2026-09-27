@@ -1,0 +1,46 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11"]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --no-build-isolation -e ".[dev]"
+
+      - name: Smoke startup (Claude Code preferred mode)
+        env:
+          ANAM_ENV: test
+          ANAM_ALLOW_NO_AUTH: "1"
+          ANAM_USE_DIRECT_API: "false"
+          ANAM_PUBLIC_URL: "http://localhost:8790"
+          SITE_URL: "http://localhost:8790"
+        run: python scripts/smoke_startup.py
+
+      - name: Run tests
+        env:
+          ANAM_ENV: test
+          ANAM_ALLOW_NO_AUTH: "1"
+          ANAM_USE_DIRECT_API: "false"
+          ANAM_PUBLIC_URL: "http://localhost:8790"
+          SITE_URL: "http://localhost:8790"
+        run: pytest -q

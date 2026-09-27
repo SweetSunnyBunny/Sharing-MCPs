@@ -1,0 +1,30 @@
+{
+  "name": "easel-ai",
+  "version": "0.1.0",
+  "description": "Local-first, BYOK image gallery with character/style presets and an AI prompt workshop. A self-hosted replacement for Sora's 'my media' after the April 2026 shutdown.",
+  "license": "Apache-2.0",
+  "author": "Codependent AI",
+  "homepage": "https://github.com/codependentai/easel-ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codependentai/easel-ai.git"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "better-sqlite3": "^11.5.0",
+    "hono": "^4.6.12",
+    "openai": "^4.77.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

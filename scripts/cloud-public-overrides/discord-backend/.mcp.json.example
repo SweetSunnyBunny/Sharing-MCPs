@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "discord": {
+      "type": "url",
+      "url": "https://discord-backend.<your-subdomain>.workers.dev/mcp/<your-secret-path>"
+    }
+  }
+}

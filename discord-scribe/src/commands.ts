@@ -32,7 +32,7 @@ const guildStates = new Map<string, GuildTranscriptionState>();
 /**
  * Build the /scribe command definition.
  */
-export function buildCommands() {
+export function buildCommands(): ReturnType<SlashCommandBuilder["toJSON"]>[] {
   return [
     new SlashCommandBuilder()
       .setName("scribe")

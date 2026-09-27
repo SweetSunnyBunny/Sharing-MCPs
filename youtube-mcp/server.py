@@ -481,6 +481,15 @@ async def get_video_comments(
 # TRANSCRIPTS
 # =============================================================================
 
+def _fetch_transcript_segments(video_id: str) -> list[dict]:
+    """Return the stable dictionary shape across supported transcript clients."""
+    client = YouTubeTranscriptApi()
+    if hasattr(client, "fetch"):
+        return client.fetch(video_id).to_raw_data()
+    # Older youtube-transcript-api releases exposed a class-level method.
+    return YouTubeTranscriptApi.get_transcript(video_id)
+
+
 @mcp.tool()
 async def get_transcript(
     video: str = Field(..., description="Video ID or URL"),
@@ -500,7 +509,7 @@ async def get_transcript(
             with open(cache_file, 'r', encoding='utf-8') as f:
                 transcript_data = json.load(f)['transcript']
         else:
-            transcript_data = YouTubeTranscriptApi.get_transcript(video_id)
+            transcript_data = _fetch_transcript_segments(video_id)
             with open(cache_file, 'w', encoding='utf-8') as f:
                 json.dump({'transcript': transcript_data, 'video_id': video_id}, f)
 

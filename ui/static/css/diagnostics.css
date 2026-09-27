@@ -1,0 +1,111 @@
+/* ANAM GUIDE: DIAGNOSTICS PAGE STYLES
+   What: extra looks for the system health/diagnostics page — the summary card, check rows, and glow accent (it borrows most styling from settings.css, loaded alongside).
+   Used by: diagnostics.html only.
+   Edit here when: changing how the diagnostics page's cards, status rows, or night-mode tweaks look. */
+
+.diagnostics-container {
+    max-width: 820px;
+}
+
+.diagnostics-hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.diagnostics-hero::after {
+    content: '';
+    position: absolute;
+    inset: auto -60px -80px auto;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--identity-accent-rgb), 0.18) 0%, rgba(var(--identity-accent-rgb), 0) 72%);
+    pointer-events: none;
+}
+
+.diagnostics-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.diag-summary {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+    background: var(--card-flat-bg, rgba(0, 0, 0, 0.03));
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+body.night-mode .diag-summary,
+body.night-mode .diag-kv {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.diag-grid {
+    display: grid;
+    gap: 10px;
+}
+
+.diag-kv {
+    display: grid;
+    grid-template-columns: minmax(140px, 180px) 1fr;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+    background: var(--card-flat-bg, rgba(0, 0, 0, 0.03));
+}
+
+.diag-key {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.diag-value {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    overflow-wrap: anywhere;
+}
+
+.diag-value.status-ok {
+    color: #5BA89A;
+}
+
+.diag-value.status-warn {
+    color: #C9A840;
+}
+
+.diag-value.status-bad {
+    color: var(--house-accent, #C47A8A);
+}
+
+.diag-json {
+    margin: 0;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border-soft);
+    background: var(--card-flat-bg, rgba(0, 0, 0, 0.03));
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+body.night-mode .diag-json {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+@media screen and (max-width: 640px) {
+    .diag-kv {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+}

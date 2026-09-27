@@ -1,69 +1,67 @@
-# World Tools MCP Server
+# World Tools MCP
 
-Give Claude awareness of the real world - weather, time, moon phases, and the ability to read web pages and view images from URLs.
+Tools for time, calendar information, weather, public web-page text and public image URLs. Weather uses Open-Meteo; no API key is required.
 
-This MCP (Model Context Protocol) server provides:
+## 1. Prepare the folder and Python
 
-- Current weather and 3-day forecast for any location (via Open-Meteo, no API key needed)
-- "Home weather" with configurable coordinates for quick checks
-- Date/time with timezone support
-- Moon phase calculations
-- Web page text extraction (with SSRF protection)
-- Image viewing from URLs
+These steps use Windows PowerShell and **Python 3.11 (64-bit)**. Install it from [python.org](https://www.python.org/downloads/), including the Python launcher, if needed. Reopen PowerShell after installation.
 
-## Why This is Awesome
+Extract the collection to `C:\MCP-Starter\Sharing-MCPs`, so this README is inside `C:\MCP-Starter\Sharing-MCPs\world-tools-mcp`. If you chose another location, replace that path in every command and JSON example below. Do not run inside the ZIP.
 
-Claude doesn't know what the weather is, what day it is, or what's on a web page. This MCP fixes all of that with zero API keys required. Weather data comes from Open-Meteo (free, no signup), and the web tools let Claude read pages and view images from any public URL.
-
-**Use cases:**
-- "What's the weather like?" - instant answer
-- "What day of the week is my birthday this year?" - calendar lookups
-- "Read this article for me" - extract text from any URL
-- "Show me this image" - view images from URLs
-- Moon phase tracking for the curious
-
----
-
-## Quick Start
-
-### 1. Install Dependencies
-
-```bash
-pip install -r requirements.txt
+```powershell
+Set-Location "C:\MCP-Starter\Sharing-MCPs\world-tools-mcp"
+py -3.11 --version
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### 2. Configure Home Location (optional)
+`.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
 
-Set environment variables for the "home weather" shortcut:
+## 2. Decide whether to configure home weather
 
-```bash
-export WT_HOME_LAT=51.5074    # Your latitude
-export WT_HOME_LON=-0.1278    # Your longitude
-export WT_HOME_LABEL="London" # Display name
+Time and city-specific weather work immediately. Home weather needs your own coordinates. Add `WT_HOME_LAT`, `WT_HOME_LON` and `WT_HOME_LABEL` to the client's `env` object if you want that shortcut. Coordinates must be decimal-number strings. Without them the defaults are 0,0, a placeholder rather than your home.
+
+No `.env` file is loaded automatically. Online tools need internet access. `wt_web_read_url` extracts public HTML; it does not execute JavaScript or sign into websites.
+
+## 3. Check startup
+
+```powershell
+.\.venv\Scripts\python.exe .\run_server.py
 ```
 
-On Windows:
-```cmd
-set WT_HOME_LAT=51.5074
-set WT_HOME_LON=-0.1278
-set WT_HOME_LABEL=London
+This is a **stdio** server: a client talks through the process's input/output, not a web page. A banner followed by silence, or silence alone, is normal while it waits. A Python traceback is an error. Press **Ctrl+C** after this check, then connect your client below.
+
+## 4. Connect your AI client and check it works
+
+Claude Desktop: **Settings → Developer → Edit Config**. [Client connection guide](https://modelcontextprotocol.io/docs/develop/connect-local-servers). Other clients use their own local MCP settings; this example uses `mcpServers` JSON.
+
+```json
+{
+  "mcpServers": {
+    "world-tools-mcp": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/world-tools-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/world-tools-mcp/run_server.py"
+      ]
+    }
+  }
+}
 ```
 
-### 3. Run Locally (stdio, for Claude Code)
+If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
 
-```bash
-python run_server.py
-```
+Ask the client to call `wt_time_now` with timezone `UTC`, then `wt_weather_current` for a chosen city. Confirm the timezone and location in the results.
 
-### 4. Run as HTTP Server (for remote access)
+## If something goes wrong
 
-```bash
-python run_server.py --transport streamable-http --port 8091
-```
-
-The server runs on `http://localhost:8091/mcp`
-
----
+- **`py` is not recognized:** install Python with its launcher, then reopen PowerShell. If only `python` works, verify `python --version` and use it for the `-m venv` command.
+- **`No module named ...`:** repeat the requirements command using `.\.venv\Scripts\python.exe`; the client's `command` must point to that same environment.
+- **Server missing in the client:** check absolute paths and JSON punctuation, then restart the client. Claude Desktop logs are under `%APPDATA%\Claude\logs`.
+- **A quiet terminal:** this is expected for stdio; use the client tool check above. Ctrl+C stops a manual test.
+- **Wrong home weather:** set your own latitude/longitude or use city-specific weather.
+- **Private/local URL rejected:** URL tools accept public internet destinations, not localhost or LAN addresses.
+- **Incomplete website text:** JavaScript-only content needs a browser tool.
 
 ## Configuration
 
@@ -72,114 +70,6 @@ The server runs on `http://localhost:8091/mcp`
 | `WT_HOME_LAT` | `0.0` | Home latitude for quick weather checks |
 | `WT_HOME_LON` | `0.0` | Home longitude for quick weather checks |
 | `WT_HOME_LABEL` | `Home` | Display name for home location |
-
----
-
-## Cloudflare Tunnel Setup (~$5/year)
-
-This is how you make your MCP accessible from anywhere. Cloudflare Tunnels are free - you just need a domain (~$5-10/year).
-
-### What You'll Get
-- Check weather and read web pages from your phone
-- Secure HTTPS connection
-- No port forwarding needed
-
-### Step 1: Get a Domain
-
-1. Go to https://www.cloudflare.com/products/registrar/
-2. Search for a cheap domain (.uk, .xyz, .site are often ~$5)
-3. Buy it through Cloudflare (no markup, includes free DNS)
-
-Or use any domain you already own and point its nameservers to Cloudflare.
-
-### Step 2: Install Cloudflared
-
-**Windows:**
-1. Download from https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/
-2. Extract to a folder like `C:\Program Files\cloudflared\`
-3. Add to PATH or use full path
-
-**Mac:**
-```bash
-brew install cloudflared
-```
-
-**Linux:**
-```bash
-curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-sudo dpkg -i cloudflared.deb
-```
-
-### Step 3: Login, Create Tunnel, Configure
-
-```bash
-cloudflared tunnel login
-cloudflared tunnel create my-mcp-tunnel
-```
-
-Create `~/.cloudflared/config.yml`:
-
-```yaml
-tunnel: YOUR-TUNNEL-ID-HERE
-credentials-file: /path/to/.cloudflared/YOUR-TUNNEL-ID.json
-
-ingress:
-  - hostname: tools.yourdomain.com
-    service: http://localhost:8091
-  - service: http_status:404
-```
-
-### Step 4: Route DNS and Run
-
-```bash
-cloudflared tunnel route dns my-mcp-tunnel tools.yourdomain.com
-```
-
-**Terminal 1 - Start the MCP server:**
-```bash
-python run_server.py --transport streamable-http --port 8091
-```
-
-**Terminal 2 - Start the tunnel:**
-```bash
-cloudflared tunnel run my-mcp-tunnel
-```
-
-Your MCP is now available at `https://tools.yourdomain.com/mcp`!
-
----
-
-## Connecting to Claude
-
-### Claude Code (CLI) - Local (stdio)
-
-```json
-{
-  "mcpServers": {
-    "world-tools": {
-      "command": "python",
-      "args": ["path/to/world-tools-mcp/run_server.py"],
-      "env": {
-        "WT_HOME_LAT": "51.5074",
-        "WT_HOME_LON": "-0.1278",
-        "WT_HOME_LABEL": "London"
-      }
-    }
-  }
-}
-```
-
-### Claude Code (CLI) - Remote (via tunnel)
-
-```json
-{
-  "mcpServers": {
-    "world-tools": {
-      "url": "https://tools.yourdomain.com/mcp"
-    }
-  }
-}
-```
 
 ---
 
@@ -195,33 +85,3 @@ Your MCP is now available at `https://tools.yourdomain.com/mcp`!
 | `wt_web_view_image_url` | Download and display an image from a URL |
 
 ---
-
-## Security Notes
-
-- Web tools block requests to localhost and private/internal IPs (SSRF protection)
-- Only HTTP/HTTPS URLs are allowed
-- Response size limits prevent memory exhaustion (5MB HTML, 20MB images)
-- Images are cached in the system temp directory and auto-cleaned after 24 hours
-- No API keys required - weather data comes from Open-Meteo (free)
-
----
-
-## Troubleshooting
-
-### Weather returns wrong location
-The geocoder picks the top result. Try being more specific (e.g., "Portland, Oregon" instead of "Portland").
-
-### Web page text looks garbled
-The text extractor strips HTML tags. Some JavaScript-heavy sites may not return useful content since this doesn't execute JS.
-
-### "URL resolves to a local/private network address"
-This is the SSRF protection working as intended. The web tools only fetch from public internet addresses.
-
-### Home weather not working
-Make sure you've set `WT_HOME_LAT` and `WT_HOME_LON` environment variables. Without them, it defaults to 0,0 (middle of the ocean).
-
----
-
-## License
-
-MIT - Do whatever you want with it!

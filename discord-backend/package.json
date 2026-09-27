@@ -1,0 +1,24 @@
+{
+  "name": "discord-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test src/image-archive.test.ts src/image-content.test.ts",
+    "register:vibe": "tsx src/register-commands.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.0",
+    "wrangler": "^4.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "tweetnacl": "^1.0.3"
+  }
+}

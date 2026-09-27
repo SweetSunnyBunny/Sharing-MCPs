@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Easel Atelier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=2" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark" data-icon="crown"></span>
+        <div class="brand-text">
+          <span class="brand-title">Easel</span>
+          <span class="brand-subtitle">Rose Atelier</span>
+        </div>
+      </div>
+
+      <nav class="nav-section">
+        <span class="nav-heading">Library</span>
+        <div class="nav-strip">
+          <a class="nav-item" data-view="media" href="#media"><span class="nav-icon" data-icon="images"></span><span>My media</span></a>
+          <a class="nav-item" data-view="favorites" href="#favorites"><span class="nav-icon" data-icon="star"></span><span>Favorites</span></a>
+          <a class="nav-item" data-view="trash" href="#trash"><span class="nav-icon" data-icon="trash"></span><span>Trash</span></a>
+        </div>
+      </nav>
+
+      <nav class="nav-section">
+        <div class="nav-heading-row">
+          <span class="nav-heading">Folders</span>
+          <button class="btn-icon" id="new-folder-btn" title="New folder" data-icon="plus"></button>
+        </div>
+        <div id="folder-list" class="folder-list"></div>
+      </nav>
+
+      <nav class="nav-section">
+        <span class="nav-heading">Craft</span>
+        <div class="nav-strip">
+          <a class="nav-item" data-view="presets" href="#presets"><span class="nav-icon" data-icon="sparkles"></span><span>Presets</span></a>
+          <a class="nav-item" data-view="workshop" href="#workshop"><span class="nav-icon" data-icon="lightbulb"></span><span>Workshop</span></a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <h1 id="view-title">My media</h1>
+        <div class="main-header-meta" id="view-meta"></div>
+      </header>
+
+      <section id="view-root" class="view-root"></section>
+    </main>
+
+    <!-- Prompt bar -->
+    <form class="prompt-bar" id="prompt-form">
+      <div id="ref-strip" class="ref-strip" hidden></div>
+      <div class="prompt-row">
+        <button type="button" class="prompt-attach" id="attach-btn" title="Attach reference image" data-icon="paperclip"></button>
+        <input type="file" id="attach-input" accept="image/png,image/webp,image/jpeg" hidden />
+        <textarea
+          id="prompt-input"
+          class="prompt-input"
+          placeholder="Describe your image…"
+          rows="1"
+          autocomplete="off"
+        ></textarea>
+        <span class="prompt-kbd" aria-hidden="true">↵</span>
+        <button type="submit" class="prompt-send" id="send-btn" title="Create image (Enter)" data-icon="arrow-up"></button>
+      </div>
+      <div class="prompt-controls">
+        <div class="chip chip-static" id="chip-media"><span class="chip-icon" data-icon="image"></span><span class="chip-value">Image</span></div>
+        <button type="button" class="chip chip-picker" id="chip-aspect" data-value="2:3">
+          <span class="chip-icon" data-icon="ratio"></span><span class="chip-value">2:3</span>
+        </button>
+        <button type="button" class="chip chip-picker" id="chip-variants" data-value="2">
+          <span class="chip-icon" data-icon="layout-grid"></span><span class="chip-value">2v</span>
+        </button>
+        <button type="button" class="chip chip-picker" id="chip-quality" data-value="medium">
+          <span class="chip-icon" data-icon="gauge"></span><span class="chip-value">medium</span>
+        </button>
+        <button type="button" class="chip chip-picker" id="chip-character">
+          <span class="chip-icon" data-icon="user-square"></span><span class="chip-value">No character</span>
+        </button>
+        <button type="button" class="chip chip-picker" id="chip-style">
+          <span class="chip-icon" data-icon="palette"></span><span class="chip-value">No style</span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Popover / modal container -->
+    <div id="popover-root"></div>
+    <div id="toast-root"></div>
+
+    <script type="module" src="/app.js?v=2"></script>
+  </body>
+</html>

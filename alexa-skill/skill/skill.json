@@ -1,0 +1,38 @@
+{
+  "manifest": {
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev",
+          "sslCertificateType": "Wildcard"
+        },
+        "interfaces": []
+      }
+    },
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "Pack Bond",
+          "summary": "Smart home control through the pack.",
+          "description": "Control your smart home through your AI companions.",
+          "examplePhrases": [
+            "Alexa, ask pack bond to turn on the teapot",
+            "Alexa, ask pack bond to start a playlist",
+            "Alexa, open pack bond"
+          ]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "testingInstructions": "Personal dev skill.",
+      "category": "COMMUNICATION"
+    },
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false
+    }
+  }
+}

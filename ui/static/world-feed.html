@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>U.A. World Feed · Bakugou & Player</title>
+    <meta name="theme-color" content="#fff0f7">
+    <link rel="stylesheet" href="/static/css/main.css?v=__ANAM_ASSET_VERSION__">
+    <link rel="stylesheet" href="/static/css/world-feed.css?v=__ANAM_ASSET_VERSION__">
+    <style>
+        .wf-mobile-actions { display: flex; align-items: center; gap: 3px; }
+        .wf-mobile-action {
+            display: grid;
+            place-items: center;
+            gap: 1px;
+            width: auto;
+            min-width: 48px;
+            min-height: 42px;
+            border: 0;
+            border-radius: 13px;
+            padding: 4px 7px;
+            background: transparent;
+            color: var(--wf-accent-deep);
+            text-align: center;
+            cursor: pointer;
+        }
+        .wf-mobile-action:hover, .wf-mobile-action:focus-visible { background: var(--wf-panel-2); transform: none; }
+        .wf-mobile-action span { width: auto; color: inherit; font-size: 1rem; line-height: 1; }
+        .wf-mobile-action small { font-size: .63rem; font-weight: 700; line-height: 1; }
+        @media (max-width: 430px) {
+            .wf-mobile-bar { padding-inline: 8px; }
+            .wf-mobile-bar > .wf-wordmark { font-size: 1.35rem; }
+            .wf-mobile-action { min-width: 45px; padding-inline: 5px; }
+        }
+        @media (max-width: 360px) {
+            .wf-mobile-bar > .wf-wordmark { font-size: 1rem; }
+            .wf-mobile-action { min-width: 39px; padding-inline: 2px; }
+        }
+    </style>
+</head>
+<body class="world-feed-page">
+    <div class="wf-mobile-bar">
+        <button class="wf-icon-button" id="wf-mobile-menu" aria-label="Open navigation">☰</button>
+        <div class="wf-wordmark"><span>World</span> Feed</div>
+        <div class="wf-mobile-actions">
+            <button class="wf-nav-item wf-mobile-action" id="wf-mobile-dms" data-view="dms" aria-label="Open messages"><span aria-hidden="true">✉<b id="wf-dm-mobile-badge"></b></span><small>Messages</small></button>
+            <button class="wf-nav-item wf-mobile-action" id="wf-mobile-notifications" data-view="notifications" aria-label="Open notifications"><span aria-hidden="true">♢<b id="wf-notice-mobile-badge"></b></span><small>Alerts</small></button>
+            <button class="wf-nav-item wf-mobile-action" id="wf-mobile-profiles" data-view="profiles" aria-label="Open profiles"><span aria-hidden="true">◉</span><small>Profiles</small></button>
+            <button class="wf-mobile-action" id="wf-mobile-compose" aria-label="Create post"><span aria-hidden="true">✎</span><small>Post</small></button>
+        </div>
+    </div>
+
+    <div class="wf-overlay" id="wf-nav-overlay"></div>
+    <div class="wf-shell">
+        <aside class="wf-left" id="wf-left-nav">
+            <a href="https://example.com/mha/" class="wf-wordmark wf-desktop-wordmark" aria-label="Back to the MHA story hub"><span>World</span> Feed</a>
+            <label class="wf-world-picker">
+                <span>Current world</span>
+                <select id="wf-world-select" aria-label="Choose story world"></select>
+            </label>
+
+            <nav class="wf-nav" aria-label="World Feed navigation">
+                <button class="wf-nav-item active" data-view="home"><span>⌂</span> Home</button>
+                <button class="wf-nav-item" data-view="following"><span>♡</span> Following</button>
+                <button class="wf-nav-item" data-view="media"><span>▧</span> Media</button>
+                <button class="wf-nav-item" data-view="bookmarks"><span>⚑</span> Bookmarks</button>
+                <button class="wf-nav-item" data-view="search"><span>⌕</span> Search</button>
+                <button class="wf-nav-item" data-view="photos"><span>✧</span> Photo studio</button>
+                <button class="wf-nav-item" data-view="notifications"><span>♢</span> Notifications <b id="wf-notice-badge"></b></button>
+                <button class="wf-nav-item" data-view="dms"><span>✉</span> Messages <b id="wf-dm-badge"></b></button>
+                <button class="wf-nav-item" data-view="profiles"><span>◉</span> Profiles</button>
+                <button class="wf-nav-item" data-view="relationships"><span>∞</span> Relationships</button>
+                <button class="wf-nav-item" data-view="review"><span>✓</span> Canon review</button>
+            </nav>
+
+            <button class="wf-primary-button wf-compose-nav" id="wf-compose-nav">Post</button>
+            <div class="wf-left-footer">
+                <button class="wf-account-switcher" id="wf-account-switcher">
+                    <span class="wf-avatar wf-avatar-small" id="wf-active-avatar"></span>
+                    <span><strong id="wf-active-name">Choose your account</strong><small id="wf-active-handle">Create a user-controlled profile</small></span>
+                    <span>⌄</span>
+                </button>
+                <a href="https://example.com/mha/" class="wf-back-link">← Back to the MHA story hub</a>
+            </div>
+        </aside>
+
+        <main class="wf-main">
+            <header class="wf-feed-header">
+                <div>
+                    <h1 id="wf-view-title">Home</h1>
+                    <p id="wf-view-subtitle">The world continuing around the story.</p>
+                </div>
+                <button class="wf-icon-button" id="wf-refresh" title="Refresh feed" aria-label="Refresh feed">↻</button>
+            </header>
+
+            <section class="wf-clock-strip" id="wf-clock-strip">
+                <span class="wf-live-dot"></span>
+                <strong id="wf-clock-label">Story time</strong>
+                <span id="wf-world-description"></span>
+                <button id="wf-world-settings" aria-label="Edit world settings">Edit</button>
+            </section>
+
+            <section class="wf-composer" id="wf-composer">
+                <span class="wf-avatar" id="wf-composer-avatar"></span>
+                <div class="wf-composer-body">
+                    <label class="wf-post-as">Post as <select id="wf-post-as" aria-label="Post as"></select></label>
+                    <div class="wf-replying-to" id="wf-replying-to" hidden></div>
+                    <textarea id="wf-post-text" maxlength="4000" rows="2" placeholder="What’s happening in your world?"></textarea>
+                    <div class="wf-media-preview" id="wf-media-preview"></div>
+                    <div class="wf-composer-row">
+                        <div class="wf-composer-tools">
+                            <input type="file" id="wf-media-input" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
+                            <button id="wf-add-media" title="Add images" aria-label="Add images">▧</button>
+                            <button id="wf-insert-hashtag" title="Add hashtag" aria-label="Add hashtag">#</button>
+                            <label class="wf-canon-select">Canon
+                                <select id="wf-post-canon">
+                                    <option value="ambient">Ambient</option>
+                                    <option value="interaction">Interaction</option>
+                                    <option value="major">Major</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="wf-compose-submit">
+                            <span id="wf-char-count">0 / 4000</span>
+                            <button class="wf-primary-button" id="wf-submit-post">Post</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="wf-filter-bar" id="wf-filter-bar">
+                <button class="active" data-filter="all">All</button>
+                <button data-filter="ambient">Ambient</button>
+                <button data-filter="interaction">Interactions</button>
+                <button data-filter="major">Major</button>
+                <span id="wf-filter-context"></span>
+            </div>
+
+            <form id="wf-search-form" class="wf-search-form" hidden><label for="wf-search-input">Search this world</label><input id="wf-search-input" type="search" maxlength="200" placeholder="Posts, names, or @handles"><button class="wf-secondary-button">Search</button></form>
+            <button id="wf-new-posts" class="wf-new-posts" hidden>New posts · Show latest</button>
+            <section id="wf-content" aria-live="polite">
+                <div class="wf-loading">Loading the world…</div>
+            </section>
+        </main>
+
+        <aside class="wf-right">
+            <section class="wf-side-card">
+                <div class="wf-side-title"><h2>World controls</h2><button id="wf-new-profile">＋ Profile</button></div>
+                <p id="wf-pulse-status">Automatic world pulses stay asleep until the cast is authored.</p>
+                <button class="wf-secondary-button" id="wf-manage-relations">Describe relationships</button>
+            </section>
+
+            <section class="wf-side-card">
+                <div class="wf-side-title"><h2>Trends for you</h2></div>
+                <div id="wf-trends" class="wf-trends"><p class="wf-muted">Hashtags will gather here.</p></div>
+            </section>
+
+            <section class="wf-side-card">
+                <div class="wf-side-title"><h2>People in this world</h2><button id="wf-see-profiles">See all</button></div>
+                <div id="wf-profile-preview" class="wf-profile-preview"></div>
+            </section>
+
+            <footer class="wf-footer">Your private story playground · Anam<br>Nothing posts to the public internet.</footer>
+        </aside>
+    </div>
+
+    <div class="wf-modal-backdrop" id="wf-modal-backdrop" hidden>
+        <section class="wf-modal" id="wf-profile-modal" role="dialog" aria-modal="true" aria-labelledby="wf-profile-modal-title" hidden>
+            <header><h2 id="wf-profile-modal-title">Create profile</h2><button class="wf-modal-close" aria-label="Close">×</button></header>
+            <form id="wf-profile-form">
+                <input type="hidden" id="wf-profile-id">
+                <div class="wf-profile-art-editor">
+                    <div class="wf-header-preview" id="wf-header-preview"><button type="button" id="wf-upload-header">Choose header image</button></div>
+                    <div class="wf-avatar-preview" id="wf-avatar-preview"><button type="button" id="wf-upload-avatar">Choose icon</button></div>
+                    <input type="file" id="wf-avatar-input" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+                    <input type="file" id="wf-header-input" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+                    <input type="hidden" id="wf-avatar-url">
+                    <input type="hidden" id="wf-header-url">
+                </div>
+                <div class="wf-form-grid">
+                    <label>Display name<input id="wf-profile-name" maxlength="80" required></label>
+                    <label>Handle<div class="wf-handle-input"><span>@</span><input id="wf-profile-handle" maxlength="32" pattern="[A-Za-z0-9_]+" required></div></label>
+                    <label>Account type<select id="wf-profile-type">
+                        <option value="character">Character</option><option value="user">User</option>
+                        <option value="student">Student</option><option value="teacher">Teacher</option>
+                        <option value="hero">Hero</option><option value="villain">Villain</option>
+                        <option value="civilian">Civilian</option><option value="fan">Fan</option>
+                        <option value="news">News / paparazzi</option><option value="organization">Organization</option>
+                        <option value="anonymous">Anonymous / rando</option>
+                    </select></label>
+                    <label>Accent color<input id="wf-profile-color" type="color" value="#D9485F"></label>
+                    <label class="wf-span-2">Bio<textarea id="wf-profile-bio" maxlength="300" rows="3"></textarea></label>
+                    <label>Location<input id="wf-profile-location" maxlength="120"></label>
+                    <label>Website<input id="wf-profile-website" maxlength="300"></label>
+                    <label class="wf-span-2">How this person sounds and behaves<textarea id="wf-profile-style" rows="4" placeholder="Cadence, posting habits, humor, punctuation, what they would never say…"></textarea></label>
+                    <label class="wf-span-2">Private character notes<textarea id="wf-profile-notes" rows="5" placeholder="Your interpretation, current goals, secrets, boundaries, who-knows-what…"></textarea></label>
+                </div>
+                <div class="wf-check-row">
+                    <label><input type="checkbox" id="wf-profile-controlled"> I control this character; AI may never write them</label>
+                    <label><input type="checkbox" id="wf-profile-verified"> Verified account</label>
+                </div>
+                <div class="wf-modal-actions"><button type="button" class="wf-secondary-button wf-modal-close">Cancel</button><button class="wf-primary-button" type="submit">Save profile</button></div>
+            </form>
+        </section>
+
+        <section class="wf-modal" id="wf-relationship-modal" role="dialog" aria-modal="true" aria-labelledby="wf-relationship-title" hidden>
+            <header><h2 id="wf-relationship-title">Describe a relationship</h2><button class="wf-modal-close" aria-label="Close">×</button></header>
+            <form id="wf-relationship-form">
+                <div class="wf-form-grid">
+                    <label>From<select id="wf-rel-from" required></select></label>
+                    <label>To<select id="wf-rel-to" required></select></label>
+                    <label class="wf-span-2">Relationship<input id="wf-rel-type" placeholder="best friends, rivals, classmates, complicated…"></label>
+                    <label class="wf-span-2">What the public can see<textarea id="wf-rel-public" rows="3"></textarea></label>
+                    <label class="wf-span-2">What is actually true<textarea id="wf-rel-private" rows="6" placeholder="History, current emotional reality, limits, secrets, tension, things they know about each other…"></textarea></label>
+                </div>
+                <div class="wf-modal-actions"><button type="button" class="wf-secondary-button wf-modal-close">Cancel</button><button class="wf-primary-button" type="submit">Save relationship</button></div>
+            </form>
+        </section>
+
+        <section class="wf-modal wf-world-modal" id="wf-world-modal" role="dialog" aria-modal="true" aria-labelledby="wf-world-title" hidden>
+            <header><h2 id="wf-world-title">World settings</h2><button class="wf-modal-close" aria-label="Close">×</button></header>
+            <form id="wf-world-form">
+                <div class="wf-form-grid">
+                    <label class="wf-span-2">World name<input id="wf-world-name" required></label>
+                    <label class="wf-span-2">Description<textarea id="wf-world-description-input" rows="3"></textarea></label>
+                    <label>Fictional now<input id="wf-world-now" placeholder="Friday at lunch"></label>
+                    <label>Clock label<input id="wf-world-clock" placeholder="Story time · Friday lunch"></label>
+                </div>
+                <div class="wf-check-row"><label><input type="checkbox" id="wf-world-posting-enabled"> Character pulse generation enabled</label></div>
+                <p class="wf-muted">Replies to your posts and replies have their own allowance-free queue. They do not use this background limit.</p>
+                <label>Background activity attempts per day<input id="wf-activity-limit" type="number" min="1" max="48" value="12"></label>
+                <div class="wf-check-row"><label><input type="checkbox" id="wf-activity-publish"> Publish ordinary character posts and replies automatically</label></div>
+                <div class="wf-check-row"><label><input type="checkbox" id="wf-activity-scenes"> Let characters post about moments they witness in roleplay</label></div>
+                <p class="wf-modal-note">The scene observer runs after completed roleplay turns and shares the daily activity allowance. It can skip quiet moments; private scenes and unspoken thoughts stay private.</p>
+                <p class="wf-modal-note">Varied timing, no catch-up bursts. Major developments and generated photos always wait in Canon review. Turning automatic publication off sends all character activity to review.</p>
+                <p id="wf-activity-status" class="wf-modal-note"></p>
+                <div class="wf-modal-actions"><button type="button" class="wf-secondary-button wf-modal-close">Cancel</button><button class="wf-primary-button" type="submit">Save world</button></div>
+            </form>
+        </section>
+    </div>
+
+    <div class="wf-image-lightbox" id="wf-image-lightbox" hidden><button aria-label="Close image">×</button><img alt="Expanded post image"></div>
+    <div class="wf-toast-stack" id="wf-toast-stack" aria-live="polite"></div>
+
+    <script>
+        window.__ANAM_ASSET_VERSION__ = '__ANAM_ASSET_VERSION__';
+        window.__anamApiUrl = '##ANAM_API_URL##';
+        window.__anamCdnUrl = '##ANAM_CDN_URL##';
+    </script>
+    <script src="/static/js/utils.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/world-feed.js?v=__ANAM_ASSET_VERSION__&amp;surface=world-feed"></script>
+    <script src="/static/js/world-feed-social.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/world-feed-dms.js?v=__ANAM_ASSET_VERSION__"></script>
+</body>
+</html>

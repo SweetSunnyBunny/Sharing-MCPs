@@ -1,0 +1,632 @@
+import { serve } from '@hono/node-server';
+import { serveStatic } from '@hono/node-server/serve-static';
+import { Hono } from 'hono';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { networkInterfaces } from 'node:os';
+import { dirname, extname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { toFile } from 'openai';
+
+import { db, newId, type Folder, type Preset, type PresetType, type Task, type Variant } from './db.js';
+import { ASPECT_TO_SIZE, IMAGE_MODEL, openai, QUALITY_OPTIONS, TEXT_MODEL, type Quality } from './openai.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(__dirname, '..');
+const IMAGES_DIR = join(ROOT, 'data', 'images');
+const REFS_DIR = join(ROOT, 'data', 'refs');
+const PUBLIC_DIR = join(ROOT, 'public');
+
+mkdirSync(IMAGES_DIR, { recursive: true });
+mkdirSync(REFS_DIR, { recursive: true });
+
+const ALLOWED_UPLOAD_EXT = new Set(['.png', '.webp', '.jpg', '.jpeg']);
+const MAX_UPLOAD_BYTES = 24 * 1024 * 1024; // 24MB, slightly under OpenAI's 25MB limit
+
+const app = new Hono();
+
+// ---- Uploads (reference images) ----
+
+app.post('/api/upload', async (c) => {
+  let form: FormData;
+  try {
+    form = await c.req.formData();
+  } catch {
+    return c.json({ error: 'multipart body required' }, 400);
+  }
+  const file = form.get('file');
+  if (!file || typeof file === 'string') return c.json({ error: 'no file field' }, 400);
+
+  const raw = file as File;
+  const name = raw.name || 'upload.png';
+  const ext = extname(name).toLowerCase() || '.png';
+  if (!ALLOWED_UPLOAD_EXT.has(ext)) {
+    return c.json({ error: `unsupported file type: ${ext}` }, 400);
+  }
+  if (raw.size > MAX_UPLOAD_BYTES) {
+    return c.json({ error: `file too large (max ${Math.round(MAX_UPLOAD_BYTES / 1024 / 1024)}MB)` }, 400);
+  }
+
+  const buf = Buffer.from(await raw.arrayBuffer());
+  const id = newId('ref');
+  const rel = `${id}${ext}`;
+  writeFileSync(join(REFS_DIR, rel), buf);
+  return c.json({ path: rel, size: buf.length });
+});
+
+// ---- Presets ----
+
+app.get('/api/presets', (c) => {
+  const rows = db
+    .prepare('SELECT * FROM presets WHERE archived = 0 ORDER BY updated_at DESC')
+    .all() as Preset[];
+  return c.json(rows);
+});
+
+app.get('/api/presets/:id', (c) => {
+  const id = c.req.param('id');
+  const row = db.prepare('SELECT * FROM presets WHERE id = ?').get(id) as Preset | undefined;
+  if (!row) return c.json({ error: 'not found' }, 404);
+  return c.json(row);
+});
+
+// Create a brand-new preset (v1) or fork an existing one (v+1)
+app.post('/api/presets', async (c) => {
+  const body = (await c.req.json()) as {
+    name: string;
+    body: string;
+    type?: PresetType;
+    reference_image_path?: string | null;
+    fork_from?: string | null;
+  };
+  if (!body.name?.trim() || !body.body?.trim()) {
+    return c.json({ error: 'name and body required' }, 400);
+  }
+  const type: PresetType = body.type === 'style' ? 'style' : 'character';
+
+  const now = Date.now();
+  let version = 1;
+  let parent_id: string | null = null;
+
+  if (body.fork_from) {
+    const parent = db.prepare('SELECT * FROM presets WHERE id = ?').get(body.fork_from) as
+      | Preset
+      | undefined;
+    if (!parent) return c.json({ error: 'fork_from preset not found' }, 400);
+    const maxRow = db
+      .prepare('SELECT MAX(version) AS v FROM presets WHERE name = ?')
+      .get(parent.name) as { v: number | null };
+    version = (maxRow.v ?? parent.version) + 1;
+    parent_id = parent.id;
+  } else {
+    const existing = db
+      .prepare('SELECT MAX(version) AS v FROM presets WHERE name = ?')
+      .get(body.name) as { v: number | null };
+    if (existing.v) version = existing.v + 1;
+  }
+
+  const id = newId('pre');
+  db.prepare(
+    `INSERT INTO presets (id, name, version, parent_id, type, body, reference_image_path, use_count, created_at, updated_at, archived)
+     VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?, 0)`,
+  ).run(id, body.name, version, parent_id, type, body.body, body.reference_image_path ?? null, now, now);
+
+  const row = db.prepare('SELECT * FROM presets WHERE id = ?').get(id) as Preset;
+  return c.json(row);
+});
+
+app.patch('/api/presets/:id', async (c) => {
+  const id = c.req.param('id');
+  const body = (await c.req.json()) as {
+    name?: string;
+    body?: string;
+    type?: PresetType;
+    reference_image_path?: string | null;
+    archived?: boolean;
+  };
+  const existing = db.prepare('SELECT * FROM presets WHERE id = ?').get(id) as Preset | undefined;
+  if (!existing) return c.json({ error: 'not found' }, 404);
+
+  db.prepare(
+    `UPDATE presets SET
+       name = COALESCE(?, name),
+       body = COALESCE(?, body),
+       type = COALESCE(?, type),
+       reference_image_path = CASE WHEN ? = 1 THEN ? ELSE reference_image_path END,
+       archived = COALESCE(?, archived),
+       updated_at = ?
+     WHERE id = ?`,
+  ).run(
+    body.name ?? null,
+    body.body ?? null,
+    body.type ?? null,
+    body.reference_image_path !== undefined ? 1 : 0,
+    body.reference_image_path ?? null,
+    typeof body.archived === 'boolean' ? (body.archived ? 1 : 0) : null,
+    Date.now(),
+    id,
+  );
+
+  const row = db.prepare('SELECT * FROM presets WHERE id = ?').get(id) as Preset;
+  return c.json(row);
+});
+
+// ---- Folders ----
+
+app.get('/api/folders', (c) => {
+  const rows = db.prepare('SELECT * FROM folders ORDER BY name ASC').all() as Folder[];
+  return c.json(rows);
+});
+
+app.post('/api/folders', async (c) => {
+  const body = (await c.req.json()) as { name: string };
+  if (!body.name?.trim()) return c.json({ error: 'name required' }, 400);
+  const id = newId('fld');
+  const now = Date.now();
+  db.prepare('INSERT INTO folders (id, name, created_at) VALUES (?, ?, ?)').run(id, body.name, now);
+  const row = db.prepare('SELECT * FROM folders WHERE id = ?').get(id) as Folder;
+  return c.json(row);
+});
+
+// ---- Tasks (and variants) ----
+
+type PresetStackEntry = {
+  id: string;
+  name: string;
+  version: number;
+  type: PresetType;
+  reference_image_path: string | null;
+  position: number;
+};
+
+type TaskWithVariants = Task & {
+  variants: Variant[];
+  presets: PresetStackEntry[];
+};
+
+function presetsForTask(taskId: string): PresetStackEntry[] {
+  return db
+    .prepare(
+      `SELECT p.id, p.name, p.version, p.type, p.reference_image_path, r.position
+       FROM task_preset_refs r
+       JOIN presets p ON p.id = r.preset_id
+       WHERE r.task_id = ?
+       ORDER BY r.position ASC`,
+    )
+    .all(taskId) as PresetStackEntry[];
+}
+
+function taskWithVariants(taskId: string): TaskWithVariants | null {
+  const task = db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId) as Task | undefined;
+  if (!task) return null;
+  const variants = db
+    .prepare('SELECT * FROM variants WHERE task_id = ? ORDER BY idx ASC')
+    .all(taskId) as Variant[];
+  return { ...task, variants, presets: presetsForTask(taskId) };
+}
+
+app.get('/api/tasks', (c) => {
+  const view = c.req.query('view') ?? 'media'; // media | favorites | trash | folder
+  const folderId = c.req.query('folder_id') ?? null;
+
+  let where = '';
+  const args: unknown[] = [];
+  if (view === 'favorites') where = 'WHERE favorite = 1 AND trashed = 0';
+  else if (view === 'trash') where = 'WHERE trashed = 1';
+  else if (view === 'folder' && folderId) {
+    where = 'WHERE folder_id = ? AND trashed = 0';
+    args.push(folderId);
+  } else where = 'WHERE trashed = 0';
+
+  const tasks = db
+    .prepare(`SELECT * FROM tasks ${where} ORDER BY created_at DESC LIMIT 500`)
+    .all(...args) as Task[];
+
+  if (tasks.length === 0) return c.json([]);
+  const ids = tasks.map((t) => t.id);
+  const placeholders = ids.map(() => '?').join(',');
+
+  const variants = db
+    .prepare(`SELECT * FROM variants WHERE task_id IN (${placeholders}) ORDER BY idx ASC`)
+    .all(...ids) as Variant[];
+
+  const presetRows = db
+    .prepare(
+      `SELECT r.task_id, p.id, p.name, p.version, p.type, p.reference_image_path, r.position
+       FROM task_preset_refs r
+       JOIN presets p ON p.id = r.preset_id
+       WHERE r.task_id IN (${placeholders})
+       ORDER BY r.position ASC`,
+    )
+    .all(...ids) as Array<PresetStackEntry & { task_id: string }>;
+
+  const variantsByTask = new Map<string, Variant[]>();
+  for (const v of variants) {
+    const list = variantsByTask.get(v.task_id) ?? [];
+    list.push(v);
+    variantsByTask.set(v.task_id, list);
+  }
+
+  const presetsByTask = new Map<string, PresetStackEntry[]>();
+  for (const r of presetRows) {
+    const { task_id, ...entry } = r;
+    const list = presetsByTask.get(task_id) ?? [];
+    list.push(entry);
+    presetsByTask.set(task_id, list);
+  }
+
+  const out: TaskWithVariants[] = tasks.map((t) => ({
+    ...t,
+    variants: variantsByTask.get(t.id) ?? [],
+    presets: presetsByTask.get(t.id) ?? [],
+  }));
+  return c.json(out);
+});
+
+app.get('/api/tasks/:id', (c) => {
+  const task = taskWithVariants(c.req.param('id'));
+  if (!task) return c.json({ error: 'not found' }, 404);
+  return c.json(task);
+});
+
+app.patch('/api/tasks/:id', async (c) => {
+  const id = c.req.param('id');
+  const body = (await c.req.json()) as {
+    favorite?: boolean;
+    trashed?: boolean;
+    folder_id?: string | null;
+  };
+  const existing = db.prepare('SELECT * FROM tasks WHERE id = ?').get(id) as Task | undefined;
+  if (!existing) return c.json({ error: 'not found' }, 404);
+
+  db.prepare(
+    `UPDATE tasks SET
+       favorite = COALESCE(?, favorite),
+       trashed  = COALESCE(?, trashed),
+       folder_id = CASE WHEN ? = 1 THEN ? ELSE folder_id END
+     WHERE id = ?`,
+  ).run(
+    typeof body.favorite === 'boolean' ? (body.favorite ? 1 : 0) : null,
+    typeof body.trashed === 'boolean' ? (body.trashed ? 1 : 0) : null,
+    body.folder_id !== undefined ? 1 : 0,
+    body.folder_id ?? null,
+    id,
+  );
+
+  const row = taskWithVariants(id);
+  return c.json(row);
+});
+
+// ---- Generate ----
+
+app.post('/api/generate', async (c) => {
+  const body = (await c.req.json()) as {
+    prompt: string;
+    character_preset_ids?: string[];
+    style_preset_id?: string | null;
+    reference_image_path?: string | null;
+    aspect: string;
+    n: number;
+    quality: Quality;
+    folder_id?: string | null;
+  };
+
+  if (!body.prompt?.trim()) return c.json({ error: 'prompt required' }, 400);
+  const size = ASPECT_TO_SIZE[body.aspect];
+  if (!size) return c.json({ error: `unsupported aspect: ${body.aspect}` }, 400);
+  if (!QUALITY_OPTIONS.includes(body.quality)) return c.json({ error: 'bad quality' }, 400);
+  const n = Math.min(Math.max(1, body.n | 0), 4);
+
+  // Resolve character presets (ordered by their position in the incoming array)
+  const charIds = (body.character_preset_ids ?? []).filter(Boolean);
+  const characterPresets: Preset[] = [];
+  for (const id of charIds) {
+    const p = db.prepare('SELECT * FROM presets WHERE id = ?').get(id) as Preset | undefined;
+    if (!p) return c.json({ error: `character preset not found: ${id}` }, 400);
+    if (p.type !== 'character') return c.json({ error: `preset ${id} is not a character` }, 400);
+    characterPresets.push(p);
+  }
+
+  let stylePreset: Preset | null = null;
+  if (body.style_preset_id) {
+    stylePreset = db.prepare('SELECT * FROM presets WHERE id = ?').get(body.style_preset_id) as
+      | Preset
+      | null;
+    if (!stylePreset) return c.json({ error: 'style preset not found' }, 400);
+    if (stylePreset.type !== 'style') return c.json({ error: 'selected preset is not a style' }, 400);
+  }
+
+  // Compose prompt: char bodies → style body → user prompt (character first, user prompt last)
+  const segments: string[] = [
+    ...characterPresets.map((p) => p.body.trim()),
+    ...(stylePreset ? [stylePreset.body.trim()] : []),
+    body.prompt.trim(),
+  ].filter(Boolean);
+  const composedPrompt = segments.join('\n\n');
+
+  // Gather reference images from character presets + direct attach (style presets don't carry refs)
+  const referencePaths: string[] = [];
+  for (const p of characterPresets) {
+    if (p.reference_image_path) referencePaths.push(p.reference_image_path);
+  }
+  if (body.reference_image_path) referencePaths.push(body.reference_image_path);
+
+  const taskId = newId('gen');
+  const now = Date.now();
+
+  db.prepare(
+    `INSERT INTO tasks (id, kind, prompt, preset_id, aspect_ratio, variant_count, quality, reference_image_path, folder_id, status, created_at)
+     VALUES (?, 'image_generation', ?, NULL, ?, ?, ?, ?, ?, 'pending', ?)`,
+  ).run(
+    taskId,
+    body.prompt.trim(),
+    body.aspect,
+    n,
+    body.quality,
+    body.reference_image_path ?? null,
+    body.folder_id ?? null,
+    now,
+  );
+
+  // Write preset join rows (characters first, then style)
+  const insertRef = db.prepare(
+    `INSERT INTO task_preset_refs (task_id, preset_id, position) VALUES (?, ?, ?)`,
+  );
+  let pos = 0;
+  for (const p of characterPresets) insertRef.run(taskId, p.id, pos++);
+  if (stylePreset) insertRef.run(taskId, stylePreset.id, pos++);
+
+  const t0 = Date.now();
+  console.log(
+    `[generate] ${taskId} start model=${IMAGE_MODEL} size=${size} n=${n} q=${body.quality} refs=${referencePaths.length} promptLen=${composedPrompt.length}`,
+  );
+
+  try {
+    let result: any;
+    let rawResponse: Response | null = null;
+    if (referencePaths.length > 0) {
+      const uploads = await Promise.all(
+        referencePaths.map(async (rel) => {
+          const filename = rel.split(/[/\\]/).pop() ?? 'ref.png';
+          const ext = extname(filename).toLowerCase();
+          const type =
+            ext === '.jpg' || ext === '.jpeg'
+              ? 'image/jpeg'
+              : ext === '.webp'
+                ? 'image/webp'
+                : 'image/png';
+          return toFile(readFileSync(join(REFS_DIR, rel)), filename, { type });
+        }),
+      );
+      const wrapped = await openai.images
+        .edit({
+          model: IMAGE_MODEL,
+          image: uploads.length === 1 ? uploads[0] : (uploads as any),
+          prompt: composedPrompt,
+          size: size as any,
+          n,
+          quality: body.quality as any,
+        })
+        .withResponse();
+      result = wrapped.data;
+      rawResponse = wrapped.response;
+    } else {
+      const wrapped = await openai.images
+        .generate({
+          model: IMAGE_MODEL,
+          prompt: composedPrompt,
+          size: size as any,
+          n,
+          quality: body.quality as any,
+        })
+        .withResponse();
+      result = wrapped.data;
+      rawResponse = wrapped.response;
+    }
+
+    if (rawResponse) {
+      const h = rawResponse.headers;
+      const pick = (k: string) => h.get(k);
+      console.log(
+        `[generate] ${taskId} openai headers processing_ms=${pick('openai-processing-ms')} request_id=${pick('x-request-id')} rate_remaining_req=${pick('x-ratelimit-remaining-requests')} rate_remaining_tok=${pick('x-ratelimit-remaining-tokens')}`,
+      );
+    }
+
+    const images = result.data ?? [];
+    if (images.length === 0) throw new Error('No images returned');
+
+    const taskDir = join(IMAGES_DIR, taskId);
+    mkdirSync(taskDir, { recursive: true });
+
+    const [w, h] = size.split('x').map((x) => Number(x));
+    const insertVariant = db.prepare(
+      `INSERT INTO variants (id, task_id, idx, image_path, width, height, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    );
+
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+      let bytes: Buffer;
+      if (img.b64_json) {
+        bytes = Buffer.from(img.b64_json, 'base64');
+      } else if (img.url) {
+        const resp = await fetch(img.url);
+        bytes = Buffer.from(await resp.arrayBuffer());
+      } else {
+        throw new Error('Image response had no b64 or url');
+      }
+      const rel = `${taskId}/${i}.png`;
+      writeFileSync(join(IMAGES_DIR, rel), bytes);
+      insertVariant.run(newId('var'), taskId, i, rel, w, h, Date.now());
+    }
+
+    db.prepare(`UPDATE tasks SET status = 'succeeded' WHERE id = ?`).run(taskId);
+    for (const p of characterPresets) {
+      db.prepare('UPDATE presets SET use_count = use_count + 1 WHERE id = ?').run(p.id);
+    }
+    if (stylePreset) {
+      db.prepare('UPDATE presets SET use_count = use_count + 1 WHERE id = ?').run(stylePreset.id);
+    }
+    const elapsed = Date.now() - t0;
+    console.log(`[generate] ${taskId} done in ${elapsed}ms`);
+    return c.json(taskWithVariants(taskId));
+  } catch (err) {
+    const message = formatApiError(err);
+    db.prepare(`UPDATE tasks SET status = 'failed', error = ? WHERE id = ?`).run(message, taskId);
+    const elapsed = Date.now() - t0;
+    console.error(`[generate] ${taskId} FAILED after ${elapsed}ms:`, message);
+    return c.json({ error: message, task_id: taskId }, 500);
+  }
+});
+
+// ---- Workshop (prompt ideation) ----
+
+const FROM_IMAGE_SYSTEM = `You are a precise visual describer for an image-generation pipeline.
+Given an image, return ONE prompt (200-400 words) that would reproduce this image's essence if fed to an image generator like gpt-image-2.
+
+Include:
+- Subject (what/who, posture, expression, clothing)
+- Composition (shot angle, framing, focal point)
+- Lighting (source, direction, color temperature, mood)
+- Color palette (dominant hues, warmth, saturation)
+- Style/medium (photorealistic, painterly, illustration, film reference)
+- Atmosphere (time of day, weather, emotion)
+- Notable details that make it specific
+
+Don't include: image quality jargon ("4k", "hd", "trending on artstation"), author signatures, brand names, watermarks.
+Return just the prompt text. No preamble, no markdown headers.`;
+
+const BRAINSTORM_SYSTEM = `You are a creative prompt architect for an image-generation pipeline (gpt-image-2).
+The user has a vague idea or brain dump. Expand it into THREE specific, generator-ready prompts — each taking a distinct interpretive angle on their thought. Not variations: three genuinely different reads.
+
+Each prompt should be 120-220 words and cover: subject, composition, lighting, palette, style, mood. Ground it in concrete visual detail, not abstraction.
+
+Return a JSON object of this exact shape (no markdown, no preamble):
+{
+  "options": [
+    { "title": "short evocative title", "prompt": "full prompt text" },
+    { "title": "...", "prompt": "..." },
+    { "title": "...", "prompt": "..." }
+  ]
+}`;
+
+app.post('/api/workshop/from-image', async (c) => {
+  let form: FormData;
+  try {
+    form = await c.req.formData();
+  } catch {
+    return c.json({ error: 'multipart body required' }, 400);
+  }
+  const file = form.get('file');
+  if (!file || typeof file === 'string') return c.json({ error: 'no file field' }, 400);
+
+  const raw = file as File;
+  const buf = Buffer.from(await raw.arrayBuffer());
+  if (buf.length > MAX_UPLOAD_BYTES) return c.json({ error: 'file too large' }, 400);
+  const mime = raw.type || 'image/png';
+  const dataUrl = `data:${mime};base64,${buf.toString('base64')}`;
+
+  try {
+    const resp = await openai.chat.completions.create({
+      model: TEXT_MODEL,
+      messages: [
+        { role: 'system', content: FROM_IMAGE_SYSTEM },
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: 'Describe this image as a generation-ready prompt.' },
+            { type: 'image_url', image_url: { url: dataUrl } },
+          ],
+        },
+      ],
+    });
+    const text = resp.choices?.[0]?.message?.content ?? '';
+    return c.json({ prompt: text.trim() });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('[workshop/from-image]', err);
+    return c.json({ error: message }, 500);
+  }
+});
+
+app.post('/api/workshop/brainstorm', async (c) => {
+  const body = (await c.req.json()) as { dump: string };
+  if (!body.dump?.trim()) return c.json({ error: 'dump required' }, 400);
+
+  try {
+    const resp = await openai.chat.completions.create({
+      model: TEXT_MODEL,
+      messages: [
+        { role: 'system', content: BRAINSTORM_SYSTEM },
+        { role: 'user', content: body.dump.trim() },
+      ],
+      response_format: { type: 'json_object' },
+    });
+    const text = resp.choices?.[0]?.message?.content ?? '{}';
+    let parsed: any;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      parsed = {};
+    }
+    const options = Array.isArray(parsed)
+      ? parsed
+      : parsed.options || parsed.prompts || parsed.results || [];
+    return c.json({ options });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('[workshop/brainstorm]', err);
+    return c.json({ error: message }, 500);
+  }
+});
+
+// ---- Static: images + frontend ----
+
+app.use('/images/*', serveStatic({ root: './data' })); // maps /images/foo to ./data/images/foo
+app.use('/refs/*', serveStatic({ root: './data' })); // maps /refs/foo to ./data/refs/foo
+app.use('/*', serveStatic({ root: './public' }));
+app.get('/', serveStatic({ path: './public/index.html' }));
+
+const port = Number(process.env.PORT ?? 5178);
+const host = process.env.HOST?.trim() || undefined;
+
+function formatApiError(err: unknown) {
+  const message = err instanceof Error ? err.message : String(err);
+  const status = typeof err === 'object' && err && 'status' in err ? Number((err as any).status) : null;
+
+  if (status === 401 && /deactivated/i.test(message)) {
+    return 'OpenAI rejected the currently loaded API key as belonging to a deactivated account. If you already replaced the key in .env, restart the easel process or tunnel target so it reloads the new key.';
+  }
+
+  if (status === 401) {
+    return 'OpenAI rejected the currently loaded API key. Check OPENAI_API_KEY in .env and restart the easel process so it reloads the current key.';
+  }
+
+  if (status === 403 && /verified organisation|verified organization|organization/i.test(message)) {
+    return 'This image model requires a verified OpenAI organisation. Set EASEL_IMAGE_MODEL=gpt-image-1.5 in .env or use an account with org verification.';
+  }
+
+  return message;
+}
+
+function getLanUrls(port: number) {
+  const urls = new Set<string>();
+  const nets = networkInterfaces();
+  for (const addrs of Object.values(nets)) {
+    for (const addr of addrs ?? []) {
+      if (addr.family !== 'IPv4' || addr.internal) continue;
+      urls.add(`http://${addr.address}:${port}`);
+    }
+  }
+  return [...urls];
+}
+
+serve({ fetch: app.fetch, port, hostname: host }, (info) => {
+  const localHost = host && host !== '0.0.0.0' ? host : 'localhost';
+  const lanUrls = getLanUrls(info.port);
+  console.log(`\n  easel ready`);
+  console.log(`  → local: http://${localHost}:${info.port}`);
+  for (const url of lanUrls) {
+    console.log(`  → LAN:   ${url}`);
+  }
+  console.log('');
+});

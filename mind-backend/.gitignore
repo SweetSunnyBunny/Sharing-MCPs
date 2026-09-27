@@ -1,0 +1,15 @@
+# Secrets — never commit
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# Local mind backups (large; pulled from cloud on demand)
+backups/
+
+# Wrangler local state (local D1, dev cache)
+.wrangler/
+
+# Node / Python
+node_modules/
+__pycache__/
+*.pyc

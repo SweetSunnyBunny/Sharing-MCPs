@@ -1,0 +1,978 @@
+/* Settings — Orchestrator, System, MCP panels */
+/* ANAM GUIDE: SETTINGS HUB STYLES
+   What: the looks for the Settings Hub — tabs, panels, schedule cards, toggles, modals, the usage meter, and the appearance vibe-preset swatches.
+   Used by: settings.html, and diagnostics.html borrows it as its base styling too.
+   Edit here when: restyling anything on the Settings page — sections are labeled with ── banner comments (Tabs, Toggle switch, Modal, Mobile, Usage panel, Appearance presets). */
+
+/* Override body overflow:hidden from main.css — settings page needs to scroll */
+body.settings-page {
+    overflow: auto;
+    overflow-x: hidden;
+    height: auto;
+}
+
+.threshold-input.field-invalid {
+    border-color: var(--error);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--error) 18%, transparent);
+}
+
+.provider-field-error {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px 8px;
+    margin-top: 8px;
+    padding: 10px 12px;
+    color: var(--error);
+    background: color-mix(in srgb, var(--error) 10%, var(--bg-card));
+    border: 1px solid color-mix(in srgb, var(--error) 45%, transparent);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.provider-field-error[hidden] {
+    display: none;
+}
+
+.provider-model-suggestion {
+    min-height: 44px;
+    margin-left: auto;
+    padding: 8px 12px;
+    color: var(--error);
+    background: var(--surface-paper, var(--bg-card));
+    border: 1px solid currentColor;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.provider-model-suggestion:hover {
+    background: color-mix(in srgb, var(--error) 8%, var(--surface-paper, var(--bg-card)));
+}
+
+.provider-model-suggestion:focus-visible {
+    outline: 2px solid var(--error);
+    outline-offset: 2px;
+}
+
+.settings-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 16px;
+    padding-bottom: 60px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Header ── */
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+}
+
+.settings-back {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    transition: color 0.2s;
+}
+
+.settings-back:hover {
+    color: var(--text-primary);
+}
+
+.settings-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* ── Tabs ── */
+
+.settings-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 0;
+    border-bottom: 2px solid var(--border-soft);
+    margin-bottom: 16px;
+}
+
+.settings-tab {
+    background: rgba(var(--sheen-rgb), 0.24);
+    border: 1px solid transparent;
+    padding: 9px 16px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.2s;
+    touch-action: manipulation;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.settings-tab.active {
+    color: var(--text-primary);
+    background:
+        linear-gradient(180deg, rgba(var(--sheen-rgb), 0.82), rgba(var(--identity-accent-rgb), 0.10)),
+        var(--bg-card);
+    border: 1px solid rgba(var(--identity-accent-rgb), 0.28);
+    margin-bottom: 0;
+    box-shadow: 0 10px 18px rgba(var(--identity-accent-rgb), 0.10);
+}
+
+/* ── Panels ── */
+
+.settings-panel {
+    display: none;
+}
+
+.settings-panel.active {
+    display: block;
+}
+
+/* ── Sections ── */
+
+.settings-section {
+    background:
+        linear-gradient(180deg, rgba(var(--sheen-rgb), 0.58), rgba(var(--identity-accent-rgb), 0.05)),
+        var(--bg-card);
+    border-radius: 24px;
+    border: 1px solid var(--border-strong);
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: background var(--transition-theme),
+                border-color var(--transition-theme);
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+}
+
+.settings-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, transparent 0, transparent 13px, rgba(var(--sheen-rgb), 0.09) 13px, rgba(var(--sheen-rgb), 0.09) 14px, transparent 14px),
+        linear-gradient(0deg, transparent 0, transparent 13px, rgba(var(--sheen-rgb), 0.07) 13px, rgba(var(--sheen-rgb), 0.07) 14px, transparent 14px);
+    background-size: 28px 28px;
+    opacity: 0.26;
+}
+
+.scribe-settings-card {
+    border-color: rgba(var(--accent-weave-rgb), 0.44);
+    background:
+        radial-gradient(circle at 92% 12%, rgba(var(--sheen-rgb), 0.88) 0 4px, transparent 5px),
+        linear-gradient(135deg, rgba(var(--card-base-rgb), 0.96), rgba(var(--accent-weave-rgb), 0.30)),
+        var(--bg-card);
+}
+
+body.night-mode .scribe-settings-card {
+    background: linear-gradient(135deg, rgba(91, 56, 72, 0.82), rgba(68, 45, 59, 0.9));
+    border-color: rgba(228, 153, 188, 0.26);
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    color: var(--text-primary);
+    margin: 0 0 4px;
+}
+
+.section-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+    font-style: italic;
+}
+
+/* ── Schedule cards ── */
+
+.schedule-group-title {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin: 16px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+}
+
+.schedule-group-title:first-child {
+    margin-top: 0;
+}
+
+.schedule-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background:
+        linear-gradient(180deg, rgba(var(--sheen-rgb), 0.44), rgba(var(--identity-accent-rgb), 0.04)),
+        var(--card-flat-bg, rgba(0, 0, 0, 0.03));
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    margin-bottom: 8px;
+    transition: opacity 0.2s, background var(--transition-theme);
+    box-shadow: inset 0 1px 0 rgba(var(--sheen-rgb), 0.46);
+}
+
+/* Conversation/background model split — two pink fabric cards make the
+   routing visible at a glance without flattening the boys' identity colors. */
+.model-lanes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.model-lane {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--lane-border, rgba(196, 122, 138, 0.26));
+    border-radius: 18px;
+    background:
+        linear-gradient(90deg, rgba(var(--accent-weave-rgb), 0.12) 50%, transparent 50%) 0 0 / 20px 20px,
+        linear-gradient(0deg, rgba(var(--accent-weave-rgb), 0.10) 50%, transparent 50%) 0 0 / 20px 20px,
+        linear-gradient(145deg, var(--lane-bg-top, rgba(255, 252, 253, 0.92)), var(--lane-bg-bottom, rgba(250, 220, 228, 0.62)));
+    box-shadow:
+        0 12px 26px rgba(151, 70, 98, 0.10),
+        inset 0 1px 0 rgba(var(--sheen-rgb), 0.82);
+}
+
+.model-lane-autowake {
+    background:
+        radial-gradient(circle at 88% 14%, rgba(var(--sheen-rgb), 0.72) 0 3px, transparent 4px),
+        linear-gradient(90deg, rgba(var(--accent-weave-rgb), 0.10) 50%, transparent 50%) 0 0 / 20px 20px,
+        linear-gradient(0deg, rgba(var(--accent-weave-rgb), 0.08) 50%, transparent 50%) 0 0 / 20px 20px,
+        linear-gradient(145deg, var(--lane-bg-top, rgba(255, 250, 252, 0.94)), var(--lane-bg-bottom, rgba(245, 218, 235, 0.62)));
+}
+
+.model-lane-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.model-lane-title {
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.model-lane-note {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+.threshold-input.model-lane-select {
+    width: 100%;
+    min-height: 44px;
+    font-size: 0.9rem;
+    border-color: var(--lane-border, rgba(196, 122, 138, 0.42));
+    background: rgba(var(--sheen-rgb), 0.88);
+    cursor: pointer;
+}
+
+.model-lane-select:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+}
+
+body.night-mode .model-lane,
+body.night-mode .model-lane-autowake {
+    border-color: rgba(214, 155, 177, 0.24);
+    background:
+        linear-gradient(145deg, rgba(92, 58, 70, 0.72), rgba(68, 46, 60, 0.78));
+}
+
+body.night-mode .model-lane-select {
+    background: rgba(61, 46, 38, 0.9);
+}
+
+body.night-mode .schedule-card {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.schedule-card.disabled {
+    opacity: var(--disabled-opacity, 0.45);
+}
+
+.schedule-card-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+}
+
+.schedule-time {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+    min-width: 48px;
+    font-family: var(--font-body);
+}
+
+.schedule-info {
+    min-width: 0;
+}
+
+.schedule-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.schedule-meta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.schedule-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.schedule-edit-btn,
+.schedule-delete-btn {
+    background: none;
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    font-family: var(--font-body);
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    touch-action: manipulation;
+}
+
+.schedule-edit-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+
+.schedule-delete-btn:hover {
+    border-color: var(--error);
+    color: var(--error);
+}
+
+/* ── Toggle switch ── */
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+}
+
+.toggle-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--text-muted);
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+
+.toggle-slider::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.2s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: var(--house-accent, #C47A8A);
+}
+
+.toggle-switch input:checked + .toggle-slider::after {
+    transform: translateX(18px);
+}
+
+/* ── Failsafe thresholds ── */
+
+.failsafe-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.threshold-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.threshold-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 90px;
+}
+
+.threshold-input {
+    width: 80px;
+    padding: 6px 10px;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    transition: border-color 0.2s;
+}
+
+.threshold-input:focus {
+    border-color: var(--house-accent, #C47A8A);
+    outline: none;
+}
+
+.threshold-unit {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ── Buttons ── */
+
+.action-btn {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--identity-accent) 86%, white 14%), var(--identity-accent));
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 20px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+    box-shadow:
+        0 12px 22px rgba(var(--identity-accent-rgb), 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 24px rgba(var(--identity-accent-rgb), 0.22);
+}
+
+.action-btn.secondary {
+    background: rgba(var(--sheen-rgb), 0.28);
+    color: var(--text-secondary);
+    border: 1px solid rgba(var(--identity-accent-rgb), 0.18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.action-btn.secondary:hover {
+    border-color: var(--text-secondary);
+    box-shadow: none;
+}
+
+.modal-error {
+    min-height: 1.2em;
+    color: var(--error);
+    font-size: 0.8rem;
+    line-height: 1.35;
+}
+
+.action-btn:disabled {
+    cursor: wait;
+    opacity: 0.62;
+    transform: none;
+}
+
+
+
+.mcp-session-line {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 2px 6px;
+    align-items: baseline;
+}
+
+.mcp-chip {
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.mcp-chip.ok {
+    color: var(--success);
+}
+
+.mcp-chip.bad {
+    color: var(--error);
+    font-weight: 600;
+}
+
+.mcp-chip-sep {
+    color: var(--text-muted);
+}
+
+/* ── System info ── */
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.info-value {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    text-align: right;
+    word-break: break-word;
+}
+
+/* ── Scheduler status ── */
+
+.status-indicator {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.status-indicator.running {
+    background: color-mix(in srgb, var(--success) 15%, transparent);
+    color: var(--success);
+}
+
+.status-indicator.stopped {
+    background: color-mix(in srgb, var(--error) 15%, transparent);
+    color: var(--error);
+}
+
+.status-job {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.8rem;
+}
+
+.job-name {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.job-next {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+/* ── Modal ── */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-card {
+    background: var(--bg-card, #fffaf5);
+    border: 2px solid var(--border-soft);
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+body.night-mode .modal-card {
+    background: var(--bg-card);
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin: 0 0 16px;
+}
+
+.modal-field {
+    margin-bottom: 12px;
+}
+
+.modal-field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.modal-field input,
+.modal-field select,
+.modal-field textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+    background: var(--bg-input, #fff);
+    color: var(--text-primary);
+    box-sizing: border-box;
+}
+
+.modal-field textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.45;
+}
+
+.modal-field input:focus,
+.modal-field select:focus,
+.modal-field textarea:focus {
+    border-color: var(--house-accent, #C47A8A);
+    outline: none;
+}
+
+.modal-row {
+    display: flex;
+    gap: 12px;
+}
+
+.modal-row .modal-field {
+    flex: 1;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+/* ── Wellness form ── */
+
+.wellness-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.wellness-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.wellness-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.wellness-field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.wellness-field select,
+.wellness-field input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+    background: var(--bg-input, #fff);
+    color: var(--text-primary);
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.wellness-field select:focus,
+.wellness-field input:focus,
+.wellness-field textarea:focus {
+    border-color: var(--house-accent, #C47A8A);
+    outline: none;
+}
+
+.wellness-field textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+    background: var(--bg-input, #fff);
+    color: var(--text-primary);
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 60px;
+    transition: border-color 0.2s;
+}
+
+/* ── Mobile ── */
+
+@media screen and (max-width: 480px) {
+    .settings-container {
+        padding: 10px;
+    }
+
+    .settings-section {
+        padding: 14px;
+    }
+
+    .settings-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .model-lanes {
+        grid-template-columns: 1fr;
+    }
+
+    .schedule-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .schedule-card-actions {
+        align-self: flex-end;
+    }
+
+    .schedule-edit-btn,
+    .schedule-delete-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+
+    .wellness-form {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Usage panel (System tab) — token meter, tucked away like Claude's own ── */
+.usage-today {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 10px 0 14px;
+}
+
+.usage-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(var(--accent-weave-rgb), 0.14);
+    border: 1px solid rgba(var(--accent-weave-rgb), 0.38);
+    border-radius: 14px;
+    padding: 10px 16px;
+    min-width: 84px;
+}
+
+.usage-stat-num {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--house-accent, #C47A8A);
+    font-variant-numeric: tabular-nums;
+}
+
+.usage-stat-label {
+    font-size: 0.66rem;
+    color: var(--text-muted, #9c8a8f);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 3px;
+}
+
+.usage-idents {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 8px 0 12px;
+}
+
+.usage-ident-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    background: var(--card-flat-bg, rgba(0, 0, 0, 0.03));
+    border-radius: 10px;
+}
+
+.usage-ident-name {
+    font-weight: 700;
+}
+
+.usage-ident-model {
+    font-size: 0.72rem;
+    color: var(--text-muted, #9c8a8f);
+}
+
+.usage-ident-tokens {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+body.night-mode .usage-ident-row {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+body.night-mode .usage-stat {
+    background: rgba(var(--accent-weave-rgb), 0.08);
+    border-color: rgba(var(--accent-weave-rgb), 0.22);
+}
+
+/* ── Appearance vibe presets (#31) ── */
+
+.theme-preset-swatches {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.theme-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    font-family: var(--font-body);
+}
+
+.theme-swatch-dot {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--user-border, #C47A8A);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(var(--sheen-rgb), 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-swatch-icon {
+    display: inline-flex;
+    width: 22px;
+    height: 22px;
+    opacity: 0.85;
+    filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.35));
+}
+
+.theme-swatch-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+
+.theme-swatch-dot {
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-swatch-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+.theme-swatch:hover .theme-swatch-dot {
+    transform: scale(1.08);
+}
+
+.theme-swatch.active .theme-swatch-dot {
+    /* --house-accent, not --identity-accent: the settings page has no active
+       boy, so --identity-accent is undefined here and the fallback pink never
+       followed the theme. House accent ships with every preset. */
+    outline: 3px solid var(--house-accent, #C47A8A);
+    outline-offset: 2px;
+}
+
+.theme-swatch-label {
+    font-size: 0.7rem;
+    color: var(--text-muted, #9c8a8f);
+    text-align: center;
+    max-width: 64px;
+}
+
+.theme-swatch.active .theme-swatch-label {
+    color: var(--house-accent, #C47A8A);
+    font-weight: 600;
+}

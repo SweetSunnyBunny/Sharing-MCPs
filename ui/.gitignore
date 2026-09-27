@@ -1,0 +1,61 @@
+# Secrets
+.env
+.env.*
+!.env.example
+!.env.paths.example
+!**/.env.example
+!**/.env.paths.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+pytest-cache-files-*/
+.pycache_tmp/
+.pycache_tmp_compile/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code / dev tools
+.claude/
+.codex-skill-staging/
+.playwright-mcp/
+.wrangler/
+.zvec-grep/
+
+# Build output
+dist/
+
+# Runtime data
+cache/
+data/
+*.log
+nul
+.tmp*
+
+# Superseded working copies belong outside the checkout.
+*.bak*
+*.prepatch*
+*.pre-*
+*.orig*
+*~
+archive/
+programs/archive/
+programs/_archive/
+prompts/_archive/
+
+# Android companion app — machine-local secrets and build output
+wearable/**/local.properties
+wearable/**/build/
+wearable/**/.gradle/
+
+# Prebuilt sherpa-onnx AAR (48MB) — fetch per BUILD_INSTRUCTIONS.md
+wearable/AnamCompanion/app/libs/*.aar

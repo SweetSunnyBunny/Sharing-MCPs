@@ -8,3 +8,8 @@ memory.db-wal
 *.log
 images/
 obsidian-vault/
+
+# Optional imported records and generated caches remain local.
+data/
+imports/
+*_cache.json

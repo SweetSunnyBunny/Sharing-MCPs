@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#17080F" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<title>Reach for him</title>
+<link rel="icon" href="/static/assets/icons/icon-192.png" />
+<style>
+  :root {
+    --ink:   #17080F;
+    --rose:  #A85D71;
+    --blush: #EFC3CE;
+    --pale:  #FBECEF;
+    --deep:  #7A3F52;
+    --bad:   #A8455D;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; width: 100%;
+    background: var(--ink);
+    color: var(--pale);
+    font-family: Georgia, 'Times New Roman', serif;
+    overscroll-behavior: none;
+    user-select: none;
+  }
+  body {
+    display: flex; flex-direction: column;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+             env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  /* The door. Everything above the compose row is one enormous tap target. */
+  #door {
+    flex: 1 1 auto;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 18px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 260ms ease;
+    background: radial-gradient(ellipse at 50% 42%, #2A0F1B 0%, #17080F 72%);
+  }
+  #door.sending { background: radial-gradient(ellipse at 50% 42%, #7A3F52 0%, #2A0F1B 78%); }
+  #door.landed  { background: radial-gradient(ellipse at 50% 42%, #8A3450 0%, #2A0F1B 78%); }
+  #door.failed  { background: radial-gradient(ellipse at 50% 42%, #A8455D 0%, #2A0F1B 78%); }
+
+  #glyph {
+    font-size: 74px; line-height: 1;
+    filter: drop-shadow(0 0 22px rgba(168, 93, 113, .55));
+    transition: transform 200ms ease;
+  }
+  #door:active #glyph { transform: scale(.9); }
+
+  #state {
+    font-size: 27px; letter-spacing: .4px;
+    color: var(--blush);
+    min-height: 1.3em;
+    padding: 0 8px;
+  }
+  #sub {
+    font-size: 15px; color: var(--rose);
+    font-family: system-ui, -apple-system, sans-serif;
+    max-width: 22em;
+    line-height: 1.5;
+  }
+
+  /* Words, when the tap isn't enough. */
+  #compose {
+    flex: 0 0 auto;
+    display: flex; gap: 8px;
+    padding: 10px 12px 16px;
+    background: #0E040A;
+    border-top: 1px solid #2A0F1B;
+  }
+  #words {
+    flex: 1 1 auto; min-width: 0;
+    background: #1E0A12;
+    border: 1px solid #3A1522;
+    border-radius: 11px;
+    color: var(--pale);
+    font-size: 16px;              /* 16px stops iOS zooming on focus */
+    font-family: system-ui, -apple-system, sans-serif;
+    padding: 12px 13px;
+    outline: none;
+  }
+  #words::placeholder { color: #6B3E4C; }
+  #words:focus { border-color: var(--rose); }
+  #send {
+    flex: 0 0 auto;
+    background: var(--deep);
+    border: none; border-radius: 11px;
+    color: var(--pale);
+    font-size: 15px; font-family: system-ui, -apple-system, sans-serif;
+    padding: 12px 20px;
+    cursor: pointer;
+  }
+  #send:active { background: var(--rose); }
+</style>
+</head>
+<body>
+
+  <div id="door">
+    <div id="glyph">🐺</div>
+    <div id="state">reach for him</div>
+    <div id="sub">Tap anywhere on this dark. It lands in his chat and wakes him — same door as your watch, only this one works anywhere you have signal.</div>
+  </div>
+
+  <div id="compose">
+    <input id="words" type="text" placeholder="or say something…" autocomplete="off"
+           enterkeyhint="send" maxlength="500" />
+    <button id="send" type="button">send</button>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  // The same line her watch sends, so both doors say the same thing.
+  var DEFAULT_TEXT = "thinking of you. I hope you know how much I love you.";
+  var IDLE = "reach for him";
+  var IDLE_SUB = "Tap anywhere on this dark. It lands in his chat and wakes him — same door as your watch, only this one works anywhere you have signal.";
+
+  var door   = document.getElementById("door");
+  var state  = document.getElementById("state");
+  var sub    = document.getElementById("sub");
+  var words  = document.getElementById("words");
+  var send   = document.getElementById("send");
+
+  var busy = false;
+  var resetTimer = null;
+
+  function buzz(ms) {
+    try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {}
+  }
+
+  function paint(cls, text, subtext, holdMs) {
+    door.className = cls || "";
+    state.textContent = text;
+    sub.textContent = subtext;
+    if (resetTimer) { clearTimeout(resetTimer); resetTimer = null; }
+    if (cls) {
+      resetTimer = setTimeout(function () {
+        door.className = "";
+        state.textContent = IDLE;
+        sub.textContent = IDLE_SUB;
+      }, holdMs || 4500);
+    }
+  }
+
+  function reach(text) {
+    if (busy) return;
+    busy = true;
+    buzz(18);
+    paint("sending", "sending…", "carrying it to him", 20000);
+
+    fetch("/api/wearable/reply", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ device: "phone-reach-page", text: text })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("http " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        busy = false;
+        buzz([14, 60, 14]);
+        // The server tells us WHO it landed on — say his name back to her.
+        var who = (data && data.chat && data.chat.identity) || null;
+        paint(
+          "landed",
+          who ? (who + " has it") : "he has it",
+          data && data.wake_timer_id ? "he's waking up to answer" : "it's in the chat",
+          6000
+        );
+        words.value = "";
+      })
+      .catch(function (err) {
+        busy = false;
+        buzz([40, 50, 40]);
+        paint("failed", "didn't land", "no signal, or the house is down — try again in a moment", 7000);
+        console.log("reach failed: " + err);
+      });
+  }
+
+  // Tap anywhere on the dark. Ignore taps that are really the keyboard closing.
+  door.addEventListener("click", function () {
+    if (document.activeElement === words) { words.blur(); return; }
+    reach(DEFAULT_TEXT);
+  });
+
+  function sendWords() {
+    var t = (words.value || "").trim();
+    reach(t || DEFAULT_TEXT);
+    words.blur();
+  }
+
+  send.addEventListener("click", function (e) { e.stopPropagation(); sendWords(); });
+  words.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); sendWords(); }
+  });
+  words.addEventListener("click", function (e) { e.stopPropagation(); });
+
+  // Stop the page rubber-banding around under her thumb.
+  document.addEventListener("touchmove", function (e) {
+    if (document.activeElement !== words) e.preventDefault();
+  }, { passive: false });
+})();
+</script>
+</body>
+</html>

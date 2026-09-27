@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Room</title>
+<!-- ANAM GUIDE: GAME ROOM PAGE STRUCTURE
+     What: The game room page (dominoes with the boys).
+     Behavior: static/js/gameroom.js. Looks: static/css/gameroom.css. Backend: api/games.py + services/dominoes.py.
+     Edit here when: Changing the game room's visible layout. -->
+
+    <link rel="manifest" href="/static/manifest.json?v=__ANAM_ASSET_VERSION__">
+    <link rel="apple-touch-icon" href="/static/assets/icons/app_icon.png?v=__ANAM_ASSET_VERSION__">
+    <meta name="theme-color" content="#f5a6b9">
+
+    <link rel="stylesheet" href="/static/css/main.css?v=__ANAM_ASSET_VERSION__">
+    <link rel="stylesheet" href="/static/css/gameroom.css?v=__ANAM_ASSET_VERSION__">
+</head>
+<body class="hub-page">
+    <div id="fairy-lights" class="fairy-lights"></div>
+
+    <div class="gameroom-container">
+        <header class="hub-header">
+            <a href="/" class="hub-back">&larr; Chat</a>
+            <h1 class="hub-title">Game Room</h1>
+            <button id="night-toggle" class="hub-night-btn" title="Toggle candlelight mode" aria-label="Toggle candlelight mode"></button>
+        </header>
+
+        <!-- ═══ LOBBY VIEW ═══ -->
+        <div id="lobby-view" class="view-panel">
+            <section class="hub-section">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2727;</span> New Dominoes Game</h2>
+                </div>
+
+                <!-- Opponent picker -->
+                <p class="lobby-label">Who's playing?</p>
+                <div id="opponent-grid" class="opponent-grid">
+                    <!-- Filled by JS -->
+                </div>
+
+                <!-- Options row -->
+                <div class="lobby-options">
+                    <div class="option-group">
+                        <label class="lobby-label">Mode</label>
+                        <div class="pill-group" id="mode-pills">
+                            <button class="pill active" data-value="block">Block</button>
+                            <button class="pill" data-value="all_fives">All Fives</button>
+                        </div>
+                    </div>
+                    <div class="option-group">
+                        <label class="lobby-label">Tile Set</label>
+                        <div class="pill-group" id="tileset-pills">
+                            <button class="pill active" data-value="9">Double-9</button>
+                            <button class="pill" data-value="6">Double-6</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="start-game-btn" class="start-btn" disabled>Start Game</button>
+            </section>
+
+            <!-- Active games -->
+            <section class="hub-section" id="active-games-section" style="display:none">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2727;</span> Active Games</h2>
+                </div>
+                <div id="active-games-list" class="active-games-list"></div>
+            </section>
+        </div>
+
+        <!-- ═══ GAME VIEW ═══ -->
+        <div id="game-view" class="view-panel" style="display:none">
+            <!-- Score bar -->
+            <div id="score-bar" class="score-bar"></div>
+
+            <!-- Opponent hands -->
+            <div id="opponent-hands" class="opponent-hands"></div>
+
+            <!-- Game board -->
+            <div id="game-board-wrapper" class="game-board-wrapper">
+                <div id="game-board" class="game-board"></div>
+                <div id="board-info" class="board-info">
+                    <span id="end-sum-display" class="end-sum"></span>
+                    <span id="boneyard-count" class="boneyard-count"></span>
+                </div>
+            </div>
+
+            <!-- Player hand -->
+            <div class="player-section">
+                <div class="player-hand-label">Your Hand</div>
+                <div id="player-hand" class="player-hand"></div>
+                <div id="action-buttons" class="action-buttons">
+                    <button id="draw-btn" class="action-btn draw-btn" style="display:none">Draw</button>
+                    <button id="pass-btn" class="action-btn pass-btn" style="display:none">Pass</button>
+                </div>
+            </div>
+
+            <!-- End placement chooser -->
+            <div id="end-chooser" class="end-chooser" style="display:none">
+                <p class="chooser-label">Place on which end?</p>
+                <div id="end-options" class="end-options"></div>
+                <button id="cancel-placement" class="action-btn cancel-btn">Cancel</button>
+            </div>
+
+            <!-- Game log -->
+            <details id="game-log-details" class="game-log-details">
+                <summary class="game-log-summary">Game Log</summary>
+                <div id="game-log" class="game-log"></div>
+            </details>
+
+            <!-- Round / game over overlay -->
+            <div id="round-overlay" class="round-overlay" style="display:none">
+                <div class="round-overlay-card">
+                    <h2 id="overlay-title" class="overlay-title"></h2>
+                    <div id="overlay-scores" class="overlay-scores"></div>
+                    <div id="overlay-actions" class="overlay-actions"></div>
+                </div>
+            </div>
+
+            <!-- Back to lobby -->
+            <button id="back-to-lobby" class="back-btn">&larr; Lobby</button>
+        </div>
+    </div>
+
+    <script>
+        window.__ANAM_ASSET_VERSION__ = '__ANAM_ASSET_VERSION__';
+        window.__anamCdnUrl = '##ANAM_CDN_URL##';
+        window.__anamApiUrl = '##ANAM_API_URL##';
+        window.__ANAM_PUBLIC_BASE_URL__ = (() => {
+            try { return JSON.parse('__ANAM_PUBLIC_BASE_URL__'); }
+            catch (_err) { return ''; }
+        })();
+    </script>
+    <script src="/static/js/theme-boot.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/utils.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/gameroom.js?v=__ANAM_ASSET_VERSION__"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "pack audio",
+      "intents": [
+        {
+          "name": "PlayVoiceIntent",
+          "slots": [],
+          "samples": [
+            "surprise me",
+            "check the queue",
+            "play the queue",
+            "play a message",
+            "any messages",
+            "what's waiting",
+            "whats waiting",
+            "what's on your mind",
+            "whats on your mind",
+            "speak freely",
+            "speak your mind",
+            "talk to me",
+            "play it",
+            "play"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.PauseIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ResumeIntent",
+          "samples": []
+        }
+      ]
+    }
+  }
+}

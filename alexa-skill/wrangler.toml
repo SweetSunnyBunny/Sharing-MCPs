@@ -1,0 +1,7 @@
+name = "alexa-skill"
+main = "src/index.ts"
+compatibility_date = "2025-02-14"
+
+[vars]
+ANAM_URL = "https://anam.example.com"
+IDENTITY = "Avery"

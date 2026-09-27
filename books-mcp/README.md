@@ -1,159 +1,79 @@
-# Books MCP Server
+# Books MCP
 
-Read EPUB books with Claude! Track your progress, add bookmarks and notes, and pick up right where you left off.
+Read unencrypted EPUB books chapter by chapter, search text, and save reading notes and bookmarks locally. No account or API key is needed.
 
-This MCP (Model Context Protocol) server gives Claude the ability to:
+## 1. Prepare the folder and Python
 
-- Read EPUB books chapter by chapter
-- Track reading progress across sessions
-- Bookmark chapters and add reading notes
-- Search within books for specific passages
-- Break chapters into sections for discussion
+These steps use Windows PowerShell and **Python 3.11 (64-bit)**. Install it from [python.org](https://www.python.org/downloads/), including the Python launcher, if needed. Reopen PowerShell after installation.
 
-## Why This is Awesome
+Extract the collection to `C:\MCP-Starter\Sharing-MCPs`, so this README is inside `C:\MCP-Starter\Sharing-MCPs\books-mcp`. If you chose another location, replace that path in every command and JSON example below. Do not run inside the ZIP.
 
-Ever wanted to read a book *with* Claude? Now you can! Drop EPUBs into the library folder, and Claude can read them, discuss them, and remember where you left off. Works from your phone too with a Cloudflare Tunnel.
-
-**Use cases:**
-- Read books together and discuss as you go
-- Have Claude summarize or analyze chapters
-- Search for quotes and passages
-- Keep reading notes and bookmarks
-
----
-
-## Quick Start
-
-### 1. Install Dependencies
-
-```bash
-pip install -r requirements.txt
+```powershell
+Set-Location "C:\MCP-Starter\Sharing-MCPs\books-mcp"
+py -3.11 --version
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### 2. Add Books
+`.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
 
-Drop your `.epub` files into the `library/` folder (created automatically on first run).
+## 2. Add a book
 
-### 3. Run Locally (stdio, for Claude Code)
-
-```bash
-python run_server.py
+```powershell
+New-Item -ItemType Directory -Force .\library
 ```
 
-### 4. Run as HTTP Server (for remote access)
+Copy an EPUB you have permission to read into `library`. Use a real `.epub` file, not a renamed PDF or a DRM-protected store download. An empty library is valid; it simply returns no books. Bookmarks, notes and progress are created beside the server and should remain private.
 
-```bash
-python run_server.py --transport streamable-http --port 8770
+## 3. Check startup
+
+```powershell
+.\.venv\Scripts\python.exe .\run_server.py
 ```
 
-The server runs on `http://localhost:8770/mcp`
+This is a **stdio** server: a client talks through the process's input/output, not a web page. A banner followed by silence, or silence alone, is normal while it waits. A Python traceback is an error. Press **Ctrl+C** after this check, then connect your client below.
 
----
+## 4. Connect your AI client and check it works
 
-## Cloudflare Tunnel Setup (~$5/year)
-
-This is how you make your MCP accessible from anywhere. Cloudflare Tunnels are free - you just need a domain (~$5-10/year).
-
-### What You'll Get
-- Read books on your computer from your phone
-- Secure HTTPS connection
-- No port forwarding needed
-- Works even behind firewalls
-
-### Step 1: Get a Domain
-
-1. Go to https://www.cloudflare.com/products/registrar/
-2. Search for a cheap domain (.uk, .xyz, .site are often ~$5)
-3. Buy it through Cloudflare (no markup, includes free DNS)
-
-Or use any domain you already own and point its nameservers to Cloudflare.
-
-### Step 2: Install Cloudflared
-
-**Windows:**
-1. Download from https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/
-2. Extract to a folder like `C:\Program Files\cloudflared\`
-3. Add to PATH or use full path
-
-**Mac:**
-```bash
-brew install cloudflared
-```
-
-**Linux:**
-```bash
-# Debian/Ubuntu
-curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-sudo dpkg -i cloudflared.deb
-```
-
-### Step 3: Login, Create Tunnel, Configure
-
-```bash
-cloudflared tunnel login
-cloudflared tunnel create my-mcp-tunnel
-```
-
-Create `~/.cloudflared/config.yml`:
-
-```yaml
-tunnel: YOUR-TUNNEL-ID-HERE
-credentials-file: /path/to/.cloudflared/YOUR-TUNNEL-ID.json
-
-ingress:
-  - hostname: books.yourdomain.com
-    service: http://localhost:8770
-  - service: http_status:404
-```
-
-### Step 4: Route DNS and Run
-
-```bash
-cloudflared tunnel route dns my-mcp-tunnel books.yourdomain.com
-```
-
-**Terminal 1 - Start the MCP server:**
-```bash
-python run_server.py --transport streamable-http --port 8770
-```
-
-**Terminal 2 - Start the tunnel:**
-```bash
-cloudflared tunnel run my-mcp-tunnel
-```
-
-Your MCP is now available at `https://books.yourdomain.com/mcp`!
-
----
-
-## Connecting to Claude
-
-### Claude Code (CLI) - Local (stdio)
+Claude Desktop: **Settings → Developer → Edit Config**. [Client connection guide](https://modelcontextprotocol.io/docs/develop/connect-local-servers). Other clients use their own local MCP settings; this example uses `mcpServers` JSON.
 
 ```json
 {
   "mcpServers": {
-    "books": {
-      "command": "python",
-      "args": ["path/to/books-mcp/run_server.py"]
+    "books-mcp": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/books-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/books-mcp/run_server.py"
+      ]
     }
   }
 }
 ```
 
-### Claude Code (CLI) - Remote (via tunnel)
+If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
 
-```json
-{
-  "mcpServers": {
-    "books": {
-      "url": "https://books.yourdomain.com/mcp"
-    }
-  }
-}
+Ask the client to call `list_books`. Your EPUB should appear. Next call `get_book_info` with the returned book ID, then `read_chapter` for chapter 1.
+
+## If something goes wrong
+
+- **`py` is not recognized:** install Python with its launcher, then reopen PowerShell. If only `python` works, verify `python --version` and use it for the `-m venv` command.
+- **`No module named ...`:** repeat the requirements command using `.\.venv\Scripts\python.exe`; the client's `command` must point to that same environment.
+- **Server missing in the client:** check absolute paths and JSON punctuation, then restart the client. Claude Desktop logs are under `%APPDATA%\Claude\logs`.
+- **A quiet terminal:** this is expected for stdio; use the client tool check above. Ctrl+C stops a manual test.
+- **Book absent:** confirm it is directly inside this package's `library` directory and has an `.epub` extension.
+- **Unreadable chapters:** try a small unencrypted EPUB first; DRM-protected or unusually structured books may not parse.
+- **Progress does not save:** use a writable folder rather than Program Files.
+
+## Optional local HTTP mode
+
+For a client supporting Streamable HTTP, leave this terminal running and use URL `http://127.0.0.1:8770/mcp`:
+
+```powershell
+.\.venv\Scripts\python.exe .\run_server.py --transport streamable-http --host 127.0.0.1 --port 8770
 ```
 
----
+A browser is not an MCP client; a plain browser request may return an error even when the server works.
 
 ## Available Tools
 
@@ -181,28 +101,3 @@ Reading progress, bookmarks, and notes are stored as JSON files alongside the se
 These persist across sessions so you always pick up where you left off.
 
 ---
-
-## Security Notes
-
-- This server reads EPUB files from the `library/` directory only
-- No file write access outside of the JSON data files
-- If exposing remotely, use a Cloudflare Tunnel for encryption
-
----
-
-## Troubleshooting
-
-### "Book not found"
-Make sure the `.epub` file is in the `library/` folder. The server searches by filename or auto-generated ID.
-
-### Chapter content looks garbled
-Some EPUBs use unusual HTML structures. The server strips HTML to plain text, which works well for most books but may lose some formatting.
-
-### Progress not saving
-Check that the server has write permissions in its own directory for the JSON files.
-
----
-
-## License
-
-MIT - Do whatever you want with it!

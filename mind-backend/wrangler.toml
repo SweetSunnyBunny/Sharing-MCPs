@@ -1,0 +1,21 @@
+name = "qualia-backend"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "qualia"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[[vectorize]]
+binding = "VECTORS"
+index_name = "qualia-vectors"
+
+[ai]
+binding = "AI"
+
+[triggers]
+crons = ["*/30 * * * *"]
+
+# Optional LIMBIC service binding can be added after deploying your own limbic Worker.

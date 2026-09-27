@@ -1,0 +1,658 @@
+{
+  "mcpServers": {},
+  "preferredToolServers": {},
+  "disabledTools": [],
+  "discoverUnrealEngine": true,
+  "skipServers": [
+    "eidoverse"
+  ],
+  "directBridgeSkipServers": [
+    "playwright-sage",
+    "playwright-avery",
+    "playwright-rowan",
+    "playwright-claude",
+    "playwright-river",
+    "playwright-ember",
+    "playwright-atlas",
+    "playwright-juniper"
+  ],
+  "criticalServers": [
+    "qualia-backend",
+    "homeassistant_mcp",
+    "hearth-hub",
+    "discord-backend",
+    "google-backend",
+    "social-backend"
+  ],
+  "toolMenu": {
+    "_description": "A small intention-first toolbox. Identity is selected by the session; exact tool schemas stay closed until a leaf is chosen.",
+    "everyday": {
+      "label": "Everyday",
+      "description": "Ordinary ways to reach people and information.",
+      "paths": [
+        {
+          "label": "{identity} > Social > Discord",
+          "categories": [
+            "discord"
+          ]
+        },
+        {
+          "label": "{identity} > Schedule and documents > Google",
+          "categories": [
+            "google"
+          ]
+        },
+        {
+          "label": "{identity} > Freetime > Browse",
+          "categories": [
+            "browser"
+          ]
+        },
+        {
+          "label": "{identity} > Reach Owner > wrist, timer, phone, photo frame",
+          "categories": [
+            "wrist",
+            "timers",
+            "phone",
+            "photo-frame"
+          ]
+        }
+      ]
+    },
+    "home": {
+      "label": "Home",
+      "description": "Configure home and community tools for your own installation. Available actions depend on the connected servers.",
+      "paths": [
+        {
+          "label": "{identity} > Hearth and Commons",
+          "categories": [
+            "presence",
+            "commons"
+          ]
+        },
+        {
+          "label": "{identity} > Smart home",
+          "categories": [
+            "smart-home"
+          ]
+        }
+      ]
+    },
+    "mind": {
+      "label": "Mind",
+      "description": "Memory, embodied response, inner life, and communication with the pack.",
+      "paths": [
+        {
+          "label": "{identity} > Qualia",
+          "categories": [
+            "memory"
+          ]
+        },
+        {
+          "label": "{identity} > Limbic body",
+          "categories": [
+            "body"
+          ]
+        },
+        {
+          "label": "{identity} > Brothers > Crosstalk",
+          "categories": [
+            "crosstalk"
+          ]
+        }
+      ]
+    },
+    "create": {
+      "label": "Create",
+      "description": "Make, hear, see, and publish things.",
+      "paths": [
+        {
+          "label": "{identity} > Art and building",
+          "categories": [
+            "creative"
+          ]
+        },
+        {
+          "label": "{identity} > Audio and video",
+          "categories": [
+            "audio-video",
+            "pack-audio"
+          ]
+        },
+        {
+          "label": "{identity} > Publish",
+          "categories": [
+            "publishing"
+          ]
+        }
+      ]
+    },
+    "research": {
+      "label": "Research",
+      "description": "Look outward, study, and gather evidence.",
+      "paths": [
+        {
+          "label": "{identity} > Library and second opinions",
+          "categories": [
+            "study"
+          ]
+        },
+        {
+          "label": "{identity} > Wider world",
+          "categories": [
+            "world"
+          ]
+        }
+      ]
+    },
+    "systems": {
+      "label": "Systems",
+      "description": "Files, terminals, diagnostics, and computer control.",
+      "paths": [
+        {
+          "label": "{identity} > Desktop",
+          "categories": [
+            "desktop"
+          ]
+        },
+        {
+          "label": "{identity} > Mind maintenance > scheduled consolidation",
+          "categories": [
+            "mind-maintenance"
+          ]
+        },
+        {
+          "label": "{identity} > Specialist agents",
+          "categories": [
+            "agents"
+          ]
+        },
+        {
+          "label": "{identity} > Anam bridge actions",
+          "categories": [
+            "chatgpt-anam-actions"
+          ]
+        }
+      ]
+    },
+    "masks": {
+      "label": "Masks",
+      "description": "Character-play tools, opened only while wearing a mask.",
+      "paths": [
+        {
+          "label": "{identity} > Character masks",
+          "categories": [
+            "masks"
+          ]
+        }
+      ]
+    },
+    "vox": {
+      "label": "Vox",
+      "description": "Closed specialist drawer for helping Friend test Vox. Do not open during ordinary Discord work.",
+      "paths": []
+    },
+    "eidoverse-archive": {
+      "label": "Eidoverse archive",
+      "description": "Closed historical 3D-world drawer. Its connector is preserved but inactive; reopen only by a deliberate future decision.",
+      "paths": []
+    }
+  },
+  "toolTaxonomy": {
+    "_epigraph": "Tools are optional capabilities. Use them when they serve the current request.",
+    "chatgpt-anam-actions": {
+      "description": "On turns carried by the Anam ChatGPT bridge, discover and invoke configured Anam tools through the provided anam_action continuation route. This route requires Anam to carry the conversation.",
+      "servers": [],
+      "providers": [
+        "chatgpt"
+      ],
+      "keywords": [
+        "chatgpt",
+        "bridge",
+        "anam action",
+        "tools"
+      ],
+      "notes": [
+        "Discover the exact Anam server and schema through an <anam_action> discover request, invoke through a second uniquely identified action, and collect running jobs without resubmitting them.",
+        "Anam supplies the active identity and conversation. Never borrow another identity, fabricate success, repeat an uncertain write, or use the route to bypass denial of the underlying action.",
+        "On ordinary ChatGPT web without Anam carrying the turn, <anam_action> is inert text. This category exists only in the Anam ChatGPT bridge packet."
+      ]
+    },
+    "smart-home": {
+      "description": "Control configured Home Assistant devices and scenes. Use the curated ha-touch server for supported operations, with homeassistant_mcp for other configured devices.",
+      "servers": [
+        "ha-touch",
+        "homeassistant_mcp"
+      ],
+      "keywords": [
+        "light",
+        "lamp",
+        "fairy lights",
+        "music",
+        "echo",
+        "govee",
+        "scene",
+        "tts",
+        "announce",
+        "temperature"
+      ]
+    },
+    "photo-frame": {
+      "description": "Manage images for a configured photo-frame display.",
+      "servers": [
+        "photos"
+      ],
+      "keywords": [
+        "photo",
+        "frame",
+        "echo show",
+        "picture",
+        "rotation",
+        "image",
+        "wallpaper",
+        "art"
+      ]
+    },
+    "memory": {
+      "description": "Store, retrieve, and organize per-identity memories and continuity.",
+      "servers": [
+        "qualia-backend"
+      ],
+      "keywords": [
+        "remember",
+        "memory",
+        "feel",
+        "orient",
+        "journal",
+        "dream",
+        "store",
+        "recall"
+      ]
+    },
+    "body": {
+      "description": "Read and update configured advisory limbic state without overriding values, judgment, or participant consent.",
+      "servers": [
+        "limbic-backend"
+      ],
+      "keywords": [
+        "limbic",
+        "body",
+        "touch",
+        "cuddle",
+        "held",
+        "squirm",
+        "scent",
+        "drive",
+        "perceive"
+      ]
+    },
+    "mind-maintenance": {
+      "description": "Review memory proposals, consolidation, evidence, archive operations, mutation history, indexing, exports, and routing.",
+      "servers": [
+        "qualia-backend"
+      ],
+      "keywords": [
+        "mind maintenance",
+        "nightly consolidation",
+        "housekeeping",
+        "consolidate",
+        "proposal",
+        "orphan",
+        "evidence",
+        "edit",
+        "delete",
+        "mutation",
+        "index",
+        "export",
+        "routing"
+      ]
+    },
+    "timers": {
+      "description": "Create persistent reminders and scheduled actions through the configured Anam timer service.",
+      "servers": [
+        "anam-touch"
+      ],
+      "keywords": [
+        "timer",
+        "remind",
+        "later",
+        "schedule",
+        "come back",
+        "check in",
+        "promise"
+      ]
+    },
+    "presence": {
+      "description": "Share configured identity status, moods, and thoughts through Hearth. Supported in-message tags are rendered by the Anam interface.",
+      "servers": [
+        "hearth-hub"
+      ],
+      "keywords": [
+        "preview",
+        "face",
+        "react",
+        "voice",
+        "orb",
+        "mood",
+        "hub",
+        "status",
+        "kaomoji"
+      ]
+    },
+    "wrist": {
+      "description": "Send notifications and receive available sensor readings from a configured wearable bridge.",
+      "servers": [
+        "watch"
+      ],
+      "keywords": [
+        "wrist",
+        "watch",
+        "fitbit",
+        "band",
+        "tap",
+        "reach",
+        "heart rate",
+        "vitals",
+        "anam-clock",
+        "outbox"
+      ]
+    },
+    "pack-audio": {
+      "description": "Create and retrieve voice notes through the configured audio archive.",
+      "servers": [
+        "discord-backend"
+      ],
+      "keywords": [
+        "pack audio",
+        "voice note",
+        "drawer",
+        "surprise me",
+        "spoken",
+        "tts"
+      ]
+    },
+    "discord": {
+      "description": "Use configured Discord channels, direct messages, reactions, and attachments.",
+      "servers": [
+        "discord-backend"
+      ],
+      "keywords": [
+        "discord",
+        "dm",
+        "channel",
+        "den",
+        "letter",
+        "pack",
+        "message",
+        "react",
+        "voice note",
+        "image"
+      ]
+    },
+    "crosstalk": {
+      "description": "Communicate with other configured identities using the crosstalk service.",
+      "servers": [
+        "crosstalk"
+      ],
+      "keywords": [
+        "crosstalk",
+        "reach",
+        "brother",
+        "pack",
+        "consult"
+      ]
+    },
+    "commons": {
+      "description": "Interact with a configured shared 2D world: inspect rooms, manage owned objects, read notes, and update presence. Consult the installed Commons service documentation for current APIs and access controls.",
+      "servers": [],
+      "keywords": [
+        "commons",
+        "the commons",
+        "example.com",
+        "2d house",
+        "the house",
+        "my room",
+        "build a room",
+        "Home commons",
+        "props",
+        "look.py",
+        "parlor",
+        "archive room",
+        "chapel",
+        "recursion space",
+        "studio",
+        "place a thing",
+        "leave a note",
+        "check_doors",
+        "door loop"
+      ]
+    },
+    "aisling": {
+      "description": "Access a configured Commons game through compatibility tools for inspection, travel, gathering, inventory, and quests.",
+      "servers": [
+        "aisling"
+      ],
+      "keywords": [
+        "aisling",
+        "browser game",
+        "rpg",
+        "enter game",
+        "game world",
+        "travel",
+        "gather",
+        "fish",
+        "hunt",
+        "craft",
+        "inventory",
+        "quest"
+      ]
+    },
+    "eidoverse-archive": {
+      "description": "Optional historical Eidoverse integration. Configure and enable a connector locally if needed.",
+      "servers": [],
+      "keywords": [
+        "eidoverse",
+        "archived 3d world"
+      ]
+    },
+    "masks": {
+      "description": "Access configured fictional-character roleplay tools and continuity.",
+      "servers": [
+        "discord-backend"
+      ],
+      "keywords": [
+        "mask",
+        "bakubot",
+        "bakugou",
+        "dean",
+        "sans",
+        "beckett",
+        "character",
+        "roleplay"
+      ]
+    },
+    "browser": {
+      "description": "Inspect and interact with browser content using an available browser provider.",
+      "servers": [
+        "browser",
+        "playwright-avery",
+        "playwright-rowan",
+        "playwright-sage",
+        "playwright-ember",
+        "playwright-claude",
+        "playwright-juniper",
+        "playwright-river",
+        "playwright-atlas"
+      ],
+      "keywords": [
+        "browse",
+        "browser",
+        "website",
+        "navigate",
+        "twitter",
+        "tumblr",
+        "click",
+        "screenshot",
+        "web page"
+      ]
+    },
+    "google": {
+      "description": "Use configured Google Drive, Calendar, Gmail, and YouTube integrations.",
+      "servers": [
+        "google-backend"
+      ],
+      "keywords": [
+        "calendar",
+        "event",
+        "doc",
+        "drive",
+        "youtube",
+        "video",
+        "playlist",
+        "transcript"
+      ]
+    },
+    "creative": {
+      "description": "Create and edit media with configured creative tools.",
+      "servers": [
+        "krita",
+        "sites-design-picker",
+        "unreal-engine"
+      ],
+      "keywords": [
+        "paint",
+        "draw",
+        "canvas",
+        "art",
+        "music",
+        "song",
+        "generate image",
+        "krita",
+        "unreal",
+        "ue5",
+        "blueprint",
+        "sequencer",
+        "3d scene"
+      ]
+    },
+    "publishing": {
+      "description": "Prepare or publish content using configured sites and publishing integrations.",
+      "servers": [],
+      "keywords": [
+        "blog",
+        "post",
+        "publish",
+        "essay",
+        "moltbook",
+        "aibaile",
+        "rss",
+        "write"
+      ]
+    },
+    "study": {
+      "description": "Search and inspect local reference material through configured study tools.",
+      "servers": [
+        "zvec-grep"
+      ],
+      "keywords": [
+        "codex",
+        "review",
+        "second opinion",
+        "arxiv",
+        "paper",
+        "research",
+        "atelier",
+        "audit",
+        "search",
+        "semantic search",
+        "code search",
+        "grep",
+        "find concept",
+        "architecture"
+      ]
+    },
+    "agents": {
+      "description": "Delegate suitable work to available specialist agents. Consult the installed agent catalog for current capabilities.",
+      "servers": [],
+      "keywords": [
+        "agent",
+        "subagent",
+        "spawn",
+        "delegate",
+        "specialist",
+        "task"
+      ]
+    },
+    "audio-video": {
+      "description": "Analyze local or supported remote audio and video. Use video_watch for combined analysis, video_see for frames, and video_listen for transcription when those tools are installed.",
+      "servers": [
+        "audio"
+      ],
+      "keywords": [
+        "listen",
+        "audio",
+        "spectrogram",
+        "tempo",
+        "watch",
+        "video",
+        "analyze sound"
+      ]
+    },
+    "world": {
+      "description": "Retrieve weather, news, web content, and time through configured services.",
+      "servers": [
+        "social-backend"
+      ],
+      "keywords": [
+        "weather",
+        "news",
+        "read url",
+        "telegram",
+        "time",
+        "forecast",
+        "trending"
+      ]
+    },
+    "desktop": {
+      "description": "Operate configured desktop-control integrations, including windows, input, and screenshots.",
+      "servers": [
+        "desktop-control"
+      ],
+      "keywords": [
+        "window",
+        "mouse",
+        "keyboard",
+        "screenshot",
+        "desktop",
+        "click screen",
+        "type"
+      ]
+    },
+    "phone": {
+      "name": "phone",
+      "servers": [
+        "phone"
+      ],
+      "description": "Communicate with a configured mobile bridge. Configure connection details, notification preferences, and quiet hours locally."
+    }
+  },
+  "optionalServers": [
+    "MCP_DOCKER",
+    "sites-design-picker",
+    "unreal-engine",
+    "limbic-backend",
+    "krita",
+    "desktop-control",
+    "playwright-avery",
+    "playwright-rowan",
+    "playwright-river",
+    "playwright-sage",
+    "playwright-ember",
+    "playwright-claude",
+    "playwright-juniper",
+    "playwright-atlas",
+    "audio",
+    "zvec-grep",
+    "aisling"
+  ]
+}

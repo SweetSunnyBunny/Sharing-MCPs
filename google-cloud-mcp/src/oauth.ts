@@ -10,7 +10,10 @@ export interface Env {
   MCP_SECRET_PATH: string;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
-  GOOGLE_TOKENS: string; // JSON keyed by user-defined identity labels.
+  GOOGLE_TOKENS: string; // JSON: { "claude": { "refresh_token": "...", "scopes": [...] }, ... }
+  /** Optional separate OAuth client for Google Health authorization. */
+  GOOGLE_HEALTH_CLIENT_ID?: string;
+  GOOGLE_HEALTH_CLIENT_SECRET?: string;
   ALLOWED_TOOLS?: string;
 }
 
@@ -36,6 +39,7 @@ interface GoogleTokenResponse {
   scope?: string;
   refresh_token?: string;
 }
+
 
 export function validateIdentity(env: Env, identity: string): string {
   const normalized = identity.toLowerCase().trim();
@@ -97,9 +101,14 @@ export async function getAccessToken(env: Env, identity: string, service = "goog
   // Refresh the token
   const refreshToken = cached?.refresh_token || getRefreshToken(env, identity, service);
 
+  // Per-service OAuth client: health was consented through its own client id.
+  const useHealthClient = service === "health" && !!env.GOOGLE_HEALTH_CLIENT_ID;
+  const clientId = useHealthClient ? env.GOOGLE_HEALTH_CLIENT_ID! : env.GOOGLE_CLIENT_ID;
+  const clientSecret = useHealthClient ? env.GOOGLE_HEALTH_CLIENT_SECRET! : env.GOOGLE_CLIENT_SECRET;
+
   const body = new URLSearchParams({
-    client_id: env.GOOGLE_CLIENT_ID,
-    client_secret: env.GOOGLE_CLIENT_SECRET,
+    client_id: clientId,
+    client_secret: clientSecret,
     refresh_token: refreshToken,
     grant_type: "refresh_token",
   });

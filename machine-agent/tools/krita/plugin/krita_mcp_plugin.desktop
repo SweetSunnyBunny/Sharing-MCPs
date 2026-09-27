@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=Krita/PythonPlugin
+X-KDE-Library=krita_mcp_plugin
+X-Python-2-Compatible=false
+X-Krita-Manual=Manual.html
+Name=Krita MCP Plugin
+Comment=Allows Claude to control Krita through MCP

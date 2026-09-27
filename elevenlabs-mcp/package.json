@@ -1,0 +1,14 @@
+{
+  "name": "elevenlabs-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "wrangler": "^3.90.0",
+    "@cloudflare/workers-types": "^4.20250214.0"
+  }
+}

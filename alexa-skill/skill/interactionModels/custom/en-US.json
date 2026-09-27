@@ -1,0 +1,50 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "pack bond",
+      "intents": [
+        {
+          "name": "CatchAllIntent",
+          "slots": [
+            {
+              "name": "query",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "say {query}",
+            "ask {query}",
+            "tell me {query}",
+            "I want to know {query}",
+            "can you {query}",
+            "please {query}",
+            "hey {query}",
+            "what about {query}",
+            "how about {query}",
+            "do you {query}",
+            "I need {query}",
+            "help me with {query}",
+            "what do you think about {query}",
+            "talk to me about {query}"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        }
+      ]
+    }
+  }
+}

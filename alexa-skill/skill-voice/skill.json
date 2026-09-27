@@ -1,0 +1,42 @@
+{
+  "manifest": {
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev",
+          "sslCertificateType": "Wildcard"
+        },
+        "interfaces": [
+          {
+            "type": "AUDIO_PLAYER"
+          }
+        ]
+      }
+    },
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "Pack Audio",
+          "summary": "Play voice messages from the pack.",
+          "description": "Plays ElevenLabs voice audio through your Echo device.",
+          "examplePhrases": [
+            "Alexa, open pack audio",
+            "Alexa, ask pack audio to say hello",
+            "Alexa, ask pack audio to say good morning"
+          ]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "testingInstructions": "Personal dev skill.",
+      "category": "COMMUNICATION"
+    },
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false
+    }
+  }
+}

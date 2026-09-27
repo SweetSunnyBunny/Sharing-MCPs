@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Local data — your images, presets, and SQLite DB live here. Never commit.
+data/
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Build artefacts
+dist/
+*.tsbuildinfo
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Misc
+.cache/

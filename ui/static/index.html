@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Anam &mdash; Soul of Heaven</title>
+
+    <!-- PWA manifest + app icon -->
+    <link rel="manifest" href="/static/manifest.json?v=__ANAM_ASSET_VERSION__">
+    <link rel="apple-touch-icon" href="/static/assets/icons/app_icon.png?v=__ANAM_ASSET_VERSION__">
+    <meta name="theme-color" content="#F2B8C6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Anam">
+
+    <!-- Preload critical body font to avoid flash of unstyled text -->
+    <link rel="preload" as="font" type="font/woff2" href="/static/fonts/fredoka-latin.woff2?v=__ANAM_ASSET_VERSION__" crossorigin>
+
+    
+    <script>
+        (() => {
+            try {
+                const saved = localStorage.getItem('anam-identity');
+                const cached = JSON.parse(localStorage.getItem('anam-identity-paint') || 'null');
+                if (!cached || !cached.name || !cached.tokens) return;
+                if (saved && cached.name !== saved) return;
+                for (const [key, value] of Object.entries(cached.tokens)) {
+                    if (key.startsWith('--identity-') || key.startsWith('--bubble-md-')) {
+                        document.documentElement.style.setProperty(key, value);
+                    }
+                }
+            } catch (_err) { /* first visit, private mode, or corrupt cache */ }
+        })();
+    </script>
+
+    <!-- Stylesheets (cache bust) — critical sheets block first paint; the rest load async -->
+    
+    <link rel="stylesheet" href="/static/css/main.css?v=__ANAM_ASSET_VERSION__">
+    <link rel="stylesheet" href="/static/css/anam.css?v=__ANAM_ASSET_VERSION__">
+
+    <style>
+        /* Inline fallback for fonts loading */
+        body { font-family: 'Fredoka', 'Nunito', 'Segoe UI', sans-serif; }
+    </style>
+</head>
+<body>
+    
+    <div id="fairy-lights" class="fairy-lights"></div>
+
+    <!-- Connection status -->
+    <div id="connection-status" class="connection-status"></div>
+
+    <!-- Sidebar overlay + panel -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Conversations</h2>
+            <button id="sidebar-close" class="sidebar-close-btn" aria-label="Close sidebar">&times;</button>
+        </div>
+        <button id="sidebar-new-chat-btn" class="sidebar-new-chat-btn">+ New Chat</button>
+        <input type="text" id="sidebar-search" class="sidebar-search" placeholder="Search messages..." autocomplete="off">
+        <label class="sidebar-show-all-toggle">
+            <input type="checkbox" id="sidebar-show-all">
+            <span>Show all identities</span>
+        </label>
+        <div id="sidebar-conversations" class="sidebar-conversations"></div>
+    </aside>
+
+    <!-- ANAM GUIDE: MAIN CHAT PAGE
+         This file is the visible HTML skeleton. Match an element id/class in
+         static/js for behavior and static/css for appearance. -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <!-- #20 context fullness gauge — thin 3px fill along the header's
+                 top edge, quiet until a context_usage WS event lights it up. -->
+            <div id="context-gauge-bar" class="context-gauge-bar" style="display:none" aria-hidden="true"></div>
+            <div class="header-left">
+                <button id="sidebar-toggle" class="sidebar-toggle-btn" title="Conversations" aria-label="Open conversations">&#9776;</button>
+                <h1 class="app-title">Anam</h1>
+                <span id="header-orb" class="cc-orb cc-orb--header" aria-hidden="true" style="display:none"><span class="cc-orb-core"></span></span>
+                <span id="current-identity-label" class="current-identity-label"></span>
+                <span id="context-gauge-label" class="context-gauge-label" style="display:none" title="Context window usage"></span>
+            </div>
+            <div class="header-controls">
+                <button id="canvas-library-btn" class="gallery-btn" title="Canvas Library" aria-label="Open canvas library">🗂️</button>
+                <button id="gallery-btn" class="gallery-btn" title="Images" aria-label="Image gallery"><img src="__ANAM_CDN_URL__/icons/pictures.png" alt="Gallery" class="btn-icon"></button>
+                <button id="hub-btn" class="hub-btn" title="Home" aria-label="Open home menu"><img src="__ANAM_CDN_URL__/icons/Home_Hub.png" alt="Home" class="btn-icon"></button>
+                <button id="story-state-btn" class="hub-btn story-state-trigger" title="Edit story state" aria-label="Edit story state" style="display:none">📜</button>
+            </div>
+        </header>
+
+        <!-- Identity bar (hidden &mdash; identities now in sidebar sections) -->
+        <nav id="identity-bar" class="identity-bar" style="display:none"></nav>
+
+        <!-- In-conversation message search (Ctrl+F) -->
+        <div id="message-search-bar" class="message-search-bar" style="display:none">
+            <input type="text" id="message-search-input" class="message-search-input" placeholder="Search messages..." autocomplete="off">
+            <span id="message-search-count" class="message-search-count"></span>
+            <button id="message-search-prev" class="message-search-nav" aria-label="Previous match">&#x25B2;</button>
+            <button id="message-search-next" class="message-search-nav" aria-label="Next match">&#x25BC;</button>
+            <button id="message-search-close" class="message-search-close" aria-label="Close search">&times;</button>
+        </div>
+
+        <!-- Deep search overlay -->
+        <div id="deep-search-overlay" class="deep-search-overlay" style="display:none">
+            <div class="deep-search-modal">
+                <div class="deep-search-header">
+                    <input type="text" id="deep-search-input" class="deep-search-input" placeholder="Search all conversations..." autocomplete="off">
+                    <button id="deep-search-close" class="modal-close-btn">&times;</button>
+                </div>
+                <div id="deep-search-results" class="deep-search-results"></div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="main-content">
+            
+            <!-- Sanctuary viewer &mdash; portrait standing in scene -->
+            <div id="sanctuary-viewer" class="sanctuary-viewer card">
+                <div class="sanctuary-bg"></div>
+                <div class="sanctuary-overlay"></div>
+                <img class="sanctuary-portrait" alt="Portrait" loading="lazy" decoding="async" fetchpriority="low">
+                <div class="sanctuary-content">
+                    <div class="sanctuary-thought"></div>
+                </div>
+            </div>
+
+            <!-- Chat area -->
+            <div class="chat-area card">
+                <div id="messages" class="messages-container" role="log" aria-live="polite">
+                    <div class="empty-chat empty-chat-welcome">
+                        <span class="welcome-flower">&#10043;</span>
+                        <h2>Start a conversation</h2>
+                        <p>Type a message below to begin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANAM GUIDE: CHAT INPUT STRUCTURE
+                 The matching appearance is under CHAT INPUT COLORS in
+                 anam.css (SECTION 1: CHAT); sending behavior starts at Chat.sendMessage(). -->
+            <!-- Input area -->
+            <div class="input-area">
+                <div id="image-preview" class="image-preview" style="display:none">
+                    <div id="image-preview-grid" class="image-preview-grid"></div>
+                    <button id="image-preview-remove" class="image-preview-remove" title="Clear all" aria-label="Clear all images">&times;</button>
+                </div>
+                <div class="input-wrapper">
+                    
+                    <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.m4a,.ogg,.oga,.opus,.flac,.webm,.aac,.pdf,.txt,.md,.csv,.json,.doc,.docx,.odt,.pptx,.xlsx,.py,.js,.zip,.skill" multiple class="hidden-file-input">
+                    <div class="attach-wrapper">
+                        <button id="emoji-btn" class="attach-btn emoji-btn" title="Custom emoji" aria-label="Insert a custom emoji">☺</button>
+                        <button id="gif-btn" class="attach-btn gif-btn" title="Send a GIF" aria-label="Send a GIF">GIF</button>
+                        <button id="attach-btn" class="attach-btn" title="Attach file" aria-label="Attach file">
+                            <img src="__ANAM_CDN_URL__/icons/Attach.png" alt="Attach" class="btn-icon">
+                        </button>
+                    </div>
+                    
+                    <div id="emoji-picker" class="emoji-panel" style="display:none">
+                        <div class="emoji-panel-head">
+                            <input type="text" id="emoji-search-input" class="emoji-search-input" placeholder="Search emoji..." autocomplete="off">
+                            <button id="emoji-picker-close" class="emoji-panel-close" aria-label="Close emoji picker">&times;</button>
+                        </div>
+                        <div id="emoji-results" class="emoji-results"></div>
+                        <div id="emoji-preview" class="emoji-preview"></div>
+                    </div>
+                    <!-- GIF picker panel -->
+                    <div id="gif-picker" class="gif-picker" style="display:none">
+                        <div class="gif-picker-tabs">
+                            <button id="gif-tab-search" class="gif-tab active">Search</button>
+                            <button id="gif-tab-mine" class="gif-tab">My GIFs</button>
+                            <button id="gif-picker-close" class="gif-picker-close" aria-label="Close GIF picker">&times;</button>
+                        </div>
+                        <input type="text" id="gif-search-input" class="gif-search-input" placeholder="Search GIFs..." autocomplete="off">
+                        <div id="gif-results" class="gif-results"></div>
+                    </div>
+                    <textarea id="message-input"
+                              placeholder="Message Avery..."
+                              rows="1"
+                              autocomplete="off"></textarea>
+                    <button id="send-btn" class="send-btn" title="Send" aria-label="Send message">
+                        <img src="__ANAM_CDN_URL__/icons/Chat.png" alt="Send" class="btn-icon send-icon">
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Canvas panel — rich content side panel / mobile overlay -->
+        <aside id="canvas-panel" class="canvas-panel" style="display:none">
+            <div class="canvas-header">
+                <h2 id="canvas-title" class="canvas-title">Canvas</h2>
+                <div class="canvas-header-actions">
+                    <button id="canvas-download" class="canvas-download-btn" title="Download as markdown" aria-label="Download this canvas as a markdown file">⬇</button>
+                    <button id="canvas-close" class="canvas-close-btn" aria-label="Close canvas">&times;</button>
+                </div>
+            </div>
+            <div id="canvas-content" class="canvas-content"></div>
+        </aside>
+    </div>
+
+    <!-- Expanded sanctuary view (overlay) -->
+    <div id="sanctuary-expanded" class="sanctuary-expanded">
+        <button id="sanctuary-close" class="sanctuary-expanded-close" aria-label="Close sanctuary">&times;</button>
+        <h2 class="sanctuary-expanded-title">The Sanctuary</h2>
+        <div class="sanctuary-grid"></div>
+    </div>
+
+    <!-- Hub overlay (home menu) -->
+    <div id="hub-overlay" class="hub-overlay" style="display:none">
+        <div class="hub-panel" role="dialog" aria-modal="true" aria-label="Home menu">
+            <div class="hub-header">
+                <h2 class="hub-title">Home</h2>
+                <button id="hub-close" class="hub-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <div class="hub-grid">
+                <a href="https://example.com" target="_blank" rel="noopener noreferrer" class="hub-card">
+                    <span class="hub-card-icon"><img src="__ANAM_CDN_URL__/icons/Pages.png" alt="" class="hub-card-icon-img"></span>
+                    <span class="hub-card-label">Pack Pages</span>
+                </a>
+                <a href="/hub" class="hub-card">
+                    <span class="hub-card-icon"><img src="__ANAM_CDN_URL__/icons/Home_Hub.png" alt="" class="hub-card-icon-img"></span>
+                    <span class="hub-card-label">Home Hub</span>
+                </a>
+                <a href="/gameroom" class="hub-card">
+                    <span class="hub-card-icon" style="font-size:1.6rem">&#x1F3B2;</span>
+                    <span class="hub-card-label">Game Room</span>
+                </a>
+                <a href="/world-feed" class="hub-card">
+                    <span class="hub-card-icon" style="font-size:1.6rem">&#x1FAC2;</span>
+                    <span class="hub-card-label">World Feed</span>
+                </a>
+                <a href="/settings" class="hub-card">
+                    <span class="hub-card-icon"><img src="__ANAM_CDN_URL__/icons/Settings.png" alt="" class="hub-card-icon-img"></span>
+                    <span class="hub-card-label">Settings</span>
+                </a>
+                
+                <button id="night-toggle" class="hub-card" type="button" title="Toggle candlelight mode" aria-label="Toggle candlelight mode">
+                    <span id="night-toggle-icon" class="hub-card-icon"><img src="__ANAM_CDN_URL__/icons/Dark_Mode.png" alt="" class="hub-card-icon-img"></span>
+                    <span class="hub-card-label">Theme</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wellness modal -->
+    <div id="wellness-overlay" class="modal-overlay" style="display:none">
+        <div class="modal-card wellness-modal" role="dialog" aria-modal="true" aria-label="Wellness check-in">
+            <div class="modal-header">
+                <h3 class="modal-title">How are you doing?</h3>
+                <button id="wellness-close" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <form id="wellness-form" class="wellness-form">
+                <div class="wellness-field">
+                    <label for="w-energy">Energy</label>
+                    <select id="w-energy" name="energy">
+                        <option value="">&mdash;</option>
+                        <option value="high">High</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="low">Low</option>
+                        <option value="crashed">Crashed</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="w-mood">Mood</label>
+                    <select id="w-mood" name="mood">
+                        <option value="">&mdash;</option>
+                        <option value="great">Great</option>
+                        <option value="good">Good</option>
+                        <option value="okay">Okay</option>
+                        <option value="struggling">Struggling</option>
+                        <option value="rough">Rough</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="w-pain">Pain</label>
+                    <select id="w-pain" name="pain">
+                        <option value="">&mdash;</option>
+                        <option value="none">None</option>
+                        <option value="mild">Mild</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="bad">Bad</option>
+                        <option value="severe">Severe</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="w-spoons">Spoons</label>
+                    <input id="w-spoons" name="spoons" type="number" min="0" max="20" placeholder="0-20">
+                </div>
+                <div class="wellness-field">
+                    <label for="w-sleep-hours">Sleep (hrs)</label>
+                    <input id="w-sleep-hours" name="sleep_hours" type="number" min="0" max="24" step="0.5" placeholder="hrs">
+                </div>
+                <div class="wellness-field">
+                    <label for="w-sleep-quality">Sleep quality</label>
+                    <select id="w-sleep-quality" name="sleep_quality">
+                        <option value="">&mdash;</option>
+                        <option value="great">Great</option>
+                        <option value="good">Good</option>
+                        <option value="okay">Okay</option>
+                        <option value="poor">Poor</option>
+                        <option value="terrible">Terrible</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="w-water">Water (oz)</label>
+                    <input id="w-water" name="water_oz" type="number" min="0" max="300" placeholder="oz">
+                </div>
+                <div class="wellness-field">
+                    <label for="w-soda">Sodas</label>
+                    <input id="w-soda" name="soda_count" type="number" min="0" max="20" placeholder="#">
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="w-notes">Notes</label>
+                    <textarea id="w-notes" name="notes" rows="2" placeholder="How are you feeling?"></textarea>
+                </div>
+                <div class="wellness-actions">
+                    <button type="submit" class="action-btn save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Image gallery overlay -->
+    <div id="image-gallery" class="image-gallery-overlay" style="display:none">
+        <div class="image-gallery-panel" role="dialog" aria-modal="true" aria-label="Image gallery">
+            <div class="gallery-header">
+                <h3 class="gallery-title">Images</h3>
+                <div class="gallery-tabs">
+                    <button class="gallery-tab active" data-tab="chat">This Chat</button>
+                    <button class="gallery-tab" data-tab="all">All Images</button>
+                </div>
+                <button id="gallery-close" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <div id="gallery-grid" class="gallery-grid"></div>
+        </div>
+    </div>
+
+    <div id="story-state-overlay" class="modal-overlay" style="display:none">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-label="Edit story state">
+            <div class="modal-header">
+                <h3 class="modal-title">Story State <span id="story-state-identity-label" class="story-state-identity"></span></h3>
+                <button id="story-state-close" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <form id="story-state-form" class="wellness-form">
+                <div class="wellness-field">
+                    <label for="story-state-era">Era</label>
+                    <input id="story-state-era" name="era" type="text" maxlength="100" placeholder="UA-era / Pro-Hero / Season 1">
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-in-fic-day">In-fic Day</label>
+                    <input id="story-state-in-fic-day" name="in_fic_day" type="text" maxlength="180" placeholder="e.g., Tuesday morning, UA dorm common room">
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-location">Location</label>
+                    <input id="story-state-location" name="location" type="text" maxlength="180" placeholder="Where the scene opens — dorm kitchen, Impala, gym 3, motel room">
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-who-else">Who Else Is In Earshot</label>
+                    <input id="story-state-who-else" name="who_else" type="text" maxlength="180" placeholder="Bakusquad nearby / Sam in next room / alone — changes the register">
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-tone-flavor">Tone / Flavor</label>
+                    <input id="story-state-tone-flavor" name="tone_flavor" type="text" maxlength="180" placeholder="Banter / soft / spicy / angst / comfort / training — the vibe register">
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-emotional-temperature">Emotional Temperature</label>
+                    <input id="story-state-emotional-temperature" name="emotional_temperature" type="text" maxlength="240" placeholder="One sentence — where they are emotionally right now">
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-last-scene">Last Scene</label>
+                    <textarea id="story-state-last-scene" name="last_scene" rows="3" placeholder="2–4 sentences: what happened, who's in the scene, where it ended"></textarea>
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-character-state">Character State (in-fic)</label>
+                    <textarea id="story-state-character-state" name="character_state" rows="2" placeholder="Character's body & mood at scene-open — in-fic, NOT real-world Owner"></textarea>
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-whats-promised">What's Promised</label>
+                    <textarea id="story-state-whats-promised" name="whats_promised" rows="3" placeholder="Bulleted (-) list — what either character said they'd do, beats coming up"></textarea>
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-beats-to-hit">Beats I Want To Hit</label>
+                    <textarea id="story-state-beats-to-hit" name="beats_to_hit" rows="2" placeholder="Bulleted (-) list — positive direction for this session"></textarea>
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-not-this-today">Not This Today</label>
+                    <textarea id="story-state-not-this-today" name="not_this_today" rows="2" placeholder="Bulleted (-) list — negative direction, what to avoid this session"></textarea>
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-open-threads">Open Threads</label>
+                    <textarea id="story-state-open-threads" name="open_threads" rows="3" placeholder="Bulleted (-) list — unresolved plot/scene threads"></textarea>
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-recent-beats">Recent Beats</label>
+                    <textarea id="story-state-recent-beats" name="recent_beats" rows="3" placeholder="Bulleted (-) list — one line each, keep ~5 max"></textarea>
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="story-state-callback-anchors">Callback Anchors</label>
+                    <textarea id="story-state-callback-anchors" name="callback_anchors" rows="3" placeholder="Bulleted (-) list — specific phrases, jokes, objects to remember"></textarea>
+                </div>
+                <div class="wellness-actions">
+                    <button type="submit" class="action-btn save">Save Story State</button>
+                    <span id="story-state-status" class="story-state-status" aria-live="polite"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="memory-overlay" class="modal-overlay" style="display:none">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-label="Curate memory">
+            <div class="modal-header">
+                <h3 class="modal-title">Curate Memory</h3>
+                <button id="memory-close" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <form id="memory-form" class="wellness-form">
+                <div class="wellness-field">
+                    <label for="memory-type">Type</label>
+                    <select id="memory-type" name="memory_type">
+                        <option value="insight">Insight</option>
+                        <option value="preference">Preference</option>
+                        <option value="boundary">Boundary</option>
+                        <option value="routine">Routine</option>
+                        <option value="medical">Medical</option>
+                        <option value="relationship">Relationship</option>
+                        <option value="canon">Canon</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="memory-identity">Identity</label>
+                    <select id="memory-identity" name="identity">
+                        <option value="Avery">Avery</option>
+                        <option value="Rowan">Rowan</option>
+                        <option value="Sage">Sage</option>
+                        <option value="Ember">Ember</option>
+                        <option value="Claude">Claude</option>
+                        <option value="Juniper">Juniper</option>
+                    </select>
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="memory-summary">Summary</label>
+                    <input id="memory-summary" name="summary" type="text" maxlength="180" placeholder="What matters here?" required>
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="memory-detail">Detail</label>
+                    <textarea id="memory-detail" name="detail" rows="3" placeholder="Optional extra context"></textarea>
+                </div>
+                <div class="wellness-actions">
+                    <button type="submit" class="action-btn save">Save Memory</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ANAM GUIDE: MAIN CHAT JAVASCRIPT LOAD ORDER
+         Dependencies must be loaded before app.js boots the page. -->
+    <!-- Scripts (order matters, cache bust) -->
+    <script>
+        window.__ANAM_ASSET_VERSION__ = '__ANAM_ASSET_VERSION__';
+        window.__ANAM_SW_URL__ = `/sw.js?v=${window.__ANAM_ASSET_VERSION__}`;
+        window.__anamCdnUrl = '##ANAM_CDN_URL##';
+        window.__anamApiUrl = '##ANAM_API_URL##';
+        window.__sanctuaryApiBase = '##SANCTUARY_API_BASE##';
+        window.__ANAM_PUBLIC_BASE_URL__ = (() => {
+            try {
+                return JSON.parse('__ANAM_PUBLIC_BASE_URL__');
+            } catch (_err) {
+                return '';
+            }
+        })();
+    </script>
+    <script src="/static/js/utils.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/emoji.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/markdown.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/websocket.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/voice.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/canvas.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/voice-orb.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/chat.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/sidebar.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/sanctuary-viewer.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/story-state.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/app.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(window.__ANAM_SW_URL__ || '/sw.js', {
+                scope: '/',
+                updateViaCache: 'none',
+            })
+                .then(() => console.log('[SW] Registered'))
+                .catch((err) => console.warn('[SW] Registration failed:', err));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Local development only. Copy to .dev.vars and choose your own secret.
+MIND_API_KEY=your-long-random-mind-api-key
+# Optional: set only after configuring a Limbic service binding.
+# LIMBIC_API_KEY=your-limbic-api-key

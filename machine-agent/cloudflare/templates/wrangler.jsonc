@@ -1,0 +1,28 @@
+{
+  "name": "__WORKER_NAME__",
+  "main": "src/index.js",
+  "compatibility_date": "2026-03-25",
+  "containers": [
+    {
+      "class_name": "ProxyContainer",
+      "image": "./Dockerfile",
+      "max_instances": 2
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PROXY_CONTAINER",
+        "class_name": "ProxyContainer"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "ProxyContainer"
+      ]
+    }
+  ]
+}

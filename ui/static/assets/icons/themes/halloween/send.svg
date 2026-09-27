@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Placeholder pumpkin send button — swap for Owner's art -->
+  <path d="M32 10c-2 0-4 2-4 6" fill="none" stroke="#5a7a3a" stroke-width="4" stroke-linecap="round"/>
+  <ellipse cx="32" cy="38" rx="22" ry="18" fill="#e8862e"/>
+  <ellipse cx="32" cy="38" rx="10" ry="18" fill="none" stroke="#c96a1a" stroke-width="2"/>
+  <ellipse cx="32" cy="38" rx="17" ry="18" fill="none" stroke="#c96a1a" stroke-width="2"/>
+  <polygon points="22,34 28,34 25,28" fill="#3a2418"/>
+  <polygon points="36,34 42,34 39,28" fill="#3a2418"/>
+  <path d="M21 44q4 5 8 2q3 3 6 0q4 3 8 -2q-5 4 -11 4t-11-4z" fill="#3a2418"/>
+</svg>

@@ -1,5 +1,6 @@
 import {
   joinVoiceChannel,
+  type DiscordGatewayAdapterCreator,
   VoiceConnection,
   VoiceConnectionStatus,
   EndBehaviorType,
@@ -65,7 +66,9 @@ export async function startRecording(
   const connection = joinVoiceChannel({
     channelId: voiceChannel.id,
     guildId: guildId,
-    adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+    // discord.js v13 and voice use different API type versions. The gateway
+    // adapter forwards the same voice-state/session fields at runtime.
+    adapterCreator: voiceChannel.guild.voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator,
     selfDeaf: false, // Must not be deafened to receive audio
     selfMute: true,  // We don't need to speak
   });

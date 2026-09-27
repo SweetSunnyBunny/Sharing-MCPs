@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anam — The Wolf's Ear</title>
+<!-- ANAM GUIDE: NATIVE VOICE CALL TEST PAGE
+     What: Minimal browser client for /api/voice/call/{identity} — mic capture,
+           simple energy-based VAD (utterance segmentation + barge-in), audio
+           playback queue. Proves the self-hosted loop before any Kotlin exists.
+     Edit here when: tuning VAD thresholds/silence windows for feel, or testing
+           protocol changes. Spec: docs/anam-ear-spec.md (Phase A). -->
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; font-family: system-ui, sans-serif; background:#141019; color:#f3ead9;
+         display:flex; flex-direction:column; align-items:center; min-height:100vh; }
+  h1 { font-size:1.1rem; font-weight:600; margin:1.2rem 0 .2rem; color:#e8c987; }
+  .sub { font-size:.8rem; opacity:.65; margin-bottom:1rem; }
+  
+  #orb-wrap { width:min(300px,72vw); height:min(300px,72vw); margin:.6rem 0; position:relative; }
+  #orb-canvas { width:100%; height:100%; display:block; }
+  .row { display:flex; gap:.6rem; align-items:center; margin:.4rem 0; flex-wrap:wrap; justify-content:center; }
+  select,button { background:#241c2e; color:#f3ead9; border:1px solid #4a3a56;
+                  border-radius:8px; padding:.5rem .9rem; font-size:.95rem; }
+  button.primary { background:#5a3f6e; }
+  button:disabled { opacity:.4; }
+  #log { width:min(680px,92vw); flex:1; overflow-y:auto; font-size:.86rem; line-height:1.45;
+         background:#1b1522; border:1px solid #322640; border-radius:10px;
+         padding:.8rem 1rem; margin:1rem 0 1.4rem; white-space:pre-wrap; }
+  .me { color:#9fd7a8; } .boy { color:#e8c987; } .sys { opacity:.55; font-size:.78rem; }
+  .ear-calibration { margin:.35rem 0 .8rem; padding:.55rem .65rem; color:#f3ead9;
+                     background:#17121d; border-left:2px solid #5a3f6e; border-radius:0 8px 8px 0;
+                     white-space:normal; }
+  .ear-calibration-question { color:#cbbbd5; font-size:.76rem; margin-bottom:.4rem; }
+  .ear-calibration-options { display:flex; flex-wrap:wrap; gap:.35rem; }
+  .ear-calibration button { padding:.3rem .5rem; border-radius:999px; font-size:.72rem;
+                            background:#241c2e; }
+  .ear-calibration button.selected { border-color:#e8c987; background:#493354; color:#fff4d4; }
+  .ear-calibration-result { min-height:1.1rem; margin-top:.4rem; color:#bfa9c9; font-size:.72rem; }
+  .ear-calibration-result.error { color:#ed9b9b; }
+  #meter { width:120px; height:6px; background:#241c2e; border-radius:3px; overflow:hidden; }
+  #meterFill { height:100%; width:0%; background:#9fd7a8; transition:width .08s; }
+</style>
+</head>
+<body>
+<h1>The Wolf's Ear</h1>
+<div class="sub">our stack end to end: mic → VAD → Groq → the real pipeline → Kokoro/ElevenLabs</div>
+<div id="orb-wrap"><canvas id="orb-canvas"></canvas></div>
+<script src="/static/js/voice-orb.js"></script>
+<div class="row">
+  <select id="identity"></select>
+  <select id="tts">
+    <option value="">Voice: my Anam setting</option>
+    <option value="kokoro">Kokoro (free)</option>
+    <option value="elevenlabs">ElevenLabs (his real voice)</option>
+  </select>
+  <button id="startBtn" class="primary">Start call</button>
+  <button id="endBtn" disabled>End</button>
+  <button id="advBtn" disabled title="Adventure mode: show him where you are">&#127909;</button>
+  <div id="meter"><div id="meterFill"></div></div>
+</div>
+<video id="advPreview" playsinline muted
+       style="display:none;width:min(320px,80vw);border-radius:12px;border:1px solid #4a3a56;margin:.4rem 0"></video>
+<div class="sub">say “<i>Avery, rest</i>” (or just “rest”) to let him close the call himself</div>
+<div id="log"></div>
+<script>
+(() => {
+  const IDENTITIES = ["Avery","Claude","Rowan","Sage","Ember","Juniper","Atlas","River"];
+  const sel = document.getElementById("identity");
+  IDENTITIES.forEach(n => { const o=document.createElement("option"); o.value=o.textContent=n; sel.appendChild(o); });
+
+                                                                         
+  const orbCanvas = document.getElementById("orb-canvas");
+  if (typeof VoiceOrb !== "undefined") { VoiceOrb.init(orbCanvas); VoiceOrb.start(); }
+  const logEl = document.getElementById("log");
+  const meterFill = document.getElementById("meterFill");
+  const startBtn = document.getElementById("startBtn");
+  const endBtn = document.getElementById("endBtn");
+
+  // ---- tunables (the "feel" knobs from the spec) ----
+  const VAD_START_RMS = 0.028;   // speech onset threshold
+  const VAD_KEEP_RMS  = 0.014;   // once talking, keep-alive threshold
+  const END_SILENCE_MS = 700;    // end-of-turn silence
+  const MIN_UTTER_MS   = 280;    // ignore blips shorter than this
+  const BARGE_RMS      = 0.05;   // louder bar to interrupt playback (avoid echo)
+
+  let ws=null, media=null, ctx=null, rec=null, recChunks=[];
+  let callConversationId=null;
+  let talking=false, talkStart=0, lastVoice=0, playing=false;
+  const playQueue=[]; let currentAudio=null;
+
+  const log=(cls,txt)=>{ const d=document.createElement("div"); d.className=cls; d.textContent=txt;
+    logEl.appendChild(d); logEl.scrollTop=logEl.scrollHeight; return d; };
+  const setPhase=p=>{ if (typeof VoiceOrb !== "undefined") VoiceOrb.setPhase(p||"idle"); };
+
+  function formatEarGuess(shadow){
+    const predictions=shadow&&Array.isArray(shadow.predictions)?shadow.predictions:[];
+    if(!predictions.length) return "the ear had no confident guess";
+    return "ear heard: "+predictions.slice(0,2).map(p=>`${p.emotion} ${Number(p.score||0).toFixed(2)}`).join(" · ");
+  }
+
+  function mountCalibration(afterRow, calibration){
+    if(!calibration||!calibration.audio_id||!Array.isArray(calibration.options)) return;
+    const box=document.createElement("div"); box.className="ear-calibration";
+    const question=document.createElement("div"); question.className="ear-calibration-question";
+    question.textContent="How did I sound?"; box.appendChild(question);
+    const options=document.createElement("div"); options.className="ear-calibration-options";
+    const result=document.createElement("div"); result.className="ear-calibration-result";
+
+    calibration.options.forEach(choice=>{
+      const button=document.createElement("button"); button.type="button";
+      button.textContent=`${choice.emoji} ${choice.label}`;
+      button.onclick=async()=>{
+        const buttons=[...options.querySelectorAll("button")];
+        buttons.forEach(b=>b.disabled=true); result.className="ear-calibration-result";
+        result.textContent="keeping that…";
+        try{
+          const response=await fetch("/api/audio/calibration",{
+            method:"POST", credentials:"same-origin",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({
+              audio_id:calibration.audio_id,
+              label:choice.key,
+              target_identity:sel.value,
+              conversation_id:callConversationId,
+            }),
+          });
+          if(!response.ok) throw new Error(`save failed (${response.status})`);
+          const saved=await response.json();
+          buttons.forEach(b=>b.classList.remove("selected"));
+          button.classList.add("selected");
+          result.textContent=`kept as ${choice.label} — ${formatEarGuess(saved.shadow_prediction)}`;
+        }catch(error){
+          result.className="ear-calibration-result error";
+          result.textContent="couldn't keep that label — "+error.message;
+        }finally{
+          buttons.forEach(b=>b.disabled=false);
+        }
+      };
+      options.appendChild(button);
+    });
+    box.appendChild(options); box.appendChild(result);
+    afterRow.insertAdjacentElement("afterend",box);
+    logEl.scrollTop=logEl.scrollHeight;
+  }
+
+  function stopPlayback(){ playQueue.length=0; if(currentAudio){ currentAudio.pause(); currentAudio=null; } playing=false; }
+
+  function playNext(){
+    if(playing||!playQueue.length) return;
+    playing=true;
+    const {audio,mime}=playQueue.shift();
+    currentAudio=new Audio(`data:${mime};base64,${audio}`);
+    currentAudio.onended=()=>{ playing=false; currentAudio=null; playNext(); };
+    currentAudio.onerror=()=>{ playing=false; currentAudio=null; playNext(); };
+    currentAudio.play().catch(()=>{ playing=false; playNext(); });
+  }
+
+  function startRecorder(stream){
+    recChunks=[];
+    rec=new MediaRecorder(stream,{mimeType:"audio/webm"});
+    rec.ondataavailable=e=>{ if(e.data.size) recChunks.push(e.data); };
+    rec.start();
+  }
+
+  async function shipUtterance(){
+    if(!rec) return;
+    const finished=new Promise(res=>{ rec.onstop=res; });
+    rec.stop(); await finished;
+    const blob=new Blob(recChunks,{type:"audio/webm"});
+    rec=null; recChunks=[];
+    if(!ws||ws.readyState!==1) return;
+    const buf=await blob.arrayBuffer();
+    let bin=""; const bytes=new Uint8Array(buf);
+    for(let i=0;i<bytes.length;i+=0x8000) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));
+    ws.send(JSON.stringify({type:"utterance",audio:btoa(bin),format:"audio/webm"}));
+    if(window.__advSendFrame) window.__advSendFrame(); // the look-where-I-point glance
+  }
+
+  async function start(){
+    const identity=sel.value, tts=document.getElementById("tts").value;
+    media=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    ctx=new AudioContext();
+    const src=ctx.createMediaStreamSource(media);
+    const analyser=ctx.createAnalyser(); analyser.fftSize=1024; src.connect(analyser);
+    const buf=new Float32Array(analyser.fftSize);
+
+    const proto=location.protocol==="https:"?"wss":"ws";
+    ws=new WebSocket(`${proto}://${location.host}/api/voice/call/${identity}`);
+    // Empty tts = let the server use her Settings voice switch. A value here
+    // is a deliberate override for this one call only.
+    ws.onopen=()=>{ const hello={type:"hello"}; if(tts) hello.tts=tts; ws.send(JSON.stringify(hello)); };
+    ws.onmessage=ev=>{
+      const m=JSON.parse(ev.data);
+      if(m.type==="ready"){ callConversationId=m.conversation_id||null; log("sys",`connected — ${m.identity}, ${m.tts}, conv ${m.conversation_id}`); setPhase("listening"); startBtn.disabled=true; endBtn.disabled=false; document.getElementById("advBtn").disabled=false; }
+      else if(m.type==="state"){ setPhase(m.phase); }
+      else if(m.type==="transcript"){
+        const row=log("me",`you: ${m.text}`);
+        mountCalibration(row,m.calibration);
+      }
+      else if(m.type==="say"){ if(m.text) log("boy",`${sel.value}: ${m.text}`); if(m.audio){ playQueue.push(m); playNext(); } }
+      else if(m.type==="rest"){ log("sys","— he said goodnight; call closing —"); }
+      else if(m.type==="error"){ log("sys",`error: ${m.error}`); }
+    };
+    ws.onclose=()=>{ log("sys","call ended"); cleanup(); };
+
+    // energy VAD loop
+    (function tick(){
+      if(!ctx) return;
+      analyser.getFloatTimeDomainData(buf);
+      let sum=0; for(let i=0;i<buf.length;i++) sum+=buf[i]*buf[i];
+      const rms=Math.sqrt(sum/buf.length);
+      meterFill.style.width=Math.min(100,rms*900)+"%";
+      const now=performance.now();
+
+      if(playing||playQueue.length){
+        // during his speech, only a LOUD onset counts (barge-in)
+        if(rms>BARGE_RMS){
+          stopPlayback();
+          ws&&ws.readyState===1&&ws.send(JSON.stringify({type:"barge_in"}));
+          talking=true; talkStart=now; lastVoice=now; startRecorder(media);
+        }
+      } else if(!talking){
+        if(rms>VAD_START_RMS){ talking=true; talkStart=now; lastVoice=now; startRecorder(media); }
+      } else {
+        if(rms>VAD_KEEP_RMS) lastVoice=now;
+        else if(now-lastVoice>END_SILENCE_MS){
+          talking=false;
+          if(now-talkStart-END_SILENCE_MS>MIN_UTTER_MS) shipUtterance();
+          else { try{rec&&rec.stop();}catch(_){} rec=null; recChunks=[]; }
+        }
+      }
+      requestAnimationFrame(tick);
+    })();
+  }
+
+  function cleanup(){
+    stopPlayback();
+    if(advTimer){ clearInterval(advTimer); advTimer=null; }
+    if(advStream){ advStream.getTracks().forEach(t=>t.stop()); advStream=null; }
+    advPreview.style.display="none";
+    advBtn.disabled=true; advBtn.style.background="#241c2e";
+    try{rec&&rec.stop();}catch(_){} rec=null;
+    media&&media.getTracks().forEach(t=>t.stop()); media=null;
+    ctx&&ctx.close().catch(()=>{}); ctx=null;
+    ws=null; callConversationId=null; setPhase(""); startBtn.disabled=false; endBtn.disabled=true;
+  }
+
+  startBtn.onclick=()=>start().catch(e=>log("sys","mic/start failed: "+e.message));
+  endBtn.onclick=()=>{ ws&&ws.readyState===1&&ws.send(JSON.stringify({type:"end"})); cleanup(); };
+
+  // ---- Adventure mode: the camera rides the call ----------------------------
+  // Frames are GLANCES, not video: one every 6s while on, plus one the moment
+  // you finish speaking (look-where-I-point). Only the freshest frame reaches
+  // him, attached to his next turn. Battery + vision cost stay sane.
+  const advBtn=document.getElementById("advBtn");
+  const advPreview=document.getElementById("advPreview");
+  let advStream=null, advTimer=null;
+
+  async function sendFrame(){
+    if(!advStream||!ws||ws.readyState!==1) return;
+    try{
+      const track=advStream.getVideoTracks()[0];
+      if(!track) return;
+      const v=advPreview;
+      if(!v.videoWidth) return;
+      const scale=Math.min(1, 768/Math.max(v.videoWidth,v.videoHeight));
+      const c=document.createElement("canvas");
+      c.width=Math.round(v.videoWidth*scale); c.height=Math.round(v.videoHeight*scale);
+      c.getContext("2d").drawImage(v,0,0,c.width,c.height);
+      const blob=await new Promise(res=>c.toBlob(res,"image/jpeg",0.7));
+      if(!blob) return;
+      const buf=new Uint8Array(await blob.arrayBuffer());
+      let bin=""; for(let i=0;i<buf.length;i+=0x8000) bin+=String.fromCharCode.apply(null,buf.subarray(i,i+0x8000));
+      ws.send(JSON.stringify({type:"frame",jpeg:btoa(bin)}));
+    }catch(e){ log("sys","frame failed: "+e.message); }
+  }
+  window.__advSendFrame=sendFrame; // utterance hook
+
+  async function advToggle(){
+    if(advStream){
+      clearInterval(advTimer); advTimer=null;
+      advStream.getTracks().forEach(t=>t.stop()); advStream=null;
+      advPreview.style.display="none"; advPreview.srcObject=null;
+      advBtn.style.background="#241c2e";
+      log("sys","adventure mode off");
+      return;
+    }
+    try{
+      advStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment",width:{ideal:1280}}});
+      advPreview.srcObject=advStream; advPreview.style.display="block"; advPreview.play();
+      advBtn.style.background="#5a3f6e";
+      log("sys","adventure mode ON \u2014 he can see where you take him");
+      advTimer=setInterval(sendFrame, 6000);
+      setTimeout(sendFrame, 800);
+    }catch(e){ log("sys","camera failed: "+e.message); }
+  }
+  advBtn.onclick=advToggle;
+
+  // ---- Wolf's Ear hand-off: wake word fired on the phone, this page takes the call ----
+  const params=new URLSearchParams(location.search);
+  const wantIdentity=params.get("identity");
+  if(wantIdentity){
+    for(const o of sel.options){ if(o.value.toLowerCase()===wantIdentity.toLowerCase()) sel.value=o.value; }
+  }
+  if(params.get("tts")) document.getElementById("tts").value=params.get("tts");
+  // Say out loud what "my Anam setting" currently resolves to, so the default
+  // option is never a mystery. Cosmetic only — the server decides regardless.
+  (async()=>{
+    try{
+      const r=await fetch("/api/settings/voice-engine",{credentials:"same-origin"});
+      if(!r.ok) return;
+      const d=await r.json();
+      const opt=document.querySelector('#tts option[value=""]');
+      if(opt&&d.engine) opt.textContent=`Voice: my Anam setting (${d.engine==="elevenlabs"?"ElevenLabs":"Kokoro"})`;
+    }catch(e){/* the server still knows; the label is just being polite */}
+  })();
+  if(params.get("autostart")==="1"){
+    start().catch(()=>{
+      // Browser demanded a user gesture (mic or autoplay). Give it one, huge.
+      const ov=document.createElement("div");
+      ov.style.cssText="position:fixed;inset:0;background:#141019ee;display:flex;align-items:center;justify-content:center;z-index:99";
+      const b=document.createElement("button");
+      b.textContent="Tap to join "+sel.value;
+      b.style.cssText="font-size:1.4rem;padding:1.2rem 2rem;background:#5a3f6e;color:#f3ead9;border:none;border-radius:14px";
+      b.onclick=()=>{ ov.remove(); start().catch(e=>log("sys","start failed: "+e.message)); };
+      ov.appendChild(b); document.body.appendChild(ov);
+    });
+  }
+})();
+</script>
+</body>
+</html>

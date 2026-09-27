@@ -1,0 +1,6 @@
+# Copy this to .dev.vars for local development (npx wrangler dev).
+# NEVER commit .dev.vars — it is in .gitignore.
+# In production these are set with `npx wrangler secret put <NAME>`, not from this file.
+
+ELEVENLABS_API_KEY="your-elevenlabs-key"
+MCP_AUTH_TOKEN="YOUR-SECRET"

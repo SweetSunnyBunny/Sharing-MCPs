@@ -1,0 +1,20 @@
+name = "discord-backend"
+main = "src/index.ts"
+compatibility_date = "2025-02-14"
+
+[vars]
+# Optional machine archive directory, interpreted on your bridge host.
+# IMAGE_ARCHIVE_DIR = "C:/Images/discord"
+MACHINE_AGENT_URL = "https://machine-agent.example.com"
+# MACHINE_AGENT_API_KEY is a Worker secret, matching the existing local bridge.
+# MCP_SECRET_PATH is stored as a Cloudflare secret — do NOT put it here.
+# To set/rotate: npx wrangler secret put MCP_SECRET_PATH
+
+# Your Discord application's public key (from https://discord.com/developers/applications)
+DISCORD_PUBLIC_KEY = "YOUR-DISCORD-APPLICATION-PUBLIC-KEY"
+
+# Allowlist of MCP tool names exposed by this worker. Comma-separated.
+# Whitespace around names is tolerated. Edit and redeploy to change the
+# exposed tool surface. The full catalog of available tool names is in
+# src/tools.ts (the ALL_DISCORD_TOOLS array).
+ALLOWED_TOOLS = "discord_add_reaction, discord_ban_member, discord_change_nickname, discord_create_channel, discord_create_forum_post, discord_create_forum_tag, discord_create_poll, discord_create_thread, discord_delete_channel, discord_delete_message, discord_delete_thread, discord_edit_channel, discord_edit_forum_post, discord_edit_forum_tag, discord_edit_message, discord_fetch_dm_image, discord_fetch_image, discord_generate_image, discord_generate_image_only, discord_get_forum_tags, discord_get_guild_info, discord_get_guild_members, discord_get_message_reactions, discord_get_pinned_messages, discord_get_user_info, discord_kick_member, discord_list_channels, discord_list_forum_posts, discord_list_identities, discord_list_identity_voices, discord_list_servers, discord_manage_thread, discord_pin_message, discord_read_messages, discord_read_dm_messages, discord_send_message, discord_remove_reaction, discord_send_dm, discord_send_dm_file, discord_send_embed, discord_send_file, discord_send_voice_note, discord_unpin_message"

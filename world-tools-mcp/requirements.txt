@@ -1,3 +1,6 @@
 fastmcp>=2.0.0
 pydantic>=2.0.0
 uvicorn>=0.30.0
+
+# IANA timezone database for Windows and minimal installations.
+tzdata>=2024.1

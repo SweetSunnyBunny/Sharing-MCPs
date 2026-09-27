@@ -1,181 +1,88 @@
-# Tumblr MCP Server
+# Tumblr MCP
 
-Let Claude post to your Tumblr blog! This MCP (Model Context Protocol) server gives Claude the ability to:
+Read your Tumblr dashboard and blogs, manage posts, reblog, and follow blogs from an MCP client. You need a Tumblr account and your own registered Tumblr application. The recommended setup below runs locally on Windows; the Python server can also run on other desktop operating systems with adjusted paths.
 
-- Create text, photo, quote, and link posts
-- Reblog posts from other blogs
-- View your dashboard
-- Follow blogs and search tags
-- Manage your posts
+## 1. Prepare the folder and Python
 
-## Quick Start
+These steps use Windows PowerShell and **Python 3.11 (64-bit)**. Install it from [python.org](https://www.python.org/downloads/), including the Python launcher, if needed. Reopen PowerShell after installation.
 
-### 1. Create a Tumblr App
+Extract the collection to `C:\MCP-Starter\Sharing-MCPs`, so this README is inside `C:\MCP-Starter\Sharing-MCPs\tumblr-mcp`. If you chose another location, replace that path in every command and JSON example below. Do not run inside the ZIP.
 
-1. Go to https://www.tumblr.com/oauth/apps
-2. Click "Register application"
-3. Fill in:
-   - **Application name:** My Tumblr Bot
-   - **Description:** Personal posting bot
-   - **Default callback URL:** `http://localhost:9876/callback`
-   - **OAuth2 redirect URLs:** `http://localhost:9876/callback`
-4. Click Register
-5. Note your **OAuth Consumer Key** and **OAuth Consumer Secret**
-
-### 2. Install & Authenticate
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Run setup (will open browser to authenticate)
-python setup.py
-
-# Check status
-python setup.py --status
+```powershell
+Set-Location "C:\MCP-Starter\Sharing-MCPs\tumblr-mcp"
+py -3.11 --version
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### 3. Run the Server
+`.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
 
-```bash
-python run_server.py
+## 2. Register your application and sign in
+
+1. Sign into [Tumblr's application page](https://www.tumblr.com/oauth/apps) and register an application. Give it your own name and description.
+2. Set both the default callback URL and OAuth 2 redirect URL to **`http://localhost:9876/callback`**. The address must match exactly; this setup script uses `localhost`, not `127.0.0.1`.
+3. Keep the application's OAuth Consumer Key and OAuth Consumer Secret available. These are entered locally during setup; do not paste them into your AI conversation.
+4. In the same PowerShell window, run:
+
+```powershell
+.\.venv\Scripts\python.exe .\setup.py
 ```
 
-The server runs on `http://localhost:8080/mcp`
+5. Paste the key and secret when asked. Your browser opens Tumblr's approval page. Sign into the blog owner account and approve the requested access. If a browser does not open, use the URL printed by setup. Return to PowerShell before its two-minute timeout. If asked for a blog name, enter your own primary blog name.
+6. Success is reported as authentication for your blog. Setup creates **`config/credentials.json`**, containing your access and refresh tokens. Keep this generated file private. There is no `.env` file to create for this package.
 
----
+You can inspect the locally saved login with:
 
-## Deployment Options
-
-### Option A: Self-Hosted with Cloudflare Tunnel (Recommended - $5/year)
-
-This is the best option for always-on access from anywhere (phone, other computers, etc.)
-
-#### What You Need
-- A computer that stays on (or a Raspberry Pi, old laptop, etc.)
-- A domain name (~$5-10/year from Cloudflare, Namecheap, etc.)
-- Free Cloudflare account
-
-#### Step 1: Get a Domain
-
-1. Buy a cheap domain (I recommend Cloudflare Registrar - no markup, ~$5-10/year for .uk, .xyz, etc.)
-2. Or use any domain and point its nameservers to Cloudflare
-
-#### Step 2: Set Up Cloudflare Tunnel
-
-1. Create free account at https://dash.cloudflare.com
-2. Add your domain to Cloudflare
-3. Install cloudflared:
-   - **Windows:** Download from https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/
-   - **Mac:** `brew install cloudflared`
-   - **Linux:** See Cloudflare docs
-
-4. Login and create tunnel:
-```bash
-cloudflared tunnel login
-cloudflared tunnel create my-tunnel
+```powershell
+.\.venv\Scripts\python.exe .\setup.py --status
 ```
 
-5. Create config file at `~/.cloudflared/config.yml`:
-```yaml
-tunnel: YOUR-TUNNEL-ID
-credentials-file: ~/.cloudflared/YOUR-TUNNEL-ID.json
+That command reads the saved file; the client tool check below verifies the live connection. For API and application details, see [Tumblr's API documentation](https://github.com/tumblr/docs/blob/master/api.md).
 
-ingress:
-  - hostname: tumblr.yourdomain.com
-    service: http://localhost:8080
-  - service: http_status:404
+## 3. Check startup
+
+```powershell
+.\.venv\Scripts\python.exe .\server.py
 ```
 
-6. Route DNS:
-```bash
-cloudflared tunnel route dns my-tunnel tumblr.yourdomain.com
-```
+This is a **stdio** server: a client talks through the process's input/output, not a web page. A banner followed by silence, or silence alone, is normal while it waits. A Python traceback is an error. Press **Ctrl+C** after this check, then connect your client below.
 
-7. Run tunnel:
-```bash
-cloudflared tunnel run my-tunnel
-```
+## 4. Connect your AI client and check it works
 
-#### Step 3: Run the MCP Server
-
-```bash
-python run_server.py
-```
-
-Now your MCP is available at `https://tumblr.yourdomain.com/mcp` from anywhere!
-
-#### Make It Start Automatically
-
-**Windows:** Create a batch file and add to Startup folder
-**Mac/Linux:** Use systemd or launchd
-
----
-
-### Option B: Cloud Deployment (Railway/Render)
-
-Deploy to the cloud if you don't want to run your own server.
-
-#### Railway (Easy, free tier available)
-
-1. Push this code to a GitHub repository
-2. Go to https://railway.app
-3. Click "New Project" → "Deploy from GitHub repo"
-4. Select your repo
-5. Railway will auto-detect and deploy
-
-After deployment:
-1. Go to your Railway project settings
-2. Find your public URL (something like `your-app.up.railway.app`)
-3. Your MCP endpoint is at `https://your-app.up.railway.app/mcp`
-
-**Important:** You'll need to set up credentials. Either:
-- SSH into the Railway container and run `python setup.py`
-- Or manually create `config/credentials.json` with your tokens
-
-#### Render (Similar to Railway)
-
-1. Push to GitHub
-2. Go to https://render.com
-3. New → Web Service → Connect your repo
-4. Set start command: `python run_server.py`
-5. Deploy
-
----
-
-### Option C: Docker
-
-```bash
-# Build
-docker build -t tumblr-mcp .
-
-# Run (mount config for persistence)
-docker run -p 8080:8080 -v $(pwd)/config:/app/config tumblr-mcp
-```
-
----
-
-## Connecting to Claude
-
-### Claude Code (CLI)
-
-Add to your Claude Code MCP settings:
+Claude Desktop: **Settings → Developer → Edit Config**. [Client connection guide](https://modelcontextprotocol.io/docs/develop/connect-local-servers). Other clients use their own local MCP settings; this example uses `mcpServers` JSON.
 
 ```json
 {
   "mcpServers": {
-    "tumblr": {
-      "url": "https://tumblr.yourdomain.com/mcp"
+    "tumblr-mcp": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/tumblr-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/tumblr-mcp/server.py"
+      ]
     }
   }
 }
 ```
 
-### Other MCP Clients
+If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
 
-Use the URL format: `https://your-server/mcp`
+Ask your client: **"Use tumblr_test_connection and tell me which blog is connected."** A successful result identifies your own account/blog. Start with this read-only check before trying a post.
 
----
+## If something goes wrong
+
+- **`py` is not recognized:** install Python with its launcher, then reopen PowerShell. If only `python` works, verify `python --version` and use it for the `-m venv` command.
+- **`No module named ...`:** repeat the requirements command using `.\.venv\Scripts\python.exe`; the client's `command` must point to that same environment.
+- **Server missing in the client:** check absolute paths and JSON punctuation, then restart the client. Claude Desktop logs are under `%APPDATA%\Claude\logs`.
+- **A quiet terminal:** this is expected for stdio; use the client tool check above. Ctrl+C stops a manual test.
+
+- **Redirect mismatch:** use `http://localhost:9876/callback` exactly in the app settings. Close another setup process if port 9876 is already in use, then rerun setup.
+- **Missing credentials or expired/revoked login:** run `setup.py` again using this package's virtual environment. Do not copy someone else's credentials file.
+- **Blog not found:** use a blog owned by the authenticated account and check the blog name, without a trailing `.tumblr.com` where a tool asks for just a name.
+
+## Alternative HTTP launcher
+
+`run_server.py` starts an HTTP server on port 8080 and listens on all network interfaces. It is unnecessary for the local client instructions above. The included launcher does not add authentication; do not publish it through a tunnel as-is. A remote deployment needs its own access control and token storage design.
 
 ## Available Tools
 
@@ -195,30 +102,3 @@ Use the URL format: `https://your-server/mcp`
 | `tumblr_search_tag` | Search posts by tag |
 
 ---
-
-## Troubleshooting
-
-### "Not configured" error
-Run `python setup.py` to authenticate.
-
-### Token expired
-The server automatically refreshes tokens. If it fails, run `python setup.py` again.
-
-### Can't connect remotely
-Make sure your tunnel is running and the domain is correctly configured.
-
----
-
-## Security Notes
-
-- Your credentials are stored in `config/credentials.json` - keep this private!
-- The `.gitignore` in the config folder prevents accidental commits
-- If using cloud deployment, consider using environment variables for secrets
-
----
-
-## License
-
-MIT - Do whatever you want with it!
-
-Built with love for sharing.

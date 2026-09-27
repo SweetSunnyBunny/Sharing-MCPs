@@ -1,0 +1,24 @@
+{
+  "name": "qualia-backend",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "typecheck": "tsc --noEmit",
+    "test:sketchbook": "node --test scripts/sketchbook.test.mjs",
+    "test:cognition": "node --test scripts/cognition.test.mjs",
+    "test": "node --test scripts/anam-reader.test.mjs scripts/cognition.test.mjs scripts/sketchbook.test.mjs scripts/public-starter.test.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "typescript": "^5.7.0",
+    "wrangler": "^4.0.0",
+    "esbuild": "0.27.3"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

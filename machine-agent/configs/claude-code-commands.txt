@@ -1,0 +1,11 @@
+# Add these MCP servers to Claude Code:
+claude mcp add clipboard-mcp --transport streamable-http https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp
+claude mcp add desktop-control-mcp --transport streamable-http https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp
+claude mcp add terminal-mcp --transport streamable-http https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp
+claude mcp add filesystem-mcp --transport streamable-http https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp
+claude mcp add krita-mcp --transport streamable-http https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp
+claude mcp add muse-tts-mcp --transport streamable-http https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp
+claude mcp add books-tools-mcp --transport streamable-http https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp
+claude mcp add obsidian-mcp --transport streamable-http https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp
+
+# Once you add MCP_AUTH_TOKEN secrets, append: -H "Authorization: Bearer YOUR-TOKEN"

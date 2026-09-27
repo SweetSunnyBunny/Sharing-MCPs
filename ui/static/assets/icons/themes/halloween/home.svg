@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Placeholder haunted house home button — swap for Owner's art -->
+  <circle cx="48" cy="14" r="7" fill="#f5e6b8"/>
+  <rect x="18" y="30" width="28" height="24" fill="#4a3a5a"/>
+  <polygon points="14,32 32,16 50,32" fill="#3a2c48"/>
+  <rect x="24" y="20" width="5" height="10" fill="#3a2c48"/>
+  <rect x="28" y="40" width="8" height="14" rx="4" fill="#f5c542"/>
+  <rect x="22" y="34" width="5" height="5" fill="#f5c542"/>
+  <rect x="37" y="34" width="5" height="5" fill="#f5c542"/>
+</svg>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    
+    <color name="anam_page_top">#FBECEF</color>
+    <color name="anam_page_mid">#F7E2E7</color>
+    <color name="anam_page_bottom">#F3D8DF</color>
+
+    
+    <color name="anam_card">#FFFBFB</color>
+    <color name="anam_card_border">#EFC8D2</color>
+
+    
+    <color name="anam_text_primary">#5E2338</color>
+    <color name="anam_text_secondary">#7A3F52</color>
+    <color name="anam_text_muted">#875264</color>
+
+    
+    <color name="anam_accent">#A85D71</color>
+    <color name="anam_button_top">#EFC3CE</color>
+    <color name="anam_button_bottom">#E4A9B8</color>
+
+    
+    <color name="anam_ok">#4F7A5E</color>
+    <color name="anam_wait">#875264</color>
+    <color name="anam_bad">#A8455D</color>
+</resources>

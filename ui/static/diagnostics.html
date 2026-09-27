@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anam - Diagnostics</title>
+<!-- ANAM GUIDE: DIAGNOSTICS PAGE STRUCTURE
+     What: The system health page — server status, providers, MCP, sessions.
+     Behavior: static/js/diagnostics.js. Looks: static/css/diagnostics.css. Backend: /health in server.py.
+     Edit here when: Adding a new health check readout. -->
+
+    <link rel="manifest" href="/static/manifest.json?v=__ANAM_ASSET_VERSION__">
+    <link rel="apple-touch-icon" href="/static/assets/icons/app_icon.png?v=__ANAM_ASSET_VERSION__">
+    <meta name="theme-color" content="#F2B8C6">
+
+    <link rel="stylesheet" href="/static/css/main.css?v=__ANAM_ASSET_VERSION__">
+    <link rel="stylesheet" href="/static/css/settings.css?v=__ANAM_ASSET_VERSION__">
+    <link rel="stylesheet" href="/static/css/diagnostics.css?v=__ANAM_ASSET_VERSION__">
+</head>
+<body class="settings-page diagnostics-page">
+    <div id="fairy-lights" class="fairy-lights"></div>
+
+    <div class="settings-container diagnostics-container">
+        <header class="settings-header">
+            <a href="/settings" class="settings-back">&larr; Settings</a>
+            <h1 class="settings-title">Diagnostics</h1>
+        </header>
+
+        <section class="settings-section diagnostics-hero">
+            <h2 class="section-title">Transport Snapshot</h2>
+            <p class="section-note">Useful when the app behaves differently between Wi-Fi, mobile data, and installed mode.</p>
+            <div class="diagnostics-actions">
+                <button id="run-diagnostics-btn" class="action-btn">Run Checks</button>
+                <a href="/health" target="_blank" rel="noopener" class="action-btn secondary">Open /health</a>
+            </div>
+            <div id="diag-summary" class="diag-summary">Waiting to run checks.</div>
+        </section>
+
+        <section class="settings-section">
+            <h2 class="section-title">Client</h2>
+            <div id="diag-client" class="diag-grid"></div>
+        </section>
+
+        <section class="settings-section">
+            <h2 class="section-title">HTTP</h2>
+            <div id="diag-http" class="diag-grid"></div>
+        </section>
+
+        <section class="settings-section">
+            <h2 class="section-title">WebSocket</h2>
+            <div id="diag-ws" class="diag-grid"></div>
+        </section>
+
+        <section class="settings-section">
+            <h2 class="section-title">Service Worker</h2>
+            <div id="diag-sw" class="diag-grid"></div>
+        </section>
+
+        <section class="settings-section">
+            <h2 class="section-title">Messaging connections and timings</h2>
+            <p class="section-note">Messaging processes stay connected. Autowakes use temporary processes. Timings show recent measured work; no prompts or tool output are included. Memory and process counts are recorded once a minute for up to 48 hours.</p>
+            <div id="diag-runtime" class="diag-grid"></div>
+            <details><summary>Context, timing, and resource history</summary><pre id="diag-runtime-json" class="diag-json"></pre></details>
+        </section>
+
+        <section class="settings-section">
+            <h2 class="section-title">Raw Health</h2>
+            <pre id="diag-health-json" class="diag-json">Run checks to load /health.</pre>
+        </section>
+    </div>
+
+    <script>
+        window.__ANAM_ASSET_VERSION__ = '__ANAM_ASSET_VERSION__';
+        window.__anamApiUrl = '##ANAM_API_URL##';
+        window.__ANAM_SW_URL__ = `/sw.js?v=${window.__ANAM_ASSET_VERSION__}`;
+        window.__ANAM_PUBLIC_BASE_URL__ = (() => {
+            try {
+                return JSON.parse('__ANAM_PUBLIC_BASE_URL__');
+            } catch (_err) {
+                return '';
+            }
+        })();
+    </script>
+    <script src="/static/js/theme-boot.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/utils.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/diagnostics.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(window.__ANAM_SW_URL__ || '/sw.js', {
+                scope: '/',
+                updateViaCache: 'none',
+            }).catch((err) => console.warn('[SW] Registration failed:', err));
+        }
+    </script>
+</body>
+</html>

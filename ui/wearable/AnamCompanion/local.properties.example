@@ -1,0 +1,3 @@
+sdk.dir=C:/path/to/Android/Sdk
+anamBaseUrl=https://YOUR-ANAM-HOST
+anamApiKey=YOUR-ANAM-API-KEY

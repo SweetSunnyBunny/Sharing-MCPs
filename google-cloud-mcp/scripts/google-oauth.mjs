@@ -7,6 +7,7 @@ import { dirname, resolve } from "node:path";
 import { randomBytes } from "node:crypto";
 
 const SCOPES = {
+  health: ["https://www.googleapis.com/auth/googlehealth.sleep.readonly", "https://www.googleapis.com/auth/googlehealth.health_metrics_and_measurements.readonly", "https://www.googleapis.com/auth/googlehealth.activity_and_fitness.readonly"],
   drive: [
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/documents",
@@ -19,7 +20,7 @@ const SCOPES = {
 function usage(message) {
   if (message) console.error(`Error: ${message}\n`);
   console.error(
-    "Usage: npm run oauth -- --identity <label> --service <drive|youtube> " +
+    "Usage: npm run oauth -- --identity <label> --service <drive|youtube|health> " +
       "[--credentials scripts/client_secret.json] [--output scripts/google_tokens.json]",
   );
   process.exit(1);
@@ -63,7 +64,7 @@ async function main() {
   if (!identity || !/^[a-z0-9][a-z0-9_-]*$/.test(identity)) {
     usage("Identity must use lowercase letters, numbers, underscores, or hyphens.");
   }
-  if (!SCOPES[service]) usage("Service must be drive or youtube.");
+  if (!SCOPES[service]) usage("Service must be drive, youtube, or health.");
 
   const credentialsJson = await readJson(credentialsPath);
   const credentials = credentialsJson.installed || credentialsJson.web;
@@ -161,8 +162,7 @@ async function main() {
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(outputPath, `${JSON.stringify(output, null, 2)}\n`, { mode: 0o600 });
   console.log(`Saved ${service} refresh token for '${identity}' to ${outputPath}`);
-  console.log(`OAuth client ID: ${credentials.client_id}`);
-  console.log("Keep the credentials and token files private; both are ignored by git.");
+  console.log("Keep the credentials and token files private; both contain secrets.");
 }
 
 main().catch((error) => {

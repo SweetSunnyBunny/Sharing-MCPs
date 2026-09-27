@@ -1,0 +1,652 @@
+/* ═══ Game Room ═══ */
+/* ANAM GUIDE: GAME ROOM STYLES
+   What: all the looks for the Game Room page — the opponent-picker lobby, the game board view, and the domino tiles themselves.
+   Used by: gameroom.html only.
+   Edit here when: changing how the lobby cards, game board, domino tiles, or the phone layout (Responsive section at the bottom) look. */
+
+.gameroom-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 12px 16px 80px;
+    min-height: 100dvh;
+}
+
+/* ─── Lobby ─── */
+
+.lobby-label {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 16px 0 8px;
+}
+
+.opponent-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.opponent-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 8px;
+    border-radius: 16px;
+    border: 2px solid var(--border-card);
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+.opponent-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+}
+.opponent-card.selected {
+    border-color: var(--card-accent, var(--border-strong));
+    background: linear-gradient(180deg, rgba(var(--card-accent-rgb, 196,122,138), 0.12), var(--bg-card));
+    box-shadow: 0 0 12px rgba(var(--card-accent-rgb, 196,122,138), 0.2);
+}
+.opponent-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+}
+.opponent-name {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.lobby-options {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 18px 0;
+}
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.pill-group {
+    display: flex;
+    gap: 6px;
+}
+.pill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.pill:hover {
+    border-color: var(--text-muted);
+}
+.pill.active {
+    background: var(--text-primary);
+    color: var(--bg-page);
+    border-color: var(--text-primary);
+}
+
+.start-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 20px;
+    border: none;
+    background: var(--text-primary);
+    color: var(--bg-page);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s ease;
+}
+.start-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-float);
+}
+.start-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Active games list */
+.active-games-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.active-game-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(var(--identity-accent-rgb, 196,122,138), 0.06);
+    border: 1px solid var(--border-card);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.active-game-row:hover {
+    border-color: var(--border-strong);
+}
+.game-row-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.game-row-players {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+.game-row-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+.game-row-actions {
+    display: flex;
+    gap: 8px;
+}
+.game-row-btn {
+    padding: 4px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+.game-row-btn.danger {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+/* ─── Game View ─── */
+
+/* Score bar */
+.score-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+.score-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 14px;
+    background: var(--bg-card);
+    border: 2px solid var(--border-card);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+.score-chip.active-turn {
+    border-color: var(--chip-accent, var(--border-strong));
+    box-shadow: 0 0 8px rgba(var(--chip-accent-rgb, 196,122,138), 0.3);
+}
+.score-chip .score-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.score-chip .score-value {
+    font-weight: 700;
+    font-family: var(--font-display);
+}
+
+/* Opponent hands (face down tiles) */
+.opponent-hands {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+.opponent-hand-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.opponent-hand-tiles {
+    display: flex;
+    gap: 2px;
+}
+.tile-back {
+    width: 14px;
+    height: 24px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.15);
+}
+.opponent-hand-name {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* Game board */
+.game-board-wrapper {
+    position: relative;
+    margin-bottom: 12px;
+}
+.game-board {
+    min-height: 160px;
+    max-height: 400px;
+    overflow: auto;
+    background: linear-gradient(180deg, rgba(var(--identity-accent-rgb, 196,122,138), 0.04), var(--bg-card));
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.board-info {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 6px;
+}
+.end-sum {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding: 3px 12px;
+    border-radius: 10px;
+    background: rgba(var(--identity-accent-rgb, 196,122,138), 0.1);
+}
+.end-sum.scoring {
+    color: var(--color-success);
+    font-weight: 700;
+}
+.boneyard-count {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Board chains */
+.board-chain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2px;
+    justify-content: center;
+}
+.board-chain.vertical {
+    flex-direction: column;
+}
+.board-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    justify-content: center;
+}
+.open-end-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px dashed var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* ─── Domino Tiles ─── */
+.domino {
+    display: inline-flex;
+    border: 2px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--bg-card);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.domino.horizontal {
+    flex-direction: row;
+}
+.domino.vertical {
+    flex-direction: column;
+}
+.domino-half {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    place-items: center;
+    position: relative;
+}
+.domino.horizontal .domino-half:first-child {
+    border-right: 1px solid var(--border-card);
+}
+.domino.vertical .domino-half:first-child {
+    border-bottom: 1px solid var(--border-card);
+}
+.pip {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-primary);
+    visibility: hidden;
+}
+.pip.show { visibility: visible; }
+
+/* Pip layout positions in 3x3 grid:
+   1 2 3
+   4 5 6
+   7 8 9
+*/
+
+/* Hand tiles — interactive */
+.player-section {
+    margin-top: 8px;
+}
+.player-hand-label {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 6px;
+}
+.player-hand {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 12px;
+    min-height: 52px;
+    border-radius: 16px;
+    background: rgba(var(--identity-accent-rgb, 196,122,138), 0.04);
+    border: 1px solid var(--border-card);
+}
+.domino.in-hand {
+    cursor: default;
+    opacity: 0.5;
+}
+.domino.in-hand.playable {
+    cursor: pointer;
+    opacity: 1;
+    border-color: var(--color-success);
+}
+.domino.in-hand.playable:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(90, 154, 106, 0.3);
+}
+.domino.in-hand.selected {
+    transform: translateY(-6px);
+    border-color: var(--text-primary);
+    box-shadow: 0 6px 16px rgba(var(--identity-accent-rgb, 196,122,138), 0.4);
+}
+
+/* Action buttons */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 8px;
+}
+.action-btn {
+    padding: 8px 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card);
+}
+.draw-btn { border-color: var(--color-honey); color: var(--color-honey); }
+.pass-btn { border-color: var(--text-muted); color: var(--text-muted); }
+.cancel-btn { border-color: var(--color-danger); color: var(--color-danger); }
+
+/* End chooser */
+.end-chooser {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-page);
+    border-top: 1px solid var(--border-strong);
+    padding: 16px;
+    z-index: 100;
+    text-align: center;
+}
+.chooser-label {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+.end-options {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.end-option-btn {
+    padding: 10px 20px;
+    border-radius: 14px;
+    border: 2px solid var(--color-success);
+    background: rgba(90,154,106, 0.1);
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.end-option-btn:hover {
+    background: rgba(90,154,106, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Game log */
+.game-log-details {
+    margin-top: 12px;
+}
+.game-log-summary {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    list-style: none;
+    text-align: center;
+}
+.game-log-summary::-webkit-details-marker { display: none; }
+.game-log-summary::before { content: ""; }
+.game-log {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+}
+.log-entry {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border-left: 3px solid var(--log-color, var(--text-muted));
+}
+.log-entry .log-comment {
+    font-style: italic;
+    color: var(--text-muted);
+    margin-left: 8px;
+}
+.log-entry.round-event {
+    font-weight: 700;
+    color: var(--text-primary);
+    border-left-color: var(--color-honey);
+    background: rgba(217, 179, 111, 0.08);
+    padding: 6px 10px;
+}
+
+/* Round/game over overlay */
+.round-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+.round-overlay-card {
+    background: var(--bg-page);
+    border: 1px solid var(--border-strong);
+    border-radius: 24px;
+    padding: 28px 32px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+.overlay-title {
+    font-family: var(--font-title);
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+.overlay-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.overlay-score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: var(--bg-card);
+}
+.overlay-score-row.winner {
+    background: rgba(90,154,106, 0.15);
+    border: 1px solid var(--color-success);
+}
+.overlay-score-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+.overlay-score-val {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+.overlay-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.overlay-btn {
+    padding: 10px 24px;
+    border-radius: 16px;
+    border: none;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.overlay-btn.primary {
+    background: var(--text-primary);
+    color: var(--bg-page);
+}
+.overlay-btn.secondary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+}
+.overlay-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Back to lobby */
+.back-btn {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    padding: 6px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border-card);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    cursor: pointer;
+    z-index: 50;
+    backdrop-filter: blur(4px);
+}
+.back-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+
+/* Turn indicator */
+.waiting-banner {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    padding: 6px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 480px) {
+    .opponent-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .domino-half {
+        width: 28px;
+        height: 28px;
+    }
+    .pip {
+        width: 5px;
+        height: 5px;
+    }
+    .score-chip {
+        padding: 4px 10px;
+        font-size: 0.78rem;
+    }
+}

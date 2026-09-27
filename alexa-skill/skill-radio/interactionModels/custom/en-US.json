@@ -1,0 +1,94 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "wolf den",
+      "intents": [
+        {
+          "name": "PlayRadioIntent",
+          "slots": [
+            {
+              "name": "playlist",
+              "type": "PlaylistName"
+            }
+          ],
+          "samples": [
+            "play",
+            "play the radio",
+            "play the station",
+            "start the radio",
+            "start the station",
+            "put on the radio",
+            "turn on the radio",
+            "play our songs",
+            "play the family songs",
+            "play {playlist}",
+            "play the {playlist} playlist",
+            "play playlist {playlist}",
+            "play the {playlist} list",
+            "put on {playlist}",
+            "put on the {playlist} playlist",
+            "start the {playlist} playlist"
+          ]
+        },
+        {
+          "name": "AMAZON.NextIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.PreviousIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StartOverIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.PauseIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ResumeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        }
+      ],
+      "types": [
+        {
+          "name": "PlaylistName",
+          "values": [
+            {
+              "name": {
+                "value": "Morning Music"
+              }
+            },
+            {
+              "name": {
+                "value": "Favorites"
+              }
+            },
+            {
+              "name": {
+                "value": "Focus"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

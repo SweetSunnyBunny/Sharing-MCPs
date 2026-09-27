@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Placeholder acorn attach button — swap for Owner's art -->
+  <path d="M32 12c-2 2-2 5 0 7" fill="none" stroke="#6e4a2e" stroke-width="3" stroke-linecap="round"/>
+  <path d="M16 24 Q32 14 48 24 Q48 30 32 30 Q16 30 16 24 Z" fill="#8a5a34"/>
+  <path d="M20 29 Q32 34 44 29 Q44 46 32 52 Q20 46 20 29 Z" fill="#c98e4e"/>
+</svg>

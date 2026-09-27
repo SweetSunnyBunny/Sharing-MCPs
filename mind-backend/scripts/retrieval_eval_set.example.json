@@ -1,0 +1,17 @@
+[
+  {
+    "query": "what did we decide about the garden project",
+    "identity": "avery",
+    "expect_any": ["garden"],
+    "expect_all": [],
+    "limit": 5,
+    "_note": "Fictional example. Replace with queries and expected fragments from your own test data."
+  },
+  {
+    "query": "which book did I want to read next",
+    "identity": "rowan",
+    "expect_any": ["book"],
+    "expect_all": [],
+    "limit": 5
+  }
+]

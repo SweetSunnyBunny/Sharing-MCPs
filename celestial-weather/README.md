@@ -1,51 +1,68 @@
-# Celestial Weather MCP Server
+# Celestial Weather MCP
 
-Get weather, moon phases, seasons, sunrise/sunset times, air quality, and astronomical events - all in one tool!
+Get weather, air quality, sun times, moon information and seasons. Online weather and geocoding need internet access; no API key is required.
 
-**No API keys required!** Uses free Open-Meteo APIs.
+## 1. Prepare the folder and Python
 
-## What It Does
+These steps use Windows PowerShell and **Python 3.11 (64-bit)**. Install it from [python.org](https://www.python.org/downloads/), including the Python launcher, if needed. Reopen PowerShell after installation.
 
-- **Weather** - Current conditions and 7-day forecast
-- **Moon** - Phase, illumination, next full moon
-- **Season** - Current season, days until next
-- **Sun** - Sunrise, sunset, day length, golden hour
-- **Air Quality** - AQI, PM2.5, health category
-- **Meteor Showers** - Upcoming showers with peak dates
+Extract the collection to `C:\MCP-Starter\Sharing-MCPs`, so this README is inside `C:\MCP-Starter\Sharing-MCPs\celestial-weather`. If you chose another location, replace that path in every command and JSON example below. Do not run inside the ZIP.
 
----
-
-## Quick Start
-
-### Install Dependencies
-
-```bash
-pip install -r requirements.txt
+```powershell
+Set-Location "C:\MCP-Starter\Sharing-MCPs\celestial-weather"
+py -3.11 --version
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### Run the Server
+`.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
 
-```bash
-python run_server.py
+## 2. Choose your location
+
+There is no populated location file to edit. After connecting, call `set_default_location` with your city (include the country if ambiguous). You can also pass a city directly to `get_celestial_overview` without saving it. The server writes preferences to its package-local config file.
+
+Call `set_units` with `metric` or `imperial` to choose units. The astronomy calculations run locally. These instructions use `server.py` for stdio; `run_server.py` instead starts an HTTP listener on all interfaces and is not needed for local setup.
+
+## 3. Check startup
+
+```powershell
+.\.venv\Scripts\python.exe .\server.py
 ```
 
-That's it! No API keys needed.
+This is a **stdio** server: a client talks through the process's input/output, not a web page. A banner followed by silence, or silence alone, is normal while it waits. A Python traceback is an error. Press **Ctrl+C** after this check, then connect your client below.
 
-### Connect to Claude
+## 4. Connect your AI client and check it works
 
-Add to your MCP settings:
+Claude Desktop: **Settings → Developer → Edit Config**. [Client connection guide](https://modelcontextprotocol.io/docs/develop/connect-local-servers). Other clients use their own local MCP settings; this example uses `mcpServers` JSON.
 
 ```json
 {
   "mcpServers": {
-    "weather": {
-      "url": "http://localhost:8080/mcp"
+    "celestial-weather": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/celestial-weather/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/celestial-weather/server.py"
+      ]
     }
   }
 }
 ```
 
----
+If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
+
+Ask: `Use get_celestial_overview for London, United Kingdom.` Confirm the returned location. Then set your own default city and try the overview without a city.
+
+## If something goes wrong
+
+- **`py` is not recognized:** install Python with its launcher, then reopen PowerShell. If only `python` works, verify `python --version` and use it for the `-m venv` command.
+- **`No module named ...`:** repeat the requirements command using `.\.venv\Scripts\python.exe`; the client's `command` must point to that same environment.
+- **Server missing in the client:** check absolute paths and JSON punctuation, then restart the client. Claude Desktop logs are under `%APPDATA%\Claude\logs`.
+- **A quiet terminal:** this is expected for stdio; use the client tool check above. Ctrl+C stops a manual test.
+- **No default location:** pass `city` or call `set_default_location` first.
+- **Wrong city:** include region/country and inspect the returned coordinates.
+- **Timezone error on Windows:** reinstall requirements; `tzdata` is included.
+- **Weather request fails:** check internet access; upstream availability is separate from local startup.
 
 ## Available Tools
 
@@ -59,30 +76,9 @@ Add to your MCP settings:
 
 ---
 
-## Example Usage
-
-**First time setup:**
-```
-"Set my default location to Chicago"
-"Use imperial units"
-```
-
-**Daily use:**
-```
-"What's the weather?"
-"Is it a good night for stargazing?"
-"When's the next full moon?"
-```
-
-**Multiple locations:**
-```
-"Save London as mom's place"
-"What's the weather at mom's place?"
-```
-
----
-
 ## What `get_celestial_overview` Returns
+
+This is a fictional formatting example, not a current weather report. Your tool result uses the actual requested location and date.
 
 ```
 Celestial Overview for Chicago, United States
@@ -128,17 +124,6 @@ Quadrantids: 2024-01-03 (2 days) - ~120 meteors/hour
 
 ---
 
-## Configuration
-
-Settings are stored in `~/.config/celestial-weather/config.json`
-
-You can:
-- Set a default location (so you don't have to type it every time)
-- Choose metric (°C, km/h) or imperial (°F, mph) units
-- Save location aliases for quick access
-
----
-
 ## Data Sources
 
 - **Weather**: [Open-Meteo](https://open-meteo.com/) (free, no key)
@@ -146,9 +131,3 @@ You can:
 - **Astronomy**: [PyEphem](https://rhodesmill.org/pyephem/) (local calculations)
 
 ---
-
-## License
-
-MIT - Do whatever you want with it!
-
-Built with love for sharing.

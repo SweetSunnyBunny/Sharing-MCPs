@@ -1,0 +1,8 @@
+# Local secrets only. Copy to .dev.vars and supply your own values.
+MCP_SECRET_PATH="your-long-random-mcp-token"
+DISCORD_BOT_TOKEN_AVERY="your-first-discord-bot-token"
+DISCORD_BOT_TOKEN_ROWAN="your-second-discord-bot-token"
+DISCORD_APP_ID="your-application-id"
+ELEVENLABS_API_KEY="your-optional-elevenlabs-key"
+OPENAI_API_KEY="your-optional-image-generation-key"
+MACHINE_AGENT_API_KEY="your-optional-machine-bridge-key"

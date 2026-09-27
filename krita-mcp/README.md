@@ -1,68 +1,83 @@
-# Krita MCP Server
+# Krita MCP
 
-Let Claude draw and paint in Krita! This MCP bridges Claude and Krita's painting capabilities through a local HTTP plugin.
+Connect an MCP client to a running Krita painting app through the included Python plugin. There are two pieces: a plugin inside Krita on port 5678, and this separate Python MCP process.
 
-## How It Works
+## 1. Prepare the folder and Python
 
-1. **Krita Plugin** - A Python plugin runs inside Krita, listening for commands on port 5678
-2. **MCP Server** - This server receives tool calls from Claude and forwards them to the plugin
-3. **Claude** - Can now create canvases, draw shapes, paint strokes, manage layers, and more!
+These steps use Windows PowerShell and **Python 3.11 (64-bit)**. Install it from [python.org](https://www.python.org/downloads/), including the Python launcher, if needed. Reopen PowerShell after installation.
 
-## Requirements
+Extract the collection to `C:\MCP-Starter\Sharing-MCPs`, so this README is inside `C:\MCP-Starter\Sharing-MCPs\krita-mcp`. If you chose another location, replace that path in every command and JSON example below. Do not run inside the ZIP.
 
-- [Krita](https://krita.org) (free and open source)
-- Python 3.8+
-
----
-
-## Quick Start
-
-### Step 1: Install the Krita Plugin
-
-1. Find your Krita resources folder:
-   - **Windows:** `%APPDATA%\krita\pykrita\`
-   - **Mac:** `~/Library/Application Support/krita/pykrita/`
-   - **Linux:** `~/.local/share/krita/pykrita/`
-
-2. Copy the plugin files:
-   - Copy `plugin/krita_mcp_plugin.desktop` to the pykrita folder
-   - Copy the entire `plugin/krita_mcp_plugin/` folder to the pykrita folder
-
-3. Enable the plugin in Krita:
-   - Open Krita
-   - Go to **Settings > Configure Krita > Python Plugin Manager**
-   - Check **Krita MCP Plugin**
-   - Restart Krita
-
-### Step 2: Install MCP Dependencies
-
-```bash
-pip install -r requirements.txt
+```powershell
+Set-Location "C:\MCP-Starter\Sharing-MCPs\krita-mcp"
+py -3.11 --version
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### Step 3: Run the MCP Server
+`.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
 
-```bash
-python run_server.py
+## 2. Install the plugin inside Krita
+
+Install [Krita](https://krita.org/en/download/) with Python plugin support. The Python environment above is for the MCP process; Krita uses its own embedded Python for the plugin.
+
+1. Close Krita before copying the plugin.
+2. In PowerShell, still inside this package folder, run:
+
+```powershell
+$kritaPlugins = Join-Path $env:APPDATA "krita\pykrita"
+New-Item -ItemType Directory -Force $kritaPlugins
+Copy-Item -LiteralPath .\plugin\krita_mcp_plugin.desktop -Destination $kritaPlugins
+Copy-Item -LiteralPath .\plugin\krita_mcp_plugin -Destination $kritaPlugins -Recurse
 ```
 
-The server runs on `http://localhost:8080/mcp`
+3. Open Krita → **Settings → Configure Krita → Python Plugin Manager**, enable **Krita MCP Plugin**, then restart Krita. Keep Krita open.
+4. Wait a few seconds. The plugin starts its command listener automatically. No separate toolbar button is required.
 
-### Step 4: Connect Claude
+If your Krita resource folder is customized, use **Settings → Manage Resources → Open Resource Folder**, then its `pykrita` directory, instead of the default above. See [Krita's plugin guide](https://docs.krita.org/en/user_manual/python_scripting/install_custom_python_plugin.html). macOS/Linux use their own Krita resource directory; these copy commands are Windows-specific.
 
-Add to your MCP settings:
+The MCP server defaults to `http://localhost:5678`; set `KRITA_URL` in the client `env` only if you deliberately changed the plugin's address. The bundled plugin opens its listener on all interfaces; keep it behind your local firewall, with no public forwarding.
+
+## 3. Check startup
+
+```powershell
+.\.venv\Scripts\python.exe .\server.py
+```
+
+This is a **stdio** server: a client talks through the process's input/output, not a web page. A banner followed by silence, or silence alone, is normal while it waits. A Python traceback is an error. Press **Ctrl+C** after this check, then connect your client below.
+
+## 4. Connect your AI client and check it works
+
+Claude Desktop: **Settings → Developer → Edit Config**. [Client connection guide](https://modelcontextprotocol.io/docs/develop/connect-local-servers). Other clients use their own local MCP settings; this example uses `mcpServers` JSON.
 
 ```json
 {
   "mcpServers": {
-    "krita": {
-      "url": "http://localhost:8080/mcp"
+    "krita-mcp": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/krita-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/krita-mcp/server.py"
+      ]
     }
   }
 }
 ```
 
----
+If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
+
+Ask the client to call `krita_health`. A successful response confirms it reached the plugin. Then create a small blank canvas with `krita_new_canvas` and call `krita_get_document_info`; check the canvas appears in Krita.
+
+## If something goes wrong
+
+- **`py` is not recognized:** install Python with its launcher, then reopen PowerShell. If only `python` works, verify `python --version` and use it for the `-m venv` command.
+- **`No module named ...`:** repeat the requirements command using `.\.venv\Scripts\python.exe`; the client's `command` must point to that same environment.
+- **Server missing in the client:** check absolute paths and JSON punctuation, then restart the client. Claude Desktop logs are under `%APPDATA%\Claude\logs`.
+- **A quiet terminal:** this is expected for stdio; use the client tool check above. Ctrl+C stops a manual test.
+- **Cannot connect to Krita:** keep Krita open, enable the plugin, restart it, and check that port 5678 is not used by another program.
+- **Plugin missing:** the `.desktop` file and `krita_mcp_plugin` directory must sit alongside each other directly inside `pykrita`, without an extra nesting level.
+- **No Python Plugin Manager:** this Krita build may not include Python plugin support; use a supported desktop build.
+- **Document-dependent tool fails:** open/create a canvas first and close blocking Krita dialogs.
 
 ## Available Tools
 
@@ -148,61 +163,3 @@ Claude: Let me create a simple landscape painting.
 ```
 
 ---
-
-## Remote Access (Optional)
-
-To use Krita from Claude on your phone or other devices, set up a Cloudflare Tunnel:
-
-1. Get a domain (~$5/year from Cloudflare)
-2. Install cloudflared
-3. Create a tunnel pointing to `http://localhost:8080`
-4. Update your MCP settings to use the tunnel URL
-
-See the Filesystem MCP README for detailed tunnel setup instructions.
-
----
-
-## Troubleshooting
-
-### "Cannot connect to Krita"
-- Make sure Krita is running
-- Check that the plugin is enabled (Settings > Configure Krita > Python Plugin Manager)
-- Restart Krita after enabling the plugin
-
-### Plugin doesn't appear in Krita
-- Verify the plugin files are in the correct location
-- Check the folder structure: `pykrita/krita_mcp_plugin/__init__.py`
-- The `.desktop` file must be directly in `pykrita/`
-
-### Commands timeout
-- Some operations take time (especially filters)
-- Try simpler operations first
-- Check Krita's Python scripting console for errors
-
-### Colors look wrong
-- Krita uses BGRA format internally
-- The plugin handles conversion automatically
-- If issues persist, check your document color space
-
----
-
-## How Claude Uses This
-
-When you ask Claude to draw something, it:
-
-1. Creates a canvas with appropriate dimensions
-2. Plans out layers for different elements
-3. Sets colors and brushes
-4. Draws shapes, strokes, and fills
-5. Applies filters and transforms as needed
-6. Exports the final image
-
-Claude can see the exported images to verify the result!
-
----
-
-## License
-
-MIT - Do whatever you want with it!
-
-Built with love for sharing.

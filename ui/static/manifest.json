@@ -1,0 +1,24 @@
+{
+    "name": "Anam - Soul of Heaven",
+    "short_name": "Anam",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#FFF5F0",
+    "theme_color": "#F2B8C6",
+    "icons": [
+        {
+            "src": "/static/assets/icons/app_icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/static/assets/icons/app_icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

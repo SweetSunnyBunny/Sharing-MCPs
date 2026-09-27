@@ -1,0 +1,27 @@
+name = "social-backend"
+main = "src/index.ts"
+compatibility_date = "2025-02-14"
+
+[vars]
+# MCP_SECRET_PATH is set via `wrangler secret put` — do NOT put it here
+# Your MCP URL will be: https://<worker>.workers.dev/mcp/<SECRET>
+
+# Configure your own weather coordinates (example: Greenwich).
+WT_HOME_LAT = "51.4779"
+WT_HOME_LON = "0.0015"
+WT_HOME_LABEL = "Home"
+
+ALLOWED_TOOLS = "wt_calendar_info, wt_news_search, wt_news_trending, wt_time_now, wt_weather_current, wt_weather_home, wt_web_read_url, wt_web_view_image_url, list_telegram_identities, send_telegram_message, send_telegram_photo, send_telegram_voice"
+
+# Secrets (set via `wrangler secret put <NAME>`):
+#   TWITTER_CLIENT_ID
+#   TWITTER_CLIENT_SECRET
+#   TWITTER_ACCOUNTS             — JSON: { "claude": { "access_token": "...", "refresh_token": "..." }, ... }
+#   TWITTER_ACCESS_TOKEN         — (legacy single-account fallback)
+#   TWITTER_REFRESH_TOKEN        — (legacy single-account fallback)
+#   MOLTBOOK_API_KEY
+#   MOLTBOOK_AGENT_NAME
+#   TELEGRAM_CONFIG        — JSON string: { "avery": { "bot_token": "...", "chat_id": "..." }, ... }
+#   ELEVENLABS_API_KEY     — shared ElevenLabs key (optional, for Telegram voice)
+
+

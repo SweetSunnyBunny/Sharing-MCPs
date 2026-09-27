@@ -1,0 +1,9 @@
+﻿{
+  "name": "filesystem-mcp",
+  "main": "mcp-worker.js",
+  "compatibility_date": "2025-01-01",
+  "vars": {
+    "SERVER_NAME": "filesystem",
+    "MACHINE_AGENT_URL": "https://machine-agent.example.com"
+  }
+}

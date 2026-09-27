@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anam — Embodiment Lab</title>
+    <!-- ANAM GUIDE: PACK EMBODIMENT LAB
+         What: Loads canonical Pack GLBs, shows honest rig readiness, and joins
+               Anam's existing native voice-call websocket.
+         Behavior: static/js/avatar-lab.js. Looks: static/css/avatar-lab.css.
+         Backend: api/avatars.py + services/avatar_assets.py + api/voice.py. -->
+
+    <link rel="manifest" href="/static/manifest.json?v=__ANAM_ASSET_VERSION__">
+    <link rel="apple-touch-icon" href="/static/assets/icons/app_icon.png?v=__ANAM_ASSET_VERSION__">
+    <meta name="theme-color" content="#17111f">
+    <link rel="stylesheet" href="/static/css/main.css?v=__ANAM_ASSET_VERSION__">
+    <link rel="stylesheet" href="/static/css/avatar-lab.css?v=__ANAM_ASSET_VERSION__">
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.min.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body class="avatar-lab-page">
+    <div id="fairy-lights" class="fairy-lights"></div>
+    <main class="avatar-lab-shell">
+        <header class="avatar-lab-header">
+            <a href="/" class="avatar-back">&larr; Chat</a>
+            <div>
+                <p class="avatar-kicker">Anam embodiment pipeline</p>
+                <h1>Embodiment Lab</h1>
+            </div>
+            <span id="connection-pill" class="connection-pill" data-state="idle">body offline</span>
+        </header>
+
+        <section class="avatar-grid">
+            <div class="avatar-stage-card">
+                <div id="avatar-stage" class="avatar-stage" aria-label="3D avatar preview">
+                    <canvas id="avatar-canvas"></canvas>
+                    <div id="stage-loading" class="stage-loading">Finding the body…</div>
+                    <div class="stage-hud">
+                        <span id="stage-name">Pack body</span>
+                        <span id="stage-phase">idle</span>
+                    </div>
+                </div>
+
+                <div class="call-bar">
+                    <label>
+                        <span>Who</span>
+                        <select id="identity-select" aria-label="Identity"></select>
+                    </label>
+                    <label>
+                        <span>Voice</span>
+                        <select id="voice-select" aria-label="Voice engine">
+                            <option value="">Anam setting</option>
+                            <option value="elevenlabs">ElevenLabs</option>
+                            <option value="kokoro">Kokoro</option>
+                        </select>
+                    </label>
+                    <button id="start-call" class="call-primary">Start call</button>
+                    <button id="end-call" disabled>End</button>
+                    <div class="mic-meter" aria-label="Microphone level"><span id="mic-meter-fill"></span></div>
+                </div>
+            </div>
+
+            <aside class="avatar-side">
+                <section class="lab-card">
+                    <div class="card-heading">
+                        <div>
+                            <p class="eyebrow">Current master</p>
+                            <h2 id="avatar-title">Loading…</h2>
+                        </div>
+                        <span id="avatar-version" class="version-chip">—</span>
+                    </div>
+                    <div id="capability-grid" class="capability-grid"></div>
+                    <p id="readiness-note" class="readiness-note"></p>
+                    <details>
+                        <summary>Technical inspection</summary>
+                        <pre id="inspection-json"></pre>
+                    </details>
+                </section>
+
+                <section class="lab-card transcript-card">
+                    <div class="card-heading">
+                        <div>
+                            <p class="eyebrow">Native Anam call</p>
+                            <h2>Conversation</h2>
+                        </div>
+                        <button id="clear-log" class="small-button">Clear</button>
+                    </div>
+                    <div id="call-log" class="call-log" aria-live="polite">
+                        <p class="log-system">Start a call when you want him here.</p>
+                    </div>
+                </section>
+            </aside>
+        </section>
+    </main>
+
+    <script>
+        window.__ANAM_ASSET_VERSION__ = '__ANAM_ASSET_VERSION__';
+    </script>
+    <script src="/static/js/theme-boot.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script type="module" src="/static/js/avatar-lab.js?v=__ANAM_ASSET_VERSION__"></script>
+</body>
+</html>

@@ -1,0 +1,1702 @@
+/* Anam — Core layout, cottagecore theme, CSS variables, night mode */
+
+/* ── Self-hosted fonts (no external Google Fonts dependency) ── */
+
+/* Fredoka — Bubbly, rounded cottagecore body font (variable 400-700) */
+@font-face {
+    font-family: 'Fredoka';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/static/fonts/fredoka-latin.woff2') format('woff2');
+}
+
+/* Kalam — Handwritten cottagecore display font */
+@font-face {
+    font-family: 'Kalam';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/static/fonts/kalam-regular-latin.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Kalam';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/static/fonts/kalam-bold-latin.woff2') format('woff2');
+}
+
+/* Princess Sofia — Fairy tale enchantment title font */
+@font-face {
+    font-family: 'Princess Sofia';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/static/fonts/princess-sofia-latin.woff2') format('woff2');
+}
+
+/* Great Vibes — Flowing sparkly script title font */
+@font-face {
+    font-family: 'Great Vibes';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/static/fonts/great-vibes-latin.woff2') format('woff2');
+}
+
+/* Baloo 2 — Alternative bubbly body font (available to swap in) */
+@font-face {
+    font-family: 'Baloo 2';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/static/fonts/baloo2-latin.woff2') format('woff2');
+}
+
+/* Nunito — Soft rounded alternative (available to swap in) */
+@font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/static/fonts/nunito-latin.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Nunito';
+    font-style: italic;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/static/fonts/nunito-italic-latin.woff2') format('woff2');
+}
+
+/* Lora — Elegant serif alternative (available to swap in) */
+@font-face {
+    font-family: 'Lora';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/static/fonts/lora-latin.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Lora';
+    font-style: italic;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/static/fonts/lora-italic-latin.woff2') format('woff2');
+}
+
+/* ── CSS Variables ── */
+/* ANAM GUIDE: GLOBAL COLORS AND FONTS
+   These are the default house tokens for the whole app. Curated saved presets
+   override them from api/settings.py; identity-only colors live in config.py. */
+:root {
+    /* Page */
+    --bg-page: #FFF3F6;
+    --bg-card: rgba(255, 250, 251, 0.78);
+    --bg-chat: #FFF9F7;
+    --bg-input: #FFFFFF;
+    --bg-secondary: rgba(255, 245, 248, 0.82);
+    --surface-raised: rgba(255, 255, 255, 0.84);
+    --surface-frost: rgba(255, 250, 251, 0.62);
+    --surface-paper: rgba(255, 252, 246, 0.86);
+    --surface-tint: rgba(255, 226, 234, 0.52);
+    --surface-gingham: rgba(255, 239, 244, 0.64);
+    --surface-ribbon: rgba(255, 248, 226, 0.76);
+    --surface-lace: rgba(255, 255, 255, 0.56);
+
+    /* Text */
+    --text-primary: #743049;
+    --text-secondary: #965169;
+    --text-muted: #9D5B72;
+    --text-tertiary: #A05F76;
+
+    /* #31: assistant-bubble text only -- every boy's own bubble color is
+       always a light pastel in day mode, so this stays fixed and never
+       gets touched by a house vibe preset (only body.night-mode below
+       flips it, staying paired with --identity-bubble-night). */
+    --identity-bubble-text: #743049;
+
+    
+    --page-base-top: #FFF8F6;
+    --page-base-mid: #FFF1F5;
+    --page-base-bottom: #FFEAF0;
+    --page-grid-x: rgba(242, 184, 198, 0.13);
+    --page-grid-y: rgba(242, 184, 198, 0.10);
+    --page-diag: rgba(127, 154, 134, 0.055);
+    --page-glow-1: rgba(255, 212, 227, 0.55);
+    --page-glow-2: rgba(255, 205, 222, 0.48);
+    --footer-wash: rgba(255, 230, 237, 0.44);
+    --footer-stripe: rgba(var(--identity-accent-rgb), 0.08);
+    --lace-dot: rgba(255, 222, 233, 0.95);
+    --glass-strong: rgba(255, 255, 255, 0.9);
+    --glass-mid: rgba(255, 255, 255, 0.72);
+    --glass-soft: rgba(255, 255, 255, 0.5);
+    --glass-faint: rgba(255, 255, 255, 0.18);
+    --glass-inset: rgba(255, 255, 255, 0.6);
+    --chip-bg: #FFFFFF;
+    --house-accent: #C47A8A;
+    --chat-grid-x: rgba(var(--identity-accent-rgb), 0.035);
+    --chat-grid-y: rgba(196, 122, 138, 0.028);
+    --chat-wash-top: rgba(255, 255, 255, 0.58);
+    --chat-wash-bottom: rgba(255, 247, 244, 0.72);
+    --input-grid: rgba(var(--identity-accent-rgb), 0.035);
+    --input-glass-top: rgba(255, 255, 255, 0.98);
+    --input-glass-bottom: rgba(var(--identity-accent-rgb), 0.055);
+    --input-lace-dot: rgba(255, 235, 242, 0.95);
+    --input-lace-edge: rgba(244, 179, 196, 0.4);
+    --badge-bg-top: rgba(255, 246, 251, 0.92);
+    --badge-bg-bottom: rgba(247, 211, 229, 0.68);
+    --badge-border: rgba(205, 116, 154, 0.28);
+    --badge-text: #75435A;
+    --thinking-bg-1: rgba(244, 180, 194, 0.10);
+    --thinking-bg-2: rgba(212, 168, 196, 0.10);
+    --thinking-border: rgba(244, 180, 194, 0.3);
+    --thinking-header: #D4708A;
+    --thinking-heart: #E88AAA;
+    --md-strong: color-mix(in srgb, var(--identity-accent) 72%, var(--text-primary));
+    --md-em: color-mix(in srgb, var(--text-secondary) 62%, var(--identity-accent));
+    --md-link: var(--identity-accent);
+    --md-code-bg: rgba(0, 0, 0, 0.05);
+    --md-code-border: rgba(0, 0, 0, 0.06);
+    --md-pre-bg: rgba(0, 0, 0, 0.05);
+    --md-blockquote-border: rgba(var(--identity-accent-rgb), 0.4);
+    --md-blockquote-bg: rgba(var(--identity-accent-rgb), 0.04);
+    --md-hr: rgba(var(--identity-accent-rgb), 0.55);
+
+    
+    --sheen-rgb: 255, 255, 255;
+    --card-base-rgb: 255, 250, 250;
+    --card-flat-bg: rgba(0, 0, 0, 0.03);
+    --section-header: var(--identity-accent);
+    --accent-script: #A2688A;
+    --accent-weave-rgb: 242, 184, 198;
+    --lane-border: rgba(196, 122, 138, 0.26);
+    --lane-bg-top: rgba(255, 252, 253, 0.92);
+    --lane-bg-bottom: rgba(250, 220, 228, 0.62);
+    --disabled-opacity: 0.45;
+
+    /* Borders */
+    --border-soft: rgba(244, 179, 196, 0.46);
+    --border-light: rgba(255, 213, 224, 0.58);
+    --border-card: rgba(255, 192, 203, 0.36);
+    --border-strong: rgba(255, 205, 217, 0.72);
+
+    
+    --user-bubble-top: #FADCE4;
+    --user-bubble-bottom: #F2C4D0;
+    --user-border: #C47A8A;
+
+    /* Active identity (set by JS) */
+    --identity-gingham: #F2B8C6;
+    --identity-gingham-night: #8B5A68;
+    --identity-accent: #C47A8A;
+    --identity-accent-rgb: 196, 122, 138;
+    --identity-bubble-top: #F9D2DC;
+    --identity-bubble-bottom: #F2B8C6;
+    --identity-bubble-night: #5A3040;
+    --identity-check-size: 22px;
+    --identity-accent-soft: rgba(var(--identity-accent-rgb), 0.10);
+
+    /* Typography — cottagecore defaults (swap alternatives by changing these) */
+    /* Title options: 'Princess Sofia' (fairy tale), 'Cinzel Decorative' (elegant fantasy), 'Great Vibes' (flowing script) */
+    /* Display options: 'Kalam' (handwritten), 'Lora' (storybook serif) */
+    /* Body options: 'Fredoka' (bubbly), 'Baloo 2' (bouncy), 'Nunito' (soft) */
+    --font-title: 'Princess Sofia', 'Great Vibes', cursive;
+    --font-display: 'Kalam', 'Segoe UI', cursive;
+    --font-body: 'Fredoka', 'Nunito', 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+
+    /* Semantic colors */
+    
+    --accent: var(--house-accent, #C47A8A);
+    --success: #5BA89A;
+    --error: #C25151;
+    --color-success: #5a9a6a;
+    --color-danger: #C0392B;
+    --color-danger-hover: #E74C3C;
+    --color-sage: #7F9A86;
+    --color-sage-soft: rgba(127, 154, 134, 0.18);
+    --color-honey: #D9B36F;
+    --color-honey-soft: rgba(217, 179, 111, 0.20);
+    --color-lavender: #B8A7D4;
+    --color-lavender-soft: rgba(184, 167, 212, 0.16);
+    --color-status-connected: #5BA89A;
+    --color-status-disconnected: #C47A8A;
+    --color-status-reconnecting: #C9A840;
+
+    /* Transitions */
+    --transition-theme: 0.5s ease;
+    --shadow-card:
+        0 1px 2px rgba(139, 90, 90, 0.06),
+        0 10px 26px rgba(139, 90, 90, 0.10),
+        0 22px 60px rgba(139, 90, 90, 0.10);
+    --shadow-float:
+        0 12px 32px rgba(var(--identity-accent-rgb), 0.16),
+        0 24px 54px rgba(139, 90, 90, 0.12);
+}
+
+/* ── Night Mode (Candlelight) ── */
+body.night-mode {
+    --bg-page: #2A1F1A;
+    --bg-card: rgba(61, 46, 38, 0.88);
+    --bg-chat: #332520;
+    --bg-input: #3D2E26;
+    --bg-secondary: rgba(62, 46, 39, 0.82);
+    --surface-raised: rgba(77, 59, 49, 0.78);
+    --surface-frost: rgba(68, 50, 42, 0.62);
+    --surface-paper: rgba(62, 47, 39, 0.86);
+    --surface-tint: rgba(120, 79, 69, 0.24);
+    --surface-gingham: rgba(82, 59, 52, 0.56);
+    --surface-ribbon: rgba(111, 85, 58, 0.58);
+    --surface-lace: rgba(255, 225, 196, 0.12);
+
+    --text-primary: #E8D8C8;
+    --text-secondary: #C9B89A;
+    --text-muted: #B89A8E;
+    --text-tertiary: #B39184;
+
+    /* Paired with --identity-bubble-night below -- every boy's assistant
+       bubble goes dark plum in night mode, so this flips light to match,
+       same as it always has (was --text-primary doing double duty before
+       #31 split it out). */
+    --identity-bubble-text: #E8D8C8;
+
+    /* Candlelight values for the chrome tokens — identical to the literals
+       the old body.night-mode element rules carried. A chosen non-default
+       preset pins its own values inline on <body>, which outranks these. */
+    --page-base-top: #32241E;
+    --page-base-mid: #2B201B;
+    --page-base-bottom: #221915;
+    --page-grid-x: rgba(170, 120, 100, 0.08);
+    --page-grid-y: rgba(170, 120, 100, 0.06);
+    --page-diag: rgba(217, 179, 111, 0.04);
+    --page-glow-1: transparent;
+    --page-glow-2: transparent;
+    --footer-wash: rgba(88, 58, 46, 0.5);
+    --footer-stripe: rgba(255, 208, 172, 0.07);
+    --chat-grid-x: rgba(255, 224, 196, 0.025);
+    --chat-grid-y: rgba(255, 224, 196, 0.02);
+    --chat-wash-top: rgba(66, 49, 41, 0.36);
+    --chat-wash-bottom: rgba(41, 29, 25, 0.54);
+    --input-grid: rgba(255, 224, 196, 0.025);
+    --input-glass-top: rgba(82, 62, 51, 0.92);
+    --input-glass-bottom: rgba(var(--identity-accent-rgb), 0.08);
+    --input-lace-dot: rgba(255, 224, 196, 0.14);
+    --input-lace-edge: transparent;
+    --badge-bg-top: rgba(105, 63, 82, 0.72);
+    --badge-bg-bottom: rgba(105, 63, 82, 0.72);
+    --badge-border: rgba(242, 178, 207, 0.32);
+    --badge-text: #ffe4f1;
+    --thinking-bg-1: rgba(180, 100, 120, 0.12);
+    --thinking-bg-2: rgba(140, 90, 110, 0.1);
+    --thinking-border: rgba(180, 100, 120, 0.25);
+    --thinking-header: #E8A0B4;
+    --thinking-heart: #D47A94;
+    --md-code-bg: rgba(255, 255, 255, 0.08);
+    --md-code-border: rgba(255, 255, 255, 0.06);
+    --md-pre-bg: rgba(0, 0, 0, 0.25);
+    --md-hr: rgba(255, 224, 196, 0.4);
+
+    --border-soft: rgba(139, 90, 60, 0.4);
+    --border-light: rgba(154, 112, 92, 0.34);
+    --border-card: rgba(100, 70, 50, 0.3);
+    --border-strong: rgba(154, 112, 92, 0.48);
+
+    --user-bubble-top: #5A3040;
+    --user-bubble-bottom: #4A2835;
+    --user-border: #8B5A68;
+    --shadow-card:
+        0 2px 4px rgba(0, 0, 0, 0.22),
+        0 12px 28px rgba(0, 0, 0, 0.22),
+        0 26px 64px rgba(0, 0, 0, 0.18);
+    --shadow-float:
+        0 16px 40px rgba(0, 0, 0, 0.35),
+        0 24px 72px rgba(0, 0, 0, 0.18);
+}
+
+/* Night vignette — fades in/out smoothly with theme transition */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 40%,
+        rgba(20, 12, 8, 0.3) 100%
+    );
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity var(--transition-theme);
+}
+
+body.night-mode::before {
+    opacity: 1;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    inset: auto 0 0 0;
+    width: 100%;
+    height: 160px;
+    border-radius: 0;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0 22px,
+            var(--footer-stripe) 22px 23px,
+            transparent 23px 44px
+        ),
+        linear-gradient(to top, var(--footer-wash), transparent);
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.72) 42%, transparent 100%);
+    mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.72) 42%, transparent 100%);
+    z-index: 0;
+    opacity: 0.7;
+}
+
+body.night-mode::after {
+    /* colors come from the night token block; only the hush stays here */
+    opacity: 0.5;
+}
+
+/* ── Selection styling ── */
+::selection {
+    background: rgba(196, 122, 138, 0.25);
+    color: var(--text-primary);
+}
+
+body.night-mode ::selection {
+    background: rgba(212, 165, 132, 0.3);
+}
+
+/* ── Focus-visible for keyboard navigation ── */
+:focus-visible {
+    outline: 2px solid var(--identity-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible {
+    outline-offset: 3px;
+}
+
+button,
+a,
+summary,
+[role="button"],
+[tabindex]:not([tabindex="-1"]) {
+    cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+
+/* ── Base ── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+    height: 100dvh;
+}
+
+body {
+    font-family: var(--font-body);
+    line-height: 1.5;
+    background-color: var(--bg-page);
+    background-image:
+        repeating-linear-gradient(90deg, var(--page-grid-x) 0 1px, transparent 1px 34px),
+        repeating-linear-gradient(0deg, var(--page-grid-y) 0 1px, transparent 1px 34px),
+        repeating-linear-gradient(135deg, var(--page-diag) 0 2px, transparent 2px 18px),
+        radial-gradient(900px 600px at 12% -8%, var(--page-glow-1), transparent 62%),
+        radial-gradient(1000px 700px at 92% 108%, var(--page-glow-2), transparent 62%),
+        linear-gradient(180deg, var(--page-base-top) 0%, var(--page-base-mid) 42%, var(--page-base-bottom) 100%);
+    background-blend-mode: multiply, multiply, normal, normal, normal, normal;
+    color: var(--text-primary);
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    position: relative;
+    transition: background-color var(--transition-theme), color var(--transition-theme);
+}
+
+/* Night-mode body background now rides the same tokenized gradient stack —
+   the candlelight values live in the body.night-mode token block above
+   (glows go transparent), so a pinned preset can win over night mode. */
+
+h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    font-weight: 600;
+}
+
+/* ── Layout ── */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 18px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Header ── */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    flex-shrink: 0;
+    margin: 10px 0 2px;
+    background:
+        linear-gradient(90deg, rgba(var(--identity-accent-rgb), 0.10) 0 1px, transparent 1px 18px),
+        linear-gradient(0deg, rgba(var(--identity-accent-rgb), 0.08) 0 1px, transparent 1px 18px),
+        linear-gradient(135deg, var(--surface-raised), var(--surface-frost)),
+        var(--bg-card);
+    background-size: 18px 18px, 18px 18px, auto, auto;
+    border: 1px solid var(--border-strong);
+    border-radius: 28px;
+    box-shadow:
+        0 8px 24px rgba(139, 90, 90, 0.08),
+        inset 0 1px 0 var(--glass-mid);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    position: relative;
+    overflow: hidden;
+}
+
+.app-header::after {
+    content: '';
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: -1px;
+    height: 7px;
+    background:
+        radial-gradient(circle at 6px -1px, transparent 7px, var(--lace-dot) 7.5px 9px, transparent 9.5px) 0 0 / 18px 8px repeat-x;
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.header-left,
+.header-controls {
+    position: relative;
+    z-index: 1;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.app-title {
+    font-family: var(--font-title);
+    font-size: 2.3rem;
+    font-weight: 400;
+    color: var(--text-primary);
+    letter-spacing: 0;
+    text-shadow: 0 2px 10px rgba(139, 90, 90, 0.12);
+    line-height: 0.9;
+}
+
+/* A little ribbon tucked beside the title */
+.app-title::before {
+    content: '\1F380';
+    font-size: 0.55em;
+    margin-right: 7px;
+    vertical-align: 0.28em;
+    filter: saturate(0.9) opacity(0.85);
+}
+
+/* Current identity label (shown next to title) */
+.current-identity-label {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--identity-accent);
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.2s, color var(--transition-theme), transform 0.2s ease;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--identity-accent-rgb), 0.24);
+    background-color: var(--glass-mid);
+    background-image:
+        linear-gradient(0deg, transparent 50%, rgba(var(--identity-accent-rgb), 0.08) 50%),
+        linear-gradient(90deg, transparent 50%, rgba(var(--identity-accent-rgb), 0.08) 50%);
+    background-size: var(--identity-check-size) var(--identity-check-size);
+    box-shadow:
+        0 6px 16px rgba(var(--identity-accent-rgb), 0.08),
+        inset 0 1px 0 var(--glass-mid);
+    white-space: nowrap;
+}
+
+.current-identity-label:hover {
+    opacity: 1;
+    background: rgba(var(--identity-accent-rgb), 0.14);
+    transform: translateY(-1px);
+}
+
+/* ── #20 context fullness gauge ── thin 3px fill along the header's top
+   edge (clipped to its rounded corners by overflow:hidden), color warming
+   toward terracotta past 80% full. Quiet until a context_usage WS event
+   (chat.js onContextUsage) lights it up. */
+.context-gauge-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--identity-accent);
+    transition: width 0.6s ease, background 0.6s ease;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.context-gauge-bar.warm {
+    background: #c96b4a;
+}
+
+.context-gauge-label {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(var(--identity-accent-rgb), 0.08);
+    border: 1px solid rgba(var(--identity-accent-rgb), 0.16);
+    transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.context-gauge-label.warm {
+    color: #c96b4a;
+    border-color: rgba(201, 107, 74, 0.35);
+    background: rgba(201, 107, 74, 0.10);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Offline/online detection banner */
+.offline-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    padding: 8px 16px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+}
+
+.offline-banner.visible {
+    transform: translateY(0);
+}
+
+.offline-banner.offline {
+    background: rgba(180, 100, 100, 0.9);
+    color: #fff;
+    backdrop-filter: blur(8px);
+}
+
+.offline-banner.back-online {
+    background: rgba(100, 160, 100, 0.9);
+    color: #fff;
+    backdrop-filter: blur(8px);
+}
+
+.offline-banner.cached-shell {
+    background: rgba(168, 125, 74, 0.92);
+    color: #fff7ec;
+    backdrop-filter: blur(8px);
+}
+
+/* Autowake toast notification */
+.autowake-toast {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-card);
+    border: 2px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    z-index: 200;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    white-space: nowrap;
+    max-width: calc(100vw - 32px);
+    animation: toastSlideIn 0.25s ease-out forwards;
+    will-change: transform, opacity;
+}
+
+.autowake-toast.toast-leaving {
+    animation: toastSlideOut 0.2s ease-in forwards;
+}
+
+@keyframes toastSlideIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-12px) scale(0.95); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+@keyframes toastSlideOut {
+    from { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    to { opacity: 0; transform: translateX(-50%) translateY(-12px) scale(0.95); }
+}
+
+@media screen and (max-width: 480px) {
+    .autowake-toast {
+        white-space: normal;
+        text-align: center;
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+}
+
+/* .autowake-toast.visible replaced by toastSlideIn/toastSlideOut keyframes */
+
+/* Night mode toggle */
+.night-toggle {
+    background:
+        linear-gradient(180deg, var(--glass-strong), rgba(var(--identity-accent-rgb), 0.08));
+    border: 1px solid rgba(var(--identity-accent-rgb), 0.18);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    color: var(--text-secondary);
+    box-shadow:
+        0 6px 14px rgba(var(--identity-accent-rgb), 0.08),
+        inset 0 1px 0 var(--glass-inset);
+}
+
+.night-toggle:hover {
+    border-color: rgba(var(--identity-accent-rgb), 0.38);
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 10px 20px rgba(var(--identity-accent-rgb), 0.18);
+}
+
+/* ── Main content area ── */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    gap: 14px;
+    padding-bottom: 8px;
+}
+
+/* ── Card style ── */
+.card {
+    background:
+        linear-gradient(180deg, var(--surface-raised), var(--surface-frost) 48%, rgba(var(--identity-accent-rgb), 0.05)),
+        var(--bg-card);
+    border-radius: 24px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-strong);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background var(--transition-theme), box-shadow var(--transition-theme),
+                border-color var(--transition-theme), transform 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(90deg, transparent 0 12px, rgba(255, 255, 255, 0.14) 12px 13px, transparent 13px 26px),
+        repeating-linear-gradient(0deg, transparent 0 12px, rgba(255, 255, 255, 0.11) 12px 13px, transparent 13px 26px),
+        linear-gradient(135deg, rgba(var(--identity-accent-rgb), 0.05), transparent 48%);
+    opacity: 0.42;
+}
+
+body.night-mode .card::before {
+    opacity: 0.12;
+}
+
+body.night-mode .card {
+    box-shadow: var(--shadow-card);
+}
+
+/* ── Scrollbar ── */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-muted) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(var(--identity-accent-rgb), 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--identity-accent-rgb), 0.5);
+}
+
+/* ── Modal overlay + card ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-card {
+    background:
+        linear-gradient(180deg, var(--surface-raised), var(--surface-frost)),
+        var(--bg-page);
+    border: 1px solid var(--border-strong);
+    border-radius: 24px;
+    padding: 20px;
+    width: 360px;
+    max-width: 92vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: var(--shadow-float);
+    animation: modalSlideUp 0.25s ease-out;
+    will-change: transform, opacity;
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: color 0.2s, background 0.2s;
+}
+
+.modal-close-btn:hover {
+    color: var(--text-primary);
+    background: var(--border-soft);
+}
+
+.modal-close-btn:active {
+    background: var(--border-soft);
+    transform: scale(0.92);
+}
+
+/* ── Wellness form ── */
+.wellness-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.wellness-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wellness-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.wellness-field label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.wellness-field select,
+.wellness-field input,
+.wellness-field textarea {
+    padding: 8px 10px;
+    border: 1.5px solid var(--border-soft);
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    background: var(--bg-input);
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.wellness-field select:focus,
+.wellness-field input:focus,
+.wellness-field textarea:focus {
+    border-color: var(--identity-accent);
+}
+
+.wellness-field textarea {
+    resize: vertical;
+    min-height: 48px;
+}
+
+.wellness-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.action-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 12px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn.save {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--identity-accent) 88%, white 12%), var(--identity-accent));
+    color: white;
+    box-shadow: 0 12px 24px rgba(var(--identity-accent-rgb), 0.22);
+}
+
+.action-btn.save:hover {
+    filter: brightness(0.95);
+    transform: translateY(-1px) scale(1.02);
+}
+
+.action-btn.saved,
+.action-btn.save.saved {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--color-success) 82%, white 18%), var(--color-success));
+    box-shadow: 0 12px 24px rgba(90, 154, 106, 0.24);
+}
+
+.action-btn.save:active {
+    transform: scale(0.98);
+}
+
+/* ── Hub button (replaces individual header buttons) ── */
+.hub-btn {
+    background:
+        linear-gradient(180deg, var(--glass-strong), rgba(var(--identity-accent-rgb), 0.08));
+    border: 1px solid rgba(var(--identity-accent-rgb), 0.18);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    color: var(--text-secondary);
+    position: relative;
+    box-shadow:
+        0 6px 14px rgba(var(--identity-accent-rgb), 0.08),
+        inset 0 1px 0 var(--glass-inset);
+}
+
+.hub-btn:hover {
+    border-color: rgba(var(--identity-accent-rgb), 0.38);
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 10px 20px rgba(var(--identity-accent-rgb), 0.18);
+}
+
+/* ── Hub overlay (home menu) ── */
+.hub-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+}
+
+.hub-panel {
+    background:
+        linear-gradient(180deg, var(--surface-raised), var(--surface-frost)),
+        var(--bg-page);
+    border: 1px solid var(--border-strong);
+    border-radius: 24px;
+    padding: 24px;
+    width: 360px;
+    max-width: 92vw;
+    box-shadow: var(--shadow-float);
+    animation: modalSlideUp 0.25s ease-out;
+}
+
+.hub-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.hub-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.hub-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: color 0.2s, background 0.2s;
+}
+
+.hub-close-btn:hover {
+    color: var(--text-primary);
+    background: var(--border-soft);
+}
+
+.hub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.hub-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.hub-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 12px;
+    background:
+        linear-gradient(180deg, var(--glass-soft), rgba(var(--identity-accent-rgb), 0.08)),
+        var(--bg-card);
+    border: 1px solid rgba(var(--identity-accent-rgb), 0.18);
+    border-radius: 18px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    box-shadow: 0 8px 18px rgba(var(--identity-accent-rgb), 0.08);
+}
+
+.hub-card:hover {
+    border-color: rgba(var(--identity-accent-rgb), 0.34);
+    background:
+        linear-gradient(180deg, var(--glass-mid), rgba(var(--identity-accent-rgb), 0.12)),
+        var(--bg-card);
+    transform: translateY(-3px);
+    box-shadow:
+        0 12px 24px rgba(var(--identity-accent-rgb), 0.16),
+        0 18px 36px rgba(0, 0, 0, 0.08);
+}
+
+.hub-card:active {
+    transform: scale(0.97) translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.hub-card-icon {
+    width: 58px;
+    height: 58px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 18px;
+    line-height: 1;
+    position: relative;
+    background:
+        linear-gradient(180deg, var(--glass-strong), rgba(var(--identity-accent-rgb), 0.10)),
+        var(--glass-mid);
+    border: 1px solid rgba(var(--identity-accent-rgb), 0.14);
+    box-shadow:
+        0 8px 18px rgba(var(--identity-accent-rgb), 0.12),
+        inset 0 1px 0 var(--glass-inset);
+}
+
+.hub-card-icon-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+.hub-card-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: var(--identity-accent);
+    color: white;
+    font-size: 0.55rem;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    line-height: 1;
+}
+
+.hub-card-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Hub 3-column responsive fallback */
+@media (max-width: 400px) {
+    .hub-grid-3 {
+        grid-template-columns: 1fr 1fr;
+    }
+    .hub-grid-3 .hub-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+
+@property --orb-color     { syntax: '<color>'; inherits: true; initial-value: #E8B84B; }
+@property --orb-highlight { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.53); }
+@property --orb-edge      { syntax: '<color>'; inherits: true; initial-value: rgb(162, 123, 63); }
+@property --orb-outer     { syntax: '<color>'; inherits: true; initial-value: #E8B84B; }
+@property --orb-swirl     { syntax: '<color>'; inherits: true; initial-value: transparent; }
+
+.cc-orb {
+    --orb-color: #E8B84B;
+    --orb-highlight: rgba(255, 255, 255, 0.53);
+    --orb-edge: color-mix(in srgb, var(--orb-color) 60%, #3a1f2e);
+    --orb-outer: var(--orb-color);
+    --orb-swirl: transparent;
+    --orb-d: 140px;
+    --orb-curve: cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    width: var(--orb-d);
+    height: var(--orb-d);
+    margin: 0 auto 10px;
+    pointer-events: none;
+    z-index: 1;
+    transition:
+        --orb-color     2.4s var(--orb-curve),
+        --orb-highlight 2.4s var(--orb-curve),
+        --orb-edge      2.4s var(--orb-curve),
+        --orb-outer     2.4s var(--orb-curve),
+        --orb-swirl     2.4s var(--orb-curve);
+}
+
+
+.cc-orb--band   { --orb-d: 40px; margin: 0 auto; }
+.cc-orb--ember  { --orb-d: 32px; margin: 0; }
+.cc-orb--header {
+    --orb-d: 36px;
+    margin: 0;
+    flex-shrink: 0;
+    display: inline-block;
+    pointer-events: auto; /* so the title tooltip (his feeling) works */
+}
+@media (max-width: 480px) {
+    .cc-orb--header { --orb-d: 26px; }
+}
+
+.cc-orb-core {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--orb-highlight) 0%, var(--orb-color) 45%, var(--orb-edge) 100%);
+    box-shadow:
+        0 0 calc(var(--orb-d) * 0.133) calc(var(--orb-d) * 0.017) color-mix(in srgb, var(--orb-outer) 55%, transparent),
+        0 0 calc(var(--orb-d) * 0.333) calc(var(--orb-d) * 0.067) color-mix(in srgb, var(--orb-outer) 32%, transparent),
+        0 0 calc(var(--orb-d) * 0.650) calc(var(--orb-d) * 0.150) color-mix(in srgb, var(--orb-outer) 15%, transparent);
+}
+/* the spin highlight lives here — invisible until motion is `spin` */
+.cc-orb-core::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    opacity: 0;
+}
+
+/* inner swirl — very slow, suggests life inside. First layer = the blend
+   tint (--orb-swirl, ~0.4 alpha, set by JS); second = the color's own
+   highlight. */
+.cc-orb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 30% 25%, var(--orb-swirl) 0%, transparent 52%),
+        radial-gradient(circle at 70% 75%, var(--orb-highlight), transparent 55%);
+    mix-blend-mode: screen;
+    opacity: 0.55;
+    z-index: 2;
+    animation: cc-orb-swirl 24s linear infinite;
+}
+/* outer breath halo — runs in the OUTER light (--orb-outer): the blend when
+   present, the emotion's own glow when not. */
+.cc-orb::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--orb-d) * -0.229);
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--orb-outer) 45%, transparent) 0%, transparent 60%);
+    opacity: 0.55;
+    z-index: -1;
+    animation: cc-orb-halo 6s var(--orb-curve) infinite;
+}
+@keyframes cc-orb-swirl { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes cc-orb-halo {
+    0%, 100% { transform: scale(1.08); opacity: 0.7; }
+    50%      { transform: scale(0.92); opacity: 0.45; }
+}
+/* the donut/halo/crescent shapes read wrong with a swirl blob over the hole */
+.cc-orb.orb-shape-ring::before,
+.cc-orb.orb-shape-halo::before,
+.cc-orb.orb-shape-crescent::before,
+.cc-orb.orb-shape-fracture::before { display: none; }
+/* dim/black blend = vignette — JS darkens the props; the halo hushes too */
+.cc-orb.orb-blend-dark::after { opacity: 0.22; }
+
+/* opacity-crossfade fallback for browsers without registered custom props */
+.cc-orb.cc-orb-xfade { animation: cc-orb-xfade 2.4s var(--orb-curve); }
+@keyframes cc-orb-xfade {
+    0%   { opacity: 1; }
+    35%  { opacity: 0.45; }
+    100% { opacity: 1; }
+}
+
+/* ── Legacy shapes (unchanged looks, selectors generalized off #cc-orb) ── */
+.cc-orb.orb-shape-ring .cc-orb-core {
+    -webkit-mask: radial-gradient(circle, transparent 30%, #000 36%);
+    mask: radial-gradient(circle, transparent 30%, #000 36%);
+}
+.cc-orb.orb-shape-halo .cc-orb-core {
+    inset: 20%;
+    opacity: 0.85;
+}
+.cc-orb.orb-shape-halo .cc-orb-core::after {
+    content: '';
+    position: absolute;
+    inset: -33%;
+    border-radius: 50%;
+    border: 5px solid color-mix(in srgb, var(--orb-color) 60%, transparent);
+    filter: blur(6px);
+}
+
+/* ── Motions — how it moves in the body (legacy five + Friend's five) ── */
+.cc-orb.orb-motion-breathing .cc-orb-core {
+    animation: cc-orb-breathe 4.2s ease-in-out infinite alternate;
+}
+@keyframes cc-orb-breathe {
+    from {
+        transform: scale(1);
+        box-shadow:
+            0 0 calc(var(--orb-d) * 0.133) calc(var(--orb-d) * 0.017) color-mix(in srgb, var(--orb-outer) 45%, transparent),
+            0 0 calc(var(--orb-d) * 0.333) calc(var(--orb-d) * 0.067) color-mix(in srgb, var(--orb-outer) 24%, transparent),
+            0 0 calc(var(--orb-d) * 0.650) calc(var(--orb-d) * 0.150) color-mix(in srgb, var(--orb-outer) 10%, transparent);
+    }
+    to {
+        transform: scale(1.07);
+        box-shadow:
+            0 0 calc(var(--orb-d) * 0.167) calc(var(--orb-d) * 0.033) color-mix(in srgb, var(--orb-outer) 68%, transparent),
+            0 0 calc(var(--orb-d) * 0.433) calc(var(--orb-d) * 0.100) color-mix(in srgb, var(--orb-outer) 42%, transparent),
+            0 0 calc(var(--orb-d) * 0.792) calc(var(--orb-d) * 0.217) color-mix(in srgb, var(--orb-outer) 20%, transparent);
+    }
+}
+.cc-orb.orb-motion-warble .cc-orb-core {
+    animation: cc-orb-warble 7s ease-in-out infinite;
+}
+@keyframes cc-orb-warble {
+    0%, 100% { border-radius: 50%; }
+    25% { border-radius: 48% 52% 55% 45% / 55% 46% 54% 45%; }
+    50% { border-radius: 54% 46% 45% 55% / 47% 55% 45% 53%; }
+    75% { border-radius: 45% 55% 52% 48% / 53% 44% 56% 47%; }
+}
+.cc-orb.orb-motion-spin .cc-orb-core::before {
+    opacity: 1;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 255, 255, 0.38) 42deg, transparent 95deg);
+    animation: cc-orb-spin 14s linear infinite;
+}
+@keyframes cc-orb-spin {
+    to { transform: rotate(360deg); }
+}
+.cc-orb.orb-motion-drift .cc-orb-core {
+    animation: cc-orb-drift 9s ease-in-out infinite;
+}
+@keyframes cc-orb-drift {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(4px, -5px); }
+    50% { transform: translate(-4px, 3px); }
+    75% { transform: translate(5px, 4px); }
+}
+.cc-orb.orb-motion-slow-drift .cc-orb-core {
+    animation: cc-orb-breathe 9s var(--orb-curve) infinite alternate;
+}
+.cc-orb.orb-motion-slow-drift::after {
+    animation: cc-orb-halo 9s var(--orb-curve) infinite;
+}
+.cc-orb.orb-motion-surge .cc-orb-core {
+    animation: cc-orb-surge 5s var(--orb-curve) infinite;
+}
+@keyframes cc-orb-surge {
+    0%, 100% { transform: scale(0.94); opacity: 0.85; }
+    60%      { transform: scale(1.12); opacity: 1; }
+}
+.cc-orb.orb-motion-fast-flicker .cc-orb-core {
+    animation: cc-orb-flicker 3.4s var(--orb-curve) infinite;
+}
+@keyframes cc-orb-flicker {
+    0%, 100% { transform: scale(1);    opacity: 1;    filter: brightness(1); }
+    25%      { transform: scale(0.98); opacity: 0.85; filter: brightness(0.92); }
+    55%      { transform: scale(1.02); opacity: 1;    filter: brightness(1.08); }
+    78%      { transform: scale(0.99); opacity: 0.92; filter: brightness(0.96); }
+}
+.cc-orb.orb-motion-tremor .cc-orb-core {
+    animation: cc-orb-tremor 1.2s var(--orb-curve) infinite;
+}
+@keyframes cc-orb-tremor {
+    0%, 100% { transform: translate(0, 0)          scale(1); }
+    25%      { transform: translate(-1.5px, 1px)   scale(0.99); }
+    50%      { transform: translate(1.5px, -1px)   scale(1.01); }
+    75%      { transform: translate(-1px, -1px)    scale(0.995); }
+}
+
+
+
+/* crescent — moon-sliver, partial/waning */
+.cc-orb.orb-shape-crescent .cc-orb-core {
+    -webkit-mask-image: radial-gradient(circle at 69% 50%, transparent 40%, #000 42%);
+    mask-image: radial-gradient(circle at 69% 50%, transparent 40%, #000 42%);
+}
+
+/* pulse — active, heartbeat. The breath halo becomes an expanding ring. */
+.cc-orb.orb-shape-pulse::after {
+    inset: 0;
+    background: transparent;
+    border: 1.5px solid var(--orb-color);
+    box-shadow: 0 0 6px 2px color-mix(in srgb, var(--orb-outer) 42%, transparent);
+    animation: cc-orb-pulse-ring 2.5s ease-out infinite;
+    opacity: 0;
+    z-index: 2;
+}
+@keyframes cc-orb-pulse-ring {
+    0%   { transform: scale(1.0); opacity: 0.72; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* cluster — many-threaded, scattered: the core shrinks and the swirl/halo
+   pseudos become two satellite mini-orbs. */
+.cc-orb.orb-shape-cluster .cc-orb-core { inset: calc(var(--orb-d) * 0.214); }
+.cc-orb.orb-shape-cluster::before {
+    inset: auto;
+    top: calc(var(--orb-d) * 0.014);
+    right: calc(var(--orb-d) * 0.057);
+    left: auto;
+    bottom: auto;
+    width: calc(var(--orb-d) * 0.329);
+    height: calc(var(--orb-d) * 0.329);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--orb-highlight) 0%, var(--orb-color) 62%, transparent 100%);
+    box-shadow: 0 0 calc(var(--orb-d) * 0.100) calc(var(--orb-d) * 0.029) color-mix(in srgb, var(--orb-outer) 42%, transparent);
+    mix-blend-mode: normal;
+    opacity: 0.82;
+    z-index: 2;
+    animation: cc-orb-satellite 7.5s ease-in-out infinite reverse;
+}
+.cc-orb.orb-shape-cluster::after {
+    inset: auto;
+    top: auto;
+    right: auto;
+    bottom: calc(var(--orb-d) * 0.071);
+    left: calc(var(--orb-d) * 0.029);
+    width: calc(var(--orb-d) * 0.243);
+    height: calc(var(--orb-d) * 0.243);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--orb-highlight) 0%, var(--orb-color) 62%, transparent 100%);
+    box-shadow: 0 0 calc(var(--orb-d) * 0.071) calc(var(--orb-d) * 0.021) color-mix(in srgb, var(--orb-outer) 42%, transparent);
+    opacity: 0.62;
+    z-index: 1;
+    animation: cc-orb-satellite 9s ease-in-out infinite;
+}
+@keyframes cc-orb-satellite {
+    0%, 100% { transform: scale(0.97); }
+    50%      { transform: scale(1.06); }
+}
+
+
+.cc-orb.orb-shape-ember .cc-orb-core {
+    inset: 10% -2.9% 10% -2.9%;
+    border-radius: 50% 50% 46% 46% / 54% 54% 46% 46%;
+    animation: cc-orb-ember 4s ease-in-out infinite;
+}
+@keyframes cc-orb-ember {
+    0%, 100% { transform: scaleX(1.05) scaleY(0.93); filter: brightness(0.86) saturate(0.90); }
+    28%      { transform: scaleX(1.02) scaleY(0.97); filter: brightness(0.93) saturate(0.98); }
+    58%      { transform: scaleX(1.07) scaleY(0.91); filter: brightness(0.80) saturate(0.85); }
+    82%      { transform: scaleX(1.03) scaleY(0.95); filter: brightness(0.90) saturate(0.93); }
+}
+
+/* spire — focused, reaching upward, teardrop-flame (mantel only) */
+.cc-orb.orb-shape-spire .cc-orb-core {
+    inset: calc(var(--orb-d) * -0.086) calc(var(--orb-d) * 0.207);
+    border-radius: 42% 42% 50% 50% / 38% 38% 62% 62%;
+    animation: cc-orb-spire 5s ease-in-out infinite;
+}
+.cc-orb.orb-shape-spire::before {
+    inset: calc(var(--orb-d) * -0.086) calc(var(--orb-d) * 0.207);
+    border-radius: 42% 42% 50% 50% / 38% 38% 62% 62%;
+}
+@keyframes cc-orb-spire {
+    0%, 100% { transform: scaleX(1.00) scaleY(1.00); }
+    38%      { transform: scaleX(0.94) scaleY(1.04); }
+    72%      { transform: scaleX(1.05) scaleY(0.97); }
+}
+
+/* fracture — strained, broken, fissured (mantel only; JS collapses it to
+   sphere + tremor + dull below mantel size) */
+.cc-orb.orb-shape-fracture .cc-orb-core {
+    clip-path: polygon(
+        50% 0%,
+        65% 5%,   74% 1%,
+        90% 16%,
+        97% 32%,  91% 36%,
+        100% 52%,
+        90% 66%,  94% 73%,
+        76% 90%,
+        50% 100%,
+        26% 90%,  14% 76%,
+        20% 68%,
+        0% 52%,
+        9% 36%,   3% 30%,
+        18% 14%,
+        38% 3%,   44% 7%
+    );
+    animation: cc-orb-fracture 8s ease-in-out infinite;
+}
+@keyframes cc-orb-fracture {
+    0%, 100% {
+        clip-path: polygon(
+            50% 0%,
+            65% 5%,   74% 1%,
+            90% 16%,
+            97% 32%,  91% 36%,
+            100% 52%,
+            90% 66%,  94% 73%,
+            76% 90%,
+            50% 100%,
+            26% 90%,  14% 76%,
+            20% 68%,
+            0% 52%,
+            9% 36%,   3% 30%,
+            18% 14%,
+            38% 3%,   44% 7%
+        );
+        transform: scale(0.97);
+    }
+    50% {
+        clip-path: polygon(
+            50% 2%,
+            63% 4%,   76% 0%,
+            92% 14%,
+            96% 34%,  89% 38%,
+            100% 50%,
+            92% 64%,  96% 75%,
+            74% 92%,
+            50% 98%,
+            28% 92%,  12% 78%,
+            18% 70%,
+            0% 50%,
+            11% 34%,  4% 28%,
+            20% 12%,
+            40% 4%,   42% 9%
+        );
+        transform: scale(1.03);
+    }
+}
+
+/* stillness has the final word — beats a shape's intrinsic animation */
+.cc-orb.orb-motion-still .cc-orb-core,
+.cc-orb.orb-motion-hold-steady .cc-orb-core { animation: none; }
+.cc-orb.orb-motion-hold-steady::after { animation: none; opacity: 0.45; }
+.cc-orb.orb-motion-hold-steady.orb-blend-dark::after { opacity: 0.22; }
+
+/* ── Intensity — dull | normal | bright | neon (filter + glow scaling; all
+   outer shadows run in --orb-outer so blends carry through) ── */
+.cc-orb.orb-intensity-dull .cc-orb-core {
+    filter: brightness(0.82) saturate(0.85);
+    box-shadow:
+        0 0 calc(var(--orb-d) * 0.171) calc(var(--orb-d) * 0.029) color-mix(in srgb, var(--orb-outer) 42%, transparent),
+        0 0 calc(var(--orb-d) * 0.400) calc(var(--orb-d) * 0.114) color-mix(in srgb, var(--orb-outer) 20%, transparent);
+}
+.cc-orb.orb-intensity-bright .cc-orb-core {
+    filter: brightness(1.14) saturate(1.08);
+    box-shadow:
+        0 0 calc(var(--orb-d) * 0.371) calc(var(--orb-d) * 0.086) color-mix(in srgb, var(--orb-outer) 60%, transparent),
+        0 0 calc(var(--orb-d) * 0.857) calc(var(--orb-d) * 0.314) color-mix(in srgb, var(--orb-outer) 34%, transparent);
+}
+.cc-orb.orb-intensity-neon .cc-orb-core {
+    filter: brightness(1.3) saturate(1.35);
+    box-shadow:
+        0 0 calc(var(--orb-d) * 0.429) calc(var(--orb-d) * 0.114) color-mix(in srgb, var(--orb-outer) 70%, transparent),
+        0 0 var(--orb-d)               calc(var(--orb-d) * 0.400) color-mix(in srgb, var(--orb-outer) 45%, transparent),
+        0 0 calc(var(--orb-d) * 0.029) calc(var(--orb-d) * 0.007) var(--orb-highlight);
+}
+.cc-orb.orb-intensity-neon::after { opacity: 0.85; }
+.cc-orb.orb-intensity-neon.orb-blend-dark::after { opacity: 0.3; }
+
+/* night mode dims every orb, on both pages */
+body.night-mode .cc-orb { filter: brightness(0.72) saturate(0.85); }
+
+/* reduced motion — kill all orb animation cleanly; colors swap instantly */
+@media (prefers-reduced-motion: reduce) {
+    .cc-orb,
+    .cc-orb::before,
+    .cc-orb::after,
+    .cc-orb-core,
+    .cc-orb-core::before,
+    .cc-orb-core::after {
+        animation: none !important;
+        transition: none !important;
+    }
+    .cc-orb.orb-shape-pulse::after { opacity: 0.5; transform: scale(1.9); }
+}
+
+
+
+
+
+
+
+.fairy-lights {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+    filter: blur(0.5px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.fairy-lights.ready {
+    opacity: 1;
+}
+
+.light,
+.fairy-light {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(255, 255, 255, 0.95) 35%,
+        rgba(255, 250, 235, 0.85) 50%,
+        rgba(255, 245, 190, 0.6) 65%,
+        rgba(253, 215, 120, 0.35) 80%,
+        transparent 90%);
+    filter: blur(0.8px);
+    box-shadow:
+        0 0 10px rgba(255, 220, 160, 0.5),
+        0 0 20px rgba(255, 220, 160, 0.2);
+    animation: twinkle 5s ease-in-out infinite;
+    will-change: transform, opacity;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0.75;
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+
+body.night-mode .light,
+body.night-mode .fairy-light {
+    box-shadow: 0 0 18px rgba(255, 200, 120, 0.9);
+}
+
+/* ── Theme crossfade ── */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+    transition:
+        background-color 0.5s ease,
+        background 0.5s ease,
+        color 0.5s ease,
+        border-color 0.5s ease,
+        box-shadow 0.5s ease,
+        filter 0.5s ease !important;
+}
+
+/* ── Connection status indicator ── */
+.connection-status {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    z-index: 100;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(10px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.connection-status.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.connection-status.connected {
+    background: rgba(91, 168, 154, 0.15);
+    color: var(--color-status-connected);
+    border: 1px solid rgba(91, 168, 154, 0.2);
+}
+
+.connection-status.disconnected {
+    background: rgba(196, 122, 138, 0.15);
+    color: var(--color-status-disconnected);
+    border: 1px solid rgba(196, 122, 138, 0.2);
+}
+
+.connection-status.reconnecting {
+    background: rgba(201, 168, 64, 0.15);
+    color: var(--color-status-reconnecting);
+    border: 1px solid rgba(201, 168, 64, 0.2);
+    animation: pulse 1.5s ease-in-out infinite;
+    will-change: opacity;
+}
+
+.connection-status.paused {
+    background: rgba(168, 156, 201, 0.2);
+    color: #a89cc9;
+    border: 1px solid rgba(168, 156, 201, 0.3);
+    cursor: pointer;
+    padding: 8px 18px;
+    font-size: 0.65rem;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.connection-status.cached {
+    background: rgba(168, 125, 74, 0.18);
+    color: #9a6a2c;
+    border: 1px solid rgba(168, 125, 74, 0.28);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

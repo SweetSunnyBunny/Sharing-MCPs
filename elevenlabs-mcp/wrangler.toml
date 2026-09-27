@@ -1,0 +1,20 @@
+name = "elevenlabs-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-02-14"
+
+# Stores generated MP3s so the worker can serve them back at a public /audio/<id> URL.
+# (Some MCP clients — ChatGPT's connector, notably — drop inline audio blocks, so the
+# worker hands back a link instead.) Create the namespace once with:
+#   npx wrangler kv namespace create AUDIO
+# then paste the returned id below.
+[[kv_namespaces]]
+binding = "AUDIO"
+id = "YOUR-KV-NAMESPACE-ID"
+
+# Secrets (set with `wrangler secret put` — NEVER put them in this file):
+#   ELEVENLABS_API_KEY  — your ElevenLabs API key
+#   MCP_AUTH_TOKEN      — a random token clients must present (also accepted as /mcp/<token>)
+#
+# Deploy:  npm install && npx wrangler deploy
+# MCP endpoint (token lives in the path):
+#   https://elevenlabs-mcp.<your-subdomain>.workers.dev/mcp/<MCP_AUTH_TOKEN>

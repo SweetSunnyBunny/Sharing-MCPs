@@ -1,0 +1,7 @@
+fastmcp
+pyperclip
+pyautogui
+pygetwindow
+pillow
+psutil
+httpx

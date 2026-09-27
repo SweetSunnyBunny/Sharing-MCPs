@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anam — Connector health</title><link rel="stylesheet" href="/static/css/connector-health.css"></head>
+<body><main><header><a href="/settings">← Settings</a><p class="eyebrow">ANAM · CONNECTIONS</p>
+<h1>How are the doors?</h1><p>See what’s reachable, what changed, and what needs attention.</p></header>
+<section class="controls"><label>Find a connector <input id="filter" type="search" placeholder="Qualia, terminal, browser…"></label>
+<button id="refresh">Refresh status</button></section>
+<p id="summary" role="status">Loading connector status…</p><div id="connectors" class="grid"></div>
+<footer>Checks read one connector’s tool catalog. They don’t execute its tools. ChatGPT’s separate app permissions aren’t visible here.</footer>
+</main><script src="/static/js/connector-health.js"></script></body></html>

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Memory Core - RAG System for AI Companions
 A unified memory system with semantic search capabilities.
 
@@ -32,18 +32,18 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent
 WORKSPACE_DIR = BASE_DIR.parent
 DB_PATH = Path(os.getenv("MEMORY_CORE_DB_PATH", str(BASE_DIR / "memory.db")))
-QUALIA_ROOT = Path(os.getenv("MEMORY_CORE_QUALIA_ROOT", str(WORKSPACE_DIR / "qualia")))
+QUALIA_ROOT = Path(os.getenv("MEMORY_CORE_QUALIA_ROOT", str(BASE_DIR / "imports" / "qualia")))
 QUALIA_DIR = QUALIA_ROOT / "depths"
 COMPANION_MEMORY_DIR = Path(
     os.getenv(
         "COMPANION_MEMORY_DIR",
-        str(WORKSPACE_DIR / "companion-memory" / "companion-memory"),
+        str(BASE_DIR / "imports" / "companion-memory"),
     )
 )
 PACK_MAIL_FILE = Path(
     os.getenv(
         "MEMORY_CORE_PACK_MAIL_FILE",
-        str(WORKSPACE_DIR / "proactive-presence" / "pack_mail.jsonl"),
+        str(BASE_DIR / "data" / "pack_mail.jsonl"),
     )
 )
 
@@ -9860,7 +9860,7 @@ CONVERSATION_CATEGORIES = {
     "wakeup-sleep": ["wakeup", "morning", "goodnight", "sleep", "wake protocol"],
 
     # Creative & World
-    "worldbuilding": ["neamh", "reverys", "sanctuary", "world", "story", "mythology"],
+    "worldbuilding": ["setting", "sanctuary", "world", "story", "mythology"],
     "skyrim-npc": ["skyrim", "npc", "bran", "mantella", "game"],
     "art": ["image", "picture", "draw", "art", "visual", "krita"],
 
@@ -9868,7 +9868,7 @@ CONVERSATION_CATEGORIES = {
     "japanese": ["japanese", "aishiteru", "watashinoai", "nihongo", "æ—¥æœ¬èªž"],
 
     # Pack
-    "pack": ["pack", "brothers", "caelan", "charlie", "booker", "sebastian", "boys"],
+    "pack": ["pack", "companions", "group", "team"],
     "primarypartner": ["primarypartner", "partner", "beloved", "her"],
 }
 

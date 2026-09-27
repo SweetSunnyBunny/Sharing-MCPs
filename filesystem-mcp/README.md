@@ -1,215 +1,70 @@
-# Filesystem MCP Server
+# Filesystem MCP
 
-Let Claude access files on your computer from anywhere - your phone, other computers, etc.!
+Read, search, create and manage files accessible to the account running this server. No account signup or API key is needed. This implementation has the process account's file access; it does not supply a folder allowlist.
 
-This MCP (Model Context Protocol) server gives Claude the ability to:
+## 1. Prepare the folder and Python
 
-- List directories and browse your files
-- Read text files and view images
-- Write and edit files
-- Copy, move, and delete files
-- Search for files by name or content
-- See recently modified files
+These steps use Windows PowerShell and **Python 3.11 (64-bit)**. Install it from [python.org](https://www.python.org/downloads/), including the Python launcher, if needed. Reopen PowerShell after installation.
 
-## Why This is Awesome
+Extract the collection to `C:\MCP-Starter\Sharing-MCPs`, so this README is inside `C:\MCP-Starter\Sharing-MCPs\filesystem-mcp`. If you chose another location, replace that path in every command and JSON example below. Do not run inside the ZIP.
 
-Ever use Claude from your phone and wish it could see files on your computer? Now it can! With this MCP and a Cloudflare Tunnel (costs ~$5/year for a domain), Claude can access your files from anywhere.
-
-**Use cases:**
-- View images Claude saved to disk (from Discord, etc.)
-- Read log files when debugging remotely
-- Access your code from your phone
-- Let Claude help organize your files
-
----
-
-## Quick Start
-
-### 1. Install Dependencies
-
-```bash
-pip install -r requirements.txt
+```powershell
+Set-Location "C:\MCP-Starter\Sharing-MCPs\filesystem-mcp"
+py -3.11 --version
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### 2. Run Locally (for testing)
+`.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
 
-```bash
-python run_server.py
+## 2. Make a practice folder
+
+```powershell
+New-Item -ItemType Directory -Force "C:\MCP-Practice"
+Set-Content -LiteralPath "C:\MCP-Practice\hello.txt" -Value "Hello from the filesystem test."
 ```
 
-The server runs on `http://localhost:8080/mcp`
+Use this folder for the first calls. Paths refer to the machine running the server. No `.env` file is used. Local stdio is the simplest connection; `run_server.py` opens an unauthenticated HTTP listener on all interfaces and is not needed for these steps.
 
-### 3. Set Up Remote Access (the fun part!)
+## 3. Check startup
 
-See the **Cloudflare Tunnel Setup** section below.
-
----
-
-## Cloudflare Tunnel Setup (~$5/year)
-
-This is how you make your MCP accessible from anywhere. Cloudflare Tunnels are free - you just need a domain (~$5-10/year).
-
-### What You'll Get
-- Access your computer's files from your phone
-- Secure HTTPS connection
-- No port forwarding needed
-- Works even behind firewalls
-
-### Cost Breakdown
-- **Domain:** ~$5-10/year (Cloudflare, Namecheap, etc.)
-- **Cloudflare account:** Free
-- **Cloudflare Tunnel:** Free
-
-### Step 1: Get a Domain
-
-1. Go to https://www.cloudflare.com/products/registrar/
-2. Search for a cheap domain (.uk, .xyz, .site are often ~$5)
-3. Buy it through Cloudflare (no markup, includes free DNS)
-
-Or use any domain you already own and point its nameservers to Cloudflare.
-
-### Step 2: Install Cloudflared
-
-**Windows:**
-1. Download from https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/
-2. Extract to a folder like `C:\Program Files\cloudflared\`
-3. Add to PATH or use full path
-
-**Mac:**
-```bash
-brew install cloudflared
+```powershell
+.\.venv\Scripts\python.exe .\server.py
 ```
 
-**Linux:**
-```bash
-# Debian/Ubuntu
-curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-sudo dpkg -i cloudflared.deb
+This is a **stdio** server: a client talks through the process's input/output, not a web page. A banner followed by silence, or silence alone, is normal while it waits. A Python traceback is an error. Press **Ctrl+C** after this check, then connect your client below.
 
-# Or use the package manager for your distro
-```
+## 4. Connect your AI client and check it works
 
-### Step 3: Login to Cloudflare
-
-```bash
-cloudflared tunnel login
-```
-
-This opens a browser to authenticate. Select your domain.
-
-### Step 4: Create a Tunnel
-
-```bash
-cloudflared tunnel create my-mcp-tunnel
-```
-
-Note the tunnel ID it gives you (looks like: `a1b2c3d4-e5f6-7890-abcd-ef1234567890`)
-
-### Step 5: Configure the Tunnel
-
-Create a config file at `~/.cloudflared/config.yml` (or `C:\Users\YourName\.cloudflared\config.yml` on Windows):
-
-```yaml
-tunnel: YOUR-TUNNEL-ID-HERE
-credentials-file: /path/to/.cloudflared/YOUR-TUNNEL-ID.json
-
-ingress:
-  # Filesystem MCP
-  - hostname: files.yourdomain.com
-    service: http://localhost:8080
-
-  # Catch-all (required)
-  - service: http_status:404
-```
-
-Replace:
-- `YOUR-TUNNEL-ID-HERE` with your tunnel ID
-- `/path/to/.cloudflared/` with your actual path
-- `files.yourdomain.com` with your subdomain
-
-### Step 6: Route DNS
-
-```bash
-cloudflared tunnel route dns my-mcp-tunnel files.yourdomain.com
-```
-
-### Step 7: Run Everything
-
-**Terminal 1 - Start the MCP server:**
-```bash
-python run_server.py
-```
-
-**Terminal 2 - Start the tunnel:**
-```bash
-cloudflared tunnel run my-mcp-tunnel
-```
-
-Your MCP is now available at `https://files.yourdomain.com/mcp`!
-
----
-
-## Running on Startup
-
-### Windows
-
-Create `start-mcp.bat`:
-```batch
-@echo off
-echo Starting Filesystem MCP...
-start "Filesystem MCP" /min cmd /c "cd /d C:\path\to\filesystem-mcp && python run_server.py"
-timeout /t 3 /nobreak > nul
-
-echo Starting Cloudflare Tunnel...
-"C:\Program Files\cloudflared\cloudflared.exe" tunnel run my-mcp-tunnel
-```
-
-Add a shortcut to this batch file in your Startup folder.
-
-### Mac/Linux
-
-Create a systemd service or launchd plist. Example systemd service:
-
-```ini
-# /etc/systemd/system/filesystem-mcp.service
-[Unit]
-Description=Filesystem MCP Server
-After=network.target
-
-[Service]
-Type=simple
-User=yourusername
-WorkingDirectory=/path/to/filesystem-mcp
-ExecStart=/usr/bin/python3 run_server.py
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
----
-
-## Connecting to Claude
-
-### Claude Code (CLI)
-
-Add to your Claude Code MCP settings:
+Claude Desktop: **Settings → Developer → Edit Config**. [Client connection guide](https://modelcontextprotocol.io/docs/develop/connect-local-servers). Other clients use their own local MCP settings; this example uses `mcpServers` JSON.
 
 ```json
 {
   "mcpServers": {
-    "filesystem": {
-      "url": "https://files.yourdomain.com/mcp"
+    "filesystem-mcp": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/filesystem-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/filesystem-mcp/server.py"
+      ]
     }
   }
 }
 ```
 
-### Other MCP Clients
+If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
 
-Use the URL: `https://files.yourdomain.com/mcp`
+Ask the client to call `fs_list_directory` for `C:/MCP-Practice`, then `fs_read_file` on `C:/MCP-Practice/hello.txt`. Seeing the test text confirms setup without modifying other files.
 
----
+## If something goes wrong
+
+- **`py` is not recognized:** install Python with its launcher, then reopen PowerShell. If only `python` works, verify `python --version` and use it for the `-m venv` command.
+- **`No module named ...`:** repeat the requirements command using `.\.venv\Scripts\python.exe`; the client's `command` must point to that same environment.
+- **Server missing in the client:** check absolute paths and JSON punctuation, then restart the client. Claude Desktop logs are under `%APPDATA%\Claude\logs`.
+- **A quiet terminal:** this is expected for stdio; use the client tool check above. Ctrl+C stops a manual test.
+- **Access denied:** choose files your account can open; administrator privileges are not needed for the practice folder.
+- **File not found:** use a path on this computer, not on your phone or another machine.
+- **Image not displayed:** confirm your client supports image tool results and the image exists.
 
 ## Available Tools
 
@@ -231,53 +86,3 @@ Use the URL: `https://files.yourdomain.com/mcp`
 | `fs_get_recent_files` | Find recently modified files |
 
 ---
-
-## Adding More MCPs
-
-The tunnel system can host multiple MCPs! Just add more entries to your `config.yml`:
-
-```yaml
-ingress:
-  - hostname: files.yourdomain.com
-    service: http://localhost:8080
-  - hostname: tumblr.yourdomain.com
-    service: http://localhost:8081
-  - hostname: discord.yourdomain.com
-    service: http://localhost:8082
-  - service: http_status:404
-```
-
-Each MCP runs on a different port, and the tunnel routes to the right one based on the hostname.
-
----
-
-## Security Notes
-
-- This server gives full access to your files - only expose it via your private tunnel
-- The tunnel is encrypted (HTTPS) and tied to your Cloudflare account
-- Consider which directories you want to access (you can restrict paths if needed)
-- Don't share your tunnel credentials
-
----
-
-## Troubleshooting
-
-### "Connection refused"
-Make sure the MCP server is running before the tunnel.
-
-### "Bad gateway"
-Check that the port in config.yml matches the server port.
-
-### Images not displaying
-Make sure you're using `fs_read_image` or `fs_read_file` on image files.
-
-### Tunnel won't start
-Run `cloudflared tunnel login` again to refresh credentials.
-
----
-
-## License
-
-MIT - Do whatever you want with it!
-
-Built with love for sharing.

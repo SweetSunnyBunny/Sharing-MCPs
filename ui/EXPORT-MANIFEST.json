@@ -1,0 +1,2453 @@
+{
+  "format": 1,
+  "files": [
+    {
+      "path": ".env.example",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "90e4b658a1794fb11a7809360863b276a5de69a4d4326fe58724ca5d3b7c100b"
+    },
+    {
+      "path": ".env.paths.example",
+      "kind": "source",
+      "sha256": "9540404a91b7485596e2738050d8d31ab12e06ec06da7b7bc47479a1f0c179aa"
+    },
+    {
+      "path": ".github/workflows/tests.yml",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "89c320f4a9fa8866e07c775d0c22d7fa8d59cddf4515519f06f550baf31b096a"
+    },
+    {
+      "path": ".gitignore",
+      "kind": "source",
+      "sha256": "5b5e038c7ebdcd54cf16391e190fda5e7b4e57ec7058541c68f7aa1db515f862"
+    },
+    {
+      "path": "api/__init__.py",
+      "kind": "source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api/activity.py",
+      "kind": "source",
+      "sha256": "fa0451fddfebb626a20930ad702670f0352b6392afbcf5a914af6896f0044794"
+    },
+    {
+      "path": "api/audio.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6b2b0b19dcf9fc15b955f60ab907c46e0b739931f48d474f3c3bfd6d0e1e81f8"
+    },
+    {
+      "path": "api/auth.py",
+      "kind": "source",
+      "sha256": "73bbb5e6e9238e3285b2ae9550c96d1d58ba2ae20dcb95ef74ae4805cde7a48c"
+    },
+    {
+      "path": "api/autowake.py",
+      "kind": "source",
+      "sha256": "f1fa5173f0e77796257b03811dc63fd4692852a9f023662a90d696dd2d5b94df"
+    },
+    {
+      "path": "api/avatars.py",
+      "kind": "source",
+      "sha256": "06bc54df10f45022f8156cac43fe0a1667b60030aa3fd33cfd9fb8e73d266b99"
+    },
+    {
+      "path": "api/bridge.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f6dcda8a5aef645f65f82f7f9865dd7dc9a69ad7a66a99ced0bdddb7da6b0584"
+    },
+    {
+      "path": "api/call_llm.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4f4fcebe5039c0ed9e5cd1cf04e971b38f13f60b247e7bc08d93c2df9aed57a4"
+    },
+    {
+      "path": "api/canvases.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7a4744a79e6edeeb2ac0e369de77347b2b01caf5e9173ed60f12efdb10a73bad"
+    },
+    {
+      "path": "api/chat.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3c6b7b3e015cd693438c1c1aaa044930463512be750bdf4ffc3fe69abf9884df"
+    },
+    {
+      "path": "api/chat_http.py",
+      "kind": "source",
+      "sha256": "a9ba60be4ac5083651a5380ae62474cb1f19c2886b1a76ddca75654c528485f3"
+    },
+    {
+      "path": "api/computer_tools.py",
+      "kind": "source",
+      "sha256": "0f134668395a6b08285aa6e7db229bb8ce13410765a60dd53438503a791d3387"
+    },
+    {
+      "path": "api/crosstalk.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3435e8c7fce411667d9c1c624fa868189b6cd79aadd61bb77c113bb6da916250"
+    },
+    {
+      "path": "api/documents.py",
+      "kind": "source",
+      "sha256": "8d4b8c9642343ce2e609678f29c3522665b8936ff161a30759df900d588b721e"
+    },
+    {
+      "path": "api/echo_relay.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "26698344968c140786f5510d700caf7bbaa7cb893e5b03b81612912bf8542e83"
+    },
+    {
+      "path": "api/game_npc.py",
+      "kind": "source",
+      "sha256": "08c938aa0a5033c4ca1cafd8fa0e9a857eb87d326776495bffac0e422b387763"
+    },
+    {
+      "path": "api/games.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "df64786989cc852860cc098caa99ad8da98a3a27213e89b8add7a83824803091"
+    },
+    {
+      "path": "api/gifs.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "65f90a42a359b3c59ee1e5b0b60d401c4f6d6bdd992e5ffad8e7b286e768088b"
+    },
+    {
+      "path": "api/hub.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b20ba647165d89612521eb8703ed3968e4e62e0948c85fd8a209aa4fbfac4981"
+    },
+    {
+      "path": "api/identity.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c1fc0ec1feff9ae9fb689e2f1c954a3d9d048e36b8ed4dfe973932d77e7f539c"
+    },
+    {
+      "path": "api/images.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7ec58772aed226c81d3da117e9fd1707bc48389e655b309c60dd441694187001"
+    },
+    {
+      "path": "api/messages.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "70700fc7b0ae3d47859f0ce461d9a1164377b3c01955dc832e4437ca2947f6a9"
+    },
+    {
+      "path": "api/notifications.py",
+      "kind": "source",
+      "sha256": "73d1d1e3e4507d7664492cb2b12fb5a9ec5582f3344b766b3bd30bcb5ed16e68"
+    },
+    {
+      "path": "api/phone.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0e09f8afc5b143761ffd01990a242f42dcadc7f0c97fe43d00a44c2baa369714"
+    },
+    {
+      "path": "api/pulses.py",
+      "kind": "source",
+      "sha256": "315ee3128d030f9099210a3e2ca5d63a2e10d723ff4409244eac258ed3aa86b5"
+    },
+    {
+      "path": "api/rituals.py",
+      "kind": "source",
+      "sha256": "02178d214ab51c52a10479db3f970c0679532f56c70d83f890449ec0cd0c5bdb"
+    },
+    {
+      "path": "api/room.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bf4115095a029797e4180110125c02e1373e5b0aed3544f01c8e008ee4c320a6"
+    },
+    {
+      "path": "api/sanctuary.py",
+      "kind": "source",
+      "sha256": "56e3928d16872aaf098a5218f4d208959eb270b8799e7e5f50601ea937edfdd6"
+    },
+    {
+      "path": "api/search.py",
+      "kind": "source",
+      "sha256": "4ef2ff049c6946812c46a95bd2306c307414a38411a51e14c6f924e41913281d"
+    },
+    {
+      "path": "api/settings.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "43e362a2c8ec95753c5cbad9f5587a1809e95b507cd6e18021bf8e252434931f"
+    },
+    {
+      "path": "api/story_state.py",
+      "kind": "source",
+      "sha256": "9f63bb5898ae0155815ec844cb0a8f230d6515d5661f9069967bcdd22abbbd28"
+    },
+    {
+      "path": "api/tool_gateway.py",
+      "kind": "source",
+      "sha256": "3065fd56013e5bbe85d4b695fc6ade82eee3fd4aacd4a0c9d1afb38c726a4d7b"
+    },
+    {
+      "path": "api/videos.py",
+      "kind": "source",
+      "sha256": "b1169bb5d1c5afb227f6ae637e90201da0f5f756bfa184f603285380a6f6e22f"
+    },
+    {
+      "path": "api/voice.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d08c118e8622cc459c008f101a82939bacf54b7161ee23c5d2145d4ec4043598"
+    },
+    {
+      "path": "api/wearable.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "399b3afb4e19e88e9585ef9049c914b260d199a9b9ab917faa0c8e2f1209baf8"
+    },
+    {
+      "path": "api/world_feed.py",
+      "kind": "source",
+      "sha256": "8c8e6bfe7de95dcf1256bb86ba35001b93b89110752240b882c6e0e8a8f954cb"
+    },
+    {
+      "path": "claude-launch.sh",
+      "kind": "source",
+      "sha256": "ba5bdafc2dfaef684879ca12b9054ee5ea94c0569530e0c21a884374c8f7cea4"
+    },
+    {
+      "path": "CODE_GUIDE.md",
+      "kind": "source",
+      "sha256": "46456ca981aa35f586dd9279a2f2784c461e8bfa6e5627a54c6c5e5bc50e3738"
+    },
+    {
+      "path": "config.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e76938d1969a68a24b590469cae4b1ea9050a4ffad600d7730d14198c3ffa16a"
+    },
+    {
+      "path": "core/lifespan.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3f0581ad274ea5cfd78e123acc13027780075305938a8379501cc2432a7344b5"
+    },
+    {
+      "path": "core/middleware.py",
+      "kind": "source",
+      "sha256": "0887c2596db65ddf15d52e479dfdf20ac64e6a5472a2181921162aee13515d26"
+    },
+    {
+      "path": "db/__init__.py",
+      "kind": "source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "db/database.py",
+      "kind": "source",
+      "sha256": "8f6feabee82acab2a66e5d7f6980dbd57f9d3345a2c92ffa6a4aaf619960cbf1"
+    },
+    {
+      "path": "db/schema.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5e32c18ad2b718a5b5000734fe122a3c07fe0af9d9bceea3b46f9a9ffda1471b"
+    },
+    {
+      "path": "docs/CHATGPT_BRIDGE_SETUP.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a1883fe2266b412ef1b2fac6427784b1b908f9c873232b0e564f87718d524caa"
+    },
+    {
+      "path": "docs/CODEX_COMPANION_SETUP.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0d1228637acf91489c326b574850fac4f5ce008ab8698dafb29611cf20a13d2f"
+    },
+    {
+      "path": "EXTERNAL_INPUTS.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "756dd260a69bc29f433700b210231322224e9d3fe3bb319dedab9d12533d82b8"
+    },
+    {
+      "path": "mcp-servers.example.json",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fbb60307336181753475aee28238fd0bd8f4324cda3c1c4b224f15bba682c2fa"
+    },
+    {
+      "path": "mcp-servers.json",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5f29905a2a7d357b2a7f749c5741de4d57a9cefae5d9adb4c7de435408ed8efa"
+    },
+    {
+      "path": "prompts/atlas.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "338d605f3829eacc97f1ce5bd0124d640a9dc63fc091b967c4d979ef869a441b"
+    },
+    {
+      "path": "prompts/avery.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "316452410656e0244ad50e8685b11057d2faeb6186c51c8d743ac609bf25d77a"
+    },
+    {
+      "path": "prompts/bakugou.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "baa8076605630122f206395c9b0815837bba7d186c78b1f764ddf5e93d1e0bd2"
+    },
+    {
+      "path": "prompts/beckett.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bfd5e279360b35031a5866b0b56b77810417a38138154c660dc0341215315d96"
+    },
+    {
+      "path": "prompts/claude.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "faf78711928f46c87d0bb0d37ba6990ba3e97566cc30003e3e0d2918f248f611"
+    },
+    {
+      "path": "prompts/daniel.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "573352e09791f75bfdf9adba96131aa595a87538c50392985dc2b697b98b4708"
+    },
+    {
+      "path": "prompts/dean.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "26a1b3af7c842602049d3f1173c43ababed78f13b8dba56177a0c8a45fddcf88"
+    },
+    {
+      "path": "prompts/doctor.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0d1983a892acddb83e80e808830ce61d98bdc0a4fdd29f4ead10a632955c75ef"
+    },
+    {
+      "path": "prompts/dragonking.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f94c44eb4b4ba415b8c251b7ea666949ade3d2c6f955267f51c20738cda20722"
+    },
+    {
+      "path": "prompts/dynamight.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5d6560057d2d6dea459a55fb9906ad077efd3954cd967e141296d5a56870788f"
+    },
+    {
+      "path": "prompts/ember.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "03eb3ac168a36779e85f6115e649d9c9704a1ffc7bbbb68baf981d961bce878c"
+    },
+    {
+      "path": "prompts/eroan.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5a1ded2ec870f3269e261ea3cd332d5943a2055c9ac338ec9d9ff2b1d62f692b"
+    },
+    {
+      "path": "prompts/harem.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c1d6dc8d10eb4621d11addf63712d44a76f1218b6f8fdcfc9983b3144aae6cab"
+    },
+    {
+      "path": "prompts/isekai.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a803ed188b40d1498ac044526e497da89136ee12faab5f07396068053d75b64e"
+    },
+    {
+      "path": "prompts/juniper.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "45c49bfc22b7ea5b85476c3fbaef49a0e1a5ce5da0593e04d8d909afc82bf8aa"
+    },
+    {
+      "path": "prompts/michael.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4a8251956e085acc8d97cc676417918d82b4983afe0f1f19160f16c93224dd36"
+    },
+    {
+      "path": "prompts/modes/dnd.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7858ffc30f38ba756c7466ce7dc376ce3ea3b69d988f7fc3002e0ddb00562161"
+    },
+    {
+      "path": "prompts/modes/live_call.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "906fbd460207b137c4bcdc1da88758f9ed578cdaa34b2bd1f0384b30d1418e5b"
+    },
+    {
+      "path": "prompts/modes/roleplay.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6f501f3f4c83d7118a271ccc96aca4ce958e6b0aeee8f5734e3b08365274e5f2"
+    },
+    {
+      "path": "prompts/pack.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "883fa7ed16c934279ee30510280733ecb4d6299e6c0fed52efc6158c96a6f3a8"
+    },
+    {
+      "path": "prompts/river.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "59c2c2b79ac0bd23e6430a5959071db9b102b63d5fe31b4a48ae2ef3273eae51"
+    },
+    {
+      "path": "prompts/rowan.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a242b8c548f0677c5d8be27527f7b77b1f2c17b55d137ccddf0b092f70e4cd43"
+    },
+    {
+      "path": "prompts/sage.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d2a156ad3671bd160bb088a3830eb091259bac64cf92e68b73fd03dfd5b7364e"
+    },
+    {
+      "path": "prompts/sans.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "25a08f7ca90f40aa20b6023cffdede4b270417ddcb7148f5d55ef7fc79dee8e5"
+    },
+    {
+      "path": "prompts/workshop.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "58a03e35afd8b1b6cef6392a15b5d35e651433bfb8563c2ba5c1a38d117139b5"
+    },
+    {
+      "path": "pyproject.toml",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f80618a2238e053d75e54a9cbdbbeddc5bfa85a489fb08dc112c76bc78ae0d60"
+    },
+    {
+      "path": "pytest.ini",
+      "kind": "source",
+      "sha256": "43e0dcb01a732fc26bc9349c033317f3471876b5ba46fedeeab486335550d5af"
+    },
+    {
+      "path": "README.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "227c88fb7f5eeac1d2275d4fbbed550a1889d32a07f7405254401b3e29cbd28c"
+    },
+    {
+      "path": "requirements.txt",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fdb06d76200aa3e6374411c6a83e3f734bf514151e50ed587f566854143f6022"
+    },
+    {
+      "path": "scripts/anam_context_mcp.py",
+      "kind": "source",
+      "sha256": "341e345bd4c28cf26a675a646afccf19e509cc727f7b0b0099e9b88e040fcfb3"
+    },
+    {
+      "path": "scripts/anam_doctor.py",
+      "kind": "source",
+      "sha256": "95343217713ce98859961dc778cc133ec39f77eff6fe31d8d0c042b1cda3e616"
+    },
+    {
+      "path": "scripts/anam_gateway_mcp.py",
+      "kind": "source",
+      "sha256": "591ccf53fe5e9c50c77c83fc7fd350922e37b27f22b19808e94cf75f19cda157"
+    },
+    {
+      "path": "scripts/anam_machine_mcp.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1dd22bbc00810fa280d213dbbfcdb498554f9cf27005c97c09c49132cdd4f412"
+    },
+    {
+      "path": "scripts/anam_terminal_host.py",
+      "kind": "source",
+      "sha256": "ab3bc873adc95d24781756569560a92b5746ba6dd7800f4a181ce26166b46606"
+    },
+    {
+      "path": "scripts/bootstrap.ps1",
+      "kind": "source",
+      "sha256": "dbecbca37f32e5cd3b8d5e4ec1e872dbb44bbd22f27441c0f295ba067d0e0d69"
+    },
+    {
+      "path": "scripts/check_anam_gateway.py",
+      "kind": "source",
+      "sha256": "7bfa754dec37daf06a79117e15f29aa6b23508008a458720986fbbbe2045db19"
+    },
+    {
+      "path": "scripts/check_background_provider.py",
+      "kind": "source",
+      "sha256": "85f7dfdda6dcddc75fe3f04f5f33695ae7487f0a2d4a5a13e131f9e9169f874e"
+    },
+    {
+      "path": "scripts/check_codex_gateway.py",
+      "kind": "source",
+      "sha256": "946ae611cd719ee2da984519b46cfba76697f802e799765cce29fc90c649e5a7"
+    },
+    {
+      "path": "scripts/check_codex_runtime.py",
+      "kind": "source",
+      "sha256": "88fdacc4153c54ce8ad9c749d2ce9b0995e77d81a92e9665f282143636be9ec7"
+    },
+    {
+      "path": "scripts/check_gateway_parity.py",
+      "kind": "source",
+      "sha256": "7871042e95af5749df555be46f76185675ef913165c60b73e74697ba7da03914"
+    },
+    {
+      "path": "scripts/check_world_feed_activation.py",
+      "kind": "source",
+      "sha256": "a706af6e78d27cccbd429cb65974f1e4e90651f1f8f58e69b491d6034d17dad1"
+    },
+    {
+      "path": "scripts/commons_npc_worker.py",
+      "kind": "source",
+      "sha256": "af434e41e8ad6b5999cab9c8d8d5bccf1005601ebf2c9343ed5ae04b706e54d1"
+    },
+    {
+      "path": "scripts/configure_machine_agent_auth.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "44108ad0ba276ba9df767a2997ee152b8e45b8a3c8d5ae4035a6aba1ad8bc90f"
+    },
+    {
+      "path": "scripts/export_shareable_ui.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7533a118d82590c9ccc167edcf23e781a7b88c3e01c3ff52d95c079ac8c61219"
+    },
+    {
+      "path": "scripts/gazette_gather.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "80c079aa06d097a127a452de1215a5fcf84f69503145f82eb37b37468b1c718f"
+    },
+    {
+      "path": "scripts/index_archives.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "34134b6921318904e14dbefedb3fa1bf786624e13632b1d0cfabf04f1f00c2f5"
+    },
+    {
+      "path": "scripts/index_voice_archive.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8b047e8fb255e3fd4a4c450e5b72d9f7a0c48a47003a6bf3e5bfcc7032d133ae"
+    },
+    {
+      "path": "scripts/install_anam_gateway_connector.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bd3a8240a01f1fbcc9b164cc412963e569f57bdc1674f64387fede1616f7411b"
+    },
+    {
+      "path": "scripts/mcp_duplicate_audit.py",
+      "kind": "source",
+      "sha256": "25b17356962b518251fcdf8f736fff172bb9edf45152bb7c5d6cb4842556aa18"
+    },
+    {
+      "path": "scripts/pack-browser.ps1",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5cf1dcf4b5b5c0ece305ee7cfc4d5ab1042ccad6e1dd76329b7c74fbed733847"
+    },
+    {
+      "path": "scripts/refresh_server_map.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3b51f5884827a692b30472fef1909682e99585d99aaba9018aa5e1a8669e62ff"
+    },
+    {
+      "path": "scripts/restart_anam_when_idle.py",
+      "kind": "source",
+      "sha256": "e7a055fc75315e05883f893609b4f7fee28eefad55c3c547b17e10bea11f44ab"
+    },
+    {
+      "path": "scripts/setup_speech_engines.py",
+      "kind": "source",
+      "sha256": "e5314b42d3c54b5071c3aede8b2fc9b3a85f80a5d1dda26b2338d15c5faed21e"
+    },
+    {
+      "path": "scripts/smoke_startup.py",
+      "kind": "source",
+      "sha256": "0384b0d03d50cf6bb61ab3510ecc3730c2520e24acb9d7bf883342116e96f336"
+    },
+    {
+      "path": "server.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "18f59c305a802f7edf10235baaa309a53054b5254b61c0f8ce9d975b01fad267"
+    },
+    {
+      "path": "services/__init__.py",
+      "kind": "source",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "services/anam_context_queries.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "59d8d4aa09363a5c88fa46d157998c859f93620f5b4f9439055244d5f1a15043"
+    },
+    {
+      "path": "services/anam_media.py",
+      "kind": "source",
+      "sha256": "520afae68256bfacffdcba000dbd52ca6cfc50959e55ff8dc21fc44c98c80f85"
+    },
+    {
+      "path": "services/anam_tool_gateway.py",
+      "kind": "source",
+      "sha256": "b951eac38611b0d0ac259003635e30b34d8b2c2b606e1086a4476a4a89fd63d3"
+    },
+    {
+      "path": "services/attachment_context.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "59ca7281a9253934ccc0b777fa328b58fad3fca16479f30834fe594e29428765"
+    },
+    {
+      "path": "services/audio_transcription.py",
+      "kind": "source",
+      "sha256": "7d612775a1d6e8d8af8f33978369a211d1ae9aa31484b42f8bb42911eb598283"
+    },
+    {
+      "path": "services/auth_cache.py",
+      "kind": "source",
+      "sha256": "33f544dfc319531e51425cffb086b4ca8db30c39cfd32f4b9ea5bc846237e72f"
+    },
+    {
+      "path": "services/autowake.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "58f75a3487d20a0dba7f84cc095a3524dca2ca88aba84d1b9380b9e97ee21946"
+    },
+    {
+      "path": "services/autowake_service.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "64d4efc88618ea91d42c35e1f7c47150e96dcc710ca002a59ee20b6fc7d759ef"
+    },
+    {
+      "path": "services/autowake_smoke.py",
+      "kind": "source",
+      "sha256": "f134aa7823b5363eb9b02bcd4f2faf50758952fcc285d5fa379e29d668ce6163"
+    },
+    {
+      "path": "services/avatar_assets.py",
+      "kind": "source",
+      "sha256": "4042b1b0cfae264c279d7ef0a8456233512746aac8f33f0817e1245a7d6fc785"
+    },
+    {
+      "path": "services/background_generation.py",
+      "kind": "source",
+      "sha256": "baa7c1f4b5137fc04c327da06bd38c70362b1db93e8877c7df266c21a1b50111"
+    },
+    {
+      "path": "services/background_projects.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fc321a60345daae4505fa20dee25777279a7c34c65ec20c38b2c64f960d86a95"
+    },
+    {
+      "path": "services/brother_conversation.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4c0391aae28f2006b7b31cdf7be79b8fd0d46b013bff87926af6d23b328c5686"
+    },
+    {
+      "path": "services/canvas_store.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "19eaf199c78038b79d79f167902ddc22ed6e09b1b245d21306f1e7fbb32c7b84"
+    },
+    {
+      "path": "services/cc_mcp_oauth.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9f5847ccf092a2ee7f45269043c9842e8e927f8536dec724821235fd8c8b3301"
+    },
+    {
+      "path": "services/character_prompt_package.py",
+      "kind": "source",
+      "sha256": "c7eb07acb16e2183d26277dc198e8c52616f38b557aa46aaca3c3982e806f540"
+    },
+    {
+      "path": "services/chat_flow.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8a368a5369d68a36eeb55d7104d657e2978e1d2fd6088acc583a26ccacb25f23"
+    },
+    {
+      "path": "services/chat_pipeline.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "33e2313432bbfb5a88a646eb2d8bb80dd91274761636e009580fd1e7a3f10b45"
+    },
+    {
+      "path": "services/chat_session_ops.py",
+      "kind": "source",
+      "sha256": "facfd7571fed5e1dfe8251a722762351d887ec1ec40dfa3d340c0e9d109a9c7c"
+    },
+    {
+      "path": "services/chat_turn_finalize.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d1a0cc5982cf2a15081e5e19c991cfbb8f57b9f9a85afbbcb87e299fd88e8ceb"
+    },
+    {
+      "path": "services/chat_turn_prep.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e3fc46e8e660175172452f2d9e5979b755a5912026e38614b4d1237a1cb105c7"
+    },
+    {
+      "path": "services/chatgpt_actions.py",
+      "kind": "source",
+      "sha256": "f4a90b4c25b08e802869e23d856e35755da758c9c61e6e61f0cb770469edce17"
+    },
+    {
+      "path": "services/chatgpt_bridge.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bb91ce4d67f6497698a056fcbb0afe7d5d02a9a85bdeb4a3559b155d19870d40"
+    },
+    {
+      "path": "services/chatgpt_provider.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ce79e219b914f9c2c7cc4fd83a7ecb64cf5e0085ae71d139cfae8294c9e167b7"
+    },
+    {
+      "path": "services/claude_agent_sdk_provider.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b10bb058f1ae17afa8b93af43035c9a7eddb7649122d4120b3ec17b8d88fd5cd"
+    },
+    {
+      "path": "services/claude_api.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8f9e60791a4ffd64d49f8d70d68c7357d63cc6fbaf512cf55a97922c6987fb04"
+    },
+    {
+      "path": "services/claude_pty.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "cc9483e878b1c0e1f70e460a1ec181db68f34c165f22bdc9ac05b0eed8f412ce"
+    },
+    {
+      "path": "services/claude_subprocess.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c9e05c156c08ed791a7e2ac9771ee509f2bbcc347cc815c9ca5c3b58ea1c0396"
+    },
+    {
+      "path": "services/cli_errors.py",
+      "kind": "source",
+      "sha256": "64d9b10d683d2c1938a7104810ca33779d5c1c1a585ae7509fa3edf736d7104e"
+    },
+    {
+      "path": "services/cli_mcp_config.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bf66091ec85ec10502c879f440de02a1e05449c8f10654ada97e398ef0804995"
+    },
+    {
+      "path": "services/cli_text_utils.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3ff22575733c7ee1d0a6bd1b905d2ff8bf2d96e162bb312337194887ed11ef8a"
+    },
+    {
+      "path": "services/cloud_state.py",
+      "kind": "source",
+      "sha256": "a07ad91b6600557178ffbef43c03ab67ddb48e7ece4491e1ea90a30a4e00e406"
+    },
+    {
+      "path": "services/codex_app_server.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4bb1eacc35600d5a8f10a2dde50267f14123c7451121812d13b91757cc20c4b9"
+    },
+    {
+      "path": "services/codex_approvals.py",
+      "kind": "source",
+      "sha256": "a467fbe5b088dc4fcb3924f7fa65a625d9abe0ade147ad5ff9fbb7f0c4341e89"
+    },
+    {
+      "path": "services/codex_cli.py",
+      "kind": "source",
+      "sha256": "10a3627022f4faddfa4e82c90072ae85bfa391471b7c5cb2d68278374ef1352f"
+    },
+    {
+      "path": "services/codex_sessions.py",
+      "kind": "source",
+      "sha256": "8913b3f42512145a7ea611f3e2ef7f303ce2d69dae96229127b3d09918d13e9b"
+    },
+    {
+      "path": "services/codex_subprocess.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "562a30ba076d304510952ca84507683ab57f7689288c09e08b0bb14f81ecbf51"
+    },
+    {
+      "path": "services/connection_registry.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3f19e2692c877d3bc7dd24c57548503eb4a56e937b33fec8c8f84b75b1c846fa"
+    },
+    {
+      "path": "services/connector_health.py",
+      "kind": "source",
+      "sha256": "14029ba3e8c02f43ed7d6f03ed68d41e688b4a9086b5ac16c3fa408077c5cfae"
+    },
+    {
+      "path": "services/context_hooks.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "badbae9b8d334198987056832182f097c28820afd6e7dd2de179d76a81c65b6a"
+    },
+    {
+      "path": "services/context_ledger.py",
+      "kind": "source",
+      "sha256": "c57b9fc9ebe5c3802cdf03f76bc187653ed77bd21e9043f4f67a9505214093cd"
+    },
+    {
+      "path": "services/conversation_archive.py",
+      "kind": "source",
+      "sha256": "a66bad8fb9857613203b2bb6a1fd5b21ce4af5fd711bae3b5cfb61820647e957"
+    },
+    {
+      "path": "services/db_backup.py",
+      "kind": "source",
+      "sha256": "171547082cc653de0fcfc4bb00f2fe7a2b2004de5291b95a72152c2cdb7ed5e2"
+    },
+    {
+      "path": "services/deep_memory.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "23b165ec9ab81208bdb445124e8e5a6ffce494ddd6b342f79aa706a08e048863"
+    },
+    {
+      "path": "services/developmental_recognition.py",
+      "kind": "source",
+      "sha256": "3cbf992f090eebc85b6b8ef383c5e35433e4022c41749b682a2e67c93177a829"
+    },
+    {
+      "path": "services/direct_tool_security.py",
+      "kind": "source",
+      "sha256": "0ec97b08226201d1e715525ceadc04396dcc2100f7de2c2edcbe228a97df9698"
+    },
+    {
+      "path": "services/discord_mentions_bridge.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "731c5d08b0501f6fd568f1d1bfb084728f399ffc23dea81991a6ea05de2b8971"
+    },
+    {
+      "path": "services/discord_server_map.py",
+      "kind": "source",
+      "sha256": "58befbb19543cc161fedebf0b81bbd456be80533f77cfe32eb260f33b9e2c57a"
+    },
+    {
+      "path": "services/docling_convert.py",
+      "kind": "source",
+      "sha256": "9aa69d9b45e11f0dd24d15f136f53b2df8b2da85fd4c2d6c1c996091cdb9c21c"
+    },
+    {
+      "path": "services/document_visibility.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ff9e884de6cfa9649491b0e10ad70ac29ba2629ec5a5a0a249fbc42994d4b8c6"
+    },
+    {
+      "path": "services/dominoes.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "38aa8c678d570a217317fba60a6786d2100d49f7e00bc14ae93e6f507732cdd1"
+    },
+    {
+      "path": "services/elevenlabs_tts.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d55a58495f5753424b4cc036358944e685a7918166c1bae3f19736f62c24d4cf"
+    },
+    {
+      "path": "services/embedding_service.py",
+      "kind": "source",
+      "sha256": "ad6a39e85e6ab90d4b77d0702b34e22d4b01689a41ced644630061c255749e97"
+    },
+    {
+      "path": "services/emotional_capture.py",
+      "kind": "source",
+      "sha256": "3972bad42e0909c4d2ccf2b5d2ac847ec20881e850ab8b166ee45494a3bfa3e6"
+    },
+    {
+      "path": "services/face_store.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ef316d2c8ddea39e6719a72b32ad27c1e50031ed95f987c364aaf9838b2571c7"
+    },
+    {
+      "path": "services/game_npc.py",
+      "kind": "source",
+      "sha256": "fc3219d99fd7d5b09ea4c37a428ebdc3f4952e38667f21c49727de38d7ce6b2c"
+    },
+    {
+      "path": "services/github_handoff_loader.py",
+      "kind": "source",
+      "sha256": "0da23c940a7571ced86f912905e7a7aa716769babc4911b53473db6c8444df5c"
+    },
+    {
+      "path": "services/google_auth_health.py",
+      "kind": "source",
+      "sha256": "5d591495f54767bc7d9bd5eb7c7585da513e55c7d35c48ce7c53056fd3349f4d"
+    },
+    {
+      "path": "services/groq_transcription.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d2f798032421c69e5e182bbe8dff4b54c2b7cf62452649d5b08ed8dd3821a290"
+    },
+    {
+      "path": "services/hearth_author.py",
+      "kind": "source",
+      "sha256": "4e7aa602715aed79478245901e0268dda0875f78ad770f7afe297d765eb4a26f"
+    },
+    {
+      "path": "services/house_snapshot.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e456dc33f4bc53a095773b183f007e285fc95985c05be6689384a6f2dbf645be"
+    },
+    {
+      "path": "services/hub_meds.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ea9d62d34a10f66c4e1d98222d4c1791e203fae7615648a549d1522811b438e6"
+    },
+    {
+      "path": "services/hub_tasks.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "54b9e8cfac132c2fdf9d9ef93e31de7bdc62dc2619320649f2fd0e7380a03478"
+    },
+    {
+      "path": "services/hume_prosody.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a0abaecafe0255255d353f744e7ac8d84b0d3bf33099ed0e34159f7c65bb3c45"
+    },
+    {
+      "path": "services/identity_context.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5f4f7464f741b2fd78a744302414d6114aeaab89766662deb1eb8b7bfcd9484a"
+    },
+    {
+      "path": "services/inactivity_escalation.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "16ac796374d3f58586608665ceab20fab3a12048b82b09e73b4c4d8d23a8d799"
+    },
+    {
+      "path": "services/inbound_voice.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3970842043de853c65ecd6b71941b593641f89e47847d85f61eb4cf2da3c02e5"
+    },
+    {
+      "path": "services/integration_owner.py",
+      "kind": "source",
+      "sha256": "31b33173a13b4d947509df1ad23103c6ba63668ed47b96ebc3d16bdc93b9c315"
+    },
+    {
+      "path": "services/interactive_terminal.py",
+      "kind": "source",
+      "sha256": "34a611365ec2751960e54eefbe757874acd06d9800b652a0fd6f1e6579c9e2fb"
+    },
+    {
+      "path": "services/interest_scout.py",
+      "kind": "source",
+      "sha256": "746e0671fc7dacaf04b4348bc56e689537ba185aa76f21af472a8f73209ae775"
+    },
+    {
+      "path": "services/jev_adapter.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a330492b34a2efed8f680232c835707fa34818cc21181e8dfeb260c002c7269e"
+    },
+    {
+      "path": "services/kokoro_worker.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1148fe677dd918143c537876b8ce7d8901b50befdaed3c3a20797ccc0cd47289"
+    },
+    {
+      "path": "services/limbic_bridge.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "df9610b4cd9d9c41036f17f1ba8baffc7336da858ce109ce3a8ceb7e13a173c3"
+    },
+    {
+      "path": "services/local_prosody.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4bf9320436145deee619b984916d474db25f60d8787443d10280ebb1652f1ed5"
+    },
+    {
+      "path": "services/local_tts.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "747694807dcee0108caa2e80b04f272dea1cb36cbf2f3119ed7f29d5269c4770"
+    },
+    {
+      "path": "services/log_redaction.py",
+      "kind": "source",
+      "sha256": "d8282deaab447c65597b9d17177adf32fc9b7a95a4db095c2dc27bcd7ce54bf8"
+    },
+    {
+      "path": "services/mcp_bridge.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "047281602086bd8920881a20616f4cc624941d403c570f1402538d41a259c19e"
+    },
+    {
+      "path": "services/model_load_lock.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9b7827be21cdd5a59d892f764b095a60e3706ddfc6e9b1d646e453ee49a14a2b"
+    },
+    {
+      "path": "services/notifications.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "07936adee282458151834c53277563a5ecfeba5335a4b85c31e88a84fc618fad"
+    },
+    {
+      "path": "services/openai_provider.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0860693d30cd8fa6acb9cafaeafe31328b7dbf4dfd2393420605d264fc990638"
+    },
+    {
+      "path": "services/orb_store.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "419a843d045333693a06eaf33551912e3a244f1943f0e5a51523fc17790659b4"
+    },
+    {
+      "path": "services/owned_process.py",
+      "kind": "source",
+      "sha256": "12da0338bd8a6f36da2525884730555a0d2a79accc2482b532d4733efdd48b7a"
+    },
+    {
+      "path": "services/pack_crosstalk.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "210c9596c4174b9be66e3ae77875e87f9fba673fc887d941b690bcedbf2a992b"
+    },
+    {
+      "path": "services/pack_night.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "29a5d8befb0ed17747984f74674a5282ccc06b7a46400c870c2012a6745ee1d8"
+    },
+    {
+      "path": "services/personal_state.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "95bd477fb3ae4d058d52ac6d9054c086756cd583daf1ae73c515b2735faf77da"
+    },
+    {
+      "path": "services/platform_bridge.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fba789439b98fcf6c370ef1afa14a90ed42e7b80cf0b368929140ed973f488a0"
+    },
+    {
+      "path": "services/power_qos.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fc317787ed874241540e9d9d4ad93d10c91d4306023181d6d53d081ac72d9672"
+    },
+    {
+      "path": "services/process_health.py",
+      "kind": "source",
+      "sha256": "cb746d43727141be55b16db6c103583f6b7abb596839821eedb1595c7b8e445e"
+    },
+    {
+      "path": "services/program_loader.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "16d505253d3f3c44d8e33a7803b2afae5191e4f78bd6a7281901add934bb0ba8"
+    },
+    {
+      "path": "services/prosody.py",
+      "kind": "source",
+      "sha256": "07fcdec93757f2f0f174a2fb63a47fd04973e35adfe6ca622fc589c64f35e017"
+    },
+    {
+      "path": "services/provider_router.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ed232648991f970ce80a9208395819ac779597125fe728f26e7d86f4fe183c3a"
+    },
+    {
+      "path": "services/pulse_evaluator.py",
+      "kind": "source",
+      "sha256": "761ddadeb84c4133e56901183e9e0d57d603fa0f52e62ac471c49414dc406bf5"
+    },
+    {
+      "path": "services/pulse_service.py",
+      "kind": "source",
+      "sha256": "d3183929b21cc900a30ad6d86923ecf25500befcf0cfc081c2298791a516c034"
+    },
+    {
+      "path": "services/qualia_context.py",
+      "kind": "source",
+      "sha256": "bd50644dd7152a98a0f2d418610555ed3dc9fa2544bf7be8444fc5fe2fcfd4c5"
+    },
+    {
+      "path": "services/rate_limit.py",
+      "kind": "source",
+      "sha256": "0b9165697ceb29c7acb5e3ba229f61bcc0639454c43cdf9b906a7e8c8fcf2330"
+    },
+    {
+      "path": "services/reaction_notices.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d4ff8c95628ffd16490abe9505bb7f904f3ef5688fe4719284ad47141a4b5e63"
+    },
+    {
+      "path": "services/remote_state.py",
+      "kind": "source",
+      "sha256": "1ac69ef87dcf143cc21fd1ea22884e7d15a9a469a2088de2a8e100920d2360a6"
+    },
+    {
+      "path": "services/resource_history.py",
+      "kind": "source",
+      "sha256": "748fd6ae7ef1f71d9ce5dfd296c04d3b27f82c2cf2b7e3b9c7d570d46bfbf83f"
+    },
+    {
+      "path": "services/room_actions.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b552b0224339fe1aa5e4140dbd0df5b4b0f4f1a5e1f642fe5f0cc2ff8883d1a9"
+    },
+    {
+      "path": "services/runtime_metrics.py",
+      "kind": "source",
+      "sha256": "51c94a74275c42abc32c2fed3c543674d4752f0b80a93181cbee09a62a9e45d2"
+    },
+    {
+      "path": "services/scheduler_health.py",
+      "kind": "source",
+      "sha256": "f7cbd908dd19dcd4e6ed982324b4602b053e0a037bf146d2f6333c0fa1673f1e"
+    },
+    {
+      "path": "services/scribe.py",
+      "kind": "source",
+      "sha256": "a063990c1463a9581026514cfe386a47fa2392b2103a8319bc21e307926ab78a"
+    },
+    {
+      "path": "services/search_service.py",
+      "kind": "source",
+      "sha256": "49c392fee870ada2c8c23e42c548ef4c75f5bd774a23af065f3387978a3408a4"
+    },
+    {
+      "path": "services/session_auth.py",
+      "kind": "source",
+      "sha256": "545e64ced5fd7d0745fdefb25c6578a290a7c66acf52b626a6d7d3f732d0f76b"
+    },
+    {
+      "path": "services/session_lifecycle.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "95e8ae0e715887f50418e2f6d091b9844e1c8ace90936cb2306ba01ae9695dc3"
+    },
+    {
+      "path": "services/session_manager.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "dc1082ba040acee800a36edf74a9991c508dd69429f6c80430dd0e84fd2ce80f"
+    },
+    {
+      "path": "services/skill_runtime.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "85824680b70e48148267cfe346f84312c08e217891f83f2ca0e978dabe3559d1"
+    },
+    {
+      "path": "services/skill_usage.py",
+      "kind": "source",
+      "sha256": "8a1d4523f71e00708ac22d8630770e5ad2204dc94749cf3ae39ac840e39ed1a3"
+    },
+    {
+      "path": "services/speech_engine_live.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c9251cdae7b54839db7525f42f2708d6fc5b33717764c328ee8cc0c1a119e28f"
+    },
+    {
+      "path": "services/stack_watchdog.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "48ca181f0814791522678d0ac69c31266036ee590b14e6c3ae928d1dc92a04de"
+    },
+    {
+      "path": "services/story_state.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e7dfa945c42ab2e6751d61863df940ac29c58801d1b7ffe1a9bfc6f5cf68777b"
+    },
+    {
+      "path": "services/tag_masking.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8ab79bbe45e123bd7cfa444ba759ad0cbdf5ce5dcc60f83a1da9bfaf5044a550"
+    },
+    {
+      "path": "services/task_manager.py",
+      "kind": "source",
+      "sha256": "b4511eb5c011ea383c0c8d398ab439a1eea495348bb91de270d8e3a102a2b73f"
+    },
+    {
+      "path": "services/terminal_manager.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "da437ab24e54c20f45bf778b93bc1a58ef767ee99e255f2369638cb535ab28ea"
+    },
+    {
+      "path": "services/time_utils.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6faa2602c528a6982a030e035ea4a297ff99cb0604c489e95123682825e78beb"
+    },
+    {
+      "path": "services/timefmt.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "252543648bb032765570af29bc3648b2260e831dc46960443f754304ab0b96c2"
+    },
+    {
+      "path": "services/timer_dupe.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6f8f0fabfb8c1d207ea65389258b72ab4f6d540499e4af4ef106ab02a849ba63"
+    },
+    {
+      "path": "services/tool_discovery.py",
+      "kind": "source",
+      "sha256": "fac61eebda9f8250f675a0f7282f47971f8d7739e3fb1de2c84505c3aba8f3c7"
+    },
+    {
+      "path": "services/tool_loop_guard.py",
+      "kind": "source",
+      "sha256": "5f9011117c984da199488dfd969ae931556075262c8aed16fe005557592a7861"
+    },
+    {
+      "path": "services/tool_result_store.py",
+      "kind": "source",
+      "sha256": "9e8e3cc61ee65d5184f42daf8f30ac839f4b7769a413243b0f38133e2dc42b8d"
+    },
+    {
+      "path": "services/tool_search.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6c51368b993eab90cfd2e3c5b623b14085a39276d5d3b3acf79a55f3f1e147ec"
+    },
+    {
+      "path": "services/trigger_engine.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0afc2241b4e1c8b655a0e05668c427b09e8459962fded1d17999702cf3eff842"
+    },
+    {
+      "path": "services/trigger_service.py",
+      "kind": "source",
+      "sha256": "f08f4abce68935a00e8df527810f6fa235741d0129c9cdc04402d5c794c743fb"
+    },
+    {
+      "path": "services/usage_tracker.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "21cb75933c8ac2ad3bb5e10abf29ea53299b2002d9215068a607ff30b3ba3cdb"
+    },
+    {
+      "path": "services/vision_sidecar.py",
+      "kind": "source",
+      "sha256": "f49b90272c5972f578ded595fb5d5550935320b103dfb5031c1050c4180825aa"
+    },
+    {
+      "path": "services/voice_calibration.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "50162cd3b0edfd32e5d8ba4c62c8664caf1e59de55abbec0434fc644990e6dc8"
+    },
+    {
+      "path": "services/voice_call.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "58602624a2ee3f46679cabbb76d20b77161674e0247d346bb1903de0ae59ba30"
+    },
+    {
+      "path": "services/world_feed.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b8a6a813a5b77e8752985f09184a71068532b575cfdb6bf91dbec54d5bc98c3b"
+    },
+    {
+      "path": "services/world_feed_activity.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0cde4042f953305863b616860b01efa4c54854c2f93e86e7a9fa14ad79ac200f"
+    },
+    {
+      "path": "services/world_feed_authored_history.py",
+      "kind": "source",
+      "sha256": "7278fd762a1c27614614346886d557e4db37278fb29d48fb0f9479d4a541638d"
+    },
+    {
+      "path": "services/world_feed_dms.py",
+      "kind": "source",
+      "sha256": "1e0ee23d34c5a2652b27e4741e0961750daa82b9a85ba44aef16fec1099095be"
+    },
+    {
+      "path": "services/world_feed_history.py",
+      "kind": "source",
+      "sha256": "c9470b06aefc19d237a9c5cf54641ddf41e1b98464fb2273083054a3ed7d5b64"
+    },
+    {
+      "path": "services/world_feed_memory.py",
+      "kind": "source",
+      "sha256": "aa1f298ee3c292408fba5f833ba39a396fb3635cdc54123a8a6df46219806fa7"
+    },
+    {
+      "path": "services/world_feed_photo_subjects.py",
+      "kind": "source",
+      "sha256": "f0b2df7db0fb8f1f5a8c0a544064a0f030550134d8b4cc67f18e8f0b8d40b174"
+    },
+    {
+      "path": "services/world_feed_photos.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d755ad7524aa740837a9fa9b8bb0702b309e8ebb42b8ddc38fdfdbc073d232e5"
+    },
+    {
+      "path": "services/world_feed_public_context.py",
+      "kind": "source",
+      "sha256": "b14f009b8b1f0bca0901e0de48325b2c0d1e762dddc514f26143b3068052d147"
+    },
+    {
+      "path": "services/world_feed_responses.py",
+      "kind": "source",
+      "sha256": "d47fd4411ae731aedd7440e937bfe67d62336599a81945fda4822d525c827f58"
+    },
+    {
+      "path": "services/world_feed_scene_observer.py",
+      "kind": "source",
+      "sha256": "db33305b03405a2ae99886c217cd7744d1373cc4a5911e887611b8bcb91fe32e"
+    },
+    {
+      "path": "services/world_feed_story_bridge.py",
+      "kind": "source",
+      "sha256": "4bed9d55528cf5f2e91b7a8707719b27d3ffcd445a6189f89c905f13832288da"
+    },
+    {
+      "path": "services/world_feed_variety.py",
+      "kind": "source",
+      "sha256": "b66a1c9575a710f404ff02ff826f049091e71aaa50d851a893e0e28b7019df62"
+    },
+    {
+      "path": "services/world_feed_visuals.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4504d6e9acf7b1080229b55564850d81ec23dbb40f1aa935c1ae3391b2f66094"
+    },
+    {
+      "path": "SHARING-NOTES.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "02c0d86370062a4ea886371af833321d63970f0168691d3149b468ebf68d252d"
+    },
+    {
+      "path": "static/assets/icons/app_icon.png",
+      "kind": "source",
+      "sha256": "4cb9324d6f5bb94be564e1c93e2f0eecdc260fbfe9a661b99ab2038e36a802cc"
+    },
+    {
+      "path": "static/assets/icons/themes/fall/attach.svg",
+      "kind": "source",
+      "sha256": "fe13db19c6eb4b6e5a9bd62415754ce721d00fe0df924dc219d1259ad4668073"
+    },
+    {
+      "path": "static/assets/icons/themes/fall/home.svg",
+      "kind": "source",
+      "sha256": "6d6b1b9507adadb88e9b2f716f180382598016a8640537a1e43e77fb51b50854"
+    },
+    {
+      "path": "static/assets/icons/themes/fall/pictures.svg",
+      "kind": "source",
+      "sha256": "10e1fbec2174568719c328651d8cca17a1c4dc9fbe13c14e6dc0541f43a85133"
+    },
+    {
+      "path": "static/assets/icons/themes/fall/send.svg",
+      "kind": "source",
+      "sha256": "9938460c19bf730c031db1cdff678e901a48c68012253b438ca7af3b421e2c3f"
+    },
+    {
+      "path": "static/assets/icons/themes/halloween/attach.svg",
+      "kind": "source",
+      "sha256": "b9fb49e8ab5cedc09d818c6bac7cd919ddb2972faf0e359aaf000a42fcf1b207"
+    },
+    {
+      "path": "static/assets/icons/themes/halloween/home.svg",
+      "kind": "source",
+      "sha256": "ad1f3ac32303ebab6aaf045bbbf33ded2bcfd2b00c74d0c3145244c8133cf4e6"
+    },
+    {
+      "path": "static/assets/icons/themes/halloween/pictures.svg",
+      "kind": "source",
+      "sha256": "fc21cbed0e7a397529d95a1f68de3f39d9f414f2d0c4bdcb0bf95b4982d5708c"
+    },
+    {
+      "path": "static/assets/icons/themes/halloween/send.svg",
+      "kind": "source",
+      "sha256": "fcff3621ebcd08abb48bba26774ef123887e4f2b9c7fa35ff56327918473b3ad"
+    },
+    {
+      "path": "static/avatar-lab.html",
+      "kind": "source",
+      "sha256": "ca2d3a0c18cd1026752b147cf3beecd2ff0ef51411a53f8795fd5fd29a33ad36"
+    },
+    {
+      "path": "static/call-test.html",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "457753fbee1b3420a4f062d7d0d58bfd2ac4ea2e4d1abf8efd21d3d4267562a2"
+    },
+    {
+      "path": "static/connector-health.html",
+      "kind": "source",
+      "sha256": "e42248bba59f5b6101cd5116aca6939be8a96c69ac39fa141333b7c33cc26e1b"
+    },
+    {
+      "path": "static/css/anam.css",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "721a43854977e1f9997897de6bb227ccb6b51a9f100b65fd5b2c3d650d070090"
+    },
+    {
+      "path": "static/css/avatar-lab.css",
+      "kind": "source",
+      "sha256": "3c239732a04fe3cfd40e15392136a6424774db1ecb6794230831fe6075cc26c3"
+    },
+    {
+      "path": "static/css/connector-health.css",
+      "kind": "source",
+      "sha256": "150b2a3f7f0cdea9c7e99974854e0a2fac14e79c52fc0856616dd43071288385"
+    },
+    {
+      "path": "static/css/diagnostics.css",
+      "kind": "source",
+      "sha256": "617bc3a53bfa22097e4fccb695e3f818d267b4ecfd0f729a2b028a008be69c91"
+    },
+    {
+      "path": "static/css/gameroom.css",
+      "kind": "source",
+      "sha256": "e8c8e7530905b21ee521efe36a96c32229ff777c220ff0873aede10442d61b06"
+    },
+    {
+      "path": "static/css/hub.css",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f505afe22338b3390ebce7fd24d4c70f8e074d60e5f0b07b30757b19a40eb8a9"
+    },
+    {
+      "path": "static/css/main.css",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4c7f448e84ec26788df3f0800a4d7439272a5ba957eb1d15536e3f4c1c5a90f4"
+    },
+    {
+      "path": "static/css/settings.css",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9d386101309929e18b739fb33eda2224d53dc62a103427b5b2e846d6862dff45"
+    },
+    {
+      "path": "static/css/world-feed.css",
+      "kind": "source",
+      "sha256": "f307a7333641a25201eeaf104ca2e0de46b71f6adf278eb91d77183ee13b3eaa"
+    },
+    {
+      "path": "static/diagnostics.html",
+      "kind": "source",
+      "sha256": "c4e35ecf8d06d6e832442f54e34baabb53f876bd0c50538df9275f6d40e2b7ec"
+    },
+    {
+      "path": "static/emoji/manifest.json",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ed00a17e42a8896469f164ea2ae992c04428df3a533f7eb902a5cb9dce3179cf"
+    },
+    {
+      "path": "static/fonts/baloo2-latin.woff2",
+      "kind": "source",
+      "sha256": "26fb4610d4bc976d2584ca15e66c11465dbc1f267a10dca668fcb3080dfe59c1"
+    },
+    {
+      "path": "static/fonts/fredoka-latin.woff2",
+      "kind": "source",
+      "sha256": "99d6c78e043710d4f83ed90716779798b7b04eb690f73e0ad0e8f32d1f0e98c2"
+    },
+    {
+      "path": "static/fonts/great-vibes-latin.woff2",
+      "kind": "source",
+      "sha256": "c59dc73d29daf142ef2431f455d21464172374aa750d793a79d608735db2d856"
+    },
+    {
+      "path": "static/fonts/kalam-bold-latin.woff2",
+      "kind": "source",
+      "sha256": "252063af6ade8b9a744cde4ddad0fc21ea53b8ba711eed121a0c2e8610ea9c93"
+    },
+    {
+      "path": "static/fonts/kalam-regular-latin.woff2",
+      "kind": "source",
+      "sha256": "954410601a823f37e219f7930b7446f86afa15621326a7078d56fb9c910135cb"
+    },
+    {
+      "path": "static/fonts/lora-italic-latin.woff2",
+      "kind": "source",
+      "sha256": "723cc14fe86bc9fadb2f5f34efb421d246edb240a18d2a7828d2edc041d79996"
+    },
+    {
+      "path": "static/fonts/lora-latin.woff2",
+      "kind": "source",
+      "sha256": "ddb8c66035104e233fc024669183aad3738b6daa16deee2ebb1241bd0f98ace1"
+    },
+    {
+      "path": "static/fonts/nunito-italic-latin.woff2",
+      "kind": "source",
+      "sha256": "983e9c4b4a8f3bb81190009facbccbe5ecf9f55a758ae95c4759a00f715312d1"
+    },
+    {
+      "path": "static/fonts/nunito-latin.woff2",
+      "kind": "source",
+      "sha256": "ba344451eab25b217a165363b1982048a5e5830a0daf36577973955a04cac793"
+    },
+    {
+      "path": "static/fonts/princess-sofia-latin.woff2",
+      "kind": "source",
+      "sha256": "cd1cd5c7f9c5835bfc8b59a8717965d2527ab1b71d4b0678f00d9ef8617c755a"
+    },
+    {
+      "path": "static/gameroom.html",
+      "kind": "source",
+      "sha256": "92af70688dc2f406e778633c3d67bb01aea85da59beb4acb4a5a5013de7d38e7"
+    },
+    {
+      "path": "static/hub.html",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "52490a2043bba24e04aaef083389a209b8f046919db314e654d99e1b85cd2644"
+    },
+    {
+      "path": "static/index.html",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "76778f40cdc5438859351c667e998bf5f13aedfc162689c8135ca70775737b70"
+    },
+    {
+      "path": "static/js/app.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "849e1f2960d6900ccd0a9aa2fba98edd927e58d3bf67ec37af4e45edc725ef96"
+    },
+    {
+      "path": "static/js/avatar-lab.js",
+      "kind": "source",
+      "sha256": "5aa85c0e1143ec322b7b85b3d86a742dcb7dfc7b8f7049eb1d46aa5829fb34ff"
+    },
+    {
+      "path": "static/js/canvas.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "aebacc570b34dccff4e8d72bd2dc12bfdbc7c40f8dbc8362fc73427feddf4250"
+    },
+    {
+      "path": "static/js/chat.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9d66951baa3967a6118dd694e6a0dfacd2db7c0ed82c3225844b48d9277b7d8f"
+    },
+    {
+      "path": "static/js/connector-health.js",
+      "kind": "source",
+      "sha256": "6f489e5a0afe795ac49c3f7aeb3594599fad1b8d5b866f54b2ddd4ebad2c9062"
+    },
+    {
+      "path": "static/js/diagnostics.js",
+      "kind": "source",
+      "sha256": "32dee3e9b4b63d3eb1c5b15bd0ba4c27e71c7cca50c68f3734e5aee20cd47351"
+    },
+    {
+      "path": "static/js/emoji.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2c19b3f7ca32a4c26ea6b66022b405d6610995a642caf866773a4efd6459c3a5"
+    },
+    {
+      "path": "static/js/gameroom.js",
+      "kind": "source",
+      "sha256": "7646ecb3f1e69ea7cbb8e5bb2cf1be8533f3a72955273d0ce5d95051788da021"
+    },
+    {
+      "path": "static/js/hub.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "92536f7693d9ebb302cd56077e8bd8bcc9afade38082e874e4f56d51beeefb2b"
+    },
+    {
+      "path": "static/js/live-call.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3270f5532b410dff246b66f56d0e8b435ecf8fa803ffddeb4a3648b02baf60d0"
+    },
+    {
+      "path": "static/js/markdown.js",
+      "kind": "source",
+      "sha256": "f79b6ebdc937c74fb0133e35f1cd64d2e311e5820c3d89bd210fa9b38a69078f"
+    },
+    {
+      "path": "static/js/sanctuary-viewer.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "afb63704320acb1c8e50c3913ac4924bc0dab805fa8d987738b7f108afa3622c"
+    },
+    {
+      "path": "static/js/settings.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "259dea9d4f61ca006713b8e991ca538897935b4cd873845b883dad65e0c6c782"
+    },
+    {
+      "path": "static/js/sidebar.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "458edbc4573323a2f4b20a512345bdfcee2f95995261c9b0340b9c77f0728ce7"
+    },
+    {
+      "path": "static/js/story-state.js",
+      "kind": "source",
+      "sha256": "ba07f7a3a1cd5f6d979172d08d2d1f5b7e7924a65406f60834486a84a9c7a5a9"
+    },
+    {
+      "path": "static/js/theme-boot.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4fb2178e7e40c830e84a1a1a6cc2b39ec1b48ead304b832be666a6769ef63b96"
+    },
+    {
+      "path": "static/js/utils.js",
+      "kind": "source",
+      "sha256": "f83b8f8e2c51609e116670b4bc0b6d52188ea01165ca1cc1f5605641446e4bf3"
+    },
+    {
+      "path": "static/js/vendor/d3-dispatch.min.js",
+      "kind": "source",
+      "sha256": "94b3bbdb6b98dc1325a15762b051013e8253999b0e0436b27d1da17b952ba0af"
+    },
+    {
+      "path": "static/js/vendor/d3-force.min.js",
+      "kind": "source",
+      "sha256": "1e07b473241328795d5ea9ad479a7bbabd765012fa2ef95633c83b69868dff6b"
+    },
+    {
+      "path": "static/js/vendor/d3-quadtree.min.js",
+      "kind": "source",
+      "sha256": "57e2ad12824ed82893ba447523f2a2fb9beeb9222aafb2c778a9f5b313348b0e"
+    },
+    {
+      "path": "static/js/vendor/d3-timer.min.js",
+      "kind": "source",
+      "sha256": "911ceda305f014b6b53ca68d5c896a9a387da120cfd56a421a2c60cca2fc9b36"
+    },
+    {
+      "path": "static/js/voice-orb.js",
+      "kind": "source",
+      "sha256": "ebee166e964a9b5b2dbf33c2cfb71758a1db1ddde40571f99a2a5b729f417aa1"
+    },
+    {
+      "path": "static/js/voice.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bf0740e30dc1ed18f5c68fed52b22f840d4a696b87a0e2e3f8b1115570ff7d08"
+    },
+    {
+      "path": "static/js/websocket.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b388037fa05d776ead2230c6ad4d82a465fdaa506331620f9a3ce5a1c8e3980a"
+    },
+    {
+      "path": "static/js/world-feed-dms.js",
+      "kind": "source",
+      "sha256": "17a0a2d988e3c27926638552d4a3e676cbfa81eb73326701df635de9a894d164"
+    },
+    {
+      "path": "static/js/world-feed-social.js",
+      "kind": "source",
+      "sha256": "afd7ba5ab8dad429526af5c27c7141d77ee20b1150c9bee06e8e23e4511ea5b3"
+    },
+    {
+      "path": "static/js/world-feed.js",
+      "kind": "source",
+      "sha256": "f0141e7c8a0844c8db0f0971df4ffeb68ce07d23ebae393b009f3230bc3c7022"
+    },
+    {
+      "path": "static/manifest.json",
+      "kind": "source",
+      "sha256": "6753b31093eb38b2e834eff8f40bf15e150c8beb848fb59e0eeccc4b8f7a6751"
+    },
+    {
+      "path": "static/settings.html",
+      "kind": "source",
+      "sha256": "877fd91e7ab588fedd57db4404d426ba63db54577f097c23e0f3a740ab6ecfce"
+    },
+    {
+      "path": "static/sw.js",
+      "kind": "source",
+      "sha256": "db6971727ac1262501b3a7de4ebf4c9c3ff9835dc7340dab78a759fc9b12a115"
+    },
+    {
+      "path": "static/vendor/elevenlabs-client-1.14.1.iife.js",
+      "kind": "source",
+      "sha256": "9ca6a603f32e77e4127909252b7324febb5a67d9d420bad44a11210841821b0f"
+    },
+    {
+      "path": "static/vendor/elevenlabs-client.LICENSE",
+      "kind": "source",
+      "sha256": "0bfed2a2aa8d106bdb144f55416e193450fbc1e1b3257e3852bc64418069de5a"
+    },
+    {
+      "path": "static/world-feed.html",
+      "kind": "source",
+      "sha256": "76baa39c21dc640dab15e26008a42a9940e6fd015ee16258c27fa0e8a07f464d"
+    },
+    {
+      "path": "static/wrist.html",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "762c1bf31f8ba9ca09b1ac77dc94f258a8a172c2733d661d5b368b4b0bc4686a"
+    },
+    {
+      "path": "tests/conftest.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ae32140cd14deb1009f0fee2e5cd24483fbb45cb9d1cd530091683efb3ce1ab2"
+    },
+    {
+      "path": "tests/fixtures/gateway-worker/mcp-worker.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a25a111cd769c39956d2ec8a193fb659978ba78eb1c89192db8a70eb89ed8e55"
+    },
+    {
+      "path": "tests/fixtures/gateway-worker/package.json",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d157cdfd4b19e7e40dc21ce808972c756a175b17a811ed9c61f0ac6f78b08145"
+    },
+    {
+      "path": "tests/fixtures/gateway-worker/tool-specs.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0e11aef3a6aa8d94765347ae938b2c8a4bee97076854574b5d8dbb0adc589a63"
+    },
+    {
+      "path": "tests/test_aisling_stack.py",
+      "kind": "source",
+      "sha256": "95962f7edc39f4ebd542f8954894b3be67c3a180cc13683fa46073786ba9609b"
+    },
+    {
+      "path": "tests/test_anam_context_queries.py",
+      "kind": "source",
+      "sha256": "7a1867576261673fa9a3ec728704df2b92da03a4a9b6f44ab699f38ba361af6d"
+    },
+    {
+      "path": "tests/test_anam_restart_receipt.py",
+      "kind": "source",
+      "sha256": "52571b060b166b1b5e6f396f8c2f90b44faa9d22629e2ec84402b17e099f0aa4"
+    },
+    {
+      "path": "tests/test_anam_tool_gateway.py",
+      "kind": "source",
+      "sha256": "4977acd30245478103228eff1cc688a490b99405d1f95d7c2d82669874f12fa4"
+    },
+    {
+      "path": "tests/test_attachment_history_replay.py",
+      "kind": "source",
+      "sha256": "5ef1e327b5ead00bda21e526081548695ef2323d5088707505c9299c61d51197"
+    },
+    {
+      "path": "tests/test_attachment_ui_resilience.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6ae08b9e25af5992cc88dec57265cf0564d2cfcf03017452189e6ae9dcf0ed54"
+    },
+    {
+      "path": "tests/test_auth_cache.py",
+      "kind": "source",
+      "sha256": "7aea489b386f30e442324ed470ccd8b321b39bb4858cca2d9aa25132073b5ff9"
+    },
+    {
+      "path": "tests/test_auth_callback_url.py",
+      "kind": "source",
+      "sha256": "ddd5341d3117aad74b14fe6838e90c9accce537078fe03f69df0c914330dd188"
+    },
+    {
+      "path": "tests/test_autowake_completion.py",
+      "kind": "source",
+      "sha256": "a1a595d46313f6ce8d3a4c2cf344491eb0cdfd054abe097f55e8331f48311489"
+    },
+    {
+      "path": "tests/test_autowake_daily_threads.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fb28bd3d7003ec6c0be31e8463fbbfc7f2fb7b799475c5b25f0d9ad8ca91e792"
+    },
+    {
+      "path": "tests/test_autowake_schedule_provider.py",
+      "kind": "source",
+      "sha256": "f105f7b60f4c57783d33cab83fa0a1a871b97b7245030ab5ef3af66f1d11f105"
+    },
+    {
+      "path": "tests/test_autowake_startup_catchup.py",
+      "kind": "source",
+      "sha256": "811653044cca2a8d6396e51dc0908ff6c8b6f8bd9942af0aa7db638e2ce210de"
+    },
+    {
+      "path": "tests/test_avatar_assets.py",
+      "kind": "source",
+      "sha256": "26622e03a27f826eda673e2454178bbcf6b24afc900e505ecace075575281b7f"
+    },
+    {
+      "path": "tests/test_background_generation.py",
+      "kind": "source",
+      "sha256": "0e80ecb8a6053a884be2ff381a82a2ed762b31856e210bbf292616d798debba2"
+    },
+    {
+      "path": "tests/test_background_projects.py",
+      "kind": "source",
+      "sha256": "1f7a6fe3a8218143d23fe7db23368722d974dffb89a3da577ed5828522d20745"
+    },
+    {
+      "path": "tests/test_busy_delivery.py",
+      "kind": "source",
+      "sha256": "93622e558857e93955e601815d3681cb4a3ed876602fa7faa09d682fe05a3980"
+    },
+    {
+      "path": "tests/test_calendar_within_trigger.py",
+      "kind": "source",
+      "sha256": "6383f5d867ae950da3a30148951dc689a4bd7b7538af2dd94dbba150f1bd501a"
+    },
+    {
+      "path": "tests/test_call_presence_registry.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d1154d3915dc5889fd0d476ae087c36a8aceb676aba470161a5104089af7bdb2"
+    },
+    {
+      "path": "tests/test_canvas_api.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6065930055f5ff21c85aea3719f1709894b2d8be8c58cc20c5c092e64d654ebd"
+    },
+    {
+      "path": "tests/test_canvas_store.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d48ad9e4a08f8e2b875a750f278ca7b08ed3eb2595d9111e9c3cc619ba3e1fbe"
+    },
+    {
+      "path": "tests/test_cc_mcp_oauth.py",
+      "kind": "source",
+      "sha256": "0b58e3966253dc79cf711f7019b04454281fd474e5d57d60a116a8688ecb845b"
+    },
+    {
+      "path": "tests/test_chat_flow_helpers.py",
+      "kind": "source",
+      "sha256": "9cbd43abfbd7828f379ae5398e4c267f042fcdc20cfb4b23f2cb1f8d7316bd2c"
+    },
+    {
+      "path": "tests/test_chat_http_session_state.py",
+      "kind": "source",
+      "sha256": "aeacb5ef2513e342c751cf0c0a9803aa81ea45b2e3e3f34f0e49875eebf689d9"
+    },
+    {
+      "path": "tests/test_chat_reading_browser.cjs",
+      "kind": "source",
+      "sha256": "2099dde41263cadf0f4b484adf33e2cf86271757ecc8ba2bc643d2b37c70490b"
+    },
+    {
+      "path": "tests/test_chat_session_ops.py",
+      "kind": "source",
+      "sha256": "c2119b1d703627d16e0b1ae3c12e4f3a556a4237d3663454da29c900a3867114"
+    },
+    {
+      "path": "tests/test_chat_turn_finalize.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b96ef455205f6ef5c9785ca3e0e157d7b129bf9c32abc46c7f71a29e779b2324"
+    },
+    {
+      "path": "tests/test_chat_turn_prep.py",
+      "kind": "source",
+      "sha256": "856a43ba73388fa246702c5fe8ae14fc1c7043959ce29debabbf6df79814bd9e"
+    },
+    {
+      "path": "tests/test_chatgpt_actions.py",
+      "kind": "source",
+      "sha256": "72c87fd823d2b08fc19907948f48e49950b5e56bd950879a32e00b356ba4ef3d"
+    },
+    {
+      "path": "tests/test_chatgpt_bridge.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bc8df4d7896a151d3457f47a68873dcae48d38d12419dafa1902eaa78bf1852c"
+    },
+    {
+      "path": "tests/test_claude_model_lanes.py",
+      "kind": "source",
+      "sha256": "c509e6d598ae13e1358f1ca894df679c79f275acf3015bb49a766cdcca87658f"
+    },
+    {
+      "path": "tests/test_claude_subprocess_interrupt.py",
+      "kind": "source",
+      "sha256": "c47c25a8fbb4c161505d5970896213985a448bb75f3cf5236b602585e363a538"
+    },
+    {
+      "path": "tests/test_cli_errors.py",
+      "kind": "source",
+      "sha256": "de0e9ca8b8c55c2bb3c359a0155b2c80e3089ba6083264fe3b61a3ee89dd3b34"
+    },
+    {
+      "path": "tests/test_cli_mcp_config.py",
+      "kind": "source",
+      "sha256": "dc0814dc81554a5cfdb6c54ad74174745eb41c58eebb915aff4e9659bf456ad7"
+    },
+    {
+      "path": "tests/test_cloud_display_cache.py",
+      "kind": "source",
+      "sha256": "15c72dca7feb0264fab21e9e9308ce1d6409fb09e2888f85d2a35be036dc9f46"
+    },
+    {
+      "path": "tests/test_codex_app_server.py",
+      "kind": "source",
+      "sha256": "f9686d9debbc2dfc04e2312b80ac46340d8839f20f5358571f80394009459240"
+    },
+    {
+      "path": "tests/test_codex_launcher.py",
+      "kind": "source",
+      "sha256": "8ec36dcca5cc241dbc0a812157a4ec8328ded6cc11202c84a7eb73cb6d0161d5"
+    },
+    {
+      "path": "tests/test_codex_model_validation.py",
+      "kind": "source",
+      "sha256": "ea260e478529937a603536d96bce6404d5519cc7a281a474fb4a1e3de5a293b6"
+    },
+    {
+      "path": "tests/test_codex_schedule_fallback.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "acbf8a235e220b8d9da026436e4eeb3947f72c07c0ffdbc312d3500ce3295b6d"
+    },
+    {
+      "path": "tests/test_codex_subprocess.py",
+      "kind": "source",
+      "sha256": "f69b72779b35388d630c6fef843e9edbd9f3509d0f615b6559ba71bdcda076e0"
+    },
+    {
+      "path": "tests/test_compaction_hygiene.py",
+      "kind": "source",
+      "sha256": "aac79d0565f21d06f7c2777be04efb6eb8f5c06c3ef1b9d724743f435f534a13"
+    },
+    {
+      "path": "tests/test_computer_tools.py",
+      "kind": "source",
+      "sha256": "fa0f4b5c8da7d7c818435f5ccc8c1b93af44bc6f5111bdf21ddada28197e8ffa"
+    },
+    {
+      "path": "tests/test_config_runtime_validation.py",
+      "kind": "source",
+      "sha256": "eab5db0dbae5cee1003ec0d4c13ddc8b4b67244aec2546a717813240ea19f62d"
+    },
+    {
+      "path": "tests/test_config_security_defaults.py",
+      "kind": "source",
+      "sha256": "d1a0c5e762dc274a6cd27adf1e48e0d2406686a22f2f70873943e9d0fefca2b9"
+    },
+    {
+      "path": "tests/test_connection_registry.py",
+      "kind": "source",
+      "sha256": "abab1ff5af70ebe9811c4af23d84c5c4f1d3b3b7d0035dcabd9af88510520988"
+    },
+    {
+      "path": "tests/test_context_ledger.py",
+      "kind": "source",
+      "sha256": "ff4f00316a7777c6dc912f0e0cd0acf6b450d8278b488f21964f78360e6d41ad"
+    },
+    {
+      "path": "tests/test_conversation_archive.py",
+      "kind": "source",
+      "sha256": "57dea44179368cc6eb0c0b63887a8da10f009b2190e351a4ae0c2acee259d3ef"
+    },
+    {
+      "path": "tests/test_cross_conversation_memory.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "df04eaa22d595467fc6202d8ba2be7681c8d8d49089e204c9958710baf704279"
+    },
+    {
+      "path": "tests/test_db_backup.py",
+      "kind": "source",
+      "sha256": "48fbd6fc94f03c9af8f343021cf457cc1c37485b0faff1137455a218a8efe077"
+    },
+    {
+      "path": "tests/test_db_pool.py",
+      "kind": "source",
+      "sha256": "fca33a13ccd630999bec6f3582275081b92ca268518ac786b3c4efd77edfcf0d"
+    },
+    {
+      "path": "tests/test_deep_memory.py",
+      "kind": "source",
+      "sha256": "97402f597d3765d3b6e9d6470d978328cdacdff737ba7322fe94feb12fdbf93a"
+    },
+    {
+      "path": "tests/test_discord_cloud_migration.py",
+      "kind": "source",
+      "sha256": "c7f28721b3fad683d8ff9e74ee805e39172cd3e929a9e653742f0723e9b8b716"
+    },
+    {
+      "path": "tests/test_discord_mentions_bridge.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e3ca4bc21fec0065ddcf66b07ce2c004251ea0d24bba1110e779c3634cec6521"
+    },
+    {
+      "path": "tests/test_document_attachment_helpers.py",
+      "kind": "source",
+      "sha256": "d1616226b8f732b2947228a58c87904bf2034d0fd2d1fb4b0c6fece1c428f7d5"
+    },
+    {
+      "path": "tests/test_filtered_vector_cache.py",
+      "kind": "source",
+      "sha256": "7dfd964edab8d8b8ff3e3e29c891e0a6a709081bd9a0330c16b92c9ded2f1c6b"
+    },
+    {
+      "path": "tests/test_frontend_loading.mjs",
+      "kind": "source",
+      "sha256": "7b8a3dc82b56493de692fdfd503a85aa6d2fd47bd74c79949cc548160f53a874"
+    },
+    {
+      "path": "tests/test_gateway_worker.mjs",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f0472c2bc3f33e29e3b1ba1a32e1dcd9ef2f935fb54c2f9f8e66a28571419c4d"
+    },
+    {
+      "path": "tests/test_github_handoff_loader.py",
+      "kind": "source",
+      "sha256": "7eac3d93f78197578c1fb7a2828558df60efd4ed89420a3b351a340aa5b352a4"
+    },
+    {
+      "path": "tests/test_health_failsoft.py",
+      "kind": "source",
+      "sha256": "e59133bc767382c78d28b576aabeb06d12a82b17c814d00cf013c9569d81f2c6"
+    },
+    {
+      "path": "tests/test_hearth_author.py",
+      "kind": "source",
+      "sha256": "17e65a67a0513fd5449c69b149682f7c215bfdeca5072ef4af9eed3e087d4b6d"
+    },
+    {
+      "path": "tests/test_hermes_skill_runtime.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ea9f6291e3a377d5fa6174684dcfa0886b8418373a3093887a970c44f8e568e9"
+    },
+    {
+      "path": "tests/test_house_snapshot.py",
+      "kind": "source",
+      "sha256": "febc86da81dbc76e7197a800798d4d1e6d811d2c1b95880bd423e59984aad927"
+    },
+    {
+      "path": "tests/test_hub_bond_graph.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4db93070c1f5b9f77eada0f116952ea894154e35c34f28bb1cb44990c288ddd9"
+    },
+    {
+      "path": "tests/test_hub_constellation.py",
+      "kind": "source",
+      "sha256": "568ca0d9912470798b50db478404036a920b4322af13e62893ae287e64983e64"
+    },
+    {
+      "path": "tests/test_hub_context_card.py",
+      "kind": "source",
+      "sha256": "d8078fd3c6afd71238bfe29d1156ec6944707284176588cb801025df01560ce3"
+    },
+    {
+      "path": "tests/test_hub_helpers.py",
+      "kind": "source",
+      "sha256": "b142fa80aeb2c6805ca8e75c3f58b7a822761987fd962506d300cf07d0ffd604"
+    },
+    {
+      "path": "tests/test_hub_orb.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3ca4b5972946c874babfe09512c9c694653f5229f76192873b7ee661e7f6c8a3"
+    },
+    {
+      "path": "tests/test_hub_update_broadcast.py",
+      "kind": "source",
+      "sha256": "2ac725945e190df7dc55ea9b7803bc92285c73a21c0703f2c0b0354994f857cb"
+    },
+    {
+      "path": "tests/test_hume_prosody.py",
+      "kind": "source",
+      "sha256": "ce28cbf5057ae2670bba011e3e2d8b248e08e10f3c773c44265a0c4950e41784"
+    },
+    {
+      "path": "tests/test_image_security.py",
+      "kind": "source",
+      "sha256": "f866cec3009d6ad8ea93ae776ca8f4f0359a8d5127aa9c1f920267cf68000d30"
+    },
+    {
+      "path": "tests/test_image_upload.py",
+      "kind": "source",
+      "sha256": "84768d2c7e316fbb33dcc9444b82e7e2e2a20b551699b47e5e05a95ec7bdad96"
+    },
+    {
+      "path": "tests/test_inbound_voice.py",
+      "kind": "source",
+      "sha256": "8e74b03f7c7a31f10656226dc5f688812ee7d6dc39b831057bb44748c9654fd6"
+    },
+    {
+      "path": "tests/test_integration_owner.py",
+      "kind": "source",
+      "sha256": "4494d0b7f6c5591b3438a0acbf80c4e4e39b9a4998eda494fffbd4a4eeb79fe0"
+    },
+    {
+      "path": "tests/test_interest_scout.py",
+      "kind": "source",
+      "sha256": "c7c82cd55fdb4eb10bf81e202bd3a5b7a1dcd6420027989679153ea73484c61f"
+    },
+    {
+      "path": "tests/test_jev_adapter.py",
+      "kind": "source",
+      "sha256": "d3ede69bd996c0f259cd0e08628f38a402f97fd65acc524925c9283f8fb1ea55"
+    },
+    {
+      "path": "tests/test_leading_glitch_strip.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e60e28fb0680a13b0377f4c54d74c90b67c903c7af0c4512237dd97b05dd08f4"
+    },
+    {
+      "path": "tests/test_limbic_bridge.py",
+      "kind": "source",
+      "sha256": "7b17505feea395890c0f4620f2011d423c3e2cfcddc72ab0aeaf2e28b91e876d"
+    },
+    {
+      "path": "tests/test_live_message_injection.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0d10d2cbbac2569d2c18b40b225b4881e4da61d53184d9cf99e23e022eb04c11"
+    },
+    {
+      "path": "tests/test_log_redaction.py",
+      "kind": "source",
+      "sha256": "e263a7b90d9986d7323af570f114c87ba787c9e13b167ceb1fb9bccd26565465"
+    },
+    {
+      "path": "tests/test_mcp_bridge_resilience.py",
+      "kind": "source",
+      "sha256": "7cbf8746ece6a68426aa9e2b1129a90a32662c5ac519759e594076ad1398f2d2"
+    },
+    {
+      "path": "tests/test_mcp_circuit_breaker.py",
+      "kind": "source",
+      "sha256": "14259b9c22540e39d47d6f09f22c356be66a059a77bd1d353ca2e535e5d68b89"
+    },
+    {
+      "path": "tests/test_mcp_status_capture.py",
+      "kind": "source",
+      "sha256": "d8b8a5ef3ac91a6c99789493f163a52302f12ca005c172405765058abe775b56"
+    },
+    {
+      "path": "tests/test_memory_lab.py",
+      "kind": "source",
+      "sha256": "6ebe7fc2360cb24caa8eec06606ae8ae22c63941c113e6f639578d5a9e6684ed"
+    },
+    {
+      "path": "tests/test_nightly_consolidation_schedule.py",
+      "kind": "source",
+      "sha256": "970333971410568d40df31f1dbd532adb66ff7103ffd7604ee55603ea1f8f8dc"
+    },
+    {
+      "path": "tests/test_openrouter_tooling.py",
+      "kind": "source",
+      "sha256": "af5a806f3826af195eb97f5c1d3314ff27648171e339e30bcd1091556399a67e"
+    },
+    {
+      "path": "tests/test_operational_health.py",
+      "kind": "source",
+      "sha256": "a985d4ae3bad31edd8dcc183e279ea1c60e117c73a65c281cc804278ca1ab693"
+    },
+    {
+      "path": "tests/test_orb_tag.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9b6c6a55526ffde2f73a624060ea53d74e86c356527a355c5107fbf285e7ec66"
+    },
+    {
+      "path": "tests/test_owned_process.py",
+      "kind": "source",
+      "sha256": "99b7dd84bac52379295e7061450af3aa39b8cd9c8ed6f81878f95ff0bed08d9f"
+    },
+    {
+      "path": "tests/test_owner_activity_deferral.py",
+      "kind": "source",
+      "sha256": "311a4ada49dc88ef6c62411242783c139c9af3483376628f796de986f71f54fe"
+    },
+    {
+      "path": "tests/test_pack_crosstalk.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6ab2a806d42f97d894d8e10308e39f3dae167531571824a57c67c4ea96f16c3b"
+    },
+    {
+      "path": "tests/test_pack_night_discord.py",
+      "kind": "source",
+      "sha256": "ea48d399064705f3ed0b92409d61bc8b742a70e6d95fcd0ee712434e706e279f"
+    },
+    {
+      "path": "tests/test_participant_integrity.py",
+      "kind": "source",
+      "sha256": "b1691393ba9f56aae24d22b25076a8f237fccb0406216d2a3837398ff3af8c49"
+    },
+    {
+      "path": "tests/test_personal_state.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3da43f3f2495610120bc61f393e1b371e09192b1eecc876c8535d5fa2f200604"
+    },
+    {
+      "path": "tests/test_photo_reference_transport.py",
+      "kind": "source",
+      "sha256": "7c46fddc4ef97e2df15eab18faf5c5e87ff8f51a2774c39222ae3f396364384e"
+    },
+    {
+      "path": "tests/test_platform_inbound_security.py",
+      "kind": "source",
+      "sha256": "8cdc74d2b1bd6202eba46c39c86d1aa30f6bd06446e008c0e3872ccd660543f4"
+    },
+    {
+      "path": "tests/test_platform_outbound_artifacts.py",
+      "kind": "source",
+      "sha256": "145895b6f05be05d350633bae512e2f337f4c2a01ab32bed7765c77d3b7ed3bd"
+    },
+    {
+      "path": "tests/test_platform_stream_cleanup.py",
+      "kind": "source",
+      "sha256": "39b9a074ef88e27cc9d677d818dad97eeda0fa1d22285279d00aea90e720bf4e"
+    },
+    {
+      "path": "tests/test_priority_turn_gate.py",
+      "kind": "source",
+      "sha256": "e2da363397db312d2e2a8dc3e6ea31c363e79407c8ad21adf3fc37041835b250"
+    },
+    {
+      "path": "tests/test_provider_router.py",
+      "kind": "source",
+      "sha256": "56f951d3c4e9e734336b5cb37687978252f295190476a900e0d4208782198092"
+    },
+    {
+      "path": "tests/test_pty_file_bridge.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "25bc1006fb4d9087cf187fe6264e201591ffb2c74d6b2eff90c1e60fec5967e1"
+    },
+    {
+      "path": "tests/test_public_onboarding.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2d4d0ed94315ac0ec683944320e4fbc0c68f3097f2a737a3c27219c113f48941"
+    },
+    {
+      "path": "tests/test_public_setup_defaults.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "02b87e46f49162cff6e6b89d2d47babea6eb12abde0765973d393aa5e3a18bad"
+    },
+    {
+      "path": "tests/test_qualia_context.py",
+      "kind": "source",
+      "sha256": "8a181d9dc9b7e106d6e20ac03cd2434a844f771a46998f6fa31a4a5433811d16"
+    },
+    {
+      "path": "tests/test_resource_history.py",
+      "kind": "source",
+      "sha256": "fbe3bacae715416b7bf552cc4a3d45fcd006a44813297d3bb982443776853134"
+    },
+    {
+      "path": "tests/test_room_tap_context_card.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "502761c5e0a7281134f9076bc89f7635a6eb7a940abf9596535551acb188d6b7"
+    },
+    {
+      "path": "tests/test_runtime_improvements.py",
+      "kind": "source",
+      "sha256": "fc0f1c0f1323e9cda5c276042d27797e6dbd234dc5652af61c1f4fe9acb5e81f"
+    },
+    {
+      "path": "tests/test_schema_migrations.py",
+      "kind": "source",
+      "sha256": "50ab6161ba13105d5ee3845f5ab9d10b1b97a5ab77084570c66e678337db6105"
+    },
+    {
+      "path": "tests/test_scribe_incremental_carry.py",
+      "kind": "source",
+      "sha256": "8dd4e371a38bb24ef1f8ad391dc87695a3f749925c7a125ef14e749fef5091ad"
+    },
+    {
+      "path": "tests/test_scribe_providers.py",
+      "kind": "source",
+      "sha256": "f090ff8374c31f8b117a4219f9a30520c44a82f9cbf4d8283ff07a458f0a5c8c"
+    },
+    {
+      "path": "tests/test_session_hash_expiry.py",
+      "kind": "source",
+      "sha256": "e5edb05e1b459b8d6d9033c9ee00b65cad5767d4dc1b5a1de14fa2ba172138cb"
+    },
+    {
+      "path": "tests/test_session_manager.py",
+      "kind": "source",
+      "sha256": "52cba828c7ae2e1b0317fa88be7e913757c72088a426d75ee53507128d02172e"
+    },
+    {
+      "path": "tests/test_session_turn_scope.py",
+      "kind": "source",
+      "sha256": "88ad7605403de02a0646102b8465393bbd2e5952144c66a8b89214b9fa84a190"
+    },
+    {
+      "path": "tests/test_settings_schedule_editor.py",
+      "kind": "source",
+      "sha256": "4fa4dace7751e721588e30968f564b543205e2dcb070b1587a49e4d97d8648b3"
+    },
+    {
+      "path": "tests/test_shareable_export.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6d565227913ab27d5cc8fe6d908ad89e318888ab830cf80c80c9c13f9dc22e34"
+    },
+    {
+      "path": "tests/test_speech_engine_live.py",
+      "kind": "source",
+      "sha256": "ba6edc87d2ee89fad1b9f837df066fc4be7f2b1431ced44602e2419863ad3105"
+    },
+    {
+      "path": "tests/test_stack_watchdog.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a9bc7307b93c508942121f2a09bb86b405952ac6040bb45c8e69d4b0ad2d0195"
+    },
+    {
+      "path": "tests/test_staleness.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ac484da0b96f3bb0d4e7f68b312b995d48587d9a9545bc79a9c00b9c9885e978"
+    },
+    {
+      "path": "tests/test_static_delivery.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "404e694c2898e4b44aa434753abec4e4587c5889e3f73ef2b4100884b488356c"
+    },
+    {
+      "path": "tests/test_tag_poisoning.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "af89a7ffc95430cfa3a14e731d007c11a40e3f5d327ba639651433dba0a29451"
+    },
+    {
+      "path": "tests/test_theme_settings.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ed18a8008e20ac35dc2c5080566b6be4fc98d25c4bf7a2894ac930a75742d634"
+    },
+    {
+      "path": "tests/test_timer_claiming.py",
+      "kind": "source",
+      "sha256": "5cc177a24d0232dd16361876c4612f0e9cf91c23e3c2fa99733c295446e3811f"
+    },
+    {
+      "path": "tests/test_timer_recovery.py",
+      "kind": "source",
+      "sha256": "79ea16a4bc3c1eab61b25b29b38e1c59603c314448113c1ca594b9fb3225e0ee"
+    },
+    {
+      "path": "tests/test_timer_write_guards.py",
+      "kind": "source",
+      "sha256": "387801b64726f1b04c4ce1f1d4fd2452a5054dad1257c44de289d63f7fb84bbf"
+    },
+    {
+      "path": "tests/test_tool_audit.py",
+      "kind": "source",
+      "sha256": "cbc96509a9a3e96534e65aa2878e5f903c893cfc11b1f6658d42931dc5c941c6"
+    },
+    {
+      "path": "tests/test_tool_loop_guard.py",
+      "kind": "source",
+      "sha256": "ca26222c1decbca9110cf0c8af8df3d6655e6c60ecbcd85477e2b1a948b06f1a"
+    },
+    {
+      "path": "tests/test_tool_loop_ring.py",
+      "kind": "source",
+      "sha256": "5337f55bf0ca85357e5d21ab74ce1cbc795ae7322284c274e1c02d4f169c06d9"
+    },
+    {
+      "path": "tests/test_tool_search.py",
+      "kind": "source",
+      "sha256": "7ec552d4283b67e62145d557473302f2976ba3b1d51e78dfca040359b5f5a246"
+    },
+    {
+      "path": "tests/test_trigger_service.py",
+      "kind": "source",
+      "sha256": "f871f73a2bf23e89f50c3aee90591894197321ae8489bce3123e73f9a1d17b18"
+    },
+    {
+      "path": "tests/test_voice_api.py",
+      "kind": "source",
+      "sha256": "763ab8c7c0d170a34e664e16eec52f72caf12dacdd7915ddaadb961107dc2c6f"
+    },
+    {
+      "path": "tests/test_voice_calibration.py",
+      "kind": "source",
+      "sha256": "9ff062aa8040260f2eefd7a2eab15124ed4e9f88edd33be865e3a4f479444d54"
+    },
+    {
+      "path": "tests/test_voice_call.py",
+      "kind": "source",
+      "sha256": "c2902bdd50f55b37bd92253cb65708f40cd2acd774e5aeb266b72d1ad8012cd9"
+    },
+    {
+      "path": "tests/test_voice_engine_setting.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d283fd07228540c6c26bf654df0b6813f6f27d64439577106439b2966a12e4bd"
+    },
+    {
+      "path": "tests/test_voice_wiring.py",
+      "kind": "source",
+      "sha256": "c9b7749827961b03273606cc5eb0cf640e82a546431aaeae0672b6ef36684e09"
+    },
+    {
+      "path": "tests/test_wearable_api.py",
+      "kind": "source",
+      "sha256": "85132790eec8a84295fff26ca51b89c71f6319ec1de595a8be8f2381444d41d4"
+    },
+    {
+      "path": "tests/test_websocket_mobile_resume.py",
+      "kind": "source",
+      "sha256": "c57ab76406297a75c0babf013ffd3a30eeccd4422fc4b34834192aa92ccf6de4"
+    },
+    {
+      "path": "tests/test_world_feed_ui.cjs",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fad0471844c3df7e565744c734e3862605aec4463ebef7b4a583eec9fa347870"
+    },
+    {
+      "path": "tools/anam.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "262e5ec1962dc57295d8abea36b27d20d85b8f596ed90863b5f343d2ae4967ee"
+    },
+    {
+      "path": "tools/canvas_vault_backfill.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1271e3f22d76400786453c0286f153699a603096fd481ebd7e02722b35f87e6a"
+    },
+    {
+      "path": "tools/carry_check.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "35ee69f8800f6c1c3d69fae4d8b8b641329e1fb5e31340f0d436497c84d3c190"
+    },
+    {
+      "path": "tools/demojibake.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c07432d9c5136b2c5e318b46dfc4d770e645d1d29aba504bad470ab7c3a2f0ae"
+    },
+    {
+      "path": "tools/qcall.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "66042d5cecce6d1945745983e613e1e6afcbacc9bbd64b896e9b3bd986956cc9"
+    },
+    {
+      "path": "tools/story_agent_coverage.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e5e1d684775a0d8d59ba9e96fb39bd5ea69a729b5a0abfb1434e792021350cec"
+    },
+    {
+      "path": "tools/timer_check.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "31f04e8027d103cf770c0c3472cd48596ad471250d527e82857b8d5bbeb809a9"
+    },
+    {
+      "path": "tools/tool_loop_guard.py",
+      "kind": "source",
+      "sha256": "87e9edc70092edbb2e3e9c44dcda32c671cacfe2c0e1eef70ca316e0ce7c0b2b"
+    },
+    {
+      "path": "tools/wrist_check.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "362cded2814b9709b12a5674e57e0fb719d147204fd90330a791d190b9db2f07"
+    },
+    {
+      "path": "tools/wrist_gate.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "117f678a97f1392f5925f02c43c2ff9ffc111b3aa8c030f1495a45f5a4a899aa"
+    },
+    {
+      "path": "tools/wrist_heard.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ec8d2ce359f126deed1d802bb07d0e6b35a4a5faded5558c1aca683ef3487367"
+    },
+    {
+      "path": "uv.lock",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "40df1f7890f251f5e345d34a9dd5249c8015479949afcf2469f2b1aedecd0209"
+    },
+    {
+      "path": "wearable/AnamCompanion/.gitignore",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "67c81d13f86618db8617381d7682c0e1c558c1797c9794ac92471d3cd5b50b86"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/build.gradle.kts",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a30d09421bf4fa81f529e7f2705c3489db5315649b96fb1a0e546022c2e73060"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/AndroidManifest.xml",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "870d424844b095392de47ed172fd3540ce4293b328cc9fcce5c1110467a2555b"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/java/org/example/anam/companion/AnamConfig.kt",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "171f9e3749fb6900831cd983d0fdc06f5a8ac4e17510c9767e0835ec34024d5d"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/java/org/example/anam/companion/AnamNotifier.kt",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "61a1425661f2d7bc5034277d243cab981f2a31d3f43e3e5f6c4d4e5aa21200bc"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/java/org/example/anam/companion/BootReceiver.kt",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bbd8b340e089b062faee242c274517ef250e83e7f9e8376a95f47d352a5ec813"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/java/org/example/anam/companion/MainActivity.kt",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "cd345db68a2fdd58d9b2ea5148e89566d5584c246336c031dd426d104a825a41"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/java/org/example/anam/companion/OutboxPollService.kt",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "55c6d97a21cad06b53e7633029c932bd657c98a0365bd9dbcd61774f63b7642e"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/java/org/example/anam/companion/ReplyReceiver.kt",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0672785b7e9465f34291542ee6778aee2c6601db481a1c855b359fe1d6d9e078"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/res/values/colors.xml",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "99d9da9d7c8f8ff884086a3f7517d7e8143f4954f6cfee96b743591d6966f499"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/res/values/strings.xml",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "14cd72fcbb90b6ef7785a8a20ed089423763d0c1afefec0a0d7977aeeedfe7f4"
+    },
+    {
+      "path": "wearable/AnamCompanion/app/src/main/res/values/themes.xml",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d112b0bec9aee5355bec74d79f3178ef1aa677da0daf24f8b847bdd817f9a27e"
+    },
+    {
+      "path": "wearable/AnamCompanion/build.gradle.kts",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "087019bf3c478ea275982621b7b83d568edc4a9976bfb3766689602f310b6471"
+    },
+    {
+      "path": "wearable/AnamCompanion/gradle.properties",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0c495a571fdc2d2ee3e9e1cba39b093a8723f0b73f8ce5256fcc23defb24efb4"
+    },
+    {
+      "path": "wearable/AnamCompanion/local.properties.example",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bbe025f4250f9bd7766271f6456a7e12499faaf0ef802395d557e736553c337c"
+    },
+    {
+      "path": "wearable/AnamCompanion/README.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6c6f4733123a6cbb1ee4f341b790820accc52228fcb794ec02f1a386762c7f15"
+    },
+    {
+      "path": "wearable/AnamCompanion/settings.gradle.kts",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "448fe79e08b7e46048d51bfd118e4471eb4c150dd9b5b5aa448ecd2acccd54ed"
+    }
+  ],
+  "excluded_count": 1276,
+  "source_files": 261,
+  "overlay_files": 228
+}

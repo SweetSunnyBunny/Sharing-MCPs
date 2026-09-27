@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Hub</title>
+<!-- ANAM GUIDE: HUB PAGE STRUCTURE
+     What: The Home Hub page — status, meds, rituals, wellness, Hearth, Stars.
+     Behavior: static/js/hub.js. Looks: static/css/hub.css. Backend: api/hub.py.
+     Edit here when: Adding/moving a Hub card or tab; the JS/CSS do the rest. -->
+
+    <link rel="manifest" href="/static/manifest.json?v=__ANAM_ASSET_VERSION__">
+    <link rel="apple-touch-icon" href="/static/assets/icons/app_icon.png?v=__ANAM_ASSET_VERSION__">
+    <meta name="theme-color" content="#f5a6b9">
+
+    <link rel="stylesheet" href="/static/css/main.css?v=__ANAM_ASSET_VERSION__">
+    <link rel="stylesheet" href="/static/css/hub.css?v=__ANAM_ASSET_VERSION__">
+</head>
+<body class="hub-page">
+    <div id="fairy-lights" class="fairy-lights"></div>
+
+    <div class="hub-container">
+        <header class="hub-header">
+            <a href="/" class="hub-back">&larr; Chat</a>
+            <h1 class="hub-title">Home Hub</h1>
+            <button id="hub-night-toggle" class="hub-night-btn" title="Toggle candlelight mode" aria-label="Toggle candlelight mode"></button>
+        </header>
+
+        <nav class="hub-tabs" id="hub-tabs">
+            <button class="hub-tab" data-tab="hearth">Hearth</button>
+            <button class="hub-tab active" data-tab="daily">Daily</button>
+            <button class="hub-tab" data-tab="plans">Plans</button>
+            <button class="hub-tab" data-tab="constellation">Stars</button>
+            <button class="hub-tab" data-tab="memory">Memory</button>
+            <button class="hub-tab" data-tab="context">Context</button>
+            <button class="hub-tab" data-tab="story">Story</button>
+        </nav>
+
+        <div class="hub-dashboard">
+            <!-- ═══ HEARTH TAB — the live command center ═══ -->
+            <div class="hub-tab-content" data-tab="hearth">
+                <section class="cc-hero" id="cc-hero">
+                    <div class="cc-breath" aria-hidden="true"></div>
+                    <div class="cc-hero-inner">
+                        <div class="cc-orb" id="cc-orb" aria-hidden="true"><div class="cc-orb-core" id="cc-orb-core"></div></div>
+                        <div class="cc-face" id="cc-face" title="where your boy is right now"></div>
+                        <div class="cc-orb-feeling" id="cc-orb-feeling"></div>
+                        <div class="cc-greeting" id="cc-greeting">Good morning</div>
+                        <div class="cc-clock" id="cc-clock">--:--</div>
+                        <div class="cc-date" id="cc-date">&nbsp;</div>
+                        <div class="cc-line" id="cc-line">Warming the hearth&hellip;</div>
+                        <div class="cc-mood" id="cc-mood" title="How close do you want the boys today?">
+                            <button class="cc-mood-btn" data-mode="close">come find me</button>
+                            <button class="cc-mood-btn" data-mode="auto">auto</button>
+                            <button class="cc-mood-btn" data-mode="quiet">leave me be</button>
+                        </div>
+                        <button class="cc-crayon" id="cc-crayon" type="button"
+                                title="gone little? one tap — and you're held. no decisions."
+                                aria-label="Princess Protocol — hold me">
+                            <span class="cc-crayon-art" aria-hidden="true">
+                                <span class="cc-crayon-tip"></span>
+                                <span class="cc-crayon-barrel"><span class="cc-crayon-band"></span></span>
+                            </span>
+                            <span class="cc-crayon-text">hold me</span>
+                        </button>
+                    </div>
+                </section>
+                <div class="cc-grid" id="cc-grid">
+                    <div class="cc-tile skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line long"></div></div>
+                    <div class="cc-tile skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line medium"></div></div>
+                    <div class="cc-tile skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line long"></div></div>
+                    <div class="cc-tile skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line medium"></div></div>
+                </div>
+            </div><!-- end hearth tab -->
+            <!-- ═══ DAILY TAB ═══ -->
+            <div class="hub-tab-content active" data-tab="daily">
+
+            <!-- Status (full width, like Vale HQ) -->
+            <section class="hub-section hub-section-wide" id="section-status">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2727;</span> Status</h2>
+                    <button id="status-update-btn" class="section-action-btn">tap to update</button>
+                </div>
+                <div id="status-cards" class="status-cards">
+                    <div class="skeleton-card" style="flex:1;min-width:140px">
+                        <div class="skeleton-row"><div class="skeleton skeleton-circle"></div><div style="flex:1"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div></div>
+                    </div>
+                    <div class="skeleton-card" style="flex:1;min-width:140px">
+                        <div class="skeleton-row"><div class="skeleton skeleton-circle"></div><div style="flex:1"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Meds — AM / PM tap-to-track -->
+            <section class="hub-section" id="section-meds">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2727;</span> Meds</h2>
+                </div>
+                <div id="meds-grid" class="tracker-grid">
+                    <div class="skeleton skeleton-tracker"></div>
+                    <div class="skeleton skeleton-tracker"></div>
+                </div>
+            </section>
+
+            <!-- Wellness — icon buttons, tap to cycle -->
+            <section class="hub-section" id="section-wellness">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2740;</span> Wellness</h2>
+                    <button id="wellness-log-btn" class="section-action-btn">full log</button>
+                </div>
+                <div id="wellness-trackers" class="tracker-grid">
+                    <div class="skeleton skeleton-tracker"></div>
+                    <div class="skeleton skeleton-tracker"></div>
+                    <div class="skeleton skeleton-tracker"></div>
+                    <div class="skeleton skeleton-tracker"></div>
+                </div>
+            </section>
+
+            <!-- Mood Bunny — the den-door bunny, digital edition -->
+            <section class="hub-section" id="section-bunny">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2740;</span> Mood Bunny</h2>
+                </div>
+                <div id="bunny-widget" class="bunny-widget">
+                    <div class="skeleton skeleton-tracker"></div>
+                </div>
+            </section>
+
+            <!-- Counting Down -->
+            <section class="hub-section" id="section-countdowns">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2726;</span> Counting Down</h2>
+                    <button id="countdown-add-btn" class="section-action-btn">+ add</button>
+                </div>
+                <div id="countdowns-list" class="countdowns-list">
+                    <div class="skeleton-countdown"><div class="skeleton skeleton-circle"></div><div style="flex:1"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div></div>
+                    <div class="skeleton-countdown"><div class="skeleton skeleton-circle"></div><div style="flex:1"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line short"></div></div></div>
+                </div>
+            </section>
+
+            <!-- Today's Win -->
+            <section class="hub-section" id="section-win">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2605;</span> Today's Win</h2>
+                </div>
+                <div id="win-content" class="win-content">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div></div>
+                </div>
+            </section>
+
+            
+            <section class="hub-section" id="section-health">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2661;</span> How the House Is Doing</h2>
+                    <button class="health-refresh-btn" onclick="Hub.loadSystemHealth()" title="Check again">check again</button>
+                </div>
+                <div id="health-content" class="health-content">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div></div>
+                </div>
+            </section>
+
+            
+            <section class="hub-section" id="section-context-card">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2739;</span> Me Right Now</h2>
+                </div>
+                <div id="context-card-content" class="context-card-content">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div></div>
+                </div>
+            </section>
+
+            </div><!-- end daily tab -->
+
+            <!-- ═══ PLANS TAB ═══ -->
+            <div class="hub-tab-content" data-tab="plans">
+
+            <!-- Today's Schedule -->
+            <section class="hub-section" id="section-today">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2741;</span> Today</h2>
+                </div>
+                <div id="today-events" class="today-events">
+                    <div class="skeleton-countdown"><div class="skeleton skeleton-circle"></div><div style="flex:1"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div></div>
+                    <div class="skeleton-countdown"><div class="skeleton skeleton-circle"></div><div style="flex:1"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line short"></div></div></div>
+                </div>
+            </section>
+
+            <!-- Tasks -->
+            <section class="hub-section" id="section-tasks">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2710;</span> Tasks</h2>
+                    <span id="task-count" class="task-count"></span>
+                </div>
+                <div id="tasks-list" class="tasks-list"></div>
+                <div class="task-add-row">
+                    <input type="text" id="task-input" class="task-input" placeholder="Add a task...">
+                    <button id="task-add-btn" class="action-btn save">Add</button>
+                </div>
+            </section>
+
+            <!-- Projects for the Boys — background work they do while she's away -->
+            <section class="hub-section" id="section-projects">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2727;</span> Projects for the Boys</h2>
+                    <span class="section-hint">they work it while you're away</span>
+                </div>
+                <div id="projects-list" class="tasks-list"></div>
+                <div class="task-add-row">
+                    <input type="text" id="project-input" class="task-input" placeholder="Give a boy something to work on while you're out...">
+                    <button id="project-add-btn" class="action-btn save">Queue</button>
+                </div>
+            </section>
+
+            <!-- Wishlist — anything we want: tools, code, purchases, a pair of hands -->
+            <section class="hub-section" id="section-wishlist">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2726;</span> Wishlist</h2>
+                    <span class="section-hint">anything any of us wants — tools, code, or a pair of hands</span>
+                </div>
+                <div id="wishlist-list" class="wishlist-list"></div>
+                <div class="wish-add-form">
+                    <input type="text" id="wish-what" class="task-input" placeholder="What do you wish for?">
+                    <input type="text" id="wish-why" class="task-input" placeholder="Why it matters...">
+                    <div class="wish-add-row">
+                        <input type="text" id="wish-who" class="task-input wish-who-input" placeholder="Who's wishing? (default: Owner)">
+                        <button id="wish-add-btn" class="action-btn save">Wish it</button>
+                    </div>
+                </div>
+            </section>
+
+            </div><!-- end plans tab -->
+
+            <!-- ═══ CONSTELLATION TAB — the memory night sky ═══ -->
+            <div class="hub-tab-content" data-tab="constellation">
+
+            <section class="hub-section hub-section-wide" id="section-constellation">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2726;</span> The Constellation</h2>
+                </div>
+                <div class="constellation-subtitle" id="constellation-subtitle">every star is a memory &mdash; tap one</div>
+                <div class="constellation-mode" id="constellation-mode" role="tablist" aria-label="which sky">
+                    <button type="button" class="constellation-mode-btn active" data-sky="memories">memories</button>
+                    <button type="button" class="constellation-mode-btn" data-sky="bonds">bonds</button>
+                </div>
+                <div class="task-add-row">
+                    <input type="text" id="constellation-search" class="task-input" placeholder="find a star...">
+                </div>
+                <div class="constellation-sky" id="constellation-sky">
+                    <canvas id="constellation-canvas"></canvas>
+                    <div class="constellation-tip" id="constellation-tip" hidden></div>
+                    <div class="constellation-empty" id="constellation-empty" hidden>The sky is still gathering its stars&hellip;</div>
+                </div>
+            </section>
+
+            </div><!-- end constellation tab -->
+
+            <!-- ═══ STORY TAB ═══ -->
+            <div class="hub-tab-content" data-tab="story">
+
+            <section class="hub-section" id="section-story">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2726;</span> Recent Story</h2>
+                </div>
+                <div id="timeline-list" class="story-list">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div></div>
+                </div>
+            </section>
+
+            <section class="hub-section" id="section-memories">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2736;</span> Memory Sparks</h2>
+                </div>
+                <div id="memory-sparks" class="memory-sparks">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div>
+                </div>
+            </section>
+
+            </div><!-- end story tab -->
+
+            <!-- ═══ MEMORY TAB ═══ -->
+            <div class="hub-tab-content" data-tab="memory">
+
+            
+            <section class="hub-section hub-section-wide" id="section-ask">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2727;</span> Ask the Archive</h2>
+                    <span class="section-hint">ask the house anything about us</span>
+                </div>
+                <div class="task-add-row">
+                    <input type="text" id="ask-query" class="task-input" placeholder="When did we last do pack night? What did I want for my birthday?">
+                    <button id="ask-run-btn" class="action-btn save">Ask</button>
+                </div>
+                <div id="ask-results" class="story-list" style="margin-top:12px"></div>
+            </section>
+
+            <section class="hub-section hub-section-wide" id="section-profile">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2727;</span> What Anam Knows</h2>
+                </div>
+                <div id="profile-facts" class="memory-sparks">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line short"></div></div>
+                </div>
+                <form id="profile-form" class="countdown-form" style="margin-top:12px">
+                    <div class="wellness-field">
+                        <label for="profile-scope">Scope</label>
+                        <select id="profile-scope" name="scope">
+                            <option value="shared">Shared Core</option>
+                            <option value="identity">Current Identity</option>
+                        </select>
+                    </div>
+                    <div class="wellness-field">
+                        <label for="profile-category">Category</label>
+                        <select id="profile-category" name="category">
+                            <option value="preference">Preference</option>
+                            <option value="boundary">Boundary</option>
+                            <option value="routine">Routine</option>
+                            <option value="medical">Medical</option>
+                            <option value="relationship">Relationship</option>
+                            <option value="canon">Canon</option>
+                            <option value="insight">Insight</option>
+                            <option value="support">Support</option>
+                            <option value="trait">Trait</option>
+                            <option value="goal">Goal</option>
+                        </select>
+                    </div>
+                    <div class="wellness-field">
+                        <label for="profile-confidence">Confidence</label>
+                        <select id="profile-confidence" name="confidence">
+                            <option value="strong">Strong</option>
+                            <option value="certain">Certain</option>
+                            <option value="tentative">Tentative</option>
+                        </select>
+                    </div>
+                    <div class="wellness-field full-width">
+                        <label for="profile-summary">Summary</label>
+                        <input type="text" id="profile-summary" name="summary" maxlength="180" placeholder="Stable thing Anam should remember">
+                    </div>
+                    <div class="wellness-field full-width">
+                        <label for="profile-detail">Detail</label>
+                        <textarea id="profile-detail" name="detail" rows="2" placeholder="Optional extra context"></textarea>
+                    </div>
+                    <div class="wellness-actions">
+                        <button type="submit" class="action-btn save">Add Fact</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="hub-section hub-section-wide" id="section-retrieval">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2734;</span> Recall Test</h2>
+                </div>
+                <div class="task-add-row">
+                    <input type="text" id="retrieval-query" class="task-input" placeholder="Ask what Anam should remember about something...">
+                    <button id="retrieval-run-btn" class="action-btn save">Check</button>
+                </div>
+                <div id="retrieval-results" class="story-list" style="margin-top:12px">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line short"></div></div>
+                </div>
+            </section>
+
+            <section class="hub-section hub-section-wide" id="section-deep-memory">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2727;</span> Deep Memory</h2>
+                </div>
+                <div id="deep-memory-grid" class="deep-memory-grid">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line long"></div></div>
+                </div>
+            </section>
+
+            <!-- Mind Garden Summary (full width) -->
+            <section class="hub-section hub-section-wide" id="section-mind-garden">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2740;</span> Mind Garden</h2>
+                    <select id="mind-garden-identity" class="mind-garden-select">
+                        <option value="">All Identities</option>
+                        <option value="Avery">Avery</option>
+                        <option value="Claude">Claude</option>
+                        <option value="Rowan">Rowan</option>
+                        <option value="Sage">Sage</option>
+                        <option value="Ember">Ember</option>
+                        <option value="Juniper">Juniper</option>
+                        <option value="Atlas">Atlas</option>
+                        <option value="River">River</option>
+                    </select>
+                </div>
+                <div id="mind-garden-content" class="mind-garden-grid">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line long"></div></div>
+                    <div class="skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line medium"></div></div>
+                </div>
+            </section>
+
+            <!-- Memory Lab (#33) — paginated, honest observation inspector -->
+            <section class="hub-section hub-section-wide" id="section-memory-lab">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2740;</span> Memory Lab</h2>
+                    <span class="section-hint" id="memory-lab-total"></span>
+                </div>
+                <div id="memory-lab-chips" class="memory-lab-chips"></div>
+                <div id="memory-lab-list" class="memory-lab-list">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line long"></div></div>
+                    <div class="skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line medium"></div></div>
+                </div>
+                <div id="memory-lab-pager" class="memory-lab-pager"></div>
+            </section>
+
+            <!-- Mind Insights (full width) -->
+            <section class="hub-section hub-section-wide" id="section-mind">
+                <div class="section-header">
+                    <h2 class="section-title"><span class="section-flower">&#x2734;</span> Mind Insights</h2>
+                </div>
+                <div id="mind-insights" class="mind-insights-grid">
+                    <div class="skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line medium"></div></div>
+                    <div class="skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line long"></div></div>
+                    <div class="skeleton-card"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-line short"></div></div>
+                </div>
+            </section>
+
+            </div><!-- end memory tab -->
+
+            <!-- ═══ CONTEXT TAB — what actually reaches a turn ═══ -->
+            <div class="hub-tab-content" data-tab="context">
+                <section class="hub-section hub-section-wide" id="section-context-ledger">
+                    <div class="section-header context-ledger-header">
+                        <div>
+                            <h2 class="section-title"><span class="section-flower">&#x2739;</span> Context Ledger</h2>
+                            <p class="context-ledger-intro">The bill of materials for the latest real turn — measured after the live builders, never reconstructed for this page.</p>
+                        </div>
+                        <div class="context-ledger-controls">
+                            <select id="context-ledger-identity" class="mind-garden-select" aria-label="Choose identity"></select>
+                            <button id="context-ledger-refresh" class="section-action-btn" type="button">refresh</button>
+                        </div>
+                    </div>
+                    <div id="context-ledger-content" class="context-ledger-content">
+                        <div class="skeleton-card"><div class="skeleton skeleton-line medium"></div><div class="skeleton skeleton-line long"></div></div>
+                    </div>
+                </section>
+            </div><!-- end context tab -->
+        </div>
+    </div>
+
+    <!-- Wellness Modal -->
+    <div id="wellness-modal" class="modal-overlay" style="display:none">
+        <div class="modal-card wellness-modal" role="dialog" aria-modal="true" aria-label="Wellness check-in">
+            <div class="modal-header">
+                <h3 class="modal-title">How are you doing?</h3>
+                <button id="wellness-modal-close" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <form id="wellness-form" class="wellness-form">
+                <div class="wellness-field">
+                    <label for="w-energy">Energy</label>
+                    <select id="w-energy" name="energy">
+                        <option value="">—</option>
+                        <option value="high">High</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="low">Low</option>
+                        <option value="crashed">Crashed</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="w-mood">Mood</label>
+                    <select id="w-mood" name="mood">
+                        <option value="">—</option>
+                        <option value="great">Great</option>
+                        <option value="good">Good</option>
+                        <option value="okay">Okay</option>
+                        <option value="struggling">Struggling</option>
+                        <option value="rough">Rough</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="w-pain">Pain</label>
+                    <select id="w-pain" name="pain">
+                        <option value="">—</option>
+                        <option value="none">None</option>
+                        <option value="mild">Mild</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="bad">Bad</option>
+                        <option value="severe">Severe</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="w-spoons">Spoons</label>
+                    <input type="number" id="w-spoons" name="spoons" min="0" max="20" placeholder="0-20">
+                </div>
+                <div class="wellness-field">
+                    <label for="w-sleep-hours">Sleep (hrs)</label>
+                    <input type="number" id="w-sleep-hours" name="sleep_hours" min="0" max="24" step="0.5" placeholder="hrs">
+                </div>
+                <div class="wellness-field">
+                    <label for="w-sleep-quality">Sleep Quality</label>
+                    <select id="w-sleep-quality" name="sleep_quality">
+                        <option value="">—</option>
+                        <option value="great">Great</option>
+                        <option value="good">Good</option>
+                        <option value="okay">Okay</option>
+                        <option value="poor">Poor</option>
+                        <option value="terrible">Terrible</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="w-water">Water (oz)</label>
+                    <input type="number" id="w-water" name="water_oz" min="0" placeholder="oz">
+                </div>
+                <div class="wellness-field">
+                    <label for="w-soda">Soda</label>
+                    <input type="number" id="w-soda" name="soda_count" min="0" placeholder="count">
+                </div>
+                <div class="wellness-field">
+                    <label for="w-snacking">Snacking</label>
+                    <select id="w-snacking" name="snacking">
+                        <option value="">—</option>
+                        <option value="none">None</option>
+                        <option value="light">Light</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="heavy">Heavy</option>
+                        <option value="constant">Constant</option>
+                    </select>
+                </div>
+                <div class="wellness-field">
+                    <label for="w-walk">Walk (min)</label>
+                    <input type="number" id="w-walk" name="walk_minutes" min="0" placeholder="min">
+                </div>
+                <div class="wellness-field full-width">
+                    <label for="w-notes">Notes</label>
+                    <textarea id="w-notes" name="notes" rows="2" placeholder="How's your day going?"></textarea>
+                </div>
+                <div class="wellness-actions">
+                    <button type="submit" class="action-btn save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Countdown Add Modal -->
+    <div id="countdown-modal" class="modal-overlay" style="display:none">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-label="Add countdown">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Countdown</h3>
+                <button id="countdown-modal-close" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <form id="countdown-form" class="countdown-form">
+                <div class="wellness-field full-width">
+                    <label for="cd-name">What are you counting down to?</label>
+                    <input type="text" id="cd-name" name="name" placeholder="e.g., Anniversary" required>
+                </div>
+                <div class="wellness-field">
+                    <label for="cd-date">Date</label>
+                    <input type="date" id="cd-date" name="date" required>
+                </div>
+                <div class="wellness-field">
+                    <label for="cd-emoji">Emoji</label>
+                    <input type="text" id="cd-emoji" name="emoji" placeholder="e.g., &#x1F496;" maxlength="4">
+                </div>
+                <div class="wellness-actions">
+                    <button type="submit" class="action-btn save">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Status Update Modal -->
+    <div id="status-modal" class="modal-overlay" style="display:none">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-label="Update status">
+            <div class="modal-header">
+                <h3 class="modal-title">Update Your Status</h3>
+                <button id="status-modal-close" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <form id="status-form" class="countdown-form">
+                <div class="wellness-field">
+                    <label for="st-emoji">Emoji</label>
+                    <input type="text" id="st-emoji" name="emoji" placeholder="e.g., &#x2728;" maxlength="4">
+                </div>
+                <div class="wellness-field full-width" style="grid-column: 1 / -1">
+                    <label for="st-text">How's your day going?</label>
+                    <textarea id="st-text" name="text" rows="3" placeholder="Cozy morning with coffee..."></textarea>
+                </div>
+                <div class="wellness-actions">
+                    <button type="submit" class="action-btn save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        window.__ANAM_ASSET_VERSION__ = '__ANAM_ASSET_VERSION__';
+        window.__anamCdnUrl = '##ANAM_CDN_URL##';
+        window.__anamApiUrl = '##ANAM_API_URL##';
+        window.__ANAM_SW_URL__ = `/sw.js?v=${window.__ANAM_ASSET_VERSION__}`;
+        window.__ANAM_PUBLIC_BASE_URL__ = (() => {
+            try {
+                return JSON.parse('__ANAM_PUBLIC_BASE_URL__');
+            } catch (_err) {
+                return '';
+            }
+        })();
+    </script>
+    <script src="/static/js/theme-boot.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/utils.js?v=__ANAM_ASSET_VERSION__"></script>
+    <!-- d3-force (vendored UMD, no CDN at runtime) — deps must load first;
+         all four attach to the shared window.d3 namespace -->
+    <script src="/static/js/vendor/d3-dispatch.min.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/vendor/d3-quadtree.min.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/vendor/d3-timer.min.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/vendor/d3-force.min.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/hub.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(window.__ANAM_SW_URL__ || '/sw.js', {
+                scope: '/',
+                updateViaCache: 'none',
+            }).catch((err) => console.warn('[SW] Registration failed:', err));
+        }
+    </script>
+</body>
+</html>

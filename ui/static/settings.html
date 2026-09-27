@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anam — Settings</title>
+
+    <link rel="manifest" href="/static/manifest.json?v=__ANAM_ASSET_VERSION__">
+    <link rel="apple-touch-icon" href="/static/assets/icons/app_icon.png?v=__ANAM_ASSET_VERSION__">
+    <meta name="theme-color" content="#F2B8C6">
+
+    <link rel="stylesheet" href="/static/css/main.css?v=__ANAM_ASSET_VERSION__">
+    <link rel="stylesheet" href="/static/css/settings.css?v=__ANAM_ASSET_VERSION__">
+</head>
+<body class="settings-page">
+    <div id="fairy-lights" class="fairy-lights"></div>
+
+    <div class="settings-container">
+        <header class="settings-header">
+            <a href="/" class="settings-back">&larr; Chat</a>
+            <h1 class="settings-title">Settings</h1>
+            <a href="/static/connector-health.html" class="settings-back">Connector health</a>
+        </header>
+
+        <nav class="settings-tabs">
+            <button class="settings-tab active" data-tab="orchestrator">Orchestrator</button>
+            <button class="settings-tab" data-tab="notifications">Notifications</button>
+            <button class="settings-tab" data-tab="system">System</button>
+        </nav>
+
+        <!-- Orchestrator tab -->
+        <div class="settings-panel active" id="tab-orchestrator">
+            <section class="settings-section">
+                <h2 class="section-title">Scheduled Sessions</h2>
+                <div id="schedule-list" class="schedule-list"></div>
+                <button id="add-schedule-btn" class="action-btn">+ Add Schedule</button>
+            </section>
+
+            <section class="settings-section">
+                <h2 class="section-title">Failsafe</h2>
+                <div class="failsafe-controls">
+                    <div class="toggle-row">
+                        <span class="toggle-label">Enabled</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="failsafe-enabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label">Gentle</label>
+                        <input type="number" id="failsafe-gentle" class="threshold-input" min="30">
+                        <span class="threshold-unit">min</span>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label">Concerned</label>
+                        <input type="number" id="failsafe-concerned" class="threshold-input" min="60">
+                        <span class="threshold-unit">min</span>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label">Emergency</label>
+                        <input type="number" id="failsafe-emergency" class="threshold-input" min="120">
+                        <span class="threshold-unit">min</span>
+                    </div>
+                    <button id="save-failsafe-btn" class="action-btn">Save</button>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h2 class="section-title">Care Signals</h2>
+                <p class="section-note">Event-driven gentle nudges based on wellness and meds, with cooldown protection.</p>
+                <div class="failsafe-controls">
+                    <div class="toggle-row">
+                        <span class="toggle-label">Enabled</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="care-signals-enabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label">Low energy identity</label>
+                        <select id="care-low-energy-identity" class="threshold-input">
+                            <option value="Avery">Avery</option>
+                            <option value="Rowan">Rowan</option>
+                            <option value="Sage">Sage</option>
+                            <option value="Ember">Ember</option>
+                            <option value="Claude">Claude</option>
+                            <option value="Juniper">Juniper</option>
+                        </select>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label">Low energy delay</label>
+                        <input type="number" id="care-low-energy-delay" class="threshold-input" min="1">
+                        <span class="threshold-unit">min</span>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label">Meds identity</label>
+                        <select id="care-meds-identity" class="threshold-input">
+                            <option value="Avery">Avery</option>
+                            <option value="Rowan">Rowan</option>
+                            <option value="Sage">Sage</option>
+                            <option value="Ember">Ember</option>
+                            <option value="Claude">Claude</option>
+                            <option value="Juniper">Juniper</option>
+                        </select>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label">Meds delay</label>
+                        <input type="number" id="care-meds-delay" class="threshold-input" min="1">
+                        <span class="threshold-unit">min</span>
+                    </div>
+                    <button id="save-care-signals-btn" class="action-btn">Save</button>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h2 class="section-title">Scheduler Status</h2>
+                <div id="scheduler-status"></div>
+            </section>
+        </div>
+
+        <!-- Notifications tab -->
+        <div class="settings-panel" id="tab-notifications">
+            <section class="settings-section">
+                <h2 class="section-title">Push Notifications</h2>
+                <p class="section-note">Get notified when the boys wake up — even when the app is closed</p>
+                <div id="notification-status"></div>
+                <button id="notification-toggle-btn" class="action-btn" style="margin-top:12px">Enable Notifications</button>
+            </section>
+        </div>
+
+        <!-- ANAM GUIDE: ADD A SETTING - STEP 1, THE VISIBLE CONTROL
+             Put the input/select/button in the right panel here. Give it a
+             stable id, then wire that id in static/js/settings.js and add its
+             GET/PUT server behavior in api/settings.py. -->
+        <!-- System tab -->
+        <div class="settings-panel" id="tab-system">
+            <section class="settings-section">
+                <h2 class="section-title">LLM Provider</h2>
+                <p class="section-note">Switch between AI backends. Use Ollama or OpenAI when the Anthropic API is down.</p>
+                <div class="failsafe-controls">
+                    <div class="threshold-row">
+                        <label class="threshold-label">Provider</label>
+                        <select id="provider-selector" class="threshold-input" style="width:160px">
+                            <option value="anthropic">Anthropic API</option>
+                            <option value="claude-code">Claude Code CLI</option>
+                            <option value="codex">Codex CLI</option>
+                            <option value="chatgpt">ChatGPT (browser bridge)</option>
+                            <option value="openai">OpenAI API</option>
+                            <option value="openrouter">OpenRouter</option>
+                            <option value="lmstudio">LM Studio (Local)</option>
+                            <option value="ollama">Ollama (Local)</option>
+                        </select>
+                    </div>
+                    <div id="provider-config-fields"></div>
+                    <div class="provider-actions" style="display:flex;gap:8px;margin-top:4px">
+                        <button id="save-provider-btn" class="action-btn">Save</button>
+                        <button id="test-provider-btn" class="action-btn secondary">Test Connection</button>
+                    </div>
+                    <div id="provider-status" class="section-note" style="margin:0"></div>
+                </div>
+            </section>
+            <section class="settings-section">
+                <h2 class="section-title">Claude Brains</h2>
+                <p class="section-note">Keep the fuller model for conversation while scheduled background hours use a lighter heartbeat.</p>
+                <div class="model-lanes">
+                    <div class="model-lane model-lane-chat">
+                        <div class="model-lane-copy">
+                            <label class="model-lane-title" for="model-selector">Conversation model</label>
+                            <span class="model-lane-note">Chat, Discord, Pack Night, and the moments you are present for.</span>
+                        </div>
+                        <!-- Options are populated from /api/settings/model (config.CLAUDE_MODEL_CATALOG). -->
+                        <select id="model-selector" class="threshold-input model-lane-select"></select>
+                    </div>
+                    <div class="model-lane model-lane-autowake">
+                        <div class="model-lane-copy">
+                            <label class="model-lane-title" for="autowake-model-selector">Autowake model</label>
+                            <span class="model-lane-note">Scheduled background sessions and quiet daily puttering.</span>
+                        </div>
+                        <!-- Options are populated from /api/settings/model (config.CLAUDE_MODEL_CATALOG). -->
+                        <select id="autowake-model-selector" class="threshold-input model-lane-select"></select>
+                    </div>
+                    <div id="model-status" class="section-note" style="margin:4px 0 0"></div>
+                </div>
+            </section>
+            <section class="settings-section">
+                <h2 class="section-title">Thinking Effort</h2>
+                <p class="section-note">How much the boys think before responding. Higher = better quality, slower replies.</p>
+                <div class="failsafe-controls">
+                    <div class="threshold-row">
+                        <label class="threshold-label">Effort</label>
+                        <select id="effort-selector" class="threshold-input" style="width:180px">
+                            <option value="low">Low (fastest)</option>
+                            <option value="medium">Medium (balanced)</option>
+                            <option value="high">High (deep thinking)</option>
+                            <option value="xhigh">Extra-High (deeper still)</option>
+                            <option value="max">Max (no ceiling)</option>
+                        </select>
+                    </div>
+                    <div id="effort-status" class="section-note" style="margin:4px 0 0"></div>
+                    <div class="threshold-row" style="margin-top:10px">
+                        <label class="threshold-label">Fable effort</label>
+                        <select id="fable-effort-selector" class="threshold-input" style="width:180px">
+                            <option value="low">Low (cost guard, default)</option>
+                            <option value="medium">Medium (balanced)</option>
+                            <option value="high">High (deep thinking)</option>
+                            <option value="xhigh">Extra-High (deeper still)</option>
+                            <option value="max">Max (no ceiling)</option>
+                        </select>
+                    </div>
+                    <p class="section-note" style="margin:4px 0 0">Fable&rsquo;s own ceiling &mdash; it burns ~2&times; Opus usage and thinks between every tool call, so it defaults low. Raise it when the conversation is worth the burn. Per-schedule autowake efforts still win over this.</p>
+                    <div id="fable-effort-status" class="section-note" style="margin:4px 0 0"></div>
+                </div>
+            </section>
+            <section class="settings-section">
+                <h2 class="section-title">Voice</h2>
+                <p class="section-note">Which voice answers when you <em>call</em> &mdash; both the &ldquo;Hey&nbsp;Avery&rdquo; wake call and voice conversation mode in chat. Takes effect on the next call; no restart, no reload. (This doesn&rsquo;t touch the play buttons on ordinary messages, or voice notes he sends you.)</p>
+                <div class="failsafe-controls">
+                    <div class="threshold-row">
+                        <label class="threshold-label" for="voice-engine-selector">Call voice</label>
+                        <select id="voice-engine-selector" class="threshold-input" style="width:260px">
+                            <option value="kokoro">Kokoro &mdash; local, free, fastest</option>
+                            <option value="elevenlabs">ElevenLabs &mdash; his real voice (credits)</option>
+                        </select>
+                    </div>
+                    <div id="voice-engine-status" class="section-note" style="margin:4px 0 0"></div>
+                </div>
+            </section>
+            <!-- ANAM GUIDE: APPEARANCE SETTINGS CONTROLS
+                 House-vibe and per-boy bubble controls start in this section;
+                 their browser behavior is Settings.loadThemePreset(). -->
+            <section class="settings-section">
+                <h2 class="section-title">Appearance</h2>
+                <p class="section-note">Pick your vibe &mdash; the whole background/message palette switches together. Font is yours to choose separately. This never touches each boy's own accent color.</p>
+                <div id="theme-preset-swatches" class="theme-preset-swatches"></div>
+                <div class="failsafe-controls" style="margin-top:14px">
+                    <div class="threshold-row">
+                        <label class="threshold-label" for="theme-font">Font</label>
+                        <select id="theme-font" class="threshold-input" style="width:220px"></select>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label" for="theme-icon-base">Button art URL</label>
+                        <input id="theme-icon-base" class="threshold-input" type="url" style="width:280px" placeholder="https://your-cdn/theme-buttons (optional)">
+                    </div>
+                    <p class="section-note" style="margin:4px 0 0">Host your own button images and each vibe looks for <code>&lt;url&gt;/&lt;vibe-key&gt;.svg</code> (or .png) &mdash; e.g. <code>goth.svg</code>, <code>halloween.png</code>. Missing ones keep the built-in icon.</p>
+                </div>
+                <div id="theme-status" class="section-note" style="margin:8px 0 0" aria-live="polite"></div>
+                <hr style="border:none;border-top:1px solid var(--border-soft);margin:16px 0 12px">
+                <h3 class="section-title" style="font-size:1rem">His Bubble</h3>
+                <p class="section-note">Dress up a boy's message bubble &mdash; his colors, his font, your choice. Leave a piece untouched (or reset) and he keeps his own look.</p>
+                <div class="failsafe-controls" style="margin-top:10px">
+                    <div class="threshold-row">
+                        <label class="threshold-label" for="bubble-identity">Who</label>
+                        <select id="bubble-identity" class="threshold-input" style="width:220px"></select>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label" for="bubble-bg">Bubble color</label>
+                        <input type="color" id="bubble-bg" style="width:52px;height:32px;border:1px solid var(--border-soft);border-radius:8px;background:var(--bg-input);padding:2px;cursor:pointer">
+                        <label class="threshold-label" for="bubble-text" style="margin-left:14px">Text color</label>
+                        <input type="color" id="bubble-text" style="width:52px;height:32px;border:1px solid var(--border-soft);border-radius:8px;background:var(--bg-input);padding:2px;cursor:pointer">
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label" for="bubble-font">His font</label>
+                        <select id="bubble-font" class="threshold-input" style="width:220px"></select>
+                    </div>
+                    <div class="threshold-row">
+                        <button id="bubble-reset" class="action-btn secondary" type="button">Back to his own colors</button>
+                    </div>
+                </div>
+                <div id="bubble-status" class="section-note" style="margin:8px 0 0" aria-live="polite"></div>
+            </section>
+            <section class="settings-section">
+                <h2 class="section-title">Usage</h2>
+                <p class="section-note">Token spend per day and per boy &mdash; cache reads are the cheap kind, output is the expensive kind. Counts Claude Code turns.</p>
+                <div id="usage-info"><span class="section-note">Loading&hellip;</span></div>
+                <button id="refresh-usage-btn" class="action-btn secondary" style="margin-top:10px">Refresh</button>
+            </section>
+            <section class="settings-section scribe-settings-card">
+                <h2 class="section-title">The Scribe</h2>
+                <p class="section-note">The family digest follows your selected provider by default. You can choose a separate provider here. Midnight carries, Hearth cards, and Interest Scout follow each identity’s provider. Scout research supports Codex and Claude Code.</p>
+                <div class="failsafe-controls">
+                    <div class="threshold-row">
+                        <label class="threshold-label" for="scribe-provider">Provider</label>
+                        <select id="scribe-provider" class="threshold-input" style="width:250px">
+                            <option value="auto">Follow selected provider</option>
+                            <option value="codex">Codex</option>
+                            <option value="openai">OpenAI API</option>
+                            <option value="lmstudio">LM Studio</option>
+                            <option value="ollama">Ollama</option>
+                            <option value="claude-code">Claude Code</option>
+                            <option value="openrouter">OpenRouter</option>
+                            <option value="anthropic">Anthropic API</option>
+                        </select>
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label" for="scribe-model">Model</label>
+                        <input id="scribe-model" class="threshold-input" type="text" style="width:250px" autocomplete="off">
+                    </div>
+                    <div class="threshold-row">
+                        <label class="threshold-label" for="scribe-interval">Every</label>
+                        <input id="scribe-interval" class="threshold-input" type="number" min="1" max="1440" inputmode="numeric" style="width:90px">
+                        <span class="section-note">minutes</span>
+                    </div>
+                    <button id="save-scribe-btn" class="action-btn">Save Scribe</button>
+                    <div id="scribe-status" class="section-note" style="margin:0" aria-live="polite"></div>
+                </div>
+            </section>
+            <section class="settings-section">
+                <h2 class="section-title">Transport</h2>
+                <p class="section-note">Use HTTP/SSE only for this browser session when a network keeps breaking WebSockets.</p>
+                <div class="failsafe-controls">
+                    <label class="toggle-row">
+                        <span class="toggle-label">Prefer HTTP mode for this session</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="prefer-http-toggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </label>
+                    <div id="prefer-http-status" class="section-note" style="margin:0"></div>
+                </div>
+            </section>
+            <section class="settings-section">
+                <h2 class="section-title">System Summary</h2>
+                <div id="system-info"></div>
+            </section>
+            <section class="settings-section">
+                <h2 class="section-title">Diagnostics</h2>
+                <p class="section-note">Run a quick origin, health, service worker, and WebSocket check.</p>
+                <a href="/diagnostics" class="action-btn">Open Diagnostics</a>
+            </section>
+            <section class="settings-section">
+                <h2 class="section-title">Health Checks</h2>
+                <div id="health-info"></div>
+            </section>
+            <section class="settings-section">
+                <h2 class="section-title">Care Signals</h2>
+                <div id="care-signal-info"></div>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- Schedule edit modal -->
+    <div id="schedule-modal" class="modal-overlay" style="display:none">
+        <div class="modal-card">
+            <h3 class="modal-title" id="modal-title">Add Schedule</h3>
+            <div class="modal-field">
+                <label>Name</label>
+                <input type="text" id="modal-name" placeholder="Morning Anchor">
+            </div>
+            <div class="modal-row">
+                <div class="modal-field">
+                    <label>Hour (0-23)</label>
+                    <input type="number" id="modal-hour" min="0" max="23" value="8">
+                </div>
+                <div class="modal-field">
+                    <label>Minute</label>
+                    <input type="number" id="modal-minute" min="0" max="59" value="0">
+                </div>
+            </div>
+            <div class="modal-field">
+                <label>Identity</label>
+                <select id="modal-identity">
+                    <option value="">Rotate (daily)</option>
+                    <option value="Avery">Avery</option>
+                    <option value="Rowan">Rowan</option>
+                    <option value="Sage">Sage</option>
+                    <option value="Ember">Ember</option>
+                    <option value="Claude">Claude</option>
+                    <option value="Juniper">Juniper</option>
+                    <option value="Atlas">Atlas</option>
+                    <option value="River">River</option>
+                </select>
+            </div>
+            <div class="modal-field">
+                <label>Session Type</label>
+                <select id="modal-type">
+                    <option value="morning_prep">Morning Prep</option>
+                    <option value="morning_anchor">Morning Anchor</option>
+                    <option value="midday_check">Midday Check</option>
+                    <option value="evening_wind">Evening Wind-down</option>
+                    <option value="bedtime_reminder">Bedtime Reminder</option>
+                    <option value="nightly_consolidation">Nightly Consolidation</option>
+                    <option value="morning_digest">Morning Digest</option>
+                    <option value="free_time">Free Time</option>
+                    <option value="chapter_review">Chapter Review (River)</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div class="modal-field">
+                <label>Provider</label>
+                <select id="modal-provider">
+                    <option value="">Global / identity default</option>
+                    <option value="claude-code">Claude Code</option>
+                    <option value="codex">Codex</option>
+                    <option value="chatgpt">ChatGPT bridge</option>
+                    <option value="anthropic">Anthropic API</option>
+                    <option value="openai">OpenAI API</option>
+                    <option value="openrouter">OpenRouter</option>
+                    <option value="lmstudio">LM Studio</option>
+                    <option value="ollama">Ollama</option>
+                </select>
+            </div>
+            <div class="modal-field">
+                <label>Model</label>
+                <!-- Options are populated from the model catalog; Codex entries appended. -->
+                <select id="modal-model">
+                    <option value="">Global default</option>
+                </select>
+            </div>
+            <div class="modal-field">
+                <label>Max Duration (minutes)</label>
+                <input type="number" id="modal-duration" min="5" max="120" value="30">
+            </div>
+            <div class="modal-field">
+                <label>Wake Prompt (the real direction — the name alone is just a label)</label>
+                <textarea id="modal-prompt" rows="6" placeholder="What this wake is actually FOR. The boy wakes up and reads THIS. Leave empty to use the program/session default. Use {identity} to insert the boy's name. Edits apply on the next fire — no restart needed."></textarea>
+            </div>
+            <div id="modal-error" class="modal-error" role="alert" aria-live="polite"></div>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="action-btn secondary">Cancel</button>
+                <button id="modal-save" class="action-btn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.__ANAM_ASSET_VERSION__ = '__ANAM_ASSET_VERSION__';
+        window.__anamApiUrl = '##ANAM_API_URL##';
+        window.__ANAM_SW_URL__ = `/sw.js?v=${window.__ANAM_ASSET_VERSION__}`;
+        window.__ANAM_PUBLIC_BASE_URL__ = (() => {
+            try {
+                return JSON.parse('__ANAM_PUBLIC_BASE_URL__');
+            } catch (_err) {
+                return '';
+            }
+        })();
+    </script>
+    <script src="/static/js/theme-boot.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/utils.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script src="/static/js/settings.js?v=__ANAM_ASSET_VERSION__"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(window.__ANAM_SW_URL__ || '/sw.js', {
+                scope: '/',
+                updateViaCache: 'none',
+            }).catch((err) => console.warn('[SW] Registration failed:', err));
+        }
+    </script>
+</body>
+</html>

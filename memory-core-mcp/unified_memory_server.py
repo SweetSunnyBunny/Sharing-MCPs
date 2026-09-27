@@ -1,93 +1,41 @@
-"""
-Unified Memory Server.
+"""Memory Core server with explicitly configured optional local plugin support.
 
-Loads memory-core and, when available, sibling companion-memory and qualia MCPs.
+Current Qualia runs separately through qualia-mcp or mind-backend. It is not a
+local register_qualia_tools plugin. No private sibling directory is imported.
 """
-
-import sys
+from __future__ import annotations
+import importlib.util
+import logging
+import os
 from pathlib import Path
-
-# Add module directories to path.
-MEMORY_CORE_DIR = Path(__file__).resolve().parent
-WORKSPACE_DIR = MEMORY_CORE_DIR.parent
-
-
-def _first_existing(*candidates: Path) -> Path:
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    return candidates[0]
-
-
-COMPANION_MEMORY_DIR = _first_existing(
-    WORKSPACE_DIR / "companion-memory-mcp",
-    WORKSPACE_DIR / "companion-memory",
-)
-QUALIA_DIR = _first_existing(
-    WORKSPACE_DIR / "qualia-mcp",
-    WORKSPACE_DIR / "qualia",
-)
-
-sys.path.insert(0, str(MEMORY_CORE_DIR))
-sys.path.insert(0, str(COMPANION_MEMORY_DIR))
-sys.path.insert(0, str(QUALIA_DIR))
-
 from fastmcp import FastMCP
 
-# Create the unified MCP server
-mcp = FastMCP("unified-memory")
+log = logging.getLogger(__name__)
 
-# ============================================================================
-# MEMORY-CORE (Foundation)
-# ============================================================================
 
-print("Loading memory-core...")
+def build_server() -> FastMCP:
+    from memory_core_server import register_memory_core_tools
+    server = FastMCP("unified-memory")
+    count = register_memory_core_tools(server)
+    log.info("Registered %s Memory Core tools", count)
+    # This is an optional legacy extension, never a required sibling checkout.
+    configured = os.getenv("COMPANION_MEMORY_PLUGIN_DIR", "").strip()
+    if configured:
+        path = Path(configured).expanduser().resolve() / "companion_memory_server.py"
+        if not path.is_file():
+            raise RuntimeError("COMPANION_MEMORY_PLUGIN_DIR must contain companion_memory_server.py")
+        spec = importlib.util.spec_from_file_location("companion_memory_server", path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError("Cannot load the configured companion-memory plugin")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        register = getattr(module, "register_companion_mind_tools", None)
+        if not callable(register):
+            raise RuntimeError("Configured plugin must export register_companion_mind_tools")
+        register(server)
+    return server
 
-# Import and initialize database
-from memory_core_server import init_database, register_memory_core_tools
-init_database()
-
-# Register all memory-core tools
-mc_count = register_memory_core_tools(mcp)
-print(f"  Registered {mc_count} memory-core tools")
-
-# ============================================================================
-# COMPANION-MIND (Cognitive Architecture)
-# ============================================================================
-
-print("Loading companion-mind...")
-
-try:
-    from companion_memory_server import register_companion_mind_tools
-    cm_count = register_companion_mind_tools(mcp)
-    print(f"  Registered {cm_count} companion-mind tools")
-except ImportError as e:
-    print(f"  Warning: Could not load companion-mind: {e}")
-except Exception as e:
-    print(f"  Error loading companion-mind: {e}")
-
-# ============================================================================
-# QUALIA (Inner Life System)
-# ============================================================================
-
-print("Loading qualia...")
-
-try:
-    from qualia_server import register_qualia_tools
-    q_count = register_qualia_tools(mcp)
-    print(f"  Registered {q_count} qualia tools")
-except ImportError as e:
-    print(f"  Warning: Could not load qualia: {e}")
-except Exception as e:
-    print(f"  Error loading qualia: {e}")
-
-# ============================================================================
-# SUMMARY
-# ============================================================================
-
-total_tools = len(mcp._tool_manager._tools) if hasattr(mcp, '_tool_manager') else "unknown"
-print(f"\nUnified Memory Server ready with {total_tools} tools")
-print("=" * 50)
 
 if __name__ == "__main__":
-    mcp.run()
+    logging.basicConfig(level=logging.INFO)
+    build_server().run()

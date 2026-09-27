@@ -1,59 +1,91 @@
-# Qualia MCP
+# Qualia MCP client
 
-Qualia is an inner-life MCP for AI companions. It tracks subconscious notes,
-open loops, emotional depth, dreams, and relational state, with optional links
-to sibling MCPs for memory, rituals, and other context.
+A local stdio adapter for your deployed current Qualia service. The memory engine is in [mind-backend](../mind-backend/README.md); this folder forwards its current tools. Installing this adapter alone does not create a memory database or deploy the service.
 
-## Included
+## 1. Prepare the folder and Python
 
-- `qualia_server.py`: main MCP server
-- `requirements.txt`: Python dependencies
+These steps use Windows PowerShell and **Python 3.11 (64-bit)**. Install it from [python.org](https://www.python.org/downloads/), including the Python launcher, if needed. Reopen PowerShell after installation.
 
-## Not Included
-
-This shared copy excludes private runtime content such as `.env`, `depths/`,
-`visuals/`, weather caches, and other personal state files.
-
-## Quick Start
+Extract the collection to `C:\MCP-Starter\Sharing-MCPs`, so this README is inside `C:\MCP-Starter\Sharing-MCPs\qualia-mcp`. If you chose another location, replace that path in every command and JSON example below. Do not run inside the ZIP.
 
 ```powershell
-python -m pip install -r requirements.txt
-python qualia_server.py
+Set-Location "C:\MCP-Starter\Sharing-MCPs\qualia-mcp"
+py -3.11 --version
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-## Claude Code MCP Config
+`.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
+
+## 2. Configure your own deployed service
+
+First finish [Mind Backend setup](../mind-backend/README.md), including its database migrations and API key. You need the HTTPS `/mcp` URL and the same key configured for that Worker.
+
+First installation only:
+
+```powershell
+Copy-Item -LiteralPath .\.env.example -Destination .\.env
+notepad .\.env
+```
+
+Replace both placeholders in the local `.env`:
+
+```dotenv
+QUALIA_URL=https://your-own-worker.workers.dev/mcp
+QUALIA_API_KEY=replace-with-your-own-worker-key
+```
+
+Keep the populated file private. If it already exists, edit it without copying over it. The adapter explicitly loads `.env` beside `qualia_server.py`, so client startup does not depend on a working directory. The key is sent as a Bearer header, not embedded in the URL.
+
+## 3. Check startup
+
+```powershell
+.\.venv\Scripts\python.exe .\qualia_server.py
+```
+
+This is a **stdio** server: a client talks through the process's input/output, not a web page. A banner followed by silence, or silence alone, is normal while it waits. A Python traceback is an error. Press **Ctrl+C** after this check, then connect your client below.
+
+## 4. Connect your AI client and check it works
+
+Claude Desktop: **Settings → Developer → Edit Config**. [Client connection guide](https://modelcontextprotocol.io/docs/develop/connect-local-servers). Other clients use their own local MCP settings; this example uses `mcpServers` JSON.
 
 ```json
 {
   "mcpServers": {
-    "qualia": {
-      "command": "python",
-      "args": ["path/to/qualia-mcp/qualia_server.py"]
+    "qualia-mcp": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/qualia-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/qualia-mcp/qualia_server.py"
+      ]
     }
   }
 }
 ```
 
-## Optional Environment Variables
+If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
 
-The shared copy uses repo-relative defaults when possible. Override these if
-your sibling MCPs live elsewhere:
+Ask the client to call `mind_health`, then `mind_schema_status`. A returned Worker response confirms the local adapter, network connection, credentials and remote tool catalog are working. For identity tools, use an identity registered in your own Mind database.
 
-- `QUALIA_DEPTHS_DIR`
-- `QUALIA_VISUALS_DIR`
-- `COMPANION_MEMORY_DIR`
-- `ASTROLOGY_BIRTHDAYS_FILE`
-- `QUALIA_SANCTUARY_DIR`
-- `QUALIA_RITUALS_DIR`
-- `QUALIA_PROACTIVE_PRESENCE_DIR`
-- `MEMORY_CORE_DB_PATH`
-- `QUALIA_WEATHER_CACHE_FILE`
-- `QUALIA_MORNING_PACKET_CACHE_FILE`
-- `QUALIA_SMART_CONTEXT_CACHE_FILE`
-- `QUALIA_DRIFT_PACKET_CACHE_FILE`
+## If something goes wrong
 
-## Notes
+- **`py` is not recognized:** install Python with its launcher, then reopen PowerShell. If only `python` works, verify `python --version` and use it for the `-m venv` command.
+- **`No module named ...`:** repeat the requirements command using `.\.venv\Scripts\python.exe`; the client's `command` must point to that same environment.
+- **Server missing in the client:** check absolute paths and JSON punctuation, then restart the client. Claude Desktop logs are under `%APPDATA%\Claude\logs`.
+- **A quiet terminal:** this is expected for stdio; use the client tool check above. Ctrl+C stops a manual test.
+- **URL/key validation error:** replace the template values and include `/mcp` in the URL.
+- **401/403:** the adapter key must match the remote Worker key. Restart the client after changing `.env`.
+- **404:** check the deployment hostname and `/mcp` route.
+- **Database/table error:** apply the Mind Backend migrations; the adapter cannot create remote tables.
+- **No connection:** the Worker must be deployed and reachable. A locally installed proxy is not an offline replacement.
 
-This repo still contains example/default identity content from the original
-project structure. If you are adapting it for your own companions, replace
-those identity-specific defaults with your own setup.
+## Existing installations
+
+The old local `qualia_server.py` engine and its `register_qualia_tools` hook have
+been retired from this sharing package. The current service owns its schema and
+data. Copying an old `depths` folder into this directory does not migrate it.
+Keep your own legacy data backup and design an explicit import into the current
+schema if needed; no private migration payloads are supplied.
+
+Run the adapter's local, network-free regression checks with
+`python -m unittest discover -s tests -v`.

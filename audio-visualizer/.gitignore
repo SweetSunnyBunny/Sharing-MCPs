@@ -19,3 +19,8 @@ Thumbs.db
 
 # Output images
 *_spectrogram.png
+output/
+browser-profiles.local.json
+.env
+.env.*
+!.env.example

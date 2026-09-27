@@ -1,13 +1,14 @@
 /**
- * Google Cloud MCP - self-hosted Cloudflare Worker for Drive, Docs, Sheets, Calendar, and YouTube.
+ * Google Backend - unified Cloudflare Worker for Drive, Docs, Sheets, Calendar, YouTube
  *
  * MCP JSON-RPC over HTTP with path-token auth.
- * URL: https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev/mcp/SECRET
+ * URL: https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp/SECRET
  */
 
 import type { Env } from "./oauth.js";
 import { DRIVE_TOOLS, handleDrive } from "./drive.js";
 import { YOUTUBE_TOOLS, handleYouTube } from "./youtube.js";
+import { HEALTH_TOOLS, handleHealth } from "./health.js";
 
 interface JsonRpcRequest {
   jsonrpc: "2.0";
@@ -23,10 +24,13 @@ interface JsonRpcResponse {
   error?: { code: number; message: string };
 }
 
-type ToolDefinition = (typeof DRIVE_TOOLS)[number] | (typeof YOUTUBE_TOOLS)[number];
+type ToolDefinition =
+  | (typeof DRIVE_TOOLS)[number]
+  | (typeof YOUTUBE_TOOLS)[number]
+  | (typeof HEALTH_TOOLS)[number];
 
-const SERVER_INFO = { name: "google-cloud-mcp", version: "0.1.0" };
-const ALL_TOOLS: ToolDefinition[] = [...DRIVE_TOOLS, ...YOUTUBE_TOOLS];
+const SERVER_INFO = { name: "google-backend", version: "0.1.0" };
+const ALL_TOOLS: ToolDefinition[] = [...DRIVE_TOOLS, ...YOUTUBE_TOOLS, ...HEALTH_TOOLS];
 
 function jsonRpcResult(id: string | number | null, result: unknown): JsonRpcResponse {
   return { jsonrpc: "2.0", id, result };
@@ -91,6 +95,7 @@ async function handleToolCall(env: Env, name: string, args: Record<string, unkno
     return handleDrive(env, name, args);
   }
   if (name.startsWith("youtube_")) return handleYouTube(env, name, args);
+  if (name.startsWith("health_")) return handleHealth(env, name, args);
   throw new Error(`Unknown tool: ${name}`);
 }
 

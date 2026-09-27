@@ -1,0 +1,2 @@
+# Transcription runtime invoked by src/transcriber.ts.
+faster-whisper>=1.0.0

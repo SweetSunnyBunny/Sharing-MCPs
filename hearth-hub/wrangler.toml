@@ -1,0 +1,45 @@
+name = "hearth-hub"
+main = "src/index.ts"
+compatibility_date = "2025-02-14"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hearth-hub-db"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[vars]
+# Home coordinates for weather
+WT_HOME_LAT = "51.4779"
+WT_HOME_LON = "0.0015"
+
+# GitHub CDN base URL for sanctuary assets (portraits, backgrounds)
+# e.g. "https://raw.githubusercontent.com/user/repo/main/assets"
+ASSET_CDN_BASE = "https://cdn.example.com"
+
+# Public Anam origin — set_orb proxies POST /api/hub/orb here (orb state lives
+# in Anam's local SQLite; the tunnel anam.example.com -> localhost:8790 carries it).
+ANAM_API_URL = "https://anam.example.com"
+
+# Tools allowed to be exposed via MCP. Comment out a line to disable a tool.
+# To re-enable an archived tool, uncomment its line and run `wrangler deploy`.
+# Anything not in this list is invisible to MCP clients (tools/list filters it out)
+# AND uncallable (tools/call returns "Unknown tool"). The handler code is unchanged.
+ENABLED_TOOLS = [
+  "get_state",
+  "move_to",
+  "set_action",
+  "think",
+  "set_mood",
+  "list_identities",
+  "get_my_moods",
+  "list_rooms",
+  "get_birthdays",
+  "check_inner_weather",
+  "get_time_of_day",
+  "set_orb",
+]
+
+# Secrets (set via `wrangler secret put`):
+#   MCP_SECRET_PATH      — auth for MCP endpoint
+#   ELEVENLABS_API_KEY   — for voice generation (optional)
+#   ANAM_API_KEY         — for anam REST API auth (optional)

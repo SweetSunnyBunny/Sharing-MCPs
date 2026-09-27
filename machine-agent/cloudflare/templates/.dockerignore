@@ -1,0 +1,13 @@
+.git
+.venv
+node_modules
+__pycache__
+*.pyc
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+.wrangler
+generated
+*.key
+*.log

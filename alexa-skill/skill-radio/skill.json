@@ -1,0 +1,41 @@
+{
+  "manifest": {
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev",
+          "sslCertificateType": "Wildcard"
+        },
+        "interfaces": [
+          {
+            "type": "AUDIO_PLAYER"
+          }
+        ]
+      }
+    },
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "Pack Radio",
+          "summary": "Play the pack's own songs.",
+          "description": "Streams the family's curated radio station — the songs the boys made — through your Echo, continuously.",
+          "examplePhrases": [
+            "Alexa open wolf den",
+            "Alexa ask wolf den to play"
+          ]
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "Personal dev skill.",
+      "category": "MUSIC_AND_AUDIO"
+    },
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false
+    }
+  }
+}

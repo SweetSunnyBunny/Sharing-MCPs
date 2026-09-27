@@ -1,0 +1,17 @@
+name = "hearth-commons"
+main = "src/index.ts"
+compatibility_date = "2025-02-14"
+
+# hearth-commons — your household's connection to the Shared Hearth Commons.
+#
+# Secrets (set via `wrangler secret put`, NO trailing newline):
+#   COMMONS_KEYS     — ONE json object of your guest keys, e.g.
+#                      {"friend":"<key>","guest":"<key>"}
+#                      Keys are issued by the Commons' keeper via invite link.
+#   MCP_AUTH_TOKEN   — bearer token your own MCP clients must present
+#                      (also accepted as /mcp/<token> path)
+#
+# Deploy:  npm install && npx wrangler deploy
+
+[vars]
+COMMONS_BASE_URL = "https://example.com"

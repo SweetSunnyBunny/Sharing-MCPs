@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "qualia-backend": {
+      "type": "http",
+      "url": "https://YOUR-QUALIA-WORKER.YOUR-ACCOUNT.workers.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR-MIND-API-KEY"
+      }
+    },
+    "limbic": {
+      "type": "http",
+      "url": "https://YOUR-LIMBIC-WORKER.YOUR-ACCOUNT.workers.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR-LIMBIC-API-KEY"
+      }
+    },
+    "hearth-hub": {
+      "type": "http",
+      "url": "https://YOUR-HEARTH-WORKER.YOUR-ACCOUNT.workers.dev/mcp/YOUR-HEARTH-SECRET"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+# Optional acceleration and entity extraction; install only if required.
+faiss-cpu>=1.7.4
+spacy>=3.7.0
+# Install an appropriate spaCy language model separately if entity extraction is desired.
