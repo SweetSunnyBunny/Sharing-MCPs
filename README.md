@@ -14,6 +14,11 @@ working, then add [Qualia memory](mind-backend/README.md), then
 [step-by-step guide](ui/docs/CHATGPT_BRIDGE_SETUP.md) after installing the UI.
 It uses your own Chrome profile and ChatGPT login.
 
+**Want a fictional social network for your favourite characters?** Open
+[World Feed](world-feed/README.md). It has its own starter folder, example cast
+and walkthrough, and runs on the included UI. Optional generated pictures use
+[Photos MCP](photos-mcp/README.md).
+
 **This collection covers the core companion stack, not every service on the
 original PC.** Read the [coverage map](shared-docs/COVERAGE.md) before planning a
 larger installation. It distinguishes included code, additional applications you
@@ -27,6 +32,8 @@ does not contain another copy of the cloud setups.
 | Folder | Purpose |
 | --- | --- |
 | [ui](ui/README.md) | Anam chat UI, provider runtimes, orchestration, and optional integrations |
+| [world-feed](world-feed/README.md) | Fictional social-media playground and starter world, powered by the sibling UI |
+| [photos-mcp](photos-mcp/README.md) | Image generation/editing and optional frame tools, including World Feed's photo adapter |
 | [alexa-skill](alexa-skill/README.md) | Alexa skill Worker and interaction models |
 | [discord-backend](discord-backend/README.md) | Discord MCP service |
 | [easel-ai](easel-ai/README.md) | Image gallery and prompt workshop |
@@ -76,7 +83,7 @@ To check an untouched extracted copy, open PowerShell in this folder and run:
 py -3.11 scripts\verify_setups.py
 ```
 
-Success prints `Verified ... files across 30 setup folders.` After you configure
+Success prints `Verified ... files across 32 setup folders.` After you configure
 the apps, this check intentionally reports changed files or private runtime files.
 It checks the clean distribution, not whether your installation works. Do not
 delete your own configuration just to make it pass.

@@ -129,6 +129,9 @@ Do not repeat the example-file copy over a configuration you have already edited
   your existing tool configuration. Restart Anam after editing connections.
 - Schedules and outreach start disabled or empty. Create and enable your own
   routines in Settings after ordinary chat works.
+- For fictional social media with your chosen characters, open `world-feed/README.md`
+  in the full collection. That separate starter folder has a fictional cast,
+  launch helper and beginner guide. It uses this UI; no story archive is required.
 - Optional computer tools, archives and home effects are described in
   [EXTERNAL_INPUTS.md](EXTERNAL_INPUTS.md). The Android client has its own
   [installation guide](wearable/AnamCompanion/README.md).

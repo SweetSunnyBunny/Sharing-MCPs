@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "world": {
+    "id": "cozy-corner",
+    "slug": "cozy-corner",
+    "name": "Cozy Corner",
+    "description": "A tiny fictional neighbourhood with a bookshop, a bakery and a market square. These original example characters are yours to replace with a cast you love.",
+    "story_identity": "Avery",
+    "story_branch": "",
+    "fictional_now": "Saturday morning, before the market opens",
+    "clock_label": "Story time · Saturday morning",
+    "posting_enabled": false,
+    "metadata": {
+      "starter": {"id": "sharing-mcps-cozy-corner", "version": 1},
+      "activity": {"daily_limit": 12, "auto_publish": false, "scene_reactions": false},
+      "photos": {"enabled": false, "daily_limit": 1, "profile_ids": []}
+    }
+  },
+  "profiles": [
+    {
+      "id": "cozy-corner-you",
+      "handle": "riley_finch",
+      "display_name": "Riley Finch",
+      "account_type": "user",
+      "bio": "A fictional player placeholder, entirely yours to write. Rename and edit this profile to introduce your own character.",
+      "is_user_controlled": true,
+      "is_active": true,
+      "metadata": {"starter_fixture": "sharing-mcps-cozy-corner"}
+    },
+    {
+      "id": "cozy-corner-mira",
+      "handle": "mira_maps",
+      "display_name": "Mira Moss",
+      "account_type": "character",
+      "bio": "An adult mapmaker who runs the little bookshop and collects curious place names.",
+      "posting_style": "Observant, warm and a little dry. Brief posts, small details and gentle map jokes.",
+      "prompt_notes": "An original fictional adult character. Enjoys books, maps and the Saturday market. No relationship with the player is established yet. Write only Mira's own contributions.",
+      "is_user_controlled": false,
+      "is_active": true,
+      "metadata": {"starter_fixture": "sharing-mcps-cozy-corner"}
+    },
+    {
+      "id": "cozy-corner-pip",
+      "handle": "pip_bakes",
+      "display_name": "Pip Penn",
+      "account_type": "character",
+      "bio": "An adult baker with a flour-dusted apron, an enthusiasm for wordplay and a market stall.",
+      "posting_style": "Cheerful, concrete and playful. Loves one small pun; avoids repeated catchphrases.",
+      "prompt_notes": "An original fictional adult character. Enjoys baking, gardening and friendly market chatter. Do not invent the player's actions, feelings or relationship to Pip.",
+      "is_user_controlled": false,
+      "is_active": true,
+      "metadata": {"starter_fixture": "sharing-mcps-cozy-corner"}
+    }
+  ],
+  "posts": [
+    {
+      "id": "cozy-corner-welcome-map",
+      "author_profile_id": "cozy-corner-mira",
+      "body": "Today's map includes the market, the bookshop and the bench with the best view. The shortcut past the bakery remains scientifically untested. #CozyCorner",
+      "post_type": "post",
+      "canon_level": "ambient",
+      "canon_status": "approved",
+      "origin": "system",
+      "metadata": {"starter_fixture": "sharing-mcps-cozy-corner", "history_batch": "cozy-corner-starter"}
+    },
+    {
+      "id": "cozy-corner-welcome-bakery",
+      "author_profile_id": "cozy-corner-pip",
+      "body": "The market stall is almost ready. I have cinnamon rolls, a suspiciously ambitious sandwich and absolutely no spare counter space. #CozyCorner",
+      "post_type": "post",
+      "canon_level": "ambient",
+      "canon_status": "approved",
+      "origin": "system",
+      "metadata": {"starter_fixture": "sharing-mcps-cozy-corner", "history_batch": "cozy-corner-starter"}
+    }
+  ]
+}

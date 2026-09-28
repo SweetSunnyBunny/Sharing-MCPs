@@ -17,6 +17,8 @@ install or run here.
 5. Use [SERVICE-MAP.md](SERVICE-MAP.md) to find which package owns each component.
 6. Check [COVERAGE.md](COVERAGE.md) before adding phone, smart-home, browser or
    world features. It lists the optional custom components not packaged here yet.
+7. For a fictional social network, open `world-feed/README.md` in the full
+   collection. Its starter uses the UI; `photos-mcp` adds optional generated images.
 
 ## How to tell you are finished
 

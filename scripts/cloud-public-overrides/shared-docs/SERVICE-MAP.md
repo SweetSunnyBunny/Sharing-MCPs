@@ -7,6 +7,8 @@ custom components and the boundary between source code and personal content.
 | Folder | Responsibility |
 |---|---|
 | `ui` | Companion chat application, providers, tool gateway, and browser interface |
+| `world-feed` | Fictional social-media starter, example cast and setup guide; uses the sibling UI runtime |
+| `photos-mcp` | Image generation/editing adapter and optional configured photo-frame destination |
 | `mind-backend` | Durable memory, semantic retrieval, relationships, continuity, and Sketchbook |
 | `hearth-hub` | Shared presence, rooms, moods, notes, and private configuration |
 | `limbic` | Optional advisory drive state with lazy decay and configurable interactions |

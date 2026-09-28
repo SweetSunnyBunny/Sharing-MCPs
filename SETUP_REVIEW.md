@@ -2,7 +2,7 @@
 
 Snapshot date: 2026-09-27.
 
-This review covers all 30 package folders, collection documentation, and public
+This review covers all 32 package folders, collection documentation, and public
 refresh/verification helpers. The UI and each cloud setup are separate siblings.
 Generic configuration examples are included; populated environment files are not.
 
@@ -100,7 +100,7 @@ live services were not modified.
 
 ## Newcomer installation pass
 
-All 30 package entry READMEs now explain prerequisites, the exact working folder,
+The initial 30 package entry READMEs explain prerequisites, the exact working folder,
 commands, configuration values, a first successful check and troubleshooting.
 The collection starts at `START_HERE.md`; optional components and external
 requirements are identified before installation. Nested component guides were
@@ -159,23 +159,53 @@ URL/profile handling, transcription retries and transport selection. Media
 processes and remote transcription were mocked; no real browser profile, video
 download, provider call or full dependency installation was exercised.
 
+## World Feed starter package
+
+`world-feed` is now its own folder with a beginner guide, a localhost launcher,
+read-only connection check and add-only Cozy Corner importer. It uses the sibling
+UI runtime rather than duplicating its backend. The starter contains three
+invented profiles and two NPC posts; the player is protected and has no authored
+sample post. Automatic activity, automatic publication and automatic photos start
+off. Repeated imports preserve existing edits and resume missing starter items.
+
+The public UI adds New world creation, neutral branding, configurable narrator
+and optional story branch, and a world-specific photo style. Existing worlds keep
+their settings. Photo prompts use the chosen style without forcing one fandom;
+the original installation's character-specific photo preferences were replaced
+with generic authored-interest guidance. These public-build improvements are
+reviewed overlays; the private application was not edited.
+
+`photos-mcp` supplies the previously missing three-tool image adapter. Its examples
+use the installer's own provider key/model and image directory; frame output is
+disabled unless configured. Its filename and saved-image receipt contract was
+checked against the actual World Feed image validator.
+
+Validation: 19 offline starter tests, 19 offline Photos tests, 31 World Feed Node
+tests, three fresh-world database tests and three photo-style/adapter tests passed.
+The starter also passed a real FastAPI-handler/SQLite-schema integration check
+against a disposable database, including a repeat import and preservation of edits.
+No original records, live provider requests, image charges, browser logins or
+household devices were used. Live generation with the installer's account remains
+their first-run check. The guide explicitly identifies the ChatGPT browser bridge
+as unsupported for World Feed background generation.
+
 ## Final snapshot results
 
-- 30 package folders containing 837 package files, plus 57 collection/helper files
-  and the snapshot manifest: 895 files in the clean distribution.
-- All 489 UI content files reproduce exactly from the current maintained source
-  plus reviewed overlays: 261 sanitized source files and 228 generic overlays.
+- 32 package folders containing 853 package files, plus 57 collection/helper files
+  and the snapshot manifest: 911 files in the clean distribution.
+- All 492 UI content files reproduce exactly from the current maintained source
+  plus reviewed overlays: 257 sanitized source files and 235 generic overlays.
   The UI manifest itself is an additional file. All 12 cloud/setup mirrors match.
-- 178 distinct focused UI tests passed, along with gateway fixture checks,
+- Earlier broader checks passed 178 distinct focused UI tests, along with gateway fixture checks,
   29 JavaScript syntax checks and browser-launcher PowerShell parsing.
   Memory Core offline registration/plugin checks and Discord Scribe TypeScript
   compilation passed. Existing theme-test AsyncMock warnings remain unchanged.
-- All 422 distributed Python files, 56 JSON files and 117 relative documentation
+- All 429 distributed Python files, 58 JSON files and 127 relative documentation
   links passed validation. Override-template links were checked at their exported locations.
-- The final exact/pattern scan covered 884 text files and compared 77 private values from 15 local
+- The final exact/pattern scan covered 900 text files and compared 77 private values from 15 local
   configuration files: zero findings. Independent review checked the new guides
   against their implementations; known findings were corrected.
-- The collection verifier passed for all 894 manifest-listed files. Its checks
+- The collection verifier passed for all 910 manifest-listed files. Its checks
   accept generic env examples and reject actual env files, unreviewed additions,
   runtime artifacts, changed hashes and Git metadata in the manifest.
 - The clean ZIP's members, SHA-256 hashes and ZIP integrity were checked against

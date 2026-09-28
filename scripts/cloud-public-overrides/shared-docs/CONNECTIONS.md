@@ -45,6 +45,21 @@ For basic chat, follow the `ui/README.md` in the Sharing-MCPs collection. Add ot
 needed. Run `python scripts/anam_doctor.py --json` from `ui` for passive connection
 diagnostics after configuring them.
 
+## World Feed and optional image posts
+
+`world-feed/README.md` in the full collection explains the fictional social feed,
+provides an original starter cast and shows how to create your own worlds. It
+uses the included UI server and local database; cloud memory is optional. Choose
+a supported background provider for the world's narrator. The ChatGPT browser
+bridge currently supports ordinary chat but not World Feed background generation.
+
+`photos-mcp` supplies the optional `photo_generate` image tool. Its generic MCP
+example uses server name `photos`; merge that entry into your own UI config after
+replacing paths and credentials. Set `PHOTOS_CHAT_DIR` to the running UI's actual
+image directory, normally `ui/data/images`. Restart the UI after configuration.
+The example entry is not loaded automatically. Text posts and DMs work without
+this image service.
+
 ## What must exist outside a package
 
 | Integration | Required external item | Included setup |

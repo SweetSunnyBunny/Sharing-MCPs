@@ -1,6 +1,6 @@
 # Start here: get one thing working first
 
-This is a box of separate applications, not one application with 30 required
+This is a box of separate applications, not one application with 32 required
 parts. You do not need to install everything. The instructions below use
 Windows and PowerShell. Some services also run on other systems; each package
 explains its requirements.
@@ -25,6 +25,7 @@ download; check the [coverage map](shared-docs/COVERAGE.md) before choosing them
 | I want to… | Open this guide first | What else is required? |
 | --- | --- | --- |
 | Have a chat in the web UI | [ui/README.md](ui/README.md) | One configured model provider |
+| Play on a fictional social network with my favourite characters | [world-feed/README.md](world-feed/README.md) | The included UI and a supported background model provider; pictures are optional |
 | Use my signed-in ChatGPT account through the UI | [ChatGPT bridge guide](ui/docs/CHATGPT_BRIDGE_SETUP.md) | The UI, Chrome, and your own ChatGPT login |
 | Give companions cloud memory | [mind-backend/README.md](mind-backend/README.md) | Your own Cloudflare account and resources |
 | Add emotional drive state | [limbic/README.md](limbic/README.md) | Your own Cloudflare account; matching identity IDs |
@@ -111,4 +112,4 @@ computers must not be able to reach a development server with login disabled.
 The [review record](SETUP_REVIEW.md) separates checks performed on this snapshot
 from integrations that need your own live accounts. The scripts in `scripts/`
 are for checking and packaging the clean download; they are not an installer for
-all 30 applications.
+all 32 packages.

@@ -6,6 +6,6 @@ Each configured identity has a generic prompt. Supply your own voices, MCP endpo
 
 `EXPORT-MANIFEST.json` records SHA-256 hashes for synchronized source and reviewed generic replacements. Exporting again requires a reviewed external privacy profile and external overlay directory; the public exporter contains no private replacement map. The scan is a configured check, not a guarantee that arbitrary new personal prose is safe. Review new source and overlays before distribution.
 
-MCP connections start empty. Add your own server definitions in `mcp-servers.json`; taxonomy and tool discovery support remain included. World Feed starts with an empty example world and requires your own profiles, story references, and explicit activation.
+MCP connections start empty. Add your own server definitions in `mcp-servers.json`; taxonomy and tool discovery support remain included. World Feed starts with an empty example world. The separate `world-feed` folder in the full collection adds a guide, launcher and original fictional starter cast; creating your own profiles and activating background posts remain explicit choices. Story archives and linked branches are optional. The optional `photos-mcp` folder supplies image generation with your own provider account.
 
 An optional Android watch client is included in [wearable/AnamCompanion](wearable/AnamCompanion/README.md). Configure your own URL and machine key locally before building.

@@ -34,6 +34,8 @@ const WorldFeed = {
     requests: {},
     worldGeneration: 0,
     viewGeneration: 0,
+    worldModalGeneration: 0,
+    editingWorldId: '',
 
     async latestRequest(key, url) {
         const sequence = this.requests[key] = (this.requests[key] || 0) + 1;
@@ -76,7 +78,7 @@ const WorldFeed = {
 
     cacheElements() {
         const ids = [
-            'wf-world-select', 'wf-view-title', 'wf-view-subtitle', 'wf-refresh',
+            'wf-world-select', 'wf-new-world', 'wf-view-title', 'wf-view-subtitle', 'wf-refresh',
             'wf-clock-label', 'wf-world-description', 'wf-world-settings', 'wf-composer',
             'wf-composer-avatar', 'wf-post-text', 'wf-char-count', 'wf-media-input', 'wf-post-as',
             'wf-add-media', 'wf-insert-hashtag', 'wf-post-canon', 'wf-submit-post',
@@ -95,6 +97,9 @@ const WorldFeed = {
             'wf-relationship-form', 'wf-rel-from', 'wf-rel-to', 'wf-rel-type',
             'wf-rel-public', 'wf-rel-private', 'wf-world-modal', 'wf-world-form',
             'wf-world-name', 'wf-world-description-input', 'wf-world-now', 'wf-world-clock',
+            'wf-world-title', 'wf-world-submit', 'wf-world-identity', 'wf-world-branch',
+            'wf-world-photo-style',
+            'wf-world-slug', 'wf-world-slug-field', 'wf-world-creation-note', 'wf-world-activity-controls',
             'wf-world-posting-enabled', 'wf-image-lightbox', 'wf-toast-stack',
         ];
         ids.forEach(id => { this.el[id] = document.getElementById(id); });
@@ -102,6 +107,7 @@ const WorldFeed = {
 
     bindEvents() {
         this.el['wf-world-select'].addEventListener('change', event => this.selectWorld(event.target.value));
+        this.el['wf-new-world'].addEventListener('click', () => this.openWorldModal(true));
         this.el['wf-refresh'].addEventListener('click', () => this.refreshCurrentView());
         this.el['wf-post-text'].addEventListener('input', () => this.updateCharCount());
         this.el['wf-post-as'].addEventListener('change', event => {
@@ -614,7 +620,7 @@ const WorldFeed = {
 
     renderProfiles() {
         if (!this.state.profiles.length) {
-            this.el['wf-content'].innerHTML = '<div class="wf-empty"><strong>No profiles yet.</strong><span>Begin with Player, then build the people around her.</span><button class="wf-primary-button" data-action="new-profile">Create first profile</button></div>';
+            this.el['wf-content'].innerHTML = '<div class="wf-empty"><strong>No profiles yet.</strong><span>Create a profile you control, then add your fictional cast.</span><button class="wf-primary-button" data-action="new-profile">Create first profile</button></div>';
             return;
         }
         this.el['wf-content'].innerHTML = `<div class="wf-profile-page-actions"><input id="wf-profile-search" type="search" aria-label="Search accounts" placeholder="Search name, handle, or group…" value="${this.attr(this.state.profileSearch)}"><button class="wf-primary-button" data-action="new-profile">＋ New profile</button></div><div class="wf-profile-grid">${this.state.profiles.map(profile => {
@@ -913,47 +919,98 @@ const WorldFeed = {
         } catch (error) { this.toast(error.message, true); }
     },
 
-    async openWorldModal() {
-        const world = this.state.world;
+    async openWorldModal(create = false) {
+        const generation = ++this.worldModalGeneration;
+        const world = create ? {} : this.state.world;
+        if (!world) return;
+        this.editingWorldId = create ? '' : world.id;
+        this.el['wf-world-title'].textContent = create ? 'New world' : 'World settings';
+        this.el['wf-world-submit'].textContent = create ? 'Create world' : 'Save world';
+        this.el['wf-world-slug-field'].hidden = !create;
+        this.el['wf-world-slug'].value = '';
+        this.el['wf-world-creation-note'].hidden = !create;
+        this.el['wf-world-activity-controls'].hidden = create;
         this.el['wf-world-name'].value = world.name || '';
         this.el['wf-world-description-input'].value = world.description || '';
-        this.el['wf-world-now'].value = world.fictional_now || '';
-        this.el['wf-world-clock'].value = world.clock_label || '';
+        this.el['wf-world-identity'].value = world.story_identity || 'Avery';
+        this.el['wf-world-branch'].value = world.story_branch || '';
+        this.el['wf-world-photo-style'].value = world.metadata?.photo_style || '';
+        this.el['wf-world-now'].value = world.fictional_now || (create ? 'Story opening' : '');
+        this.el['wf-world-clock'].value = world.clock_label || (create ? 'Story time' : '');
         this.el['wf-world-posting-enabled'].checked = !!world.posting_enabled;
         this.openModal('wf-world-modal');
         const worldId = world.id;
         document.getElementById('wf-activity-limit').value = world.metadata?.activity?.daily_limit || 12;
         document.getElementById('wf-activity-publish').checked = world.metadata?.activity?.auto_publish === true;
         document.getElementById('wf-activity-scenes').checked = world.metadata?.activity?.scene_reactions === true;
+        document.getElementById('wf-activity-status').textContent = '';
+        if (create) return;
         try {
             const status = await this.request(`/api/world-feed/worlds/${encodeURIComponent(worldId)}/activity`);
-            if (this.state.world.id !== worldId) return;
+            if (generation !== this.worldModalGeneration || this.state.world.id !== worldId) return;
             const latest = status.runs[0];
             document.getElementById('wf-activity-status').textContent = `${status.background_attempts_today || 0} / ${status.settings.daily_limit} background attempts in the last 24 hours · ${status.response_attempts_today || 0} personal response attempts (not counted). ` + (latest ? `Last activity: ${latest.status}${latest.error ? ' · ' + latest.error : ''}` : 'No character activity yet.');
-        } catch (error) { document.getElementById('wf-activity-status').textContent = error.message; }
+        } catch (error) {
+            if (generation === this.worldModalGeneration) document.getElementById('wf-activity-status').textContent = error.message;
+        }
     },
 
     async saveWorld(event) {
         event.preventDefault();
+        if (this.worldSaveBusy) return;
+        const worldId = this.editingWorldId;
+        const creating = !worldId;
+        const name = this.el['wf-world-name'].value.trim();
+        const identity = this.el['wf-world-identity'].value.trim();
+        if (!name || !identity) return this.toast('Enter a world name and a configured narrator identity.', true);
         const dailyLimit = Number(document.getElementById('wf-activity-limit').value);
-        if (!Number.isInteger(dailyLimit) || dailyLimit < 1 || dailyLimit > 48) return this.toast('Choose 1–48 activity attempts per day.', true);
-        try {
-            this.state.world = await this.request(`/api/world-feed/worlds/${encodeURIComponent(this.state.world.id)}`, {
-                method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-                    name: this.el['wf-world-name'].value,
-                    description: this.el['wf-world-description-input'].value,
-                    fictional_now: this.el['wf-world-now'].value,
-                    clock_label: this.el['wf-world-clock'].value,
-                    posting_enabled: this.el['wf-world-posting-enabled'].checked,
-                    activity_daily_limit: dailyLimit,
-                    activity_auto_publish: document.getElementById('wf-activity-publish').checked,
-                    activity_scene_reactions: document.getElementById('wf-activity-scenes').checked,
-                }),
+        if (!creating && (!Number.isInteger(dailyLimit) || dailyLimit < 1 || dailyLimit > 48)) return this.toast('Choose 1–48 activity attempts per day.', true);
+        const data = {
+            name,
+            description: this.el['wf-world-description-input'].value,
+            story_identity: identity,
+            story_branch: this.el['wf-world-branch'].value.trim(),
+            fictional_now: this.el['wf-world-now'].value,
+            clock_label: this.el['wf-world-clock'].value,
+            metadata: { photo_style: this.el['wf-world-photo-style'].value.trim() },
+        };
+        if (creating) {
+            data.slug = this.el['wf-world-slug'].value.trim() || name.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 64).replace(/-+$/g, '') || `world-${Date.now()}`;
+            data.posting_enabled = false;
+        } else {
+            Object.assign(data, {
+                posting_enabled: this.el['wf-world-posting-enabled'].checked,
+                activity_daily_limit: dailyLimit,
+                activity_auto_publish: document.getElementById('wf-activity-publish').checked,
+                activity_scene_reactions: document.getElementById('wf-activity-scenes').checked,
             });
-            this.renderWorldChrome();
+        }
+        this.worldSaveBusy = true;
+        this.el['wf-world-submit'].disabled = true;
+        try {
+            const saved = await this.request(creating ? '/api/world-feed/worlds' : `/api/world-feed/worlds/${encodeURIComponent(worldId)}`, {
+                method: creating ? 'POST' : 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
+            });
+            const index = this.state.worlds.findIndex(item => item.id === saved.id);
+            if (index === -1) this.state.worlds.push(saved);
+            else this.state.worlds[index] = saved;
+            this.renderWorldPicker();
             this.closeModals();
-            this.toast('World settings saved.');
+            if (creating) {
+                history.replaceState(null, '', '#home');
+                await this.selectWorld(saved.id);
+                this.toast('World created. Add a profile you control, then your fictional cast.');
+            } else {
+                if (this.state.world?.id === worldId) this.state.world = saved;
+                this.el['wf-world-select'].value = this.state.world.id;
+                this.renderWorldChrome();
+                this.toast('World settings saved.');
+            }
         } catch (error) { this.toast(error.message, true); }
+        finally {
+            this.worldSaveBusy = false;
+            this.el['wf-world-submit'].disabled = false;
+        }
     },
 
     openModal(id) {

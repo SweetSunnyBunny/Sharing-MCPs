@@ -19,7 +19,7 @@ class WorldCreate(BaseModel):
     slug: str
     name: str
     description: str = ""
-    story_identity: str = "Bakugou"
+    story_identity: str = "Avery"
     story_branch: str = ""
     source_package: str | None = None
     fictional_now: str | None = None

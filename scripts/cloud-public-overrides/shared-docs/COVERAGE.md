@@ -22,16 +22,18 @@ not preconfigured hosted services. Follow each package's README and success chec
 | Durable memory and continuity | `mind-backend`; optional local `qualia-mcp` adapter | Your Cloudflare resources and identity records |
 | Advisory emotional drive state | `limbic` | Your own drive definitions and matching identity IDs; fictional starters are included |
 | Shared rooms, moods and presence | `hearth-hub` | Your configured identities and new state database |
-| Schedules, background activity and World Feed | Engines inside `ui` | Your schedules, profiles and world content; enable optional automation yourself |
+| Schedules and background activity | Engines inside `ui` | Your schedules and content; enable optional automation yourself |
+| Fictional social network with your chosen characters | `world-feed` starter package backed by the `ui` engine | A supported background model provider; original fictional starter cast included, automation off initially |
+| Image generation/editing through Photos MCP | `photos-mcp`, with World Feed connection example | Your image-provider API account/key/model; configure its chat directory to the UI's image directory |
 | Local files, shell, desktop and creative applications | `machine-agent` and the individual local-tool packages | Your installed apps, chosen folders and access settings |
 | Discord, Google, social and speech connections | Their separate cloud/MCP packages | Your own accounts, OAuth consent, bots, keys and provider choices |
 | Audio and video analysis | `audio-visualizer` | Its Python/model dependencies, FFmpeg and your own media; see its README for URL handling |
 | Alexa integration | `alexa-skill` | Your skill configuration and any home/music services you choose |
-| Image browsing and prompt workshop | `easel-ai` | Your own images and configured services; this is not the missing Photos MCP below |
+| Image browsing and prompt workshop | `easel-ai` | Your own images and configured services; image generation is supplied separately by `photos-mcp` |
 | Notification delivery and replies from Android | `ui/wearable/AnamCompanion` plus UI wearable routes | Your Android build/device and your own server connection |
 | Connect to an existing Commons world | `hearth-commons` | A compatible world server; that server's implementation is not included |
 
-The collection README lists all 30 folders. Not every folder is required for a
+The collection README lists all 32 folders. Not every folder is required for a
 working companion. Basic chat works without installing the optional systems below.
 
 ## Partial or missing: optional custom systems
@@ -49,7 +51,6 @@ missing custom MCP adapter.
 | Mobile voice/listening and room controls | UI integration endpoints | Two other Android apps: the voice/listening companion app and the room-tap app. They are separate from the included notification/reply client. |
 | Home Assistant and touch | Optional Alexa/UI home effects | The standalone Home Assistant MCP adapter, touch Worker and local Anam touch adapter. Home Assistant itself is also an application you install/configure yourself. |
 | General browser tools | ChatGPT-specific Chrome launcher/bridge | The separate browser MCP service. The included ChatGPT bridge does not provide the entire general-purpose browser tool service. |
-| Image generation/editing through Photos MCP | UI image handling and the Easel gallery | The standalone Photos MCP implementation and its provider/configuration wiring |
 | Cross-companion communication | UI crosstalk backend routes | The separate crosstalk MCP adapter that exposes them to tool clients |
 | Local Commons tools | `hearth-commons` remote connector | The separate local Commons MCP adapter and its legacy Aisling compatibility wrapper; these still require the world server |
 | Commons OAuth access | The older key-based `hearth-commons` connector | The newer OAuth/agent-forwarding Worker; it is a different implementation and is not included |
@@ -114,8 +115,8 @@ does not establish that every optional tool is connected.
 
 ## Best next additions for this collection
 
-1. **Package the small missing MCP adapters first.** Start with Home Assistant,
-   Photos and the UI-backed watch/touch/crosstalk tools. Each needs a requirements
+1. **Package the small missing MCP adapters first.** Start with Home Assistant
+   and the UI-backed watch/touch/crosstalk tools. Each needs a requirements
    file, generic configuration, numbered setup steps and a read-only connection
    check. Explain exactly which UI routes, apps or cloud services it needs.
 2. **Give device apps separate guides.** Distinguish notification/reply, voice

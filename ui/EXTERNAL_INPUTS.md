@@ -17,6 +17,12 @@ The included `scripts/pack-browser.ps1` manages a dedicated Chrome profile; no b
 
 ## Optional local services and content
 
+World Feed has a dedicated `world-feed/README.md` and starter package beside `ui`
+in the full collection. It runs on this UI's database and model routing. The
+optional sibling `photos-mcp` provides generated image posts; its output directory
+must match this UI's configured images directory. No original profiles, posts or
+story records are supplied. A linked story folder is optional for ordinary feeds.
+
 The service watchdog is disabled until `ANAM_WATCHDOG_CONFIG` points to your own JSON list. Each entry specifies `name`, `args` (an executable plus arguments), optional `cwd`, `label`, and `ports` or `process_name`. Set `via_supervisor: true` for a command that asks your process manager to restart a service and exits. The original installation's process supervisor and domain tunnel are not requirements of this UI.
 
 `ANAM_STORIES_DIR` defaults to `data/stories`; set a character's `story_branch` in `config.IDENTITIES` to select its `STATE.md`. `ANAM_COMMONS_KEYS_DIR` defaults to `data/commons-private` and contains only keys you obtain from your own Commons service. `ANAM_HEALTH_FRAME_DIR` defaults to `data/health-frame`. Newsletter gathering uses `ANAM_SITE_ARCHIVE_DIR`, `ANAM_SONGS_DIR` and `ANAM_GAZETTE_DIR` if supplied. These are your content, not bundled application dependencies.

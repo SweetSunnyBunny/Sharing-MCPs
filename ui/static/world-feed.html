@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>U.A. World Feed · Bakugou & Player</title>
+    <title>World Feed · Anam</title>
     <meta name="theme-color" content="#fff0f7">
     <link rel="stylesheet" href="/static/css/main.css?v=__ANAM_ASSET_VERSION__">
     <link rel="stylesheet" href="/static/css/world-feed.css?v=__ANAM_ASSET_VERSION__">
@@ -53,11 +53,12 @@
     <div class="wf-overlay" id="wf-nav-overlay"></div>
     <div class="wf-shell">
         <aside class="wf-left" id="wf-left-nav">
-            <a href="https://example.com/mha/" class="wf-wordmark wf-desktop-wordmark" aria-label="Back to the MHA story hub"><span>World</span> Feed</a>
+            <a href="/" class="wf-wordmark wf-desktop-wordmark" aria-label="Back to Anam"><span>World</span> Feed</a>
             <label class="wf-world-picker">
                 <span>Current world</span>
                 <select id="wf-world-select" aria-label="Choose story world"></select>
             </label>
+            <button class="wf-secondary-button" id="wf-new-world">＋ New world</button>
 
             <nav class="wf-nav" aria-label="World Feed navigation">
                 <button class="wf-nav-item active" data-view="home"><span>⌂</span> Home</button>
@@ -80,7 +81,7 @@
                     <span><strong id="wf-active-name">Choose your account</strong><small id="wf-active-handle">Create a user-controlled profile</small></span>
                     <span>⌄</span>
                 </button>
-                <a href="https://example.com/mha/" class="wf-back-link">← Back to the MHA story hub</a>
+                <a href="/" class="wf-back-link">← Back to Anam</a>
             </div>
         </aside>
 
@@ -222,10 +223,18 @@
             <form id="wf-world-form">
                 <div class="wf-form-grid">
                     <label class="wf-span-2">World name<input id="wf-world-name" required></label>
+                    <label class="wf-span-2" id="wf-world-slug-field" hidden>World URL label (optional)<input id="wf-world-slug" maxlength="64" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="Generated from the world name"></label>
                     <label class="wf-span-2">Description<textarea id="wf-world-description-input" rows="3"></textarea></label>
+                    <label>Narrator / model identity<input id="wf-world-identity" value="Avery" maxlength="80" required></label>
+                    <label>Story branch (optional)<input id="wf-world-branch" maxlength="200" placeholder="Leave blank for a standalone feed"></label>
+                    <label class="wf-span-2">Photo style (optional)<input id="wf-world-photo-style" maxlength="500" placeholder="Storybook illustration"></label>
                     <label>Fictional now<input id="wf-world-now" placeholder="Friday at lunch"></label>
                     <label>Clock label<input id="wf-world-clock" placeholder="Story time · Friday lunch"></label>
                 </div>
+                <p class="wf-modal-note">The narrator selects a configured Anam identity's text provider; character voices come from their profiles. Avery is included in the starter. Story branch is advanced: leave it blank unless linking a configured roleplay branch. No story folder is needed for posts or messages.</p>
+                <p class="wf-modal-note">Photo style examples: anime, watercolour, comic-book. Leave blank for storybook illustration. Photo generation also needs a configured Photos service.</p>
+                <p id="wf-world-creation-note" class="wf-modal-note" hidden>New worlds start empty with automatic activity off. Create a profile you control, then add fictional characters. You can enable activity later in World settings.</p>
+                <div id="wf-world-activity-controls">
                 <div class="wf-check-row"><label><input type="checkbox" id="wf-world-posting-enabled"> Character pulse generation enabled</label></div>
                 <p class="wf-muted">Replies to your posts and replies have their own allowance-free queue. They do not use this background limit.</p>
                 <label>Background activity attempts per day<input id="wf-activity-limit" type="number" min="1" max="48" value="12"></label>
@@ -234,7 +243,8 @@
                 <p class="wf-modal-note">The scene observer runs after completed roleplay turns and shares the daily activity allowance. It can skip quiet moments; private scenes and unspoken thoughts stay private.</p>
                 <p class="wf-modal-note">Varied timing, no catch-up bursts. Major developments and generated photos always wait in Canon review. Turning automatic publication off sends all character activity to review.</p>
                 <p id="wf-activity-status" class="wf-modal-note"></p>
-                <div class="wf-modal-actions"><button type="button" class="wf-secondary-button wf-modal-close">Cancel</button><button class="wf-primary-button" type="submit">Save world</button></div>
+                </div>
+                <div class="wf-modal-actions"><button type="button" class="wf-secondary-button wf-modal-close">Cancel</button><button id="wf-world-submit" class="wf-primary-button" type="submit">Save world</button></div>
             </form>
         </section>
     </div>

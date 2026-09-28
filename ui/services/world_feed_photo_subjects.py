@@ -17,19 +17,15 @@ A named character's favorite food, branded packaging, cute caption, or hand in f
 does not make a food photograph into character life. Do not replace every meal with
 another desk, notebook, empty hallway or shoe still life either.
 
-The visual subject matters: Spinner's game and La Brava's editing project can have
-incidental refreshments, but the game or creative work must dominate. Gentleman's
-authored tea ritual is a fitting signature exception, not permission for everyone to
-photograph a cup. Gentle's own tea portrait is an explicitly wanted example even
-when object-only: his authored ritual supplies the character connection. Do not
-require a face or action pose to accept it, or reject it merely because unrelated
-accounts posted generic drinks. Classify that as signature_ritual, not meal. His
-own repeated tea portraits still need variety; do not repeatedly recycle them.
-Explicit preferred example: Gentle's amber tea and pastry on a cafe table, with his
-white-gloved hand arranging the saucer. Accept this as signature_ritual when not
-repeating his own recent tea pictures. The pastry, breakfast wording, and object-only
-composition do not negate this specific preference. It takes precedence over the
-general meal rule. It does not authorize another character's breakfast or snack haul.
+The visual subject matters: a character's game or film-editing project can have
+incidental refreshments, but the game or creative work must dominate. An explicitly
+authored signature ritual can be a fitting exception: for example, a tea enthusiast's
+careful tea arrangement. The author's profile must establish that connection; it is
+not permission for everyone to photograph a cup. Do not require a face or action
+pose for an established ritual, or reject it merely because unrelated accounts posted
+generic drinks. Classify it as signature_ritual, not meal. Repeated ritual portraits
+still need variety; do not repeatedly recycle them. This does not authorize an
+unrelated character's breakfast or snack haul.
 Treat ordinary food and generic mugs as incidental background at most. No food-centered
 automatic posts, including food-focused selfies or snack/baking 'hobby' disguises.
 An explicit human request for a food image can override this preference.

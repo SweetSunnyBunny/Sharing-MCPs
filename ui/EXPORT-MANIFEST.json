@@ -198,8 +198,8 @@
     },
     {
       "path": "api/world_feed.py",
-      "kind": "source",
-      "sha256": "8c8e6bfe7de95dcf1256bb86ba35001b93b89110752240b882c6e0e8a8f954cb"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5c82ee5ac505427dd87d6f083e6076c7a0afaf78658b3fd00d8b3c599dcde234"
     },
     {
       "path": "claude-launch.sh",
@@ -254,12 +254,12 @@
     {
       "path": "EXTERNAL_INPUTS.md",
       "kind": "reviewed-generic-overlay",
-      "sha256": "756dd260a69bc29f433700b210231322224e9d3fe3bb319dedab9d12533d82b8"
+      "sha256": "05be80526afc90c9a43080ceabdbd7f4e0649b9716d61351bd40b3b2a3641ea5"
     },
     {
       "path": "mcp-servers.example.json",
       "kind": "reviewed-generic-overlay",
-      "sha256": "fbb60307336181753475aee28238fd0bd8f4324cda3c1c4b224f15bba682c2fa"
+      "sha256": "8080faa678c51b3282353e55a57762a3c0b711868a9ca3fb2a931cf8c03441ab"
     },
     {
       "path": "mcp-servers.json",
@@ -404,7 +404,7 @@
     {
       "path": "README.md",
       "kind": "reviewed-generic-overlay",
-      "sha256": "227c88fb7f5eeac1d2275d4fbbed550a1889d32a07f7405254401b3e29cbd28c"
+      "sha256": "2955491a6ac862abfd29a982508b23db1972115bd2d73ab9a3837eb5faa84cc0"
     },
     {
       "path": "requirements.txt",
@@ -1184,7 +1184,7 @@
     {
       "path": "services/world_feed.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "b8a6a813a5b77e8752985f09184a71068532b575cfdb6bf91dbec54d5bc98c3b"
+      "sha256": "cc56956fc6e5cd073b9db833d43c4731d7330ca0bf16b94dca89f0964332aea0"
     },
     {
       "path": "services/world_feed_activity.py",
@@ -1213,13 +1213,13 @@
     },
     {
       "path": "services/world_feed_photo_subjects.py",
-      "kind": "source",
-      "sha256": "f0b2df7db0fb8f1f5a8c0a544064a0f030550134d8b4cc67f18e8f0b8d40b174"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1b4b50bc40813690a3c5695fa4ed87eeef7c405ef93d6457c5ee551c9007afd7"
     },
     {
       "path": "services/world_feed_photos.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "d755ad7524aa740837a9fa9b8bb0702b309e8ebb42b8ddc38fdfdbc073d232e5"
+      "sha256": "470924417322e4ee2246f95f72769fb8b301508728bedf1e3cd06b97cce0726e"
     },
     {
       "path": "services/world_feed_public_context.py",
@@ -1254,7 +1254,7 @@
     {
       "path": "SHARING-NOTES.md",
       "kind": "reviewed-generic-overlay",
-      "sha256": "02c0d86370062a4ea886371af833321d63970f0168691d3149b468ebf68d252d"
+      "sha256": "57b313da3481ebed3c25eb13c7023b41fc0c2a2ad598e54490ae18346fc22880"
     },
     {
       "path": "static/assets/icons/app_icon.png",
@@ -1568,8 +1568,8 @@
     },
     {
       "path": "static/js/world-feed.js",
-      "kind": "source",
-      "sha256": "f0141e7c8a0844c8db0f0971df4ffeb68ce07d23ebae393b009f3230bc3c7022"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "efdbaf45c4feb85e04913dbbd0e6b5d628890971c969c09b58fbe2e506010938"
     },
     {
       "path": "static/manifest.json",
@@ -1598,8 +1598,8 @@
     },
     {
       "path": "static/world-feed.html",
-      "kind": "source",
-      "sha256": "76baa39c21dc640dab15e26008a42a9940e6fd015ee16258c27fa0e8a07f464d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c5842d246d667a5d171aa3273ab3bc71add9f285f269d80b1043448105d01ea4"
     },
     {
       "path": "static/wrist.html",
@@ -2297,6 +2297,21 @@
       "sha256": "c57ab76406297a75c0babf013ffd3a30eeccd4422fc4b34834192aa92ccf6de4"
     },
     {
+      "path": "tests/test_world_feed_photo_setup.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a8365a68278b84a946ad9a5cbc901851f62e9436205bf21919a0fa9a9a2611a1"
+    },
+    {
+      "path": "tests/test_world_feed_setup.cjs",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a0e8cd9422477f6a3da1e0ab2a5c4595539a1e0d9fa0363225fa17ba394d7812"
+    },
+    {
+      "path": "tests/test_world_feed_setup.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8b751dff9164454b7ef84f4797006e0f94eee0821bc815a83576f75f65717974"
+    },
+    {
       "path": "tests/test_world_feed_ui.cjs",
       "kind": "reviewed-generic-overlay",
       "sha256": "fad0471844c3df7e565744c734e3862605aec4463ebef7b4a583eec9fa347870"
@@ -2448,6 +2463,6 @@
     }
   ],
   "excluded_count": 1276,
-  "source_files": 261,
-  "overlay_files": 228
+  "source_files": 257,
+  "overlay_files": 235
 }

@@ -14,7 +14,7 @@ packaging a clean distribution.
 py -3.11 scripts\verify_setups.py
 ```
 
-Success prints a verified file count and 30 setup folders. A changed file, added
+Success prints a verified file count and 32 setup folders. A changed file, added
 `.env`, cache or database makes it fail deliberately. Do not delete configuration
 from a working installation to satisfy this distribution check.
 
