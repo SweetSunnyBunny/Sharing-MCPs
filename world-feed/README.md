@@ -224,3 +224,8 @@ The source for the feed remains in `ui/api/world_feed.py`, `ui/services/world_fe
 `ui/static/world-feed.html` and its JavaScript/CSS files. Keeping one implementation
 means the chat app and this starter use the same fixes and data. This folder is
 not a separately installable cloud Worker.
+
+## Reading the code
+
+Start with [setup_world.py](setup_world.py), then [start_world_feed.py](start_world_feed.py), then [examples/](examples/). The installation steps above describe the runtime configuration.
+Behavioral regression checks live in [tests/](tests/).

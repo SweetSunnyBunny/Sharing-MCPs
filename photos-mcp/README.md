@@ -114,3 +114,8 @@ Copying a file does not set up a display, cloud sync or device account. Configur
 - **Frame is disabled:** set `PHOTOS_FRAME_DIR` only if you intend to use it; ordinary chat/World Feed images do not require a frame.
 
 Keep your real MCP configuration, generated output and account information private. Only generic examples are included in this package.
+
+## Reading the code
+
+Start with [server.py](server.py). The installation steps above describe the runtime configuration.
+Behavioral regression checks live in [tests/](tests/).

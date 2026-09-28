@@ -85,3 +85,7 @@ Ask the client to call `wt_time_now` with timezone `UTC`, then `wt_weather_curre
 | `wt_web_view_image_url` | Download and display an image from a URL |
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [world_tools_server.py](world_tools_server.py). The installation steps above describe the runtime configuration.

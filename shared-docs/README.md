@@ -38,3 +38,7 @@ that package's README.
 Commons is a connector to a separately hosted world server; it does not install
 one. Accounts, model subscriptions, app installations, credentials and personal
 content must be supplied by the installer.
+
+## Reading the code
+
+Start with [CONNECTIONS.md](CONNECTIONS.md), then [COVERAGE.md](COVERAGE.md), then [SERVICE-MAP.md](SERVICE-MAP.md). The installation steps above describe the runtime configuration.

@@ -139,3 +139,7 @@ The daemon now ships in a safe default state:
 The starter uses generic companion names and generic resurfacing text. Supply your own identities and records locally.
 
 Semantic search requires either a configured LM Studio embedding endpoint or a locally cached sentence-transformer model. Image embeddings require a configured vision endpoint or cached CLIP model. These model weights and applications are external dependencies, not missing project code. Optional acceleration/entity extraction can be installed from `requirements-optional.txt`; plain storage and keyword retrieval do not require them. No preexisting database, conversation archive, image memory, or model cache is included.
+
+## Reading the code
+
+Start with [memory_core_server.py](memory_core_server.py), then [unified_memory_server.py](unified_memory_server.py), then [memory_core_daemon.py](memory_core_daemon.py). The installation steps above describe the runtime configuration.

@@ -189,3 +189,7 @@ The request checks in this scaffold do not implement full Alexa certificate/
 signature verification. Add and verify that before treating it as a completed
 public-skill deployment. Keep development testing separate from certification.
 The populated service credentials and your own skill/account IDs stay private.
+
+## Reading the code
+
+Start with [src/index.ts](src/index.ts), then [wrangler.toml](wrangler.toml). The installation steps above describe the runtime configuration.

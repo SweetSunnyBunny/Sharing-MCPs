@@ -1,3 +1,5 @@
+"""Import/configuration smoke check; does not run lifespan or verify provider login."""
+
 import importlib
 import os
 import sys

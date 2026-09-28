@@ -221,3 +221,39 @@ Existing repository Git history retains older versions and is outside this revie
 Use `python scripts/build_clean_archive.py --output PATH` to create a distribution
 from the reviewed manifest only. That archive includes no Git history or runtime
 state. Changing files requires review and a refreshed manifest before packaging.
+
+
+## Readability and navigation review — 2026-09-28
+
+The source map covers all 32 packages, with a reading path in every README.
+The public UI guide follows this export; indexes cover all 25 scripts, 11 tools
+and provider documents. Entry paths and independent package boundaries remain stable.
+The Discord maintenance helper uses the configured identity registry, reports
+aggregate counts, and leaves the existing map intact when no tokens are configured.
+
+The baseline manifest verified 910 files across 32 folders. All 429 listed
+Python files parsed; 58 JSON and 13 TOML files parsed; Node checked 36 JavaScript,
+3 CommonJS and 11 ES module files; the TypeScript compiler parsed 72 files with
+no syntax diagnostics. These are syntax/integrity checks, not full typechecking,
+line-by-line certification or live account integration tests.
+
+The existing private-pattern scanner found only its own JWT detection expression
+inside the cloud exporter; that is scanner source, not a credential. Edited
+documents and helpers receive separate review. No provider, cloud account,
+image generation or household device was invoked for these checks.
+
+The clean collection contained no excess backups or screenshots to remove.
+Git history is outside the distribution review.
+
+
+Final installed checks: 916 reviewed collection files across 32 packages; the
+UI export contains 497 files. Configured UI privacy checks passed. In an isolated,
+manifest-selected copy with private environment settings excluded, 107 Python
+regressions and 28 Node regressions passed, and `smoke_startup.py` returned
+`smoke_startup_ok`. These cover export/configuration, auth/redaction, tool routing,
+provider boundaries, browser loading, World Feed UI, health and resource history.
+
+The generic resource-history collector now uses named ancestry/memory helpers;
+two deterministic tests cover PID reuse, missing/cyclic ancestry, inaccessible
+metrics, memory ranking and units. The reviewed overlay copies retain these
+changes for future exports. Live account/provider integration was not exercised.

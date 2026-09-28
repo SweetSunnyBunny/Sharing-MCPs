@@ -101,3 +101,7 @@ Reading progress, bookmarks, and notes are stored as JSON files alongside the se
 These persist across sessions so you always pick up where you left off.
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [books_server.py](books_server.py). The installation steps above describe the runtime configuration.

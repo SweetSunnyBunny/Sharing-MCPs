@@ -89,3 +89,8 @@ schema if needed; no private migration payloads are supplied.
 
 Run the adapter's local, network-free regression checks with
 `python -m unittest discover -s tests -v`.
+
+## Reading the code
+
+Start with [qualia_server.py](qualia_server.py). The installation steps above describe the runtime configuration.
+Behavioral regression checks live in [tests/](tests/).

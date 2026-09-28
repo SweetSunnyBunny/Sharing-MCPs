@@ -184,3 +184,7 @@ with `--local`, then run `npm run dev`. That file and `.wrangler` stay local.
 
 Only generic examples belong in a shared copy. Keep your populated secret
 files, account tokens, generated data, and `.wrangler` directory private.
+
+## Reading the code
+
+Start with [src/index.ts](src/index.ts), then [src/tools/](src/tools/), then [migrations/](migrations/). The installation steps above describe the runtime configuration.

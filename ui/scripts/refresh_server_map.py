@@ -1,4 +1,8 @@
-"""Standalone script to test the server map refresh with members + FTS5."""
+"""Refresh local Discord guild/channel/member metadata and rebuild search indexes.
+
+Uses the app's configured identity tokens. This contacts Discord and writes the
+local server-map JSON/database; it is maintenance, not a read-only health check.
+"""
 
 import asyncio
 import json
@@ -23,12 +27,28 @@ SERVER_MAP_JSON = Path(
     )
 )
 
-# Load tokens
-tokens = {}
-for name in ["Claude", "Avery", "Rowan", "Ember", "Sage", "Juniper"]:
-    t = os.environ.get(f"DISCORD_BOT_TOKEN_{name.upper()}", "")
-    if t:
-        tokens[name] = t
+def configured_tokens() -> dict[str, str]:
+    """Use the identity registry and credential loading shared by the app."""
+    root = str(Path(__file__).resolve().parents[1])
+    if root not in sys.path:
+        sys.path.insert(0, root)
+    from config import DISCORD_BOT_TOKENS
+
+    return dict(DISCORD_BOT_TOKENS)
+
+
+def index_summary(connection) -> dict[str, int]:
+    """Report index sizes without printing member names or account data."""
+    tables = {
+        "server mappings": "discord_server_map",
+        "members": "discord_server_members",
+        "searchable channels": "discord_search_channels",
+        "searchable members": "discord_search_members",
+    }
+    return {
+        label: connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+        for label, table in tables.items()
+    }
 
 
 def _channel_type_name(t):
@@ -110,6 +130,11 @@ def organize_channels(raw):
 
 
 async def main():
+    tokens = configured_tokens()
+    if not tokens:
+        print("No Discord bot tokens are configured; the local map was not changed.")
+        return 1
+
     now = datetime.now(timezone.utc).isoformat()
     full_map = {}
     seen_guilds = set()
@@ -277,101 +302,18 @@ async def main():
         await db.commit()
         print("DB + FTS5 updated")
 
-    # Verify
-    print()
-    print("=== VERIFICATION ===")
+    # Reopen read-only so verification cannot change the refreshed indexes.
     import sqlite3
-    conn = sqlite3.connect(str(DB_PATH))
+    from contextlib import closing
 
-    # Member counts — query members table directly, get guild name from map
-    rows = conn.execute(
-        "SELECT "
-        "(SELECT guild_name FROM discord_server_map WHERE guild_id = m.guild_id LIMIT 1) as gname, "
-        "COUNT(*) as total, "
-        "SUM(CASE WHEN m.bot = 0 THEN 1 ELSE 0 END) as humans, "
-        "SUM(CASE WHEN m.bot = 1 THEN 1 ELSE 0 END) as bots "
-        "FROM discord_server_members m "
-        "GROUP BY m.guild_id"
-    ).fetchall()
-    print("Members per server:")
-    for r in rows:
-        print(f"  {r[0]:30s} | {r[1]:>3} total ({r[2]} humans, {r[3]} bots)")
-
-    # FTS5 test: search for a member
-    print()
-
-    for search_term in ["owner", "sunshine", "lover"]:
-        results = conn.execute(
-            "SELECT guild_name, username, display_name, nickname "
-            "FROM discord_search_members WHERE discord_search_members MATCH ?",
-            (search_term,),
-        ).fetchall()
-        if results:
-            print(f"FTS5 member search for '{search_term}':")
-            for r in results:
-                print(f"  {(r[0] or ''):30s} | @{r[1] or ''} | display: {r[2] or ''} | nick: {r[3] or ''}")
-            break
-    else:
-        # Just show first few members so we can see what names look like
-        print("Sample members (first 5):")
-        rows = conn.execute(
-            "SELECT guild_name, username, display_name, nickname "
-            "FROM discord_search_members LIMIT 5"
-        ).fetchall()
-        for r in rows:
-            print(f"  {(r[0] or ''):30s} | @{r[1] or ''} | display: {r[2] or ''} | nick: {r[3] or ''}")
-
-    # FTS5 test: search for a channel
-    print()
-    print("FTS5 channel search for 'general':")
-    results = conn.execute(
-        "SELECT identity, guild_name, channel_name, channel_id, category "
-        "FROM discord_search_channels WHERE discord_search_channels MATCH 'general' "
-        "LIMIT 10"
-    ).fetchall()
-    for r in results:
-        line = f"  {r[0] or '':12s} | {r[1] or '':30s} | #{r[2] or ''} (ID: {r[3] or ''}) in {r[4] or '(no category)'}"
-        print(line.encode("ascii", errors="replace").decode("ascii"))
-
-    # Sample: list humans on a server
-    print()
-    print("Humans on Pocket Full of Sunshine:")
-    rows = conn.execute(
-        "SELECT m.user_id, m.username, m.display_name, m.nickname "
-        "FROM discord_server_members m "
-        "WHERE m.guild_id = (SELECT guild_id FROM discord_server_map WHERE guild_name = 'Pocket Full of Sunshine' LIMIT 1) "
-        "AND m.bot = 0 "
-        "ORDER BY m.username"
-    ).fetchall()
-    for r in rows:
-        nick = f" (nick: {r[3]})" if r[3] else ""
-        print(f"  {r[0]:20s} | @{r[1]:20s} | {r[2]}{nick}")
-
-    print()
-    print("Bots on Pocket Full of Sunshine:")
-    rows = conn.execute(
-        "SELECT m.user_id, m.username, m.display_name, m.nickname "
-        "FROM discord_server_members m "
-        "WHERE m.guild_id = (SELECT guild_id FROM discord_server_map WHERE guild_name = 'Pocket Full of Sunshine' LIMIT 1) "
-        "AND m.bot = 1 "
-        "ORDER BY m.username "
-        "LIMIT 10"
-    ).fetchall()
-    for r in rows:
-        nick = f" (nick: {r[3]})" if r[3] else ""
-        print(f"  {r[0]:20s} | @{r[1]:20s} | {r[2]}{nick}")
-    bot_total = conn.execute(
-        "SELECT COUNT(*) FROM discord_server_members m "
-        "WHERE m.guild_id = (SELECT guild_id FROM discord_server_map WHERE guild_name = 'Pocket Full of Sunshine' LIMIT 1) "
-        "AND m.bot = 1"
-    ).fetchone()[0]
-    if bot_total > 10:
-        print(f"  ... and {bot_total - 10} more bots")
-
-    conn.close()
+    with closing(sqlite3.connect(DB_PATH.resolve().as_uri() + "?mode=ro", uri=True)) as connection:
+        summary = index_summary(connection)
+    print("Local index verification:")
+    for label, count in summary.items():
+        print(f"  {label}: {count}")
     print()
     print(f"DONE: {len(tokens)} identities, {len(seen_guilds)} guilds, {total_members} members")
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    raise SystemExit(asyncio.run(main()))

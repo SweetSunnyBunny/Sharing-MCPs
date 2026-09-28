@@ -175,3 +175,7 @@ For local development, create `.dev.vars` with your own `COMMONS_KEYS` JSON and
 
 Only generic examples belong in a shared copy. Keep your populated secret
 files, account tokens, generated data, and `.wrangler` directory private.
+
+## Reading the code
+
+Start with [src/index.ts](src/index.ts). The installation steps above describe the runtime configuration.

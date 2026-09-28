@@ -71,3 +71,7 @@ Ask the client to call `get_screen_size`, then `get_mouse_position`. Success ret
 - Type text and send key presses or hotkeys
 - List visible windows and focus a matching window
 - Locate an image on screen
+
+## Reading the code
+
+Start with [desktop_control_server.py](desktop_control_server.py). The installation steps above describe the runtime configuration.

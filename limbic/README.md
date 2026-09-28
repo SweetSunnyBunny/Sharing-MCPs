@@ -192,3 +192,8 @@ UI payloads, recipes, authentication and stage behavior without live keys.
 
 Only generic examples belong in a shared copy. Keep your populated secret
 files, account tokens, generated data, and `.wrangler` directory private.
+
+## Reading the code
+
+Start with [src/index.ts](src/index.ts), then [migrations/](migrations/), then [examples/](examples/). The installation steps above describe the runtime configuration.
+Behavioral regression checks live in [tests/](tests/).

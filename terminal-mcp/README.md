@@ -99,3 +99,7 @@ All settings are configurable via environment variables:
 | `terminal_get_info` | Get detailed info about a session |
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [terminal_server.py](terminal_server.py). The installation steps above describe the runtime configuration.

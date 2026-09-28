@@ -196,3 +196,8 @@ Any format supported by librosa/ffmpeg:
 - And many more
 
 ---
+
+## Reading the code
+
+Start with [audio_mcp_server.py](audio_mcp_server.py), then [sound_to_image.py](sound_to_image.py). The installation steps above describe the runtime configuration.
+Behavioral regression checks live in [tests/](tests/).

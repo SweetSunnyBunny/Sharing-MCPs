@@ -153,3 +153,7 @@ You can configure these via environment variables:
 | `OBSIDIAN_CHUNK_OVERLAP` | `50` | Overlap between chunks |
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [server.py](server.py). The installation steps above describe the runtime configuration.

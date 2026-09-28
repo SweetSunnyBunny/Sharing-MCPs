@@ -123,3 +123,7 @@ A startup login proves Discord authentication; the short test above separately v
 `src/` contains the bot, recorder, transcription adapter, and command registration. `npm.cmd run build` creates `dist/`; `npm.cmd ci` recreates `node_modules/`. `.venv/`, `.env`, model downloads, tokens, recordings, and account authentication are not supplied.
 
 The process buffers audio and notes during a recording. Temporary WAV files are written under the system temporary directory's `discord-scribe` folder and removed after transcription. Notes and transcript attachments are posted to your configured Discord channel or optional webhook. Save any notes you need before removing that destination.
+
+## Reading the code
+
+Start with [src/index.ts](src/index.ts), then [src/recorder.ts](src/recorder.ts), then [src/transcriber.ts](src/transcriber.ts). The installation steps above describe the runtime configuration.

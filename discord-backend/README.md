@@ -181,3 +181,7 @@ that local file. [.mcp.json.example](.mcp.json.example) is a generic client exam
 
 Only generic examples belong in a shared copy. Keep your populated secret
 files, account tokens, generated data, and `.wrangler` directory private.
+
+## Reading the code
+
+Start with [src/index.ts](src/index.ts), then [src/tools.ts](src/tools.ts), then [src/discord.ts](src/discord.ts). The installation steps above describe the runtime configuration.

@@ -158,3 +158,7 @@ The `query` parameter supports Gmail's search syntax:
 | `larger:` | `larger:5M` | Larger than size |
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [server.py](server.py), then [auth/](auth/). The installation steps above describe the runtime configuration.

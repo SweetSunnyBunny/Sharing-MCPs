@@ -131,3 +131,7 @@ Quadrantids: 2024-01-03 (2 days) - ~120 meteors/hour
 - **Astronomy**: [PyEphem](https://rhodesmill.org/pyephem/) (local calculations)
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [server.py](server.py). The installation steps above describe the runtime configuration.

@@ -172,3 +172,8 @@ Optional development checks:
 Use Ctrl+C to stop each running process. This package creates its own clipboard
 history/screenshots when those tools are used; keep that data and your keys out
 of any copy you share with someone else.
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [server_factory.py](server_factory.py), then [local_tool_registry.py](local_tool_registry.py), then [tool_specs.py](tool_specs.py). The installation steps above describe the runtime configuration.
+Behavioral regression checks live in [tests/](tests/).

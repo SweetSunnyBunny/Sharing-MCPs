@@ -178,3 +178,7 @@ conversation bridge and does not create a ChatGPT login or browser session.
 
 Only generic examples belong in a shared copy. Keep your populated secret
 files, account tokens, generated data, and `.wrangler` directory private.
+
+## Reading the code
+
+Start with [src/index.ts](src/index.ts). The installation steps above describe the runtime configuration.

@@ -299,3 +299,8 @@ GitHub Actions is scaffolded in `.github/workflows/tests.yml` and runs `pytest -
 
 - Runtime data and secrets should stay out of source control. See `.gitignore`.
 - Startup now validates production-sensitive config and refuses to boot when required public URL or auth settings are invalid.
+
+## Reading the code
+
+Start with [CODE_GUIDE.md](CODE_GUIDE.md), then [server.py](server.py), then [config.py](config.py). The installation steps above describe the runtime configuration.
+Behavioral regression checks live in [tests/](tests/).

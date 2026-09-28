@@ -152,3 +152,7 @@ All routes are on the same origin as the browser app:
 Easel AI is by Codependent AI. See the
 [upstream project](https://github.com/codependentai/easel-ai),
 [LICENSE](LICENSE) and [NOTICE](NOTICE). This guide describes the included copy.
+
+## Reading the code
+
+Start with [src/main.ts](src/main.ts), then [src/server.ts](src/server.ts), then [src/db.ts](src/db.ts). The installation steps above describe the runtime configuration.

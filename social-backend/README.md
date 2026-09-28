@@ -190,3 +190,7 @@ the populated file. The active modules are `src/tools/world-tools.ts` and
 
 Only generic examples belong in a shared copy. Keep your populated secret
 files, account tokens, generated data, and `.wrangler` directory private.
+
+## Reading the code
+
+Start with [src/index.ts](src/index.ts), then [src/tools/](src/tools/), then [src/lib/](src/lib/). The installation steps above describe the runtime configuration.

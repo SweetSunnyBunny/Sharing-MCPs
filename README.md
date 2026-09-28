@@ -24,6 +24,9 @@ original PC.** Read the [coverage map](shared-docs/COVERAGE.md) before planning 
 larger installation. It distinguishes included code, additional applications you
 install yourself, and custom components that have not been packaged yet.
 
+For source walkthroughs and every package entry point, open the
+[code guide](CODE_GUIDE.md).
+
 ## Package list
 
 The UI and cloud setups are siblings so each can be shared on its own. The UI

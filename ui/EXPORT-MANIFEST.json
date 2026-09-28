@@ -22,6 +22,26 @@
       "sha256": "5b5e038c7ebdcd54cf16391e190fda5e7b4e57ec7058541c68f7aa1db515f862"
     },
     {
+      "path": "CODE_GUIDE.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e38a4467865020c1236acfac1c8727f1ba0d5ee412f9ffb873ad2173db2bfc05"
+    },
+    {
+      "path": "EXTERNAL_INPUTS.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "05be80526afc90c9a43080ceabdbd7f4e0649b9716d61351bd40b3b2a3641ea5"
+    },
+    {
+      "path": "README.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8cb02400cd0e048f06daa30cb24ca3e2f835d7deffc5e069ec2c22173bde3adf"
+    },
+    {
+      "path": "SHARING-NOTES.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "57b313da3481ebed3c25eb13c7023b41fc0c2a2ad598e54490ae18346fc22880"
+    },
+    {
       "path": "api/__init__.py",
       "kind": "source",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -207,11 +227,6 @@
       "sha256": "ba5bdafc2dfaef684879ca12b9054ee5ea94c0569530e0c21a884374c8f7cea4"
     },
     {
-      "path": "CODE_GUIDE.md",
-      "kind": "source",
-      "sha256": "46456ca981aa35f586dd9279a2f2784c461e8bfa6e5627a54c6c5e5bc50e3738"
-    },
-    {
       "path": "config.py",
       "kind": "reviewed-generic-overlay",
       "sha256": "e76938d1969a68a24b590469cae4b1ea9050a4ffad600d7730d14198c3ffa16a"
@@ -252,9 +267,9 @@
       "sha256": "0d1228637acf91489c326b574850fac4f5ce008ab8698dafb29611cf20a13d2f"
     },
     {
-      "path": "EXTERNAL_INPUTS.md",
+      "path": "docs/README.md",
       "kind": "reviewed-generic-overlay",
-      "sha256": "05be80526afc90c9a43080ceabdbd7f4e0649b9716d61351bd40b3b2a3641ea5"
+      "sha256": "9ef3add4f9999ccb7607b2cde77fcb0dba1edf166204e8b7a187f6b0f7fb4267"
     },
     {
       "path": "mcp-servers.example.json",
@@ -402,14 +417,14 @@
       "sha256": "43e0dcb01a732fc26bc9349c033317f3471876b5ba46fedeeab486335550d5af"
     },
     {
-      "path": "README.md",
-      "kind": "reviewed-generic-overlay",
-      "sha256": "2955491a6ac862abfd29a982508b23db1972115bd2d73ab9a3837eb5faa84cc0"
-    },
-    {
       "path": "requirements.txt",
       "kind": "reviewed-generic-overlay",
       "sha256": "fdb06d76200aa3e6374411c6a83e3f734bf514151e50ed587f566854143f6022"
+    },
+    {
+      "path": "scripts/README.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fb5a06cc1445a3fc6a074047c26c772c00caf8a62eeb7c2e619092fafe1be740"
     },
     {
       "path": "scripts/anam_context_mcp.py",
@@ -519,7 +534,7 @@
     {
       "path": "scripts/refresh_server_map.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "3b51f5884827a692b30472fef1909682e99585d99aaba9018aa5e1a8669e62ff"
+      "sha256": "bf53c678ef8c68fe583657e2398dfc37b2cd2bcb2fff0d5f207db6b037458887"
     },
     {
       "path": "scripts/restart_anam_when_idle.py",
@@ -533,8 +548,8 @@
     },
     {
       "path": "scripts/smoke_startup.py",
-      "kind": "source",
-      "sha256": "0384b0d03d50cf6bb61ab3510ecc3730c2520e24acb9d7bf883342116e96f336"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7bc23c22cd7369152134d53c0f9407d4335e0b87ae0aca348935dc743632895b"
     },
     {
       "path": "server.py",
@@ -1033,8 +1048,8 @@
     },
     {
       "path": "services/resource_history.py",
-      "kind": "source",
-      "sha256": "748fd6ae7ef1f71d9ce5dfd296c04d3b27f82c2cf2b7e3b9c7d570d46bfbf83f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7d719b361b885f04e10114fe0112534edbf98993c15ab512f28a195f5ef6c189"
     },
     {
       "path": "services/room_actions.py",
@@ -1250,11 +1265,6 @@
       "path": "services/world_feed_visuals.py",
       "kind": "reviewed-generic-overlay",
       "sha256": "4504d6e9acf7b1080229b55564850d81ec23dbb40f1aa935c1ae3391b2f66094"
-    },
-    {
-      "path": "SHARING-NOTES.md",
-      "kind": "reviewed-generic-overlay",
-      "sha256": "57b313da3481ebed3c25eb13c7023b41fc0c2a2ad598e54490ae18346fc22880"
     },
     {
       "path": "static/assets/icons/app_icon.png",
@@ -2137,9 +2147,19 @@
       "sha256": "8a181d9dc9b7e106d6e20ac03cd2434a844f771a46998f6fa31a4a5433811d16"
     },
     {
+      "path": "tests/test_refresh_server_map.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a8dc4f7ad419e38c51bd4299ca92e89bd20892a74e99d78bdeff52a641eed154"
+    },
+    {
       "path": "tests/test_resource_history.py",
       "kind": "source",
       "sha256": "fbe3bacae715416b7bf552cc4a3d45fcd006a44813297d3bb982443776853134"
+    },
+    {
+      "path": "tests/test_resource_history_sampling.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6ffb78555e2663050c3a4fdee0a672180618524e7333f27f45a0de43fd21d45c"
     },
     {
       "path": "tests/test_room_tap_context_card.py",
@@ -2317,6 +2337,11 @@
       "sha256": "fad0471844c3df7e565744c734e3862605aec4463ebef7b4a583eec9fa347870"
     },
     {
+      "path": "tools/README.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3e49b3d38c279f31a102314590d0ef05792a86b4ea76331c22cb86b4bb2901a5"
+    },
+    {
       "path": "tools/anam.py",
       "kind": "reviewed-generic-overlay",
       "sha256": "262e5ec1962dc57295d8abea36b27d20d85b8f596ed90863b5f343d2ae4967ee"
@@ -2329,7 +2354,7 @@
     {
       "path": "tools/carry_check.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "35ee69f8800f6c1c3d69fae4d8b8b641329e1fb5e31340f0d436497c84d3c190"
+      "sha256": "ef7ee46463cad367f70fe0076be02dcd3d08c33912aee794bd726f2b18781edf"
     },
     {
       "path": "tools/demojibake.py",
@@ -2380,6 +2405,11 @@
       "path": "wearable/AnamCompanion/.gitignore",
       "kind": "reviewed-generic-overlay",
       "sha256": "67c81d13f86618db8617381d7682c0e1c558c1797c9794ac92471d3cd5b50b86"
+    },
+    {
+      "path": "wearable/AnamCompanion/README.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6c6f4733123a6cbb1ee4f341b790820accc52228fcb794ec02f1a386762c7f15"
     },
     {
       "path": "wearable/AnamCompanion/app/build.gradle.kts",
@@ -2452,17 +2482,12 @@
       "sha256": "bbe025f4250f9bd7766271f6456a7e12499faaf0ef802395d557e736553c337c"
     },
     {
-      "path": "wearable/AnamCompanion/README.md",
-      "kind": "reviewed-generic-overlay",
-      "sha256": "6c6f4733123a6cbb1ee4f341b790820accc52228fcb794ec02f1a386762c7f15"
-    },
-    {
       "path": "wearable/AnamCompanion/settings.gradle.kts",
       "kind": "reviewed-generic-overlay",
       "sha256": "448fe79e08b7e46048d51bfd118e4471eb4c150dd9b5b5aa448ecd2acccd54ed"
     }
   ],
   "excluded_count": 1276,
-  "source_files": 257,
-  "overlay_files": 235
+  "source_files": 254,
+  "overlay_files": 243
 }

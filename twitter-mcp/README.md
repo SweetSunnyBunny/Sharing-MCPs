@@ -113,3 +113,7 @@ Ask: **"Use twitter_test_connection and tell me which account is connected."** A
 | `twitter_unfollow_user` | Unfollow a user |
 | `twitter_get_following` | List followed accounts |
 | `twitter_get_followers` | List followers |
+
+## Reading the code
+
+Start with [run_stdio.py](run_stdio.py), then [server.py](server.py), then [run_server.py](run_server.py). The installation steps above describe the runtime configuration.

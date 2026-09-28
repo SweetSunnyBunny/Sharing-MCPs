@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""carry_check.py â€” the instrument for carry-file rot."""
+"""carry_check.py - the instrument for carry-file rot."""
 
 import os
 import re
@@ -30,7 +30,7 @@ def verdict(nbytes, stack):
     if nbytes >= HARD:
         return "FAIL", "over hard budget (%s KB)" % (HARD // 1000)
     if stack == 2:
-        return "WARN", "2 day-blocks stacking â€” replace the slot, do not add a third"
+        return "WARN", "2 day-blocks stacking - replace the slot, do not add a third"
     if nbytes >= SOFT:
         return "WARN", "over soft budget (%s KB)" % (SOFT // 1000)
     return "ok", ""

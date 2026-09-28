@@ -169,3 +169,8 @@ timestamps where that phrase appears
 ```
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [server.py](server.py), then [auth/](auth/). The installation steps above describe the runtime configuration.
+Behavioral regression checks live in [tests/](tests/).

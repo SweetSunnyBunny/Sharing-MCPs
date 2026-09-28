@@ -163,3 +163,7 @@ Claude: Let me create a simple landscape painting.
 ```
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [server.py](server.py), then [plugin/](plugin/). The installation steps above describe the runtime configuration.

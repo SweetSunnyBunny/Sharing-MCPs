@@ -86,3 +86,7 @@ Ask the client to call `fs_list_directory` for `C:/MCP-Practice`, then `fs_read_
 | `fs_get_recent_files` | Find recently modified files |
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [server.py](server.py). The installation steps above describe the runtime configuration.

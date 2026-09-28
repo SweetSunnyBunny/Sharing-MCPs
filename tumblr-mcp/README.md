@@ -102,3 +102,7 @@ Ask your client: **"Use tumblr_test_connection and tell me which blog is connect
 | `tumblr_search_tag` | Search posts by tag |
 
 ---
+
+## Reading the code
+
+Start with [run_server.py](run_server.py), then [server.py](server.py). The installation steps above describe the runtime configuration.
