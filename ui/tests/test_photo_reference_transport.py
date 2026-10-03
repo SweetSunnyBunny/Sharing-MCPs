@@ -40,7 +40,10 @@ class PhotoReferenceTransportTests(unittest.TestCase):
                 encoded = payload['images'][0]['image_url']
                 self.assertTrue(encoded.startswith('data:image/png;base64,'))
                 self.assertEqual(base64.b64decode(encoded.split(',', 1)[1]), original)
-                self.assertEqual(payload['input_fidelity'], 'high')
+                if service.MODEL.startswith('gpt-image-1'):
+                    self.assertEqual(payload['input_fidelity'], 'high')
+                else:
+                    self.assertNotIn('input_fidelity', payload)
                 self.assertEqual(path.read_bytes(), original)
                 result = service.photo_generate('Shoes', subject='plain')
                 self.assertTrue(result.startswith('Saved ('))
