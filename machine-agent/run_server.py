@@ -1,3 +1,8 @@
+"""Select and launch one client-facing MCP proxy from the shared tool catalog.
+
+The local machine bridge is a separate process; this runner controls only the
+proxy's name, transport, bind address, and port."""
+
 from __future__ import annotations
 
 import argparse

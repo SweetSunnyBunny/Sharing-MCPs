@@ -3,12 +3,9 @@
 POST /api/chat/send      — send a message, receive streamed response as SSE
 POST /api/chat/identity   — switch identity
 GET  /api/chat/history    — load conversation history
+POST /api/chat/new_conversation — start a fresh conversation
 """
 
-# ANAM GUIDE: CHAT FALLBACK OVER PLAIN HTTP
-# What: The backup chat lane — when the phone's WebSocket won't hold (mobile data), chat.js sends messages here and gets the reply streamed back as SSE.
-# Called by: static/js/chat.js (it switches to this automatically when the WebSocket keeps dropping). Normal chat lives in api/chat.py.
-# Edit here when: The fallback lane itself misbehaves (session cookies, SSE streaming, history loading). Shared turn logic belongs in services/chat_turn_prep.py / chat_turn_finalize.py so both lanes get it.
 
 import asyncio
 import json
@@ -40,9 +37,16 @@ from services.chat_session_ops import (
 from services.chat_turn_prep import prepare_chat_turn
 from services.chat_turn_finalize import finalize_assistant_turn, generate_voice_message
 from services.task_manager import spawn
+from services.read_receipts import delivered_event, is_read_signal, mark_read_and_send
+# The WS lane owns image/document registration; the SSE lane shares it verbatim.
+from api.chat import _register_content_documents, _register_content_images
 
 log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/chat", tags=["chat-http"])
+
+# =============================================================================
+# PER-BROWSER SESSION STATE (cookie-keyed, TTL-pruned)
+# =============================================================================
 
 # Per-session state for HTTP mode (keyed by session cookie hash)
 _http_sessions: dict[str, dict] = {}
@@ -119,17 +123,9 @@ def _get_session_lock(state: dict) -> asyncio.Lock:
     return lock
 
 
-def _register_content_images(content: str, identity: str | None = None):
-    """Scan markdown images in response, copy to images dir, rewrite URLs."""
-    from api.images import informative_filename
-    from api.chat import _register_content_images as _ws_register
-    return _ws_register(content, identity)
-
-
-def _register_content_documents(content: str, identity: str | None = None):
-    from api.chat import _register_content_documents as _ws_register
-    return _ws_register(content, identity)
-
+# =============================================================================
+# SSE STREAMING BRIDGE
+# =============================================================================
 
 class StreamSSEBridge:
     """Same interface as StreamWebSocketBridge but writes SSE events to an async queue."""
@@ -183,6 +179,10 @@ async def _sse_event_generator(queue: asyncio.Queue):
         yield f"event: {event_type}\ndata: {payload}\n\n"
 
 
+# =============================================================================
+# ROUTES
+# =============================================================================
+
 @router.post("/send")
 async def chat_send(request: Request):
     """Accept a chat message and stream the response as SSE events."""
@@ -216,6 +216,13 @@ async def chat_send(request: Request):
                 )
                 state["conversation_id"] = conversation_id
 
+                # Read receipts ride this lane too (services/read_receipts.py).
+                async def _send_delivered(message_id: str, delivered_at: str) -> None:
+                    await bridge.send(delivered_event(
+                        message_id, conversation_id, delivered_at,
+                        body.get("client_msg_id"),
+                    ))
+
                 prepared_turn = await prepare_chat_turn(
                     db=db,
                     conversation_id=conversation_id,
@@ -227,6 +234,7 @@ async def chat_send(request: Request):
                     active_categories=state["active_categories"],
                     log=log,
                     skip_user_save=is_approval_retry,
+                    on_user_saved=_send_delivered,
                 )
             finally:
                 await release_db(db)
@@ -265,10 +273,17 @@ async def chat_send(request: Request):
             )
 
             listener_task = asyncio.create_task(bridge.listen_during_stream())
+            receipt_read = False
 
             try:
                 async for event in stream_source:
                     event_type = acc.observe(event)
+
+                    if not receipt_read and is_read_signal(event_type, event):
+                        receipt_read = True
+                        await mark_read_and_send(
+                            prepared_turn.user_message_id, identity, bridge.send,
+                        )
 
                     if event_type == "meta":
                         pass

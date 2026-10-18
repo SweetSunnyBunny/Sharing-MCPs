@@ -1,13 +1,5 @@
 """CRUD operations for conditional triggers (impulses and watchers)."""
 
-# ANAM GUIDE: TRIGGER STORAGE AND RULES
-# What: Saves, lists, edits, and deletes the triggers themselves in the database, and
-#       checks that a new trigger's condition is shaped correctly before saving it.
-# Called by: services/trigger_engine.py (reads them to evaluate) and
-#            services/claude_api.py (the boys' create/list/delete trigger tools).
-# Edit here when: You add a new condition type (add it to VALID_CONDITION_TYPES here
-#                 AND teach trigger_engine.py to evaluate it), or change what counts
-#                 as a valid trigger.
 
 import json
 import logging
@@ -28,6 +20,10 @@ VALID_CONDITION_TYPES = {
     "routine_missing",      # {"type": "routine_missing", "schedule_name": "Morning Anchor", "by_hour": 9}
     "wellness_state",       # {"type": "wellness_state", "metric": "energy", "value": "low"}
     "inactivity",           # {"type": "inactivity", "minutes": 120}
+    "active_identity",      # see trigger_engine._eval_active_identity
+    "day_of_week",          # see trigger_engine._eval_day_of_week
+    "pack_audio_stale",     # see trigger_engine._eval_pack_audio_stale
+    "calendar_within",      # see trigger_engine._eval_calendar_within
     "compound_and",         # {"type": "compound_and", "conditions": [...]}
     "compound_or",          # {"type": "compound_or", "conditions": [...]}
 }

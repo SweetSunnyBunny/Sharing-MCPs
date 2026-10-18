@@ -133,8 +133,8 @@ def main():
 
     print(f"\n{'-'*74}")
     print(f"  {total} chapters" + (f"   ({shown} shown)" if args.gaps else ""))
-    print(f"  legend:  ok = filed against by number   ~ = title mentioned only"
-          f"   -- = absent\n")
+    print("  legend:  ok = filed against by number   ~ = title mentioned only"
+          "   -- = absent\n")
     print(f"  no art beats placed        : {no_art:>3} / {total}")
     for label, _ in TRACKED:
         if notes[label] is None:

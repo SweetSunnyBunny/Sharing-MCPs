@@ -1,4 +1,4 @@
-"""ANAM GUIDE — wrist_gate.py."""
+'Application module.'
 from __future__ import annotations
 
 import contextlib

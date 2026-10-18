@@ -25,12 +25,7 @@ def _is_hex(token: str) -> bool:
 
 
 def parse_orb_tag(content: str) -> Tuple[str, Optional[dict]]:
-    """Pull the first `<orb>` tag out of a reply.
-
-    Returns `(cleaned_content, orb_dict_or_None)`. The cleaned content has
-    EVERY orb tag removed — a boy who writes two only gets the first applied,
-    but neither is left visible to Owner. Pure parsing; touches no storage.
-    """
+    'Pull the first `<orb>` tag out of a reply.'
     if not content or "<orb>" not in content.lower():
         return content, None
 
@@ -103,7 +98,9 @@ async def _persist_orb(identity: str, orb: dict) -> None:
         from api.hub import OrbBody, set_orb
         await set_orb(OrbBody(identity=identity, **orb))
     except Exception:
-        log.debug("_persist_orb: failed for %s", identity, exc_info=True)
+        # The tag was already stripped from the reply, so a failed write means
+        # his orb silently didn't change — leave a visible trace.
+        log.warning("_persist_orb: orb not saved for %s", identity, exc_info=True)
 
 
 # asyncio.create_task only holds a weak reference, so a fire-and-forget task can
@@ -113,20 +110,7 @@ _INFLIGHT: set = set()
 
 
 def extract_orb(identity: str, content: str) -> str:
-    """Parse, persist, and strip an `<orb>` tag in one call.
-
-    The single chokepoint every reply path uses — deliberately the SAME
-    signature as `face_store.extract_face` so it drops into all four reply
-    paths identically, including `autowake._clean_reply_tags`, which is sync.
-
-    Parsing and stripping are synchronous and always happen. The DB write is
-    scheduled on the running loop and not awaited: setting an orb is a mood,
-    not a transaction, and it must never delay — or cost Owner — the actual
-    message. If there's no loop running (a script, a test), the write runs
-    inline instead so nothing is silently dropped.
-
-    Best-effort throughout: every failure path returns the cleaned text.
-    """
+    'Parse, persist, and strip an `<orb>` tag in one call.'
     if not content or "<orb>" not in content.lower():
         return content
 

@@ -1,9 +1,5 @@
 """Helpers for deciding which document artifacts belong in chat UI."""
 
-# ANAM GUIDE: HIDE INTERNAL FILES FROM CHAT
-# What: One yes/no check that decides whether a file attached to a message is a real document worth showing in chat, or just the boys' behind-the-scenes scratch files (tool outputs, .claude temp files) that should stay hidden.
-# Called by: services/chat_turn_finalize.py, services/chat_session_ops.py, and services/platform_bridge.py before they show attachments.
-# Edit here when: A junk file keeps appearing as a chat attachment (add its pattern here), or a real document is wrongly being hidden.
 
 from __future__ import annotations
 

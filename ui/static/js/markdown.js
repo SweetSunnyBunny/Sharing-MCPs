@@ -1,8 +1,5 @@
 /* Simple markdown renderer — converts markdown text to HTML */
-/* ANAM GUIDE: MARKDOWN RENDERER
-   What: Turns the boys' markdown text (**bold**, lists, tables, code blocks) into the HTML you see in chat bubbles and the canvas panel.
-   Loaded by: static/index.html (main chat page); chat.js and canvas.js call renderMarkdown().
-   Edit here when: Some markdown renders wrong in a bubble, or you want to support a new bit of formatting. */
+
 
 function renderMarkdown(text) {
     if (!text) return '';

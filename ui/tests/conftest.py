@@ -28,6 +28,11 @@ os.environ["ANAM_IDENTITY_VAULT_DIR"] = str(_test_root / "identities")
 os.environ["ANAM_ROLEPLAY_VAULT_DIR"] = str(_test_root / "roleplay")
 os.environ["ANAM_DB_BACKUP_DIR"] = str(_test_root / "db-backup")
 
+# Discover's meaning layer loads MiniLM; gateway tests use tiny fake catalogs
+# and must stay fast, so they rank on keywords. tests/test_tool_discovery_rank.py
+# exercises the blend with a stand-in embedder.
+os.environ["ANAM_DISCOVER_SEMANTIC"] = "0"
+
 
 def pytest_sessionfinish(session, exitstatus):
     """Close every pooled db.database connection once the whole run is done.

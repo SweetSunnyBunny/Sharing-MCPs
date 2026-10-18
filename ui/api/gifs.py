@@ -1,9 +1,5 @@
 """Reusable gifs support."""
 
-# ANAM GUIDE: GIF SEARCH AND PICKER ROUTES
-# What: /api/gifs — search GIPHY (Tenor is dead), list the GIFs already saved in her image folder, and download a picked GIF so chat can attach it like a normal image.
-# Called by: static/js/chat.js (the GIF picker button on the chat page).
-# Edit here when: Swapping GIF providers, changing search behavior, or adjusting which hosts /pick will download from.
 
 import logging
 import os

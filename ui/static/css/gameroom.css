@@ -1,8 +1,5 @@
 /* ═══ Game Room ═══ */
-/* ANAM GUIDE: GAME ROOM STYLES
-   What: all the looks for the Game Room page — the opponent-picker lobby, the game board view, and the domino tiles themselves.
-   Used by: gameroom.html only.
-   Edit here when: changing how the lobby cards, game board, domino tiles, or the phone layout (Responsive section at the bottom) look. */
+
 
 .gameroom-container {
     max-width: 900px;

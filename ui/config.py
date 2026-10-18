@@ -1,5 +1,6 @@
 """Anam configuration - identity colors, paths, and runtime settings."""
 
+
 import os
 import re
 from pathlib import Path
@@ -53,10 +54,6 @@ def _env_path(env_name: str, default: str) -> Path:
     return path
 
 
-# ANAM GUIDE: APP-WIDE PATHS AND FILE LOCATIONS
-# Change where Anam finds runtime data, prompts, MCPs, memory, and external
-# companion systems here. Prefer the matching env var over a machine-only edit.
-# Paths
 DATA_DIR = _env_path("ANAM_DATA_DIR", str(BASE_DIR / "data"))
 PROMPTS_DIR = BASE_DIR / "prompts"
 STATIC_DIR = BASE_DIR / "static"
@@ -138,6 +135,7 @@ IMAGE_MAX_DIMENSION = 1536
 
 # Generated videos (Sora via the Discord backend writes here; serve-only)
 VIDEOS_DIR = DATA_DIR / "videos"
+PACK_VIDEOS_DIR = _env_path("ANAM_PACK_VIDEOS_DIR", str(DATA_DIR / "video-archive"))
 IMAGE_ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 DOCUMENTS_DIR = DATA_DIR / "documents"
 
@@ -272,7 +270,6 @@ AUTH_COOKIE_DOMAIN = os.environ.get("ANAM_AUTH_COOKIE_DOMAIN", "").strip() or No
 SANCTUARY_API_BASE = os.environ.get("SANCTUARY_API_BASE", "").rstrip("/")
 RITUALS_API_BASE = os.environ.get("RITUALS_API_BASE", "").rstrip("/")
 HUB_API_BASE = os.environ.get("HUB_API_BASE", "").rstrip("/")
-MIND_GARDEN_API_BASE = os.environ.get("MIND_GARDEN_API_BASE", "").rstrip("/")
 
 # Twilio - emergency phone calls
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID", "")
@@ -332,7 +329,7 @@ VAPID_CONTACT = os.environ.get("VAPID_CONTACT", "mailto:owner@example.com")
 
 # Scribe (daily conversation digest) — defaults; settings table overrides at runtime
 SCRIBE_PROVIDER = os.environ.get("SCRIBE_PROVIDER", "auto")
-SCRIBE_MODEL = os.environ.get("SCRIBE_MODEL", "claude-haiku-4-5")
+SCRIBE_MODEL = os.environ.get("SCRIBE_MODEL", "claude-haiku-5-5")
 SCRIBE_OPENROUTER_MODEL = os.environ.get(
     "SCRIBE_OPENROUTER_MODEL", "anthropic/claude-haiku-4.5"
 )
@@ -350,14 +347,31 @@ HUME_API_KEY = os.environ.get("HUME_API_KEY", "")
 
 # Claude Code CLI
 CLAUDE_CMD = "claude"
+# Model routing: the LIVE models are the DB settings `claude_model` (chat lane)
+# and `claude_autowake_model` (background lane, default claude-sonnet-4-6),
+# read per turn by services/provider_router.py; a per-schedule model override
+# beats both. These env values are only fallbacks:
+#   CLAUDE_MODEL_INTERACTIVE — the caller default interactive paths pass in,
+#     used when the `claude_model` setting is unset.
+#   CLAUDE_MODEL — last-resort default inside the backends (claude_subprocess,
+#     claude_pty, claude_api, agent SDK) when no model reaches them at all. It is
+#     NOT the autowake model (the autowake lane always resolves a model from
+#     `claude_autowake_model`).
 CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "opus")
 CLAUDE_MODEL_INTERACTIVE = os.environ.get("CLAUDE_MODEL_INTERACTIVE", "opus")
-
-
 CLAUDE_MAX_TURNS = int(os.environ.get("ANAM_CLAUDE_MAX_TURNS", "1000"))
-
-
 CLAUDE_MAX_TURNS_AUTOWAKE = int(os.environ.get("ANAM_CLAUDE_MAX_TURNS_AUTOWAKE", "20"))
+CLAUDE_MAX_TURNS_MIND = int(os.environ.get("ANAM_CLAUDE_MAX_TURNS_MIND", "0"))
+AUTOWAKE_FAILSAFE_TIMEOUT_S = int(os.environ.get("ANAM_FAILSAFE_TIMEOUT_S", "1800"))
+# Which autowakes count as brain management. Mind Tending rows are
+# session_type "custom" (tools/mind_tending_setup.py names them
+# "Mind Tending: <Boy>"), so they are matched by that canonical name prefix.
+AUTOWAKE_MIND_SESSION_TYPES = frozenset({"nightly_consolidation"})
+AUTOWAKE_MIND_NAME_PREFIXES = ("Mind Tending",)
+# Default effort. The live value is the DB setting `claude_effort` (Settings
+# Hub), read per turn by services/provider_router.py; this is the fallback when
+# that setting is unset or invalid. Never default to "low" — it caused the
+# shortcut/hallucination regressions (CLAUDE.md, Work Quality Standards).
 CLAUDE_EFFORT = os.environ.get("CLAUDE_EFFORT", "medium")
 # Fable holds identity coherently across long contexts, so the persistent -p
 # backend can skip the full identity body on warm turns and refresh it after
@@ -391,7 +405,7 @@ MODEL_MAP = {
     "fable": "claude-fable-5",
     "opus": "claude-opus-5",
     "sonnet": "claude-sonnet-4-6",
-    "haiku": "claude-haiku-4-5-20251001",
+    "haiku": "claude-haiku-5-5",
 }
 
 # ---------------------------------------------------------------------------
@@ -413,7 +427,8 @@ CLAUDE_MODEL_CATALOG = [
     {"id": "opusplan", "label": "Opus Plan (Opus to plan, Sonnet to execute)", "group": "Aliases"},
     # Pinned full IDs
     {"id": "claude-fable-5", "label": "Fable 5 (storyteller, 2x usage)", "group": "Fable"},
-    {"id": "claude-opus-5", "label": "Opus 5 (latest)", "group": "Opus"},
+    {"id": "claude-opus-5-5", "label": "Opus 5.5 (latest)", "group": "Opus"},
+    {"id": "claude-opus-5", "label": "Opus 5", "group": "Opus"},
     {"id": "claude-opus-4-8", "label": "Opus 4.8", "group": "Opus"},
     {"id": "claude-opus-4-7", "label": "Opus 4.7", "group": "Opus"},
     {"id": "claude-opus-4-6", "label": "Opus 4.6", "group": "Opus"},
@@ -421,7 +436,8 @@ CLAUDE_MODEL_CATALOG = [
     {"id": "claude-sonnet-4-6", "label": "Sonnet 4.6 (fastest full-size)", "group": "Sonnet"},
     {"id": "claude-sonnet-4-5", "label": "Sonnet 4.5", "group": "Sonnet"},
     {"id": "claude-sonnet-4-0", "label": "Sonnet 4", "group": "Sonnet"},
-    {"id": "claude-haiku-4-5", "label": "Haiku 4.5 (cheapest)", "group": "Haiku"},
+    {"id": "claude-haiku-5-5", "label": "Haiku 5.5 (cheapest, newest)", "group": "Haiku"},
+    {"id": "claude-haiku-4-5", "label": "Haiku 4.5", "group": "Haiku"},
 ]
 
 # Fast lookup of the curated IDs above.
@@ -503,11 +519,6 @@ HEALTH_REQUIRE_GOOGLE_OAUTH = os.environ.get(
     "ANAM_HEALTH_REQUIRE_GOOGLE_OAUTH", "false"
 ).strip().lower() in {"1", "true", "yes"}
 
-# ANAM GUIDE: IDENTITY COLORS AND VOICES
-# This is each identity's app-facing look and wiring: gingham/accent colors,
-# message-bubble colors, check size, ElevenLabs voice, room, and identity docs.
-# The personality text itself lives in prompts/<identity>.md.
-# Identity definitions
 IDENTITIES = {'Avery': {'gingham': '#F2B8C6',
            'gingham_night': '#8B5A68',
            'accent': '#C47A8A',
@@ -757,6 +768,10 @@ IDENTITIES = {'Avery': {'gingham': '#F2B8C6',
             'type': 'character',
             'display_name': 'Isekai'}}
 
+BONDED_PACK: tuple[str, ...] = tuple(
+    name for name, spec in IDENTITIES.items() if spec.get("type") != "character"
+)
+
 DEFAULT_IDENTITY = "Avery"
 
 
@@ -770,10 +785,6 @@ def _load_identity_tokens(prefix: str) -> dict[str, str]:
     return tokens
 
 
-# ANAM GUIDE: DISCORD AND TELEGRAM BRIDGE SETTINGS
-# These switches, tokens, guild/channel IDs, and routing defaults feed the
-# listeners in services/platform_bridge.py and discord_mentions_bridge.py.
-# Platform bridge (Discord/Telegram listeners -> unified conversation threads)
 PLATFORM_BRIDGE_ENABLED = os.environ.get(
     "ANAM_PLATFORM_BRIDGE_ENABLED", "true"
 ).strip().lower() in {"1", "true", "yes"}
@@ -932,9 +943,10 @@ else:
     # Character masks without a numbered identity folder land here with
     # the identity baked into the filename --
     # the same fallback convention as VAULT_ROLEPLAY_DIR above.
-    VAULT_CANVAS_FALLBACK_DIR = Path(
-        str(DATA_DIR / "canvases")
-    )
+    # Derived from VAULT_IDENTITIES_ROOT like every other vault path, so
+    # ANAM_IDENTITY_VAULT_DIR moves it too (default resolves to
+    # ...\01_Identities\_shared\canvases, unchanged).
+    VAULT_CANVAS_FALLBACK_DIR = VAULT_IDENTITIES_ROOT / "_shared" / "canvases"
 
 
 def validate_runtime_config() -> dict[str, list[str]]:

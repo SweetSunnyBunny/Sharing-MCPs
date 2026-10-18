@@ -1,13 +1,10 @@
 """Best-effort local skill telemetry and guarded improvement staging."""
 
-# ANAM GUIDE: SKILL USAGE COUNTER
-# What: Keeps a simple tally of which skills get used and when (data/skill-usage.json), plus a queue file for proposed skill improvements awaiting review.
-# Called by: services/skill_runtime.py (records each use), scripts/anam_doctor.py and scripts/anam_context_mcp.py (read the stats)
-# Edit here when: You want to change what gets counted about skill usage or where the tally files live.
 
 from __future__ import annotations
 
 import json
+import logging
 import os
 import tempfile
 import threading
@@ -19,6 +16,8 @@ from typing import Iterable
 from config import DATA_DIR
 
 
+log = logging.getLogger(__name__)
+
 USAGE_PATH = DATA_DIR / "skill-usage.json"
 PENDING_PATH = DATA_DIR / "skill-improvement-pending.jsonl"
 _lock = threading.Lock()
@@ -28,12 +27,34 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _quarantine_corrupt_usage(reason: str) -> None:
+    """Move an unreadable tally aside so the next write can't silently wipe it."""
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    target = USAGE_PATH.with_name(f"{USAGE_PATH.name}.corrupt-{stamp}")
+    try:
+        os.replace(USAGE_PATH, target)
+        log.warning("skill usage: %s was corrupt (%s); moved to %s and starting fresh", USAGE_PATH, reason, target)
+    except OSError:
+        log.warning("skill usage: %s is corrupt (%s) and could not be moved aside", USAGE_PATH, reason, exc_info=True)
+
+
 def _load_usage() -> dict:
     try:
-        data = json.loads(USAGE_PATH.read_text(encoding="utf-8"))
-        return data if isinstance(data, dict) else {}
-    except (OSError, ValueError):
+        raw = USAGE_PATH.read_text(encoding="utf-8")
+    except FileNotFoundError:
         return {}
+    except OSError:
+        log.debug("skill usage: could not read %s", USAGE_PATH, exc_info=True)
+        return {}
+    try:
+        data = json.loads(raw)
+    except ValueError as exc:  # json.JSONDecodeError is a ValueError
+        _quarantine_corrupt_usage(str(exc))
+        return {}
+    if not isinstance(data, dict):
+        _quarantine_corrupt_usage(f"top level is {type(data).__name__}, not an object")
+        return {}
+    return data
 
 
 def _write_usage(data: dict) -> None:

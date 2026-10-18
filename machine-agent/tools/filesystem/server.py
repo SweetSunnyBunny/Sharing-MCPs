@@ -13,6 +13,7 @@ Built with love for sharing.
 """
 
 import io
+import itertools
 import json
 import os
 import shutil
@@ -175,23 +176,28 @@ async def list_directory(
 
         items = []
 
+        # Every branch stops at 500 entries WHILE walking. They used to build the
+        # full list first and slice it afterwards, so a recursive listing of a
+        # drive root walked the entire drive to return 500 names.
         if pattern:
             if recursive:
-                entries = list(dir_path.rglob(pattern))[:500]
+                entries = list(itertools.islice(dir_path.rglob(pattern), 500))
             else:
-                entries = list(dir_path.glob(pattern))[:500]
+                entries = list(itertools.islice(dir_path.glob(pattern), 500))
         else:
             if recursive:
                 entries = []
                 for root, dirs, files in os.walk(dir_path):
                     depth = str(root).count(os.sep) - str(dir_path).count(os.sep)
-                    if depth > 2:
-                        continue
                     for name in dirs + files:
                         entries.append(Path(root) / name)
+                    if depth >= 2:
+                        dirs[:] = []  # prune: os.walk does not descend past the depth limit
+                    if len(entries) >= 500:
+                        break
                 entries = entries[:500]
             else:
-                entries = list(dir_path.iterdir())[:500]
+                entries = list(itertools.islice(dir_path.iterdir(), 500))
 
         for entry in entries:
             try:
@@ -548,10 +554,15 @@ async def write_binary(
     try:
         file_path = Path(path)
 
+        # validate=True: malformed base64 is an error. The lenient default drops
+        # the characters it cannot read and writes a corrupted file as a success.
+        try:
+            binary_data = base64.b64decode(base64_content, validate=True)
+        except (ValueError, TypeError) as e:
+            return {"success": False, "error": f"base64_content is not valid base64: {e}"}
+
         if create_dirs:
             file_path.parent.mkdir(parents=True, exist_ok=True)
-
-        binary_data = base64.b64decode(base64_content)
 
         with open(file_path, 'wb') as f:
             f.write(binary_data)
@@ -645,6 +656,16 @@ async def delete_file(
 
         if target.is_dir():
             if recursive:
+                # One wrong path must not take the drive or the user profile
+                # with it: a drive root, the home folder, and anything that
+                # CONTAINS the home folder are never deleted recursively.
+                resolved = target.resolve()
+                home = Path.home().resolve()
+                if resolved == Path(resolved.anchor) or resolved == home or resolved in home.parents:
+                    return {
+                        "success": False,
+                        "error": f"Refusing to recursively delete a protected folder: {resolved}",
+                    }
                 shutil.rmtree(target)
             else:
                 target.rmdir()
@@ -656,12 +677,13 @@ async def delete_file(
             "path": str(target),
             "action": "deleted",
         }
+    except PermissionError:
+        # Must come BEFORE OSError: PermissionError is a subclass of OSError.
+        return {"success": False, "error": "Permission denied"}
     except OSError as e:
         if "not empty" in str(e).lower():
             return {"success": False, "error": "Directory not empty. Use recursive=True to delete."}
         return {"success": False, "error": str(e)}
-    except PermissionError:
-        return {"success": False, "error": "Permission denied"}
     except Exception as e:
         return {"success": False, "error": str(e)}
 

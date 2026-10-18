@@ -1,4 +1,6 @@
-"""Bounded, durable character activity. One text generation per admitted pulse."""
+'Application module.'
+
+
 import asyncio
 import json
 import logging
@@ -350,6 +352,8 @@ async def process(db, run):
             ):
                 raise feed.WorldFeedError("Reply target is no longer available")
             parent = current_parent
+        # A like is published instantly with no draft stage, so it only happens
+        # when auto_publish is on; otherwise the decision is recorded and skipped.
         if decision and decision['action'] == 'like' and settings(current)['auto_publish']:
             await feed.toggle_like(db, parent['id'], author['id'], desired=True)
             result = {'liked_post_id': parent['id']}
@@ -389,25 +393,31 @@ async def activity_tick():
     async with _lock:
         db = await get_db()
         try:
+            from services import world_feed_responses as responses
+            from services import world_feed_scene_observer as scenes
             for world in await feed.list_worlds(db):
-                from services import world_feed_responses as responses
-                # A small staggered group per minute, with no daily response ceiling.
-                for _ in range(3):
-                    response = await responses.admit(db, world['id'])
-                    if not response:
-                        break
-                    await process(db, response)
-                from services import world_feed_scene_observer as scenes
-                scene = await scenes.admit(db, world["id"])
-                if scene:
-                    await scenes.process(db, scene)
-                    continue
-                # Give the fresh roleplay debounce window priority over an ambient pulse.
-                pending = await db.execute_fetchall("SELECT 1 FROM story_feed_ai_runs WHERE world_id=? AND trigger_kind='roleplay_scene' AND status='queued' LIMIT 1", (world["id"],))
-                if pending:
-                    continue
-                run = await admit(db, world["id"])
-                if run:
-                    await process(db, run)
+                # One world's failure must not starve every other world this tick.
+                try:
+                    # A small staggered group per minute, with no daily response ceiling.
+                    for _ in range(3):
+                        response = await responses.admit(db, world['id'])
+                        if not response:
+                            break
+                        await process(db, response)
+                    scene = await scenes.admit(db, world["id"])
+                    if scene:
+                        await scenes.process(db, scene)
+                        continue
+                    # Give the fresh roleplay debounce window priority over an ambient pulse.
+                    pending = await db.execute_fetchall("SELECT 1 FROM story_feed_ai_runs WHERE world_id=? AND trigger_kind='roleplay_scene' AND status='queued' LIMIT 1", (world["id"],))
+                    if pending:
+                        continue
+                    run = await admit(db, world["id"])
+                    if run:
+                        await process(db, run)
+                except Exception:
+                    log.exception("World Feed activity tick failed for world %s; continuing", world["id"])
+                    if db.in_transaction:
+                        await db.rollback()
         finally:
             await release_db(db)

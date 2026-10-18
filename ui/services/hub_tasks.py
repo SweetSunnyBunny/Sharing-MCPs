@@ -1,9 +1,5 @@
 """Shared helpers for Home Hub tasks."""
 
-# ANAM GUIDE: HUB TASK LIST HELPERS
-# What: adds and saves tasks on the Home Hub task list (tasks.json), whether the ask comes from a web page or a background job.
-# Called by: api/hub.py (the Hub page's Tasks section) and services/autowake.py (boys adding tasks during autonomous sessions).
-# Edit here when: you want to change how tasks are stored, deduplicated, or what extra info rides along with a new task.
 
 from __future__ import annotations
 

@@ -1,8 +1,8 @@
-/* Anam service worker — PWA install + offline caching + push notifications */
+
 
 const ASSET_VERSION = '__ANAM_ASSET_VERSION__';
 const STATIC_CACHE = `anam-static-${ASSET_VERSION}`;
-const RUNTIME_CACHE = 'anam-runtime-v3';
+const RUNTIME_CACHE = 'anam-runtime-v4';
 const versioned = (path) => `${path}?v=${ASSET_VERSION}`;
 const PRECACHE = [
     '/',
@@ -19,6 +19,7 @@ const PRECACHE = [
     versioned('/static/css/diagnostics.css'),
     versioned('/static/js/theme-boot.js'),
     versioned('/static/js/utils.js'),
+    versioned('/static/js/emoji.js'),
     versioned('/static/js/markdown.js'),
     versioned('/static/js/websocket.js'),
     versioned('/static/js/voice.js'),
@@ -156,9 +157,11 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Hub API — stale-while-revalidate (show cached data instantly, refresh in background)
+    // Hub API — network-first; the cached copy is served ONLY when the network
+    // is unreachable (offline). Stale-while-revalidate used to hand back the
+    // PREVIOUS response after a write (meds/tasks/status snapped back on reload).
     if (url.pathname.startsWith('/api/hub/')) {
-        event.respondWith(staleWhileRevalidate(event.request, RUNTIME_CACHE));
+        event.respondWith(networkFirst(event.request, RUNTIME_CACHE));
         return;
     }
 
@@ -171,7 +174,8 @@ self.addEventListener('fetch', (event) => {
     // Skip other API calls and WebSocket — no caching needed
     if (url.pathname.startsWith('/api/')) return;
 
-    // Network-first with cache fallback for static assets
+    // Stale-while-revalidate for static assets (serve cached copy instantly,
+    // refresh it in the background). Versioned ?v= URLs make this safe.
     if (url.pathname.startsWith('/static/')) {
         event.respondWith(staleWhileRevalidate(event.request, STATIC_CACHE));
         return;

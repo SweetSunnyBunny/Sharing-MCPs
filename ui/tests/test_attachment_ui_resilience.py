@@ -58,13 +58,7 @@ def test_video_files_are_still_classified_and_accepted():
 
 
 def test_one_picker_prefers_file_system_api_even_on_touch_devices():
-    """Do not reintroduce the Android-only bypass that caused the action sheet.
-
-    The File System Access picker was the working one-picker flow on Owner's
-    phone. Sending touch devices straight to the broad fallback input replaced
-    it with Android's Camera/Camcorder/Files chooser and selections stopped
-    reaching the page.
-    """
+    'Do not reintroduce the Android-only bypass that caused the action sheet.'
     chat = _source("static/js/chat.js")
     picker = chat.split("async openUniversalFilePicker(", 1)[1]
     picker = picker.split("\n    onFileSelected(file)", 1)[0]

@@ -1,16 +1,4 @@
-"""Prosody facade — one door for "how did she sound", whatever runs behind it.
-
-ANAM GUIDE: PROSODY FACADE
-What: The single import point for voice-tone analysis. Prefers the local
-      on-device model (services/local_prosody.py); falls back to Hume only if
-      local deps are missing AND a key is configured (Hume discontinued the
-      Expression Measurement API in 2026, so that path is effectively
-      historical). Contract everywhere: [{"emotion": str, "score": float}, ...]
-      best-first, or None. Enrichment only — callers must never let this block
-      or fail a transcript.
-Loaded by: services/voice_call.py, api/voice.py (/transcribe).
-Edit here when: changing provider preference or adding a new tone backend.
-"""
+'Prosody facade — one door for "how did she sound", whatever runs behind it.'
 
 from __future__ import annotations
 

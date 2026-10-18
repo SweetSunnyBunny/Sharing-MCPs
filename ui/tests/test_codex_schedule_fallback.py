@@ -112,11 +112,11 @@ class CodexFallbackTests(unittest.IsolatedAsyncioTestCase):
                 new=fake_get_stream_source,
             ),
             patch(
-                "services.autowake.build_messages_array",
+                "services.autonomous_session.build_messages_array",
                 new=AsyncMock(return_value=[]),
             ),
-            patch("services.autowake.get_db", new=AsyncMock(return_value=None)),
-            patch("services.autowake.release_db", new=AsyncMock()),
+            patch("services.autonomous_session.get_db", new=AsyncMock(return_value=None)),
+            patch("services.autonomous_session.release_db", new=AsyncMock()),
             patch(
                 "services.skill_runtime.build_skill_injection",
                 return_value=("", []),

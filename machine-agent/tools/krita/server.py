@@ -74,10 +74,19 @@ def krita_health() -> str:
     """Check if Krita is running and the MCP plugin is active."""
     try:
         response = httpx.get(f"{KRITA_URL}/health", timeout=5.0)
+        response.raise_for_status()
         data = response.json()
         return f"Krita is running. Plugin: {data.get('plugin', 'unknown')}"
-    except:
+    except (httpx.ConnectError, httpx.ConnectTimeout):
         return "Cannot connect to Krita. Make sure Krita is running with the MCP plugin enabled."
+    except httpx.TimeoutException:
+        return "Krita accepted the connection but did not answer /health within 5s (busy or hung?)."
+    except httpx.HTTPStatusError as e:
+        return f"Krita plugin answered /health with HTTP {e.response.status_code}; it is running but unhealthy."
+    except ValueError as e:
+        return f"Krita answered /health but the reply was not valid JSON ({e})."
+    except Exception as e:
+        return f"Krita health check failed: {type(e).__name__}: {e}"
 
 
 @mcp.tool()

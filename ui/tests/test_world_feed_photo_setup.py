@@ -22,7 +22,7 @@ def test_plan_receives_world_style_without_forcing_a_fandom():
     profile = {key: "" for key in ("display_name", "handle", "bio", "posting_style", "prompt_notes")}
     profile.update(display_name="Town Guide", handle="guide", knowledge=[])
     result = {"caption": "A new map!", "image_prompt": "An ink-and-watercolour map on a workbench.",
-              "alt_text": "A fictional map", "includes_player": False}
+              "alt_text": "A fictional map", "includes_player": False, "depicted_profile_ids": []}
     generate = AsyncMock(return_value=json.dumps(result))
     with patch("services.background_generation.generate_background_text", generate):
         actual = asyncio.run(photos.plan_photo(world, profile, [], "a map", ["You"]))

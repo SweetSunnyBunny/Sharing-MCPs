@@ -1,8 +1,24 @@
-"""Provider router -- selects the right streaming backend based on settings.
+"""Provider router -- selects the right streaming backend for every turn.
 
-Reads the `llm_provider` setting from the DB and routes to the appropriate
-stream function. Falls back to Anthropic API if the setting is missing.
+get_stream_source() is the one door every chat / autowake / platform / pack
+turn walks through. Routing, highest precedence first:
+  1. provider_override (a per-schedule provider for this one call);
+  2. per-schedule model hops: a model_override naming a GPT model
+     ("gpt-..." or "codex:<model>") rides the Codex lane, one naming a Claude
+     model ("claude-...") rides the claude-code lane, regardless of the
+     identity's normal provider;
+  3. per-identity overrides (settings key `identity_provider_overrides`);
+  4. the global `llm_provider` setting (unset -> "anthropic"; an unknown
+     value logs an error and falls back to the Anthropic API).
+Inside the claude-code lane: model = per-schedule override > claude_autowake_model
+/ claude_model > caller default; the Fable usage-limit bounce
+(mark_fable_limited) demotes Fable turns to FABLE_LIMIT_FALLBACK_MODEL until
+the window resets; fable_effort caps Fable's effort unless effort_override is
+given; the backend (subprocess / pty / agent-sdk) comes from provider config;
+and turn_ceiling (per-turn tool-round ceiling) is passed to the -p backend.
+All settings come from one DB query cached for 30s (invalidate_cache()).
 """
+
 
 import asyncio
 import json
@@ -64,9 +80,12 @@ async def _load_settings() -> dict:
         config = {}
 
     # claude_effort maps to the CLI --effort flag.
-    effort = (raw.get("claude_effort") or "low").strip().lower()
+    # Unset/invalid falls back to config.CLAUDE_EFFORT ("medium") — never
+    # "low", which caused the shortcut/hallucination regressions (CLAUDE.md).
+    from config import CLAUDE_EFFORT
+    effort = (raw.get("claude_effort") or CLAUDE_EFFORT).strip().lower()
     if effort not in {"low", "medium", "high", "xhigh", "max"}:
-        effort = "low"
+        effort = CLAUDE_EFFORT
 
 
     fable_effort = (raw.get("fable_effort") or "low").strip().lower()
@@ -237,11 +256,28 @@ async def maybe_prewarm(identity: str, conversation_id: str) -> None:
         log.debug("maybe_prewarm skipped for %s: %s", identity, exc)
 
 
-# ANAM GUIDE: CHOOSE THE AI PROVIDER
-# Every chat/autowake/platform caller comes through this switch. Add a provider
-# branch here only after its Settings validation and stream adapter exist; each
-# adapter must emit the shared event shape consumed by the chat pipeline/UI.
-async def get_stream_source(
+def _claude_code_model(
+    settings: dict, model_purpose: str, model_override: str | None, model: str | None
+) -> str | None:
+    """The model the claude-code lane will run (before any Fable-limit bounce).
+
+    Per-schedule override wins, then claude_autowake_model / claude_model
+    from Settings, then the caller's default. Shared by the claude-code branch
+    and the Context Ledger so the Hub reports the model that actually ran.
+    """
+    configured = (
+        settings.get("autowake_model") if model_purpose == "autowake" else settings.get("model")
+    )
+    return model_override or configured or model
+
+
+async def get_stream_source(*args, **kwargs) -> AsyncIterator[dict]:
+    'Choose the provider stream (see _select_stream_source), then make sure'
+    from services.chat_flow import separate_text_blocks
+    return separate_text_blocks(await _select_stream_source(*args, **kwargs))
+
+
+async def _select_stream_source(
     message: str,
     identity: str,
     conversation_id: str,
@@ -259,8 +295,9 @@ async def get_stream_source(
     model_override: str | None = None,
     provider_override: str | None = None,
     turn_source: str = "web",
+    turn_ceiling: int | None = None,
 ) -> AsyncIterator[dict]:
-    """Return the appropriate stream source based on the provider setting."""
+    'Return the appropriate stream source based on the provider setting.'
     settings = await _load_settings()
     provider, config = await resolve_provider_for_identity(identity)
     explicit_provider = str(provider_override or "").strip().lower() or None
@@ -311,7 +348,15 @@ async def get_stream_source(
             orientation_context=orientation_context,
             mode_rules=mode_rules,
             skill_context=skill_context,
-            model=(config.get("model") or model),
+            # The claude-code lane picks its model from claude_model /
+            # claude_autowake_model, NOT llm_provider_config["model"] (that key
+            # can hold a stale value from another provider, e.g. "gpt-5.6-sol"
+            # left over from the Sol weeks) — record what actually runs.
+            model=(
+                _claude_code_model(settings, model_purpose, model_override, model)
+                if provider == "claude-code"
+                else (config.get("model") or model)
+            ),
         )
     except Exception as exc:
         log.debug("Context ledger record skipped for %s: %s", identity, exc)
@@ -333,14 +378,7 @@ async def get_stream_source(
         )
 
     elif provider == "claude-code":
-
-
-        configured_model = (
-            settings.get("autowake_model")
-            if model_purpose == "autowake"
-            else settings.get("model")
-        )
-        effective_model = model_override or configured_model or model
+        effective_model = _claude_code_model(settings, model_purpose, model_override, model)
 
         # Fable usage-limit bounce: while the window is exhausted, every
         # Fable-bound turn rides the fallback model instead of erroring.
@@ -416,6 +454,7 @@ async def get_stream_source(
             image_blocks=image_blocks,
             sender_banner=sender_banner,
             turn_source=turn_source,
+            **({"turn_ceiling": turn_ceiling} if turn_ceiling is not None else {}),
         )
 
     elif provider == "codex":

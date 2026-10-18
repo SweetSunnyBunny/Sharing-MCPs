@@ -1,7 +1,4 @@
-/* ANAM GUIDE: DIAGNOSTICS PAGE BEHAVIOR
-   What: Runs the health checks on the Diagnostics page — pings the server's status endpoints and fills in the result rows and summary line.
-   Loaded by: static/diagnostics.html only.
-   Edit here when: You want to add a new health check row or change how check results are shown. Page looks live in static/css/diagnostics.css. */
+
 
 const Diagnostics = {
     async init() {

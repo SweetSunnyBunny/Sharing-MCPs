@@ -1,35 +1,4 @@
-"""
-Retrieval benchmark harness for qualia-backend mind_search.
-
-The point: stop *guessing* whether a ranking change helped. Define a set of
-(query -> expected memory) cases once, then measure hit@k, recall, and MRR. Run
-it before and after a change, or A/B two retrieval profiles in a single pass, and
-read the uplift off a table instead of vibes.
-
-Eval cases live in a JSON file (see retrieval_eval_set.example.json). Each case:
-
-    {
-      "query": "what did Avery say about the gold?",
-      "identity": "avery",
-      "expect_any": ["the gold", "shield around"],   # >=1 must appear (a "hit")
-      "expect_all": [],                                # all must appear (recall=1)
-      "limit": 5
-    }
-
-"expect_*" entries are matched case-insensitively against the returned result
-text. A case "hits" if any expect_any (or, when empty, any expect_all) substring
-shows up in the top-k; recall is the fraction of expect_all found; MRR uses the
-rank of the first matched result line.
-
-Usage:
-    # single run against the default native profile
-    python scripts/retrieval_benchmark.py --url https://qualia-backend...workers.dev --key KEY \
-        --eval scripts/retrieval_eval_set.json
-
-    # A/B two profiles to see the uplift
-    python scripts/retrieval_benchmark.py --url ... --key KEY --eval scripts/retrieval_eval_set.json \
-        --profile-a flat --profile-b native
-"""
+''
 
 import argparse
 import json

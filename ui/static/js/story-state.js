@@ -1,7 +1,4 @@
-/* ANAM GUIDE: STORY STATE PANEL
-   What: The story-state popup on the chat page — the form where roleplay details (era, location, last scene, open threads...) are viewed and edited, saved through /api/story-state (api/story_state.py).
-   Loaded by: static/index.html (main chat page); the button only shows for character/roleplay identities.
-   Edit here when: You add or rename a story-state field (update FIELD_KEYS here AND the matching form inputs in index.html and the backend). */
+
 
 (function () {
     'use strict';

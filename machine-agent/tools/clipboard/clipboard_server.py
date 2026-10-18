@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import json
+import logging
+import os
+import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -14,22 +17,40 @@ mcp = FastMCP("clipboard")
 
 HISTORY_FILE = Path(__file__).parent / "clipboard_history.json"
 MAX_HISTORY = 100
+log = logging.getLogger(__name__)
+_history_lock = threading.Lock()
 
 
 def _load_history() -> list[dict]:
-    if HISTORY_FILE.exists():
+    """Load history. utf-8-sig so a BOM-prefixed file (e.g. written by
+    PowerShell) still parses. A genuinely corrupt file is MOVED ASIDE, never
+    silently treated as empty — otherwise the next save would overwrite it."""
+    if not HISTORY_FILE.exists():
+        return []
+    try:
+        data = json.loads(HISTORY_FILE.read_text(encoding="utf-8-sig"))
+    except (ValueError, UnicodeDecodeError) as e:
+        stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        aside = HISTORY_FILE.with_name(f"{HISTORY_FILE.name}.corrupt-{stamp}")
         try:
-            return json.loads(HISTORY_FILE.read_text(encoding="utf-8"))
-        except Exception:
-            return []
-    return []
+            HISTORY_FILE.rename(aside)
+            log.warning("clipboard history unreadable (%s); moved to %s and starting fresh", e, aside)
+        except OSError as move_err:
+            log.error("clipboard history unreadable (%s) and could not be moved aside (%s)", e, move_err)
+            raise RuntimeError(f"clipboard history at {HISTORY_FILE} is corrupt and could not be moved aside; refusing to overwrite it") from e
+        return []
+    return data if isinstance(data, list) else []
 
 
 def _save_history(history: list[dict]) -> None:
-    HISTORY_FILE.write_text(
+    # Write a sibling temp file and swap it in, so a crash mid-write cannot
+    # leave a half-written history behind.
+    temp = HISTORY_FILE.with_name(f"{HISTORY_FILE.name}.tmp")
+    temp.write_text(
         json.dumps(history[-MAX_HISTORY:], indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
+    os.replace(temp, HISTORY_FILE)
 
 
 @mcp.tool()
@@ -51,13 +72,16 @@ def clipboard_write(text: str) -> str:
     """
     try:
         pyperclip.copy(text)
-        history = _load_history()
-        history.append({
-            "text": text[:500],
-            "timestamp": datetime.now().isoformat(),
-            "source": "ai",
-        })
-        _save_history(history)
+        # The bridge serves requests on separate threads; without the lock two
+        # writes could both load the same history and one entry would be lost.
+        with _history_lock:
+            history = _load_history()
+            history.append({
+                "text": text[:500],
+                "timestamp": datetime.now().isoformat(),
+                "source": "ai",
+            })
+            _save_history(history)
         return f"Copied to clipboard ({len(text)} chars)"
     except Exception as e:
         return f"Error writing clipboard: {e}"

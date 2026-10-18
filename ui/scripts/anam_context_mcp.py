@@ -96,6 +96,44 @@ def anam_recent_conversations(identity: str = "", limit: int = 10) -> str:
 
 
 @mcp.tool()
+def anam_search_old_chats(identity: str, query: str, limit: int = 5) -> str:
+    'Anam search old chats.'
+    from services.archive_chunks import search_old_chats_sync
+
+    hits = search_old_chats_sync(identity, query, limit=max(1, min(int(limit or 5), 15)))
+    return json.dumps({"ok": True, "identity": identity.lower(), "results": hits}, ensure_ascii=False)
+
+
+@mcp.tool()
+def anam_read_old_chat(
+    chunk_id: int = 0,
+    identity: str = "",
+    conversation_id: str = "",
+    start_chunk: int = 0,
+    before: int = 2,
+    after: int = 4,
+) -> str:
+    'Anam read old chat.'
+    from services.archive_chunks import read_old_chat
+
+    return json.dumps(
+        read_old_chat(
+            chunk_id=chunk_id or None, identity=identity, conversation_id=conversation_id,
+            start_chunk=start_chunk, before=before, after=after,
+        ),
+        ensure_ascii=False,
+    )
+
+
+@mcp.tool()
+def anam_list_old_chats(identity: str, limit: int = 20, offset: int = 0) -> str:
+    'Anam list old chats.'
+    from services.archive_chunks import list_old_chats
+
+    return json.dumps(list_old_chats(identity, limit=limit, offset=offset), ensure_ascii=False)
+
+
+@mcp.tool()
 def anam_skill_usage() -> str:
     """Read local counts showing which injected skills are actually used."""
     return json.dumps(get_skill_usage(), ensure_ascii=False)
@@ -107,7 +145,7 @@ def anam_stage_skill_improvement(
     reason: str,
     proposed_change: str,
 ) -> str:
-    """Stage a skill improvement for Owner's review; never edits the skill."""
+    'Anam stage skill improvement.'
     return json.dumps(
         stage_skill_improvement(skill_name, reason, proposed_change, source="anam-context-mcp"),
         ensure_ascii=False,
@@ -143,7 +181,7 @@ async def anam_delete_canvas(canvas_id: int, identity: str) -> dict:
 
 @mcp.tool(annotations={"readOnlyHint": False})
 async def anam_share_canvas(canvas_id: int, identity: str, share_with: str) -> dict:
-    """Share an Anam reply canvas with another identity, as its owner."""
+    'Anam share canvas.'
     from api.canvases import share_canvas
     from starlette.requests import Request
     body = json.dumps({"identity": _canvas_identity(identity), "share_with": _canvas_identity(share_with)}).encode()
@@ -155,7 +193,7 @@ async def anam_share_canvas(canvas_id: int, identity: str, share_with: str) -> d
 
 @mcp.tool(annotations={"readOnlyHint": False})
 async def anam_unshare_canvas(canvas_id: int, identity: str, shared_identity: str) -> dict:
-    """Revoke a canvas share, as its owner."""
+    'Anam unshare canvas.'
     from api.canvases import unshare_canvas
     return _canvas_result(await unshare_canvas(canvas_id, _canvas_identity(shared_identity), _canvas_identity(identity)))
 
@@ -231,6 +269,53 @@ async def anam_connector_health(server: str = "", probe: bool = False) -> dict:
         response = await client.get("http://127.0.0.1:8790/api/computer/connectors", headers={"Authorization": "Bearer " + (key or "")}, params={"server": server, "probe": str(probe).lower()})
     response.raise_for_status()
     return response.json()
+
+
+@mcp.tool(annotations={"readOnlyHint": False})
+def sticker_give(identity: str, why: str, art: str = "", for_day: str = "", seen_in: str = "") -> dict:
+    'Sticker give.'
+    from services import sticker_book
+    try:
+        result = sticker_book.give(identity, why, art=art, for_day=for_day, seen_in=seen_in)
+    except sticker_book.StickerRefused as exc:
+        raise ValueError(f"Not given: {exc}") from None
+    result["note"] = "It's on her page now. She'll see it at /sticker-book."
+    return result
+
+
+@mcp.tool(annotations={"readOnlyHint": True})
+def sticker_book_day(identity: str, day: str = "") -> dict:
+    'Sticker book day.'
+    from services import sticker_book
+    page = sticker_book.day_page(day)
+    page["your_art"] = sticker_book.own_art(identity)
+    return page
+
+
+@mcp.tool(annotations={"readOnlyHint": False})
+def sticker_note(identity: str, sticker_id: str, text: str) -> dict:
+    'Sticker note.'
+    from services import sticker_book
+    try:
+        result = sticker_book.add_note(identity, sticker_id, text)
+    except sticker_book.StickerRefused as exc:
+        raise ValueError(f"Not written: {exc}") from None
+    result["note_shown"] = "It's under your sticker now, in smaller ink."
+    return result
+
+
+@mcp.tool(annotations={"readOnlyHint": False})
+def coloring_drop(identity: str, image_path: str, title: str = "", drawn_by: str = "", tool: str = "",
+                  made_from: str = "") -> dict:
+    'Coloring drop.'
+    from services import coloring_drawer
+    try:
+        result = coloring_drawer.drop(identity, image_path, title=title, drawn_by=drawn_by, tool=tool,
+                                      made_from=made_from)
+    except coloring_drawer.DropRefused as exc:
+        raise ValueError(f"Not dropped: {exc}") from None
+    result["note"] = "It's in her drawer now. She colours it at /princess. It never leaves unless she hangs it up."
+    return result
 
 
 if __name__ == "__main__":

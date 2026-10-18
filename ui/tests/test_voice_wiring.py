@@ -27,13 +27,9 @@ class VoiceWiringTests(unittest.TestCase):
             self.assertIsInstance(voice, str)
             self.assertTrue(voice)
 
-    def test_elevenlabs_config_covers_all_identities(self):
-        cfg = hearth_config('voice')
-        voices = cfg.get("voices", {})
-        missing = sorted(set(BONDED_IDENTITIES) - set(voices))
-        self.assertEqual(missing, [])
-        for identity in BONDED_IDENTITIES:
-            self.assertTrue(voices[identity].get("voice_id"), identity)
+    def test_elevenlabs_starter_has_no_account_voice_defaults(self):
+        for identity, cfg in IDENTITIES.items():
+            self.assertFalse(cfg.get("voice_id"), identity)
 
     def test_kokoro_falls_back_to_default_voice(self):
         calls = []

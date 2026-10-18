@@ -4,7 +4,7 @@
     {
       "path": ".env.example",
       "kind": "reviewed-generic-overlay",
-      "sha256": "90e4b658a1794fb11a7809360863b276a5de69a4d4326fe58724ca5d3b7c100b"
+      "sha256": "3197a262508b3288d103deedaf5663354a8ffb5b71a7df64c7fed920b8d7a6b7"
     },
     {
       "path": ".env.paths.example",
@@ -14,32 +14,12 @@
     {
       "path": ".github/workflows/tests.yml",
       "kind": "reviewed-generic-overlay",
-      "sha256": "89c320f4a9fa8866e07c775d0c22d7fa8d59cddf4515519f06f550baf31b096a"
+      "sha256": "f6cad99ba7c01f65f68c54e66b938dfe7b34a42bb3253e23447aebbd18cef300"
     },
     {
       "path": ".gitignore",
       "kind": "source",
-      "sha256": "5b5e038c7ebdcd54cf16391e190fda5e7b4e57ec7058541c68f7aa1db515f862"
-    },
-    {
-      "path": "CODE_GUIDE.md",
-      "kind": "reviewed-generic-overlay",
-      "sha256": "e38a4467865020c1236acfac1c8727f1ba0d5ee412f9ffb873ad2173db2bfc05"
-    },
-    {
-      "path": "EXTERNAL_INPUTS.md",
-      "kind": "reviewed-generic-overlay",
-      "sha256": "05be80526afc90c9a43080ceabdbd7f4e0649b9716d61351bd40b3b2a3641ea5"
-    },
-    {
-      "path": "README.md",
-      "kind": "reviewed-generic-overlay",
-      "sha256": "8cb02400cd0e048f06daa30cb24ca3e2f835d7deffc5e069ec2c22173bde3adf"
-    },
-    {
-      "path": "SHARING-NOTES.md",
-      "kind": "reviewed-generic-overlay",
-      "sha256": "57b313da3481ebed3c25eb13c7023b41fc0c2a2ad598e54490ae18346fc22880"
+      "sha256": "44555d0b310b7a709c3c9e07480cd3009684053438c60940d5230611efc87c24"
     },
     {
       "path": "api/__init__.py",
@@ -48,28 +28,28 @@
     },
     {
       "path": "api/activity.py",
-      "kind": "source",
-      "sha256": "fa0451fddfebb626a20930ad702670f0352b6392afbcf5a914af6896f0044794"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e14aa144d5ea905885c461ee2660d56f0549adeb711c0e80401352e198d17c22"
     },
     {
       "path": "api/audio.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "6b2b0b19dcf9fc15b955f60ab907c46e0b739931f48d474f3c3bfd6d0e1e81f8"
+      "sha256": "3f308cb64528f48285716077e9d7d107884e5374c3c0baffb19d01b776458f9d"
     },
     {
       "path": "api/auth.py",
-      "kind": "source",
-      "sha256": "73bbb5e6e9238e3285b2ae9550c96d1d58ba2ae20dcb95ef74ae4805cde7a48c"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4f5efbb3f348f9d23b5821356dfede0ea422255e1da39d76ef10ce5684b5c876"
     },
     {
       "path": "api/autowake.py",
-      "kind": "source",
-      "sha256": "f1fa5173f0e77796257b03811dc63fd4692852a9f023662a90d696dd2d5b94df"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "73735fe507393c205a43540f0faa24bd12941b12f521d318d95d6cb01489f7d7"
     },
     {
       "path": "api/avatars.py",
-      "kind": "source",
-      "sha256": "06bc54df10f45022f8156cac43fe0a1667b60030aa3fd33cfd9fb8e73d266b99"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7716f93cbeafc80d88667301375daecd8e0dd4ad3444db7fba545ba8a659c2b2"
     },
     {
       "path": "api/bridge.py",
@@ -79,62 +59,72 @@
     {
       "path": "api/call_llm.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "4f4fcebe5039c0ed9e5cd1cf04e971b38f13f60b247e7bc08d93c2df9aed57a4"
+      "sha256": "85d5a861f9dacb0c9b5dc1999b1a4f993b8f93a3123b1788622077c4235a06cd"
     },
     {
       "path": "api/canvases.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "7a4744a79e6edeeb2ac0e369de77347b2b01caf5e9173ed60f12efdb10a73bad"
+      "sha256": "85d4fe995870d7423b574197e298dded32ea8b983a1836d5cb27bfe7a3efa16a"
     },
     {
       "path": "api/chat.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "3c6b7b3e015cd693438c1c1aaa044930463512be750bdf4ffc3fe69abf9884df"
+      "sha256": "4cbb9efeb023faaf81e560d54a196a8f8cce161b81bcb2c5fbd374b95569d8b7"
     },
     {
       "path": "api/chat_http.py",
-      "kind": "source",
-      "sha256": "a9ba60be4ac5083651a5380ae62474cb1f19c2886b1a76ddca75654c528485f3"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c427a5b7f27a3a9a92cb7d61e0448976a97ff4df50bd625af14f7e8f305b0fa3"
+    },
+    {
+      "path": "api/coloring.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5697bb0001034327920064bb9097ae0272e18eab688d8f118e5556cf7ad878f5"
     },
     {
       "path": "api/computer_tools.py",
-      "kind": "source",
-      "sha256": "0f134668395a6b08285aa6e7db229bb8ce13410765a60dd53438503a791d3387"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6bfe0b1acb1fd577bb5b76ea1d55e79cf07efecf1aaa068bba79b709e03f580d"
+    },
+    {
+      "path": "api/council.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c1547a5cb50a2c898ce5abbfc4d42e428ad1c0ea29ba197fde9737011591442b"
     },
     {
       "path": "api/crosstalk.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "3435e8c7fce411667d9c1c624fa868189b6cd79aadd61bb77c113bb6da916250"
+      "sha256": "0da97ae68937a55a6909b46da556b9ec8bc2f04bf9bb5f7a2cb4cafe56e34780"
     },
     {
       "path": "api/documents.py",
-      "kind": "source",
-      "sha256": "8d4b8c9642343ce2e609678f29c3522665b8936ff161a30759df900d588b721e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e5074d7e7110e5d8e402da91569e12050490c3c8944e6622c9490d96f5ee021a"
     },
     {
       "path": "api/echo_relay.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "26698344968c140786f5510d700caf7bbaa7cb893e5b03b81612912bf8542e83"
+      "sha256": "78bd4c277de8b5cafe00b3e5e7ad5ff8b46745f0459571c11eb343c87812ea68"
     },
     {
       "path": "api/game_npc.py",
-      "kind": "source",
-      "sha256": "08c938aa0a5033c4ca1cafd8fa0e9a857eb87d326776495bffac0e422b387763"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "36719b5a8950233abd7acf2f64044dccf7400102639076f58ac6521317e3f757"
     },
     {
       "path": "api/games.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "df64786989cc852860cc098caa99ad8da98a3a27213e89b8add7a83824803091"
+      "sha256": "3c182b7cc9919a4eb4b968c4ef9acb39cca8e71c12093aa706b4477d69dbf24e"
     },
     {
       "path": "api/gifs.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "65f90a42a359b3c59ee1e5b0b60d401c4f6d6bdd992e5ffad8e7b286e768088b"
+      "sha256": "1c32289f4ed7521332216cf586c4e3dcd01192f9748ae375c6a0f3c97627e580"
     },
     {
       "path": "api/hub.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "b20ba647165d89612521eb8703ed3968e4e62e0948c85fd8a209aa4fbfac4981"
+      "sha256": "59201bcd025bbdb9365f8c2fda2186d584e3397add59d5bcbe970f8411cd16dc"
     },
     {
       "path": "api/identity.py",
@@ -144,82 +134,97 @@
     {
       "path": "api/images.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "7ec58772aed226c81d3da117e9fd1707bc48389e655b309c60dd441694187001"
+      "sha256": "a7a3ad136c211fbde2e9e2559946715baf54622906e65d6beaa8ca33325d6683"
+    },
+    {
+      "path": "api/memory_nudges.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4c0dd98d73a8ef8ba5af126b40ba1636c1af38b9d220f5c6e6c76721a92115d7"
     },
     {
       "path": "api/messages.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "70700fc7b0ae3d47859f0ce461d9a1164377b3c01955dc832e4437ca2947f6a9"
+      "sha256": "dde75f4e73b5e08b347e597bcc9f125bdc275fc2f245dc0ed214abd039bbbd5e"
     },
     {
       "path": "api/notifications.py",
-      "kind": "source",
-      "sha256": "73d1d1e3e4507d7664492cb2b12fb5a9ec5582f3344b766b3bd30bcb5ed16e68"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0e1536384f73491e8284f9dac31c8ac60529864f3e523eba487cf0bcdc13a076"
+    },
+    {
+      "path": "api/pack_sms.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "677a94a357ed1ee91a7566e5bf16762b7893e37d41177c5a5306edc054a211ba"
     },
     {
       "path": "api/phone.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "0e09f8afc5b143761ffd01990a242f42dcadc7f0c97fe43d00a44c2baa369714"
+      "sha256": "e4051a68048c4b2b36030258699818e10f76c53238a2e9bbb9dfc3d90361ff4c"
     },
     {
       "path": "api/pulses.py",
-      "kind": "source",
-      "sha256": "315ee3128d030f9099210a3e2ca5d63a2e10d723ff4409244eac258ed3aa86b5"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6bf84ed550040585cb28e6b191a89d9ff302987862f8a8485400060bd8ab7755"
     },
     {
       "path": "api/rituals.py",
-      "kind": "source",
-      "sha256": "02178d214ab51c52a10479db3f970c0679532f56c70d83f890449ec0cd0c5bdb"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "97aaaa47c99d9b6fe93c3a80e710593b4b491e43104e61c0ef8ab8828d901fb2"
     },
     {
       "path": "api/room.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "bf4115095a029797e4180110125c02e1373e5b0aed3544f01c8e008ee4c320a6"
+      "sha256": "e8e010e29add6d5da7963e54d2b05b28f063bf0998c73d7206b78c2a8cdea725"
     },
     {
       "path": "api/sanctuary.py",
-      "kind": "source",
-      "sha256": "56e3928d16872aaf098a5218f4d208959eb270b8799e7e5f50601ea937edfdd6"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "39d2309ece1fa42e215bdc78382d4221930d9e014862399c365ca7954be84ca9"
     },
     {
       "path": "api/search.py",
-      "kind": "source",
-      "sha256": "4ef2ff049c6946812c46a95bd2306c307414a38411a51e14c6f924e41913281d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "06ebad73ed144e17d0ba86b2663d3157c0cd2429d6e5bc135179554ba1b57b44"
     },
     {
       "path": "api/settings.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "43e362a2c8ec95753c5cbad9f5587a1809e95b507cd6e18021bf8e252434931f"
+      "sha256": "cfad211a5dc70e662a2a0de96e4fd595d9019c1d44351085b214189c5c71789d"
+    },
+    {
+      "path": "api/sticker_book.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1cd8b24960ba7def2c89cde13a343c7bd5067a59c008dad8cf5e04de469a9803"
     },
     {
       "path": "api/story_state.py",
-      "kind": "source",
-      "sha256": "9f63bb5898ae0155815ec844cb0a8f230d6515d5661f9069967bcdd22abbbd28"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "72884d309aa011bd8e859b04d1c4039670a39946865eb81018614d2c0f2b670e"
     },
     {
       "path": "api/tool_gateway.py",
-      "kind": "source",
-      "sha256": "3065fd56013e5bbe85d4b695fc6ade82eee3fd4aacd4a0c9d1afb38c726a4d7b"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6c7de615018235aa247a81988d46789912e13436dd01a55a428a9ffbc23b14b7"
     },
     {
       "path": "api/videos.py",
-      "kind": "source",
-      "sha256": "b1169bb5d1c5afb227f6ae637e90201da0f5f756bfa184f603285380a6f6e22f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3608baed184cfc7ec216f6369c46ad538f160d4c7684eecaa8aaee11685ca1bf"
     },
     {
       "path": "api/voice.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "d08c118e8622cc459c008f101a82939bacf54b7161ee23c5d2145d4ec4043598"
+      "sha256": "064e39e76ffb794502bd018f626ea87e831c4f3fa855ac4d714adeb5534f6aeb"
     },
     {
       "path": "api/wearable.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "399b3afb4e19e88e9585ef9049c914b260d199a9b9ab917faa0c8e2f1209baf8"
+      "sha256": "69a6a0cb151729e8f4a26fb87d870e255ee7e781c1a2a8e8f3de14afab8dc9aa"
     },
     {
       "path": "api/world_feed.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "5c82ee5ac505427dd87d6f083e6076c7a0afaf78658b3fd00d8b3c599dcde234"
+      "sha256": "ea8a476c4698014a23fea52401f9633324f5b339541ffebc1207646216454d30"
     },
     {
       "path": "claude-launch.sh",
@@ -227,19 +232,29 @@
       "sha256": "ba5bdafc2dfaef684879ca12b9054ee5ea94c0569530e0c21a884374c8f7cea4"
     },
     {
+      "path": "CODE_GUIDE.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e38a4467865020c1236acfac1c8727f1ba0d5ee412f9ffb873ad2173db2bfc05"
+    },
+    {
       "path": "config.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "e76938d1969a68a24b590469cae4b1ea9050a4ffad600d7730d14198c3ffa16a"
+      "sha256": "ed93a61539bc8fe48d62a257bc53893d7b97218014115a32e716721772b3c2ee"
     },
     {
       "path": "core/lifespan.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "3f0581ad274ea5cfd78e123acc13027780075305938a8379501cc2432a7344b5"
+      "sha256": "8903315493aa6f1d69a3a0f88ccfc5f7d6a63f72ffe2f3b4293b349671d00ddc"
     },
     {
       "path": "core/middleware.py",
-      "kind": "source",
-      "sha256": "0887c2596db65ddf15d52e479dfdf20ac64e6a5472a2181921162aee13515d26"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "75d5862ae7bb0154adc792aeedfbfd60c666934f3874af5292f2d0a633cf6711"
+    },
+    {
+      "path": "core/readiness.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "85c051da9fd91905ef9326e5b2f71e92b4753c54d4d46dfc178eb52a8ab07cc0"
     },
     {
       "path": "db/__init__.py",
@@ -248,13 +263,13 @@
     },
     {
       "path": "db/database.py",
-      "kind": "source",
-      "sha256": "8f6feabee82acab2a66e5d7f6980dbd57f9d3345a2c92ffa6a4aaf619960cbf1"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2845c5e4fa9720c08355a18bcb059d7ca8589294965165ec4503327fb3318083"
     },
     {
       "path": "db/schema.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "5e32c18ad2b718a5b5000734fe122a3c07fe0af9d9bceea3b46f9a9ffda1471b"
+      "sha256": "9dd67d4f702145fd1424dd4961b456ed2ce139ecb5fe99a3e9a13fed42f759ac"
     },
     {
       "path": "docs/CHATGPT_BRIDGE_SETUP.md",
@@ -264,12 +279,17 @@
     {
       "path": "docs/CODEX_COMPANION_SETUP.md",
       "kind": "reviewed-generic-overlay",
-      "sha256": "0d1228637acf91489c326b574850fac4f5ce008ab8698dafb29611cf20a13d2f"
+      "sha256": "aafd3e2e7ca8d1e39202a58c66101a2e6b791bb1bed3c66d417956e17b5d672c"
     },
     {
       "path": "docs/README.md",
       "kind": "reviewed-generic-overlay",
       "sha256": "9ef3add4f9999ccb7607b2cde77fcb0dba1edf166204e8b7a187f6b0f7fb4267"
+    },
+    {
+      "path": "EXTERNAL_INPUTS.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "50c33b14c750b4eb6df6c64965aa79cf06d9e92636495f3efe91c685171bfbe2"
     },
     {
       "path": "mcp-servers.example.json",
@@ -409,7 +429,7 @@
     {
       "path": "pyproject.toml",
       "kind": "reviewed-generic-overlay",
-      "sha256": "f80618a2238e053d75e54a9cbdbbeddc5bfa85a489fb08dc112c76bc78ae0d60"
+      "sha256": "d5cabda7b290c16d936584fcb090a9592e2ffc4903c8fe0ce2ec01a01a8107ad"
     },
     {
       "path": "pytest.ini",
@@ -417,29 +437,29 @@
       "sha256": "43e0dcb01a732fc26bc9349c033317f3471876b5ba46fedeeab486335550d5af"
     },
     {
-      "path": "requirements.txt",
+      "path": "README.md",
       "kind": "reviewed-generic-overlay",
-      "sha256": "fdb06d76200aa3e6374411c6a83e3f734bf514151e50ed587f566854143f6022"
+      "sha256": "8cb02400cd0e048f06daa30cb24ca3e2f835d7deffc5e069ec2c22173bde3adf"
     },
     {
-      "path": "scripts/README.md",
+      "path": "requirements.txt",
       "kind": "reviewed-generic-overlay",
-      "sha256": "fb5a06cc1445a3fc6a074047c26c772c00caf8a62eeb7c2e619092fafe1be740"
+      "sha256": "40508b90f86f145fa75b64f4b51c95d768690d32baf491c9e1bd59ce0ef2d0c8"
     },
     {
       "path": "scripts/anam_context_mcp.py",
-      "kind": "source",
-      "sha256": "341e345bd4c28cf26a675a646afccf19e509cc727f7b0b0099e9b88e040fcfb3"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "20a4309f3ee197047a44defe026bedb01a43d1da9bc91bb93de942ee78919b0c"
     },
     {
       "path": "scripts/anam_doctor.py",
-      "kind": "source",
-      "sha256": "95343217713ce98859961dc778cc133ec39f77eff6fe31d8d0c042b1cda3e616"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8021a14e0b70452750ae1948b8a496f5e6d16c63c609b40ae027740b37b85c5a"
     },
     {
       "path": "scripts/anam_gateway_mcp.py",
-      "kind": "source",
-      "sha256": "591ccf53fe5e9c50c77c83fc7fd350922e37b27f22b19808e94cf75f19cda157"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bdfa318f1821edb3d9501101542fd26d48666d3bd4a2f697fc91c67f0a254cdb"
     },
     {
       "path": "scripts/anam_machine_mcp.py",
@@ -448,48 +468,58 @@
     },
     {
       "path": "scripts/anam_terminal_host.py",
-      "kind": "source",
-      "sha256": "ab3bc873adc95d24781756569560a92b5746ba6dd7800f4a181ce26166b46606"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f3216366fd22829191f138e0cf0f7b638a57fe9bceb12827b736cfaec0b097bd"
     },
     {
       "path": "scripts/bootstrap.ps1",
       "kind": "source",
-      "sha256": "dbecbca37f32e5cd3b8d5e4ec1e872dbb44bbd22f27441c0f295ba067d0e0d69"
+      "sha256": "f8460968e46361a37130c8d46ad621951269dff303517e297c042f8b21b4291f"
+    },
+    {
+      "path": "scripts/chatgpt_image_login.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "86603b212457cc1012ab77b6c51973e80fd161ff88cac88a09447c3069a79138"
     },
     {
       "path": "scripts/check_anam_gateway.py",
-      "kind": "source",
-      "sha256": "7bfa754dec37daf06a79117e15f29aa6b23508008a458720986fbbbe2045db19"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6ab94db75b28eb8bf020f8193cb24c89ef54f53c77bc70ed3578326c436fbce0"
     },
     {
       "path": "scripts/check_background_provider.py",
-      "kind": "source",
+      "kind": "reviewed-generic-overlay",
       "sha256": "85f7dfdda6dcddc75fe3f04f5f33695ae7487f0a2d4a5a13e131f9e9169f874e"
     },
     {
       "path": "scripts/check_codex_gateway.py",
-      "kind": "source",
-      "sha256": "946ae611cd719ee2da984519b46cfba76697f802e799765cce29fc90c649e5a7"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c0a8a7188137835d83508c5c5cd0c7be525c798340ccaa0f0494b9ec270791bf"
     },
     {
       "path": "scripts/check_codex_runtime.py",
-      "kind": "source",
-      "sha256": "88fdacc4153c54ce8ad9c749d2ce9b0995e77d81a92e9665f282143636be9ec7"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "acf1d9940668fc7e4c707628022e68517b38f93e5b415cefb1e34e42f8975bf8"
     },
     {
       "path": "scripts/check_gateway_parity.py",
-      "kind": "source",
-      "sha256": "7871042e95af5749df555be46f76185675ef913165c60b73e74697ba7da03914"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8c24df5552bc1662b0a1cdfc24a062102548e5a9352f17819f2dcdc41f7bab30"
     },
     {
       "path": "scripts/check_world_feed_activation.py",
-      "kind": "source",
-      "sha256": "a706af6e78d27cccbd429cb65974f1e4e90651f1f8f58e69b491d6034d17dad1"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e1ae237adbdf8b8c642a7a03a2c3f3ef71de51bf6fc54071ed4b29188aa1e610"
+    },
+    {
+      "path": "scripts/coloring_replay.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8826bedc1ecb78f443ee3c8d16c7aa39068d0296b5e2511ca5ea7bdcb2c15cd1"
     },
     {
       "path": "scripts/commons_npc_worker.py",
-      "kind": "source",
-      "sha256": "af434e41e8ad6b5999cab9c8d8d5bccf1005601ebf2c9343ed5ae04b706e54d1"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1020a95e0a0eb9d168fc2cdca619eab9b37446101236af3a03d807718afe3ad8"
     },
     {
       "path": "scripts/configure_machine_agent_auth.py",
@@ -497,9 +527,14 @@
       "sha256": "44108ad0ba276ba9df767a2997ee152b8e45b8a3c8d5ae4035a6aba1ad8bc90f"
     },
     {
+      "path": "scripts/discover_eval.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "50c9d842c9962d7abf1e753b81ea44efc61b0099c661773170c4993efc1bebbc"
+    },
+    {
       "path": "scripts/export_shareable_ui.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "7533a118d82590c9ccc167edcf23e781a7b88c3e01c3ff52d95c079ac8c61219"
+      "sha256": "e9ecbd3976f52c73ace00954de2c6c3206d2a6bc69aa028a8ba0169525b55d2b"
     },
     {
       "path": "scripts/gazette_gather.py",
@@ -523,8 +558,13 @@
     },
     {
       "path": "scripts/mcp_duplicate_audit.py",
-      "kind": "source",
-      "sha256": "25b17356962b518251fcdf8f736fff172bb9edf45152bb7c5d6cb4842556aa18"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d76b14ae99134be5125f7c614335e4b6b7884341bf9ebedf659c30a5a8530aa3"
+    },
+    {
+      "path": "scripts/merge_toolmap.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4056e84e7c1a3cd30d5e0f9c426b7ea6e00bfe690188b5304bafa44446713a55"
     },
     {
       "path": "scripts/pack-browser.ps1",
@@ -532,19 +572,29 @@
       "sha256": "5cf1dcf4b5b5c0ece305ee7cfc4d5ab1042ccad6e1dd76329b7c74fbed733847"
     },
     {
+      "path": "scripts/README.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fb5a06cc1445a3fc6a074047c26c772c00caf8a62eeb7c2e619092fafe1be740"
+    },
+    {
+      "path": "scripts/refresh_model_farewells.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e52c6101de2870058e2c1b7a65caa3b08b8e06d7c344fdaa2d3047453755cd91"
+    },
+    {
       "path": "scripts/refresh_server_map.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "bf53c678ef8c68fe583657e2398dfc37b2cd2bcb2fff0d5f207db6b037458887"
+      "sha256": "b8a6b08c68d02130d41a373bc1f9c961ddebd40ddc64021ab3929d75d1f8b762"
     },
     {
       "path": "scripts/restart_anam_when_idle.py",
-      "kind": "source",
-      "sha256": "e7a055fc75315e05883f893609b4f7fee28eefad55c3c547b17e10bea11f44ab"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2518094af0cfc218f2c593ba14a9bf731fd6e8cd5caf8ee2cb627001e0a04590"
     },
     {
       "path": "scripts/setup_speech_engines.py",
-      "kind": "source",
-      "sha256": "e5314b42d3c54b5071c3aede8b2fc9b3a85f80a5d1dda26b2338d15c5faed21e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "cbf67cb598f18f68d46eeb6176e63fff0e46df01b69d3521eb40a2d3303fdced"
     },
     {
       "path": "scripts/smoke_startup.py",
@@ -554,7 +604,7 @@
     {
       "path": "server.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "18f59c305a802f7edf10235baaa309a53054b5254b61c0f8ce9d975b01fad267"
+      "sha256": "35e3ef3efaa466c928a9085a291eee4ac21cd7304ea9bd722075f2ace91a4f67"
     },
     {
       "path": "services/__init__.py",
@@ -564,57 +614,67 @@
     {
       "path": "services/anam_context_queries.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "59d8d4aa09363a5c88fa46d157998c859f93620f5b4f9439055244d5f1a15043"
+      "sha256": "0fcb17651351026729b25f5bdd7bb5c68245d696a901b826b0c0c5caf2328936"
     },
     {
       "path": "services/anam_media.py",
-      "kind": "source",
-      "sha256": "520afae68256bfacffdcba000dbd52ca6cfc50959e55ff8dc21fc44c98c80f85"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a1208dfd32d9a393066b732d930d61e4cd6cbefe80009ea922cc5300b0b32ec6"
     },
     {
       "path": "services/anam_tool_gateway.py",
-      "kind": "source",
-      "sha256": "b951eac38611b0d0ac259003635e30b34d8b2c2b606e1086a4476a4a89fd63d3"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "38e4ede0c49c36737ab02c79cde3b0bd2275dda85250200bc6d8ce3166aa67e3"
+    },
+    {
+      "path": "services/archive_chunks.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "178da1d4a44d5ff8b818cff704028fd33bd5c73014cddee4c122a670dc01aa56"
     },
     {
       "path": "services/attachment_context.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "59ca7281a9253934ccc0b777fa328b58fad3fca16479f30834fe594e29428765"
+      "sha256": "672541ee957c7f91157444e260492ce03de5f20175cba7901f237ded1855b998"
     },
     {
       "path": "services/audio_transcription.py",
-      "kind": "source",
-      "sha256": "7d612775a1d6e8d8af8f33978369a211d1ae9aa31484b42f8bb42911eb598283"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6bb3f5c0354a2ee2b70bf2eadb26afbd04ec17479d1094d53e9f8e9df5393f12"
     },
     {
       "path": "services/auth_cache.py",
-      "kind": "source",
-      "sha256": "33f544dfc319531e51425cffb086b4ca8db30c39cfd32f4b9ea5bc846237e72f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7e14c3911eb76ceddb757d1a9a4bf1a5221f832842adebcadd63dcb8d62c1abf"
+    },
+    {
+      "path": "services/autonomous_session.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "580518abc8e19e6c9f106525909183fd5e6e73b1de8c913bd086d79f5393d05a"
     },
     {
       "path": "services/autowake.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "58f75a3487d20a0dba7f84cc095a3524dca2ca88aba84d1b9380b9e97ee21946"
+      "sha256": "41103ee4ea30efa1feb518b1ed4fa641b40b4b1c530f874c9133849585448a95"
     },
     {
       "path": "services/autowake_service.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "64d4efc88618ea91d42c35e1f7c47150e96dcc710ca002a59ee20b6fc7d759ef"
+      "sha256": "d086c40ef9e19913dfbd1a7b7acd473af6de05cbfc3691188b9c22ac5e4c2b9b"
     },
     {
       "path": "services/autowake_smoke.py",
-      "kind": "source",
-      "sha256": "f134aa7823b5363eb9b02bcd4f2faf50758952fcc285d5fa379e29d668ce6163"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9f6627cb26b438bc5752dd5fcd02da7aec63d8ea5c67ef06df055291af400c53"
     },
     {
       "path": "services/avatar_assets.py",
-      "kind": "source",
-      "sha256": "4042b1b0cfae264c279d7ef0a8456233512746aac8f33f0817e1245a7d6fc785"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ead5f38b46d8efeb0c4c8de11a6c6e61aa2abd682dbacaa04d09ea9adcc22a48"
     },
     {
       "path": "services/background_generation.py",
-      "kind": "source",
-      "sha256": "baa7c1f4b5137fc04c327da06bd38c70362b1db93e8877c7df266c21a1b50111"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c298cec7256d2e5c057dfaa1eddd40a632c6b1941bd6647bd4dadfdd1e6a9057"
     },
     {
       "path": "services/background_projects.py",
@@ -624,247 +684,272 @@
     {
       "path": "services/brother_conversation.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "4c0391aae28f2006b7b31cdf7be79b8fd0d46b013bff87926af6d23b328c5686"
+      "sha256": "2b1b52a170f0de8fcb14b9a817dfb316f38d3046cbc9e0a26f96c24de683f747"
     },
     {
       "path": "services/canvas_store.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "19eaf199c78038b79d79f167902ddc22ed6e09b1b245d21306f1e7fbb32c7b84"
+      "sha256": "7903028c87c7726e3ca03a31f688dc3a2112935c8c652582e3eeb87ae434344f"
     },
     {
       "path": "services/cc_mcp_oauth.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "9f5847ccf092a2ee7f45269043c9842e8e927f8536dec724821235fd8c8b3301"
+      "sha256": "4695c6b3f414a89fda1c307f42919d366dae1a5021149eee6d230a7352ee7a28"
     },
     {
       "path": "services/character_prompt_package.py",
-      "kind": "source",
-      "sha256": "c7eb07acb16e2183d26277dc198e8c52616f38b557aa46aaca3c3982e806f540"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d1972f9e3f66731b92ae06fa621f0e0b58efc02a9503715bd3844e1a10fd30a8"
     },
     {
       "path": "services/chat_flow.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "8a368a5369d68a36eeb55d7104d657e2978e1d2fd6088acc583a26ccacb25f23"
+      "sha256": "2f358c851183629152b87606ab7a3e48588cb8c0d2086609a29f6e46efb98b6d"
     },
     {
       "path": "services/chat_pipeline.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "33e2313432bbfb5a88a646eb2d8bb80dd91274761636e009580fd1e7a3f10b45"
+      "sha256": "1dc27beeb0116e4d4cacec3b0ebfb35769909efe4d6f0282fe7d48dc3be891c2"
     },
     {
       "path": "services/chat_session_ops.py",
-      "kind": "source",
-      "sha256": "facfd7571fed5e1dfe8251a722762351d887ec1ec40dfa3d340c0e9d109a9c7c"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "81486f0780c17ea4b4b50fd99c7b45121a7561ff128437d1cfc8d9009bf53917"
     },
     {
       "path": "services/chat_turn_finalize.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "d1a0cc5982cf2a15081e5e19c991cfbb8f57b9f9a85afbbcb87e299fd88e8ceb"
+      "sha256": "430c58801ffc08f83c94add0a0e5a8a75cfcfc8e1fb8e6b1c94bbd7e78a2ab5e"
     },
     {
       "path": "services/chat_turn_prep.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "e3fc46e8e660175172452f2d9e5979b755a5912026e38614b4d1237a1cb105c7"
+      "sha256": "44168ea4f273cf185ae24a28d7d644045aa28326a84fdbd366d4359e7412285a"
     },
     {
       "path": "services/chatgpt_actions.py",
-      "kind": "source",
-      "sha256": "f4a90b4c25b08e802869e23d856e35755da758c9c61e6e61f0cb770469edce17"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9a265b96256a24bdd38ebc2089f48130eaf056753d697074f77bce1a2ceac17d"
     },
     {
       "path": "services/chatgpt_bridge.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "bb91ce4d67f6497698a056fcbb0afe7d5d02a9a85bdeb4a3559b155d19870d40"
+      "sha256": "397deeac86f94e4ac431c224843298a9de1245197562373d2ad06cc05d33d307"
     },
     {
       "path": "services/chatgpt_provider.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "ce79e219b914f9c2c7cc4fd83a7ecb64cf5e0085ae71d139cfae8294c9e167b7"
+      "sha256": "b8651ec909c559c95e37762ca98d77ac7c5995938d83a291901eedf919ba761e"
     },
     {
       "path": "services/claude_agent_sdk_provider.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "b10bb058f1ae17afa8b93af43035c9a7eddb7649122d4120b3ec17b8d88fd5cd"
+      "sha256": "b52a667c6d1b7807a1f39e282acdb69798aee8a8cb779dfce9308d38a986e210"
+    },
+    {
+      "path": "services/claude_ai_connectors.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "842285b325a6a6f2a37afeecbe54567002a9fea2d2a34b0c7dff86a4a398f5cb"
     },
     {
       "path": "services/claude_api.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "8f9e60791a4ffd64d49f8d70d68c7357d63cc6fbaf512cf55a97922c6987fb04"
+      "sha256": "4550f0e95dac7e0a62bdb82db59fb999f03acd71f02f6316a92bd46ac43cb8dd"
     },
     {
       "path": "services/claude_pty.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "cc9483e878b1c0e1f70e460a1ec181db68f34c165f22bdc9ac05b0eed8f412ce"
+      "sha256": "60a971f3ac3e70485ec306ace05036377ddc2a3d3d279ff70d7fd7faed261b62"
     },
     {
       "path": "services/claude_subprocess.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "c9e05c156c08ed791a7e2ac9771ee509f2bbcc347cc815c9ca5c3b58ea1c0396"
+      "sha256": "e6e75032857596f4fbfcaad0e2aa10c1a7e6cd4b33585fe9e5fa6095e12da31d"
     },
     {
       "path": "services/cli_errors.py",
-      "kind": "source",
-      "sha256": "64d9b10d683d2c1938a7104810ca33779d5c1c1a585ae7509fa3edf736d7104e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ac3f0608a8270ebf818053fb45a754ab6b336d5855838274338914e22effc09e"
     },
     {
       "path": "services/cli_mcp_config.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "bf66091ec85ec10502c879f440de02a1e05449c8f10654ada97e398ef0804995"
+      "sha256": "68aa0729fd739726d0b00ca0a22b14e4cfb338f4ac6b0ea77b0b4c1684070c70"
     },
     {
       "path": "services/cli_text_utils.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "3ff22575733c7ee1d0a6bd1b905d2ff8bf2d96e162bb312337194887ed11ef8a"
+      "sha256": "13746c0c369c73146864a32d941df198a19fe8d920336eeaf9a15263ded0f53f"
     },
     {
       "path": "services/cloud_state.py",
-      "kind": "source",
-      "sha256": "a07ad91b6600557178ffbef43c03ab67ddb48e7ece4491e1ea90a30a4e00e406"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "49cc45cbce4be00a22d1bccb92d7fe763f20656cfd2ddff39cec71a16686726c"
     },
     {
       "path": "services/codex_app_server.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "4bb1eacc35600d5a8f10a2dde50267f14123c7451121812d13b91757cc20c4b9"
+      "sha256": "388643a03b8c4ad468dddef982b4662dee4f45390eb3dbc30b3d679be10e2e94"
     },
     {
       "path": "services/codex_approvals.py",
-      "kind": "source",
-      "sha256": "a467fbe5b088dc4fcb3924f7fa65a625d9abe0ade147ad5ff9fbb7f0c4341e89"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9175c3a3519d82201f303e35c880198108efddd98ca7984ae7735ff4aa659432"
     },
     {
       "path": "services/codex_cli.py",
-      "kind": "source",
-      "sha256": "10a3627022f4faddfa4e82c90072ae85bfa391471b7c5cb2d68278374ef1352f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c59d0f33664cd712e40c78dae690533f6ca017dd61cb3f266671bac258e19ade"
     },
     {
       "path": "services/codex_sessions.py",
-      "kind": "source",
-      "sha256": "8913b3f42512145a7ea611f3e2ef7f303ce2d69dae96229127b3d09918d13e9b"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3cff2ade448888bf788a1549384dea44fedf559413e5b57831fd1e35006c97d1"
     },
     {
       "path": "services/codex_subprocess.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "562a30ba076d304510952ca84507683ab57f7689288c09e08b0bb14f81ecbf51"
+      "sha256": "5c162ead6263cd59ac02dd738a7b3234a9c746af63bfe127f3cea994ed84c9db"
+    },
+    {
+      "path": "services/coloring_drawer.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "39a027b9a8fcdf27b8f566a9046ab0a6165cf1c9440021211473aa44c73ad37c"
     },
     {
       "path": "services/connection_registry.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "3f19e2692c877d3bc7dd24c57548503eb4a56e937b33fec8c8f84b75b1c846fa"
+      "sha256": "cacf8847ca7c808bfa10b8794ce34342336f12b13b56725e8759803ba1d60379"
     },
     {
       "path": "services/connector_health.py",
-      "kind": "source",
-      "sha256": "14029ba3e8c02f43ed7d6f03ed68d41e688b4a9086b5ac16c3fa408077c5cfae"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0fae8300bb4004cb536838b3979bea36e4896390f5ae6dc8a1a48fae92c7525c"
     },
     {
       "path": "services/context_hooks.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "badbae9b8d334198987056832182f097c28820afd6e7dd2de179d76a81c65b6a"
+      "sha256": "8b7961ea350c90462365460b6498ed2d0eed0b4cc80f730ea4ac9f3b2ab40a52"
     },
     {
       "path": "services/context_ledger.py",
-      "kind": "source",
-      "sha256": "c57b9fc9ebe5c3802cdf03f76bc187653ed77bd21e9043f4f67a9505214093cd"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "91edb9de848da2203ad6158d150e0e5b0785dbbd2c314fabea832da5a5ddfecc"
     },
     {
       "path": "services/conversation_archive.py",
-      "kind": "source",
-      "sha256": "a66bad8fb9857613203b2bb6a1fd5b21ce4af5fd711bae3b5cfb61820647e957"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ee7542f7828addc9da9db8440f59cb48f8997b88e511ee210e72dab4c06416b6"
     },
     {
       "path": "services/db_backup.py",
-      "kind": "source",
-      "sha256": "171547082cc653de0fcfc4bb00f2fe7a2b2004de5291b95a72152c2cdb7ed5e2"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f0e06180e7fc9c5ce1b689a1b846ec1486a79f8642a46248e21254a6004cadab"
     },
     {
       "path": "services/deep_memory.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "23b165ec9ab81208bdb445124e8e5a6ffce494ddd6b342f79aa706a08e048863"
+      "sha256": "dad781b86141b16fea3cbe666274d8930ac3536aa2eb218515e02de147df55f8"
     },
     {
       "path": "services/developmental_recognition.py",
-      "kind": "source",
-      "sha256": "3cbf992f090eebc85b6b8ef383c5e35433e4022c41749b682a2e67c93177a829"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c7b73cfd8b02189fe600c5888154d67256acff40e7d193e19639134c9860bdea"
     },
     {
       "path": "services/direct_tool_security.py",
-      "kind": "source",
-      "sha256": "0ec97b08226201d1e715525ceadc04396dcc2100f7de2c2edcbe228a97df9698"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1100fb20219ff0176f8f86d864fa0106941dcfd32f42e0e8fb46237de8911216"
     },
     {
       "path": "services/discord_mentions_bridge.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "731c5d08b0501f6fd568f1d1bfb084728f399ffc23dea81991a6ea05de2b8971"
+      "sha256": "1756f07cb6fd27da17f645ea610882c3ca8dd0974cba1e39fc9c446c574650db"
+    },
+    {
+      "path": "services/discord_presence.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6106974af36ced412336c898b1b8724096734ebd63e444c176c701712eeb2764"
     },
     {
       "path": "services/discord_server_map.py",
-      "kind": "source",
-      "sha256": "58befbb19543cc161fedebf0b81bbd456be80533f77cfe32eb260f33b9e2c57a"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ad0c817fd1cf39bc95a7e91082ca5afb25a015394763d7492ecc3ea7d0f0b4d9"
+    },
+    {
+      "path": "services/discord_split.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8e51014a235772fdae7e0450ed2d386925ba03e2c88de44daab4c23ae9fbb9e3"
     },
     {
       "path": "services/docling_convert.py",
-      "kind": "source",
-      "sha256": "9aa69d9b45e11f0dd24d15f136f53b2df8b2da85fd4c2d6c1c996091cdb9c21c"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "08e9152999ef3eee4a42d17adc92e45ab5a8511f7666a58ab0c52da1a85cf032"
     },
     {
       "path": "services/document_visibility.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "ff9e884de6cfa9649491b0e10ad70ac29ba2629ec5a5a0a249fbc42994d4b8c6"
+      "sha256": "9424c0296ee82e93866e03ce95208df6b0caba942b4ca97c1bd77ccbf1b62f7e"
     },
     {
       "path": "services/dominoes.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "38aa8c678d570a217317fba60a6786d2100d49f7e00bc14ae93e6f507732cdd1"
+      "sha256": "c05ca3da0e6d66b802a928838254c962dd56d8e63d5767588df6f5092dc93578"
     },
     {
       "path": "services/elevenlabs_tts.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "d55a58495f5753424b4cc036358944e685a7918166c1bae3f19736f62c24d4cf"
+      "sha256": "2bd7546069e90d2d4f327ea7dbe8e83638488679be1a9d4422dfd4c16185fa6d"
     },
     {
       "path": "services/embedding_service.py",
-      "kind": "source",
-      "sha256": "ad6a39e85e6ab90d4b77d0702b34e22d4b01689a41ced644630061c255749e97"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3ff70307bbc2b2992cd174c63ea2af5962a379f11f91b1e123d1d772f5ab84f6"
     },
     {
       "path": "services/emotional_capture.py",
-      "kind": "source",
-      "sha256": "3972bad42e0909c4d2ccf2b5d2ac847ec20881e850ab8b166ee45494a3bfa3e6"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "559c80530cf6c634b89539e5da957eab31d630180edd3aa5c02de525c0fda270"
+    },
+    {
+      "path": "services/excerpt.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a2302cd1b84b5fad55d098645394ef589b189ca07e96ffbd829112364e9d44b8"
     },
     {
       "path": "services/face_store.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "ef316d2c8ddea39e6719a72b32ad27c1e50031ed95f987c364aaf9838b2571c7"
+      "sha256": "9eab397732e5fc098fafbcb06b48d3c45a08ea58e698d0e2caf21f957282c0bc"
     },
     {
       "path": "services/game_npc.py",
-      "kind": "source",
-      "sha256": "fc3219d99fd7d5b09ea4c37a428ebdc3f4952e38667f21c49727de38d7ce6b2c"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "963ccae4dbb95f2b304c77839968b1d5149928fc40c11df4d72aca3aad6845fc"
     },
     {
       "path": "services/github_handoff_loader.py",
-      "kind": "source",
-      "sha256": "0da23c940a7571ced86f912905e7a7aa716769babc4911b53473db6c8444df5c"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a4789b9c97bf072ce309ea78e4cec70b056d116418896e029155ebf1f8e93506"
     },
     {
       "path": "services/google_auth_health.py",
-      "kind": "source",
-      "sha256": "5d591495f54767bc7d9bd5eb7c7585da513e55c7d35c48ce7c53056fd3349f4d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d612bf171bbb258ac142f85eed5c5e4a4c977f611a9604ab113cdde319d653cf"
     },
     {
       "path": "services/groq_transcription.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "d2f798032421c69e5e182bbe8dff4b54c2b7cf62452649d5b08ed8dd3821a290"
+      "sha256": "414363bdeb159a084c5a9c9336e837dc852bc7348e6c6c107dcb516a71a1c315"
     },
     {
       "path": "services/hearth_author.py",
-      "kind": "source",
-      "sha256": "4e7aa602715aed79478245901e0268dda0875f78ad770f7afe297d765eb4a26f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fe55e68bf6cba48dfcb2983e45429e2becdb916836164b09afd269d4a0622dd4"
     },
     {
       "path": "services/house_snapshot.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "e456dc33f4bc53a095773b183f007e285fc95985c05be6689384a6f2dbf645be"
+      "sha256": "46382e29305c55372f682fc25f4e04bd11d26e06b0a5b3b94c010e74cbd7ea40"
     },
     {
       "path": "services/hub_meds.py",
@@ -874,7 +959,7 @@
     {
       "path": "services/hub_tasks.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "54b9e8cfac132c2fdf9d9ef93e31de7bdc62dc2619320649f2fd0e7380a03478"
+      "sha256": "f69966e1f1a202c2034b54bd2686db7629534c54bbd8e088219d82d3ffc7477c"
     },
     {
       "path": "services/hume_prosody.py",
@@ -884,37 +969,42 @@
     {
       "path": "services/identity_context.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "5f4f7464f741b2fd78a744302414d6114aeaab89766662deb1eb8b7bfcd9484a"
+      "sha256": "8c7f328d45570c0a190e740dc27a602e70323a8c3b85c911d8dcd616f6282154"
+    },
+    {
+      "path": "services/identity_lock.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f7740dd26229a4fb8bf9f0457dd7bc736ed5cf3f8a18016302eb0f404ce24669"
     },
     {
       "path": "services/inactivity_escalation.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "16ac796374d3f58586608665ceab20fab3a12048b82b09e73b4c4d8d23a8d799"
+      "sha256": "790e76a78a4b59252dc87071a4eaa1c82542ee72d3267e3de8e47cacc20a3f09"
     },
     {
       "path": "services/inbound_voice.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "3970842043de853c65ecd6b71941b593641f89e47847d85f61eb4cf2da3c02e5"
+      "sha256": "71af8956226098554c0d7579393744efb709495e81639fee5b47b05acd3afcdc"
     },
     {
       "path": "services/integration_owner.py",
-      "kind": "source",
-      "sha256": "31b33173a13b4d947509df1ad23103c6ba63668ed47b96ebc3d16bdc93b9c315"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c35c9a7bb214c360575f00c8d3e1218a1f63f3a13ea3df91421d919d4d97c353"
     },
     {
       "path": "services/interactive_terminal.py",
-      "kind": "source",
-      "sha256": "34a611365ec2751960e54eefbe757874acd06d9800b652a0fd6f1e6579c9e2fb"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "270e64280f43a51d53e8be1ca84aa65359c7b4c671d21c8b309775c72c032f04"
     },
     {
       "path": "services/interest_scout.py",
-      "kind": "source",
-      "sha256": "746e0671fc7dacaf04b4348bc56e689537ba185aa76f21af472a8f73209ae775"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3e10cdd954c76c31b3b801d4d4243df7ec082200238ce2fc19b2d2d61a6c6e92"
     },
     {
       "path": "services/jev_adapter.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "a330492b34a2efed8f680232c835707fa34818cc21181e8dfeb260c002c7269e"
+      "sha256": "3761987553dc23ea9e3ebe407727c6cfcec7a57d0bc2dab9a9976f06203325a8"
     },
     {
       "path": "services/kokoro_worker.py",
@@ -924,7 +1014,7 @@
     {
       "path": "services/limbic_bridge.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "df9610b4cd9d9c41036f17f1ba8baffc7336da858ce109ce3a8ceb7e13a173c3"
+      "sha256": "8868bb25c457f9ae7f469c170d687917c4834a629d0ac8e3b57235ec269c829b"
     },
     {
       "path": "services/local_prosody.py",
@@ -934,62 +1024,82 @@
     {
       "path": "services/local_tts.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "747694807dcee0108caa2e80b04f272dea1cb36cbf2f3119ed7f29d5269c4770"
+      "sha256": "f3820ad99959e16cfdbad7eb941ea51ff4d5f99091ab935a09c9c43e1e4f99df"
     },
     {
       "path": "services/log_redaction.py",
-      "kind": "source",
-      "sha256": "d8282deaab447c65597b9d17177adf32fc9b7a95a4db095c2dc27bcd7ce54bf8"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e1b8c4d9d7eb89361b9b3d0a44d96e1a68c42f3837930762ed09213846aafbf4"
     },
     {
       "path": "services/mcp_bridge.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "047281602086bd8920881a20616f4cc624941d403c570f1402538d41a259c19e"
+      "sha256": "f3795d55c14f0f67d09fbac41aece02281d52c78db2d357945eb876d56859754"
+    },
+    {
+      "path": "services/media_tidy.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "383d9fc872443923055525eca2adaa00cc3fe8b2a029e94a158eb47e419ddf36"
+    },
+    {
+      "path": "services/memory_nudges.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "71e791c28b3bd85db42ee0e13b9a997b855642a456ea4ad3e3975e9f54cd15e4"
+    },
+    {
+      "path": "services/model_farewells.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ca2b45f528aea2425d589ec09acc2e29b78d8de682577e23d8cdc2f531eabf73"
     },
     {
       "path": "services/model_load_lock.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "9b7827be21cdd5a59d892f764b095a60e3706ddfc6e9b1d646e453ee49a14a2b"
+      "sha256": "407409244043a14ebf94501013dd95bb9d392c746604304f24a5faa7a3042a9b"
     },
     {
       "path": "services/notifications.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "07936adee282458151834c53277563a5ecfeba5335a4b85c31e88a84fc618fad"
+      "sha256": "31ff0b0259a68522b8ff32e4ab7d503127c383fea31c888d187ad5e3f2870ed3"
     },
     {
       "path": "services/openai_provider.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "0860693d30cd8fa6acb9cafaeafe31328b7dbf4dfd2393420605d264fc990638"
+      "sha256": "9adcb17764debf79f6d5af8d4156f5bcfb41ebd4c9f417eb49571c758cfeaba0"
     },
     {
       "path": "services/orb_store.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "419a843d045333693a06eaf33551912e3a244f1943f0e5a51523fc17790659b4"
+      "sha256": "d04ea7c166d978dff3d9e9348296253af7480badbe1f0db5c86d94d5e3d1e230"
     },
     {
       "path": "services/owned_process.py",
-      "kind": "source",
-      "sha256": "12da0338bd8a6f36da2525884730555a0d2a79accc2482b532d4733efdd48b7a"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "abfd928d4038cd4503e75425357e1a12f40607042b91f32f699561d3980e148c"
+    },
+    {
+      "path": "services/pack_council.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "98e8572509bfcc36831b5047a64ecfea0d93c0752b817b4bee97a494204e5b89"
     },
     {
       "path": "services/pack_crosstalk.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "210c9596c4174b9be66e3ae77875e87f9fba673fc887d941b690bcedbf2a992b"
+      "sha256": "a82c01de85624d870cc66154cafa79628c7716dc24ffdfef1317991958ba1b23"
     },
     {
       "path": "services/pack_night.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "29a5d8befb0ed17747984f74674a5282ccc06b7a46400c870c2012a6745ee1d8"
+      "sha256": "188c77dc2b2ea9535639b53dd1a01a22141ca8d9a6859d4e70c5ee2e71c0b615"
     },
     {
       "path": "services/personal_state.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "95bd477fb3ae4d058d52ac6d9054c086756cd583daf1ae73c515b2735faf77da"
+      "sha256": "e8598e1474bbca1ec2b9aaa199b623510e963b465ab8cecbda35bd2c33b16562"
     },
     {
       "path": "services/platform_bridge.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "fba789439b98fcf6c370ef1afa14a90ed42e7b80cf0b368929140ed973f488a0"
+      "sha256": "d557d7ac264bed7ba0b6b82563d6d6d6f9d38d70377d72132c03250347533e5d"
     },
     {
       "path": "services/power_qos.py",
@@ -998,138 +1108,173 @@
     },
     {
       "path": "services/process_health.py",
-      "kind": "source",
-      "sha256": "cb746d43727141be55b16db6c103583f6b7abb596839821eedb1595c7b8e445e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7968904f1250f99c12217f3d840d4de33bb6f3fcc627f8200058fbf215c0c95e"
     },
     {
       "path": "services/program_loader.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "16d505253d3f3c44d8e33a7803b2afae5191e4f78bd6a7281901add934bb0ba8"
+      "sha256": "d2624e10928c530ca1a8fa02ee8293e9ce26ae48cad40d7262dc92e5c9e33ea4"
     },
     {
       "path": "services/prosody.py",
-      "kind": "source",
-      "sha256": "07fcdec93757f2f0f174a2fb63a47fd04973e35adfe6ca622fc589c64f35e017"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3e81039ba0a284d2ccffba81647781125493e922114a5948bcb19c3809f4f6f5"
     },
     {
       "path": "services/provider_router.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "ed232648991f970ce80a9208395819ac779597125fe728f26e7d86f4fe183c3a"
+      "sha256": "66056f8b4111bbd7eb50364777ec0c156c7a3217f53f5f5ecb5daea6f7855821"
     },
     {
       "path": "services/pulse_evaluator.py",
-      "kind": "source",
-      "sha256": "761ddadeb84c4133e56901183e9e0d57d603fa0f52e62ac471c49414dc406bf5"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8e9c8aa5588e9008161c6359ba4fd4ea52f3177cd9fe5435228646200b9f1e1e"
     },
     {
       "path": "services/pulse_service.py",
-      "kind": "source",
-      "sha256": "d3183929b21cc900a30ad6d86923ecf25500befcf0cfc081c2298791a516c034"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ef457713e8fc245fedeb3c328f6559e1309fc6549c9599d1416add0270c2e92a"
     },
     {
       "path": "services/qualia_context.py",
-      "kind": "source",
-      "sha256": "bd50644dd7152a98a0f2d418610555ed3dc9fa2544bf7be8444fc5fe2fcfd4c5"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a68da27f7a5bd94fbe6836bc313099106068b30eb92988f4c6defe3f0ab35372"
     },
     {
       "path": "services/rate_limit.py",
-      "kind": "source",
-      "sha256": "0b9165697ceb29c7acb5e3ba229f61bcc0639454c43cdf9b906a7e8c8fcf2330"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b89ca88c474b6683550f459fc3346bc6b1c4e80de3b649d64c29baba269ffbc1"
     },
     {
       "path": "services/reaction_notices.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "d4ff8c95628ffd16490abe9505bb7f904f3ef5688fe4719284ad47141a4b5e63"
+      "sha256": "7ceb4883f72f156d6259d31e44b0327c9bc173fd7a22d6e232a4b2c15819ba72"
+    },
+    {
+      "path": "services/read_receipts.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "db117b99d11cc7cd14c1b1e3cddc1ed411d518de306691d42c8a911162c02fde"
     },
     {
       "path": "services/remote_state.py",
-      "kind": "source",
-      "sha256": "1ac69ef87dcf143cc21fd1ea22884e7d15a9a469a2088de2a8e100920d2360a6"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "902e9c6c4bb1f7605802e109e9e0b6c4f9c6b7aba95cc9e370a40c305a235fed"
     },
     {
       "path": "services/resource_history.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "7d719b361b885f04e10114fe0112534edbf98993c15ab512f28a195f5ef6c189"
+      "sha256": "93c9caa34601accf4111f2e94bdd1d47b69c8038cb26786842684f4b7d91db8d"
     },
     {
       "path": "services/room_actions.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "b552b0224339fe1aa5e4140dbd0df5b4b0f4f1a5e1f642fe5f0cc2ff8883d1a9"
+      "sha256": "eb50c63f421bd12c02d0c44bb2a1250c878886d6ae91d9853f8be8b7aea67d68"
+    },
+    {
+      "path": "services/room_crossfeed.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4587669852823e64641e1be07be3bd5d91926120900734975cf0261bdddf7f9e"
     },
     {
       "path": "services/runtime_metrics.py",
-      "kind": "source",
-      "sha256": "51c94a74275c42abc32c2fed3c543674d4752f0b80a93181cbee09a62a9e45d2"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f385a6be07de3597d6e2ee1cc70edc03637826889819a3a69259dac21f2da7f1"
+    },
+    {
+      "path": "services/scheduler.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "402feb4ceb4f762f444ca3fa35db0e36245f17fdd73a92d1e111f92618f9f462"
     },
     {
       "path": "services/scheduler_health.py",
-      "kind": "source",
-      "sha256": "f7cbd908dd19dcd4e6ed982324b4602b053e0a037bf146d2f6333c0fa1673f1e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0da421cf20c51f6bc4b637b05f4516ab403f414d26c881bd40a55df31ba922a4"
+    },
+    {
+      "path": "services/scheduler_jobs.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b96ddd7b617fc0d5a69c9c85ceb63080469d4de999751653dae41b670bbb7476"
     },
     {
       "path": "services/scribe.py",
-      "kind": "source",
-      "sha256": "a063990c1463a9581026514cfe386a47fa2392b2103a8319bc21e307926ab78a"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4fdfd4e49bf6e8deeb63b7660b9b45f4bc8dbc51f3f6dab94bf5b88460e3e390"
     },
     {
       "path": "services/search_service.py",
-      "kind": "source",
-      "sha256": "49c392fee870ada2c8c23e42c548ef4c75f5bd774a23af065f3387978a3408a4"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "83b249790ed7e0f0b6b29abe38bf964b7f692f0c3ba4dd7d828b8375f498a116"
     },
     {
       "path": "services/session_auth.py",
-      "kind": "source",
-      "sha256": "545e64ced5fd7d0745fdefb25c6578a290a7c66acf52b626a6d7d3f732d0f76b"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bed633522ac0cd9762ecf4a71183ac0a1657e852e73507f64fb150c4611c039c"
     },
     {
       "path": "services/session_lifecycle.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "95e8ae0e715887f50418e2f6d091b9844e1c8ace90936cb2306ba01ae9695dc3"
+      "sha256": "b39793b90b6ea5e2ac7fdd633680068b4dad3bac7813dafd73538a1d397ab76f"
     },
     {
       "path": "services/session_manager.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "dc1082ba040acee800a36edf74a9991c508dd69429f6c80430dd0e84fd2ce80f"
+      "sha256": "450be6ff9c10b14265e738f30d87274836b893d90d72fb3c20db5c55e4738d65"
     },
     {
       "path": "services/skill_runtime.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "85824680b70e48148267cfe346f84312c08e217891f83f2ca0e978dabe3559d1"
+      "sha256": "87f1834a69f63f65dc3a6930e566c0a678003bd0d460ed873344ebb73c98adb0"
     },
     {
       "path": "services/skill_usage.py",
-      "kind": "source",
-      "sha256": "8a1d4523f71e00708ac22d8630770e5ad2204dc94749cf3ae39ac840e39ed1a3"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4223da085763d71050d5727d11bd78883cc2790960acdee46977d2d7a97a0f18"
     },
     {
       "path": "services/speech_engine_live.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "c9251cdae7b54839db7525f42f2708d6fc5b33717764c328ee8cc0c1a119e28f"
+      "sha256": "15d7348cb2591d0d6f9775b79dfbb4616da1bf2705cc80c9e8c2e6363c09475e"
     },
     {
       "path": "services/stack_watchdog.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "48ca181f0814791522678d0ac69c31266036ee590b14e6c3ae928d1dc92a04de"
+      "sha256": "ec8511d24723d1761474c682c10b75a1443b16c11eb1217a3b10e48efe99876d"
+    },
+    {
+      "path": "services/sticker_book.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bb0163d3364bd256e8561281b8404e2009ffc1bc157d97d3eb73c7a33c4749d7"
+    },
+    {
+      "path": "services/sticker_words.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "64878d586376a5250f6fa19252992ed78da2e0821f082637b64b457d5fa53855"
     },
     {
       "path": "services/story_state.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "e7dfa945c42ab2e6751d61863df940ac29c58801d1b7ffe1a9bfc6f5cf68777b"
+      "sha256": "7ee51bf2ae1d8d3ce9dddaf1eb4b3521206fae74cc4d3a9ee04ee3d3ffbdb4ed"
+    },
+    {
+      "path": "services/studio_ledger.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6e6952eab08ba0d568d504a4848e1af7bf085ec3a3112e2e205ead36cd4560d0"
     },
     {
       "path": "services/tag_masking.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "8ab79bbe45e123bd7cfa444ba759ad0cbdf5ce5dcc60f83a1da9bfaf5044a550"
+      "sha256": "796f54a4cfdf992593edb89a158098bedaf3a0bb8c8f0a13930c012955c35e22"
     },
     {
       "path": "services/task_manager.py",
-      "kind": "source",
-      "sha256": "b4511eb5c011ea383c0c8d398ab439a1eea495348bb91de270d8e3a102a2b73f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "14edb8b36a02cdc1ca6b89fd74460b5be413dca9144702b44484b991a660f605"
     },
     {
       "path": "services/terminal_manager.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "da437ab24e54c20f45bf778b93bc1a58ef767ee99e255f2369638cb535ab28ea"
+      "sha256": "138d7cb544c4e49fc82e1cc70f8af5ad1d4b4dbc31ae9f3f235081c982cd2252"
     },
     {
       "path": "services/time_utils.py",
@@ -1139,132 +1284,137 @@
     {
       "path": "services/timefmt.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "252543648bb032765570af29bc3648b2260e831dc46960443f754304ab0b96c2"
+      "sha256": "01cf67402d04c84bcbd3c4fb2740078c962b9d427054f12e14994d814839552c"
     },
     {
       "path": "services/timer_dupe.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "6f8f0fabfb8c1d207ea65389258b72ab4f6d540499e4af4ef106ab02a849ba63"
+      "sha256": "0f5fa9a876d361b9bc4393d26e54c872a46098d71d7a287b45deed9b69cd73fe"
     },
     {
       "path": "services/tool_discovery.py",
-      "kind": "source",
-      "sha256": "fac61eebda9f8250f675a0f7282f47971f8d7739e3fb1de2c84505c3aba8f3c7"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bdc5279e0d46f207def92057ab22b461b1b3085f4bac43b6407c1c4036727219"
     },
     {
       "path": "services/tool_loop_guard.py",
-      "kind": "source",
-      "sha256": "5f9011117c984da199488dfd969ae931556075262c8aed16fe005557592a7861"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e0187cdfcd0f41215848f2c02cfdc3b304096c0f22befe5283797e55544e0171"
     },
     {
       "path": "services/tool_result_store.py",
-      "kind": "source",
-      "sha256": "9e8e3cc61ee65d5184f42daf8f30ac839f4b7769a413243b0f38133e2dc42b8d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bda01a4530f3a6a023a82bd70fab6cecde0e5e5d4a02b6ec442e8e0d0fb5afa6"
     },
     {
       "path": "services/tool_search.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "6c51368b993eab90cfd2e3c5b623b14085a39276d5d3b3acf79a55f3f1e147ec"
+      "sha256": "0db5f5f07ca264b96b105e6fd1375578e60b59a6012f1c95610ab5d2f68259f0"
     },
     {
       "path": "services/trigger_engine.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "0afc2241b4e1c8b655a0e05668c427b09e8459962fded1d17999702cf3eff842"
+      "sha256": "94ee2eb4e53b2eaf68a61f916c550d56fb159c82d167eaff7fc5d76155724c0d"
     },
     {
       "path": "services/trigger_service.py",
-      "kind": "source",
-      "sha256": "f08f4abce68935a00e8df527810f6fa235741d0129c9cdc04402d5c794c743fb"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f8c0a38a32dd92374c2f983be02c125715a56a6beb565fe9028fef8adecb063a"
     },
     {
       "path": "services/usage_tracker.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "21cb75933c8ac2ad3bb5e10abf29ea53299b2002d9215068a607ff30b3ba3cdb"
+      "sha256": "2e37aacba7bbd07000208045f6490ab43592121aade5762563f55ad3b5c7eea3"
     },
     {
       "path": "services/vision_sidecar.py",
-      "kind": "source",
-      "sha256": "f49b90272c5972f578ded595fb5d5550935320b103dfb5031c1050c4180825aa"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9f0e7335b21a63db5e71bcab32375afe168c3f7eb12ec2da873e3a4f0f35f480"
     },
     {
       "path": "services/voice_calibration.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "50162cd3b0edfd32e5d8ba4c62c8664caf1e59de55abbec0434fc644990e6dc8"
+      "sha256": "2da69fa514f84f632f87784f70a7b4ec2a7391d65d45af829aea37b1aa90521c"
     },
     {
       "path": "services/voice_call.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "58602624a2ee3f46679cabbb76d20b77161674e0247d346bb1903de0ae59ba30"
+      "sha256": "d63cfb663f1e92de927de779359c866d02ae9a033accd79cf167ef452526540e"
     },
     {
       "path": "services/world_feed.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "cc56956fc6e5cd073b9db833d43c4731d7330ca0bf16b94dca89f0964332aea0"
+      "sha256": "5218bdf22652b116c4ce2f1a3a6f20672c04a2261e7fba002a07f21888dc0636"
     },
     {
       "path": "services/world_feed_activity.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "0cde4042f953305863b616860b01efa4c54854c2f93e86e7a9fa14ad79ac200f"
+      "sha256": "661a3dfa5bed057d5535ae31b2f6395e08faafa9798cd5fa76675a73f74f3d04"
     },
     {
       "path": "services/world_feed_authored_history.py",
-      "kind": "source",
-      "sha256": "7278fd762a1c27614614346886d557e4db37278fb29d48fb0f9479d4a541638d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3b7d49f8fb78b71ebba14c3e4b98b24edb74946c1c955874fe31154de8337583"
     },
     {
       "path": "services/world_feed_dms.py",
-      "kind": "source",
-      "sha256": "1e0ee23d34c5a2652b27e4741e0961750daa82b9a85ba44aef16fec1099095be"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3f5ac6088b004b126c91288c85b402638c5fa1cd2620dc61a6153e27f6e9a453"
     },
     {
       "path": "services/world_feed_history.py",
-      "kind": "source",
-      "sha256": "c9470b06aefc19d237a9c5cf54641ddf41e1b98464fb2273083054a3ed7d5b64"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "847e18178e7e3ea7938228d28d25016ab8dae447ef9073920a077d828264be33"
     },
     {
       "path": "services/world_feed_memory.py",
-      "kind": "source",
-      "sha256": "aa1f298ee3c292408fba5f833ba39a396fb3635cdc54123a8a6df46219806fa7"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "30af44d22fddce981d0a90234379114579c13010deea8283822af0a9962d4a3c"
     },
     {
       "path": "services/world_feed_photo_subjects.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "1b4b50bc40813690a3c5695fa4ed87eeef7c405ef93d6457c5ee551c9007afd7"
+      "sha256": "7b166e09a1b5b266b81fddbf361d339ec1e0c89875461ab2fd08a54740fbc1da"
     },
     {
       "path": "services/world_feed_photos.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "470924417322e4ee2246f95f72769fb8b301508728bedf1e3cd06b97cce0726e"
+      "sha256": "e112231d795b85d4bff2746fce8952ceac2bfef151cb34e47ea2c70b20b4505b"
     },
     {
       "path": "services/world_feed_public_context.py",
-      "kind": "source",
-      "sha256": "b14f009b8b1f0bca0901e0de48325b2c0d1e762dddc514f26143b3068052d147"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "635dbcdf46ce43f8bb94d2a2c961e2a335ddaf9805648a98ba8f931adc955470"
     },
     {
       "path": "services/world_feed_responses.py",
-      "kind": "source",
-      "sha256": "d47fd4411ae731aedd7440e937bfe67d62336599a81945fda4822d525c827f58"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "abbec46800cd4750b8b4e3f075ce780cfc2b1fa295ecf5041cf2ccc979530761"
     },
     {
       "path": "services/world_feed_scene_observer.py",
-      "kind": "source",
-      "sha256": "db33305b03405a2ae99886c217cd7744d1373cc4a5911e887611b8bcb91fe32e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e87b40baaa4396b51fbb9df10ab5b4c40e54d47fbbc0f6426ca9960e9d3ee462"
     },
     {
       "path": "services/world_feed_story_bridge.py",
-      "kind": "source",
-      "sha256": "4bed9d55528cf5f2e91b7a8707719b27d3ffcd445a6189f89c905f13832288da"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7c00c726f49325523aaef5bc5bad9d0022addc1f2fad65f3e3ef6cd782898ebd"
     },
     {
       "path": "services/world_feed_variety.py",
-      "kind": "source",
-      "sha256": "b66a1c9575a710f404ff02ff826f049091e71aaa50d851a893e0e28b7019df62"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "931c0e846fa1069ae0344e3ab37fa59ccdd9a7a607c948bd9ce135e13e640d18"
     },
     {
       "path": "services/world_feed_visuals.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "4504d6e9acf7b1080229b55564850d81ec23dbb40f1aa935c1ae3391b2f66094"
+      "sha256": "5aa1de4e6a61ecc4f1745b968a7e806cd0a3dbb1e39a1ab54dff01c6406aab4f"
+    },
+    {
+      "path": "SHARING-NOTES.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "57b313da3481ebed3c25eb13c7023b41fc0c2a2ad598e54490ae18346fc22880"
     },
     {
       "path": "static/assets/icons/app_icon.png",
@@ -1313,68 +1463,73 @@
     },
     {
       "path": "static/avatar-lab.html",
-      "kind": "source",
-      "sha256": "ca2d3a0c18cd1026752b147cf3beecd2ff0ef51411a53f8795fd5fd29a33ad36"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1e235fcc78f60f0fe95c5559e946d601e7fde9752a3f83c7d7d52ecbe75dbce6"
     },
     {
       "path": "static/call-test.html",
       "kind": "reviewed-generic-overlay",
-      "sha256": "457753fbee1b3420a4f062d7d0d58bfd2ac4ea2e4d1abf8efd21d3d4267562a2"
+      "sha256": "fe8902b703c7fb442845467fd4571745e94112c95369b9d45d55de9cb28ab3cc"
     },
     {
       "path": "static/connector-health.html",
-      "kind": "source",
-      "sha256": "e42248bba59f5b6101cd5116aca6939be8a96c69ac39fa141333b7c33cc26e1b"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b3127f53ce30c0d5c9b03b09f07d46d861cf2b1789436008a7eecb7e90f29199"
     },
     {
       "path": "static/css/anam.css",
       "kind": "reviewed-generic-overlay",
-      "sha256": "721a43854977e1f9997897de6bb227ccb6b51a9f100b65fd5b2c3d650d070090"
+      "sha256": "ddd82d6c5168dd16cf80d0698590e87b727823cf7a6d0181c2a66ece12d71061"
     },
     {
       "path": "static/css/avatar-lab.css",
-      "kind": "source",
-      "sha256": "3c239732a04fe3cfd40e15392136a6424774db1ecb6794230831fe6075cc26c3"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "242c2081d69f42396ec61cb067c764e511dd18bf9e795d95258720c1b97ee469"
+    },
+    {
+      "path": "static/css/coloring.css",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "63218557531810632d47fd2094170293caa1966aa65c98f487f8a9f60e5def09"
     },
     {
       "path": "static/css/connector-health.css",
-      "kind": "source",
-      "sha256": "150b2a3f7f0cdea9c7e99974854e0a2fac14e79c52fc0856616dd43071288385"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "256e3471bfabe49bfecb0d8977ecf4711c9bdb792d1e7da127269f022733426b"
     },
     {
       "path": "static/css/diagnostics.css",
-      "kind": "source",
-      "sha256": "617bc3a53bfa22097e4fccb695e3f818d267b4ecfd0f729a2b028a008be69c91"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c6ee3fcb9d8a8357a61f8d6787cc222d69f2e14e8fa6af1677fbb1c98a68dd82"
     },
     {
       "path": "static/css/gameroom.css",
-      "kind": "source",
-      "sha256": "e8c8e7530905b21ee521efe36a96c32229ff777c220ff0873aede10442d61b06"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "be0f5b9e29ae23c22b92984f7afc27f24803f10969f8ba7f621c1e5d4ffb7d8d"
     },
     {
       "path": "static/css/hub.css",
       "kind": "reviewed-generic-overlay",
-      "sha256": "f505afe22338b3390ebce7fd24d4c70f8e074d60e5f0b07b30757b19a40eb8a9"
+      "sha256": "be40cc4e44fa0a23653c8ca5e2f81845aafe58523d56985ec18b15d62fad7cbc"
     },
     {
       "path": "static/css/main.css",
       "kind": "reviewed-generic-overlay",
-      "sha256": "4c7f448e84ec26788df3f0800a4d7439272a5ba957eb1d15536e3f4c1c5a90f4"
+      "sha256": "e754148b072a7351d2c4d3db4e1c6ebc0e2765d351039b5204640e3da5bd6d19"
     },
     {
       "path": "static/css/settings.css",
       "kind": "reviewed-generic-overlay",
-      "sha256": "9d386101309929e18b739fb33eda2224d53dc62a103427b5b2e846d6862dff45"
+      "sha256": "8bbef5d65b1159a8b5581966caa212406cfa82b31e1031591bd1bc3515756c47"
     },
     {
       "path": "static/css/world-feed.css",
-      "kind": "source",
-      "sha256": "f307a7333641a25201eeaf104ca2e0de46b71f6adf278eb91d77183ee13b3eaa"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "349319b553a2f6f3e16d854ddd15d1662fe73e785dc982796a1a0e858cf61a66"
     },
     {
       "path": "static/diagnostics.html",
-      "kind": "source",
-      "sha256": "c4e35ecf8d06d6e832442f54e34baabb53f876bd0c50538df9275f6d40e2b7ec"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ef0d506913ba4db441bdf069621dd014bc76027b961064b56fea6d45e71df0b3"
     },
     {
       "path": "static/emoji/manifest.json",
@@ -1433,93 +1588,103 @@
     },
     {
       "path": "static/gameroom.html",
-      "kind": "source",
-      "sha256": "92af70688dc2f406e778633c3d67bb01aea85da59beb4acb4a5a5013de7d38e7"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1fa44e133f7f2ba778428a49ede4bbd4e0bdaadd8a7afd646be131d5a406f993"
     },
     {
       "path": "static/hub.html",
       "kind": "reviewed-generic-overlay",
-      "sha256": "52490a2043bba24e04aaef083389a209b8f046919db314e654d99e1b85cd2644"
+      "sha256": "eb2aa3d212843f5086f3ef566b9d0cffe0b58fea6de1c7c235980a81cbdbb621"
     },
     {
       "path": "static/index.html",
       "kind": "reviewed-generic-overlay",
-      "sha256": "76778f40cdc5438859351c667e998bf5f13aedfc162689c8135ca70775737b70"
+      "sha256": "38a9f75b0604a9616226a266feb05d511bb6fae9e6948a184036ce61121a316f"
     },
     {
       "path": "static/js/app.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "849e1f2960d6900ccd0a9aa2fba98edd927e58d3bf67ec37af4e45edc725ef96"
+      "sha256": "02e30163055a5f35390d09c0d9518423b94ff6e2d16f0757c512135fef3a645c"
     },
     {
       "path": "static/js/avatar-lab.js",
-      "kind": "source",
-      "sha256": "5aa85c0e1143ec322b7b85b3d86a742dcb7dfc7b8f7049eb1d46aa5829fb34ff"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "86f1c22d4592fdf4308b47422c6dfaf92790c86978209a993bf4f19d1430e255"
     },
     {
       "path": "static/js/canvas.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "aebacc570b34dccff4e8d72bd2dc12bfdbc7c40f8dbc8362fc73427feddf4250"
+      "sha256": "ea25f1b26a43d7cda36ff688ef4d2a2561efc15c2c82055c7d8e559a4b45e942"
     },
     {
       "path": "static/js/chat.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "9d66951baa3967a6118dd694e6a0dfacd2db7c0ed82c3225844b48d9277b7d8f"
+      "sha256": "a749f23327328c648b26d0e487cad594e2eb31c49c9386cfc494f9d74461feaa"
+    },
+    {
+      "path": "static/js/coloring.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1c02f599b0c8e06a54e7f17488cac2530f6164a7f5f62abbb4e80c49d4c86c70"
     },
     {
       "path": "static/js/connector-health.js",
-      "kind": "source",
-      "sha256": "6f489e5a0afe795ac49c3f7aeb3594599fad1b8d5b866f54b2ddd4ebad2c9062"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "cc843b16ae636cb76f2495361ba01569d1fb8889ca98be52b622c5c4c5a41de8"
     },
     {
       "path": "static/js/diagnostics.js",
-      "kind": "source",
-      "sha256": "32dee3e9b4b63d3eb1c5b15bd0ba4c27e71c7cca50c68f3734e5aee20cd47351"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6b364d2046fa963a529da5628fefe1dc5b5cd533c75a72e3cb280423d151e671"
     },
     {
       "path": "static/js/emoji.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "2c19b3f7ca32a4c26ea6b66022b405d6610995a642caf866773a4efd6459c3a5"
+      "sha256": "4bac3b5854da336fd4a5242ae54ce04fb47e32062f64955f20fe76202c1acca3"
     },
     {
       "path": "static/js/gameroom.js",
-      "kind": "source",
-      "sha256": "7646ecb3f1e69ea7cbb8e5bb2cf1be8533f3a72955273d0ce5d95051788da021"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "48cd39b4b7334d592beaa274585244f8e35adc42c73380123b0f191e3737d090"
     },
     {
       "path": "static/js/hub.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "92536f7693d9ebb302cd56077e8bd8bcc9afade38082e874e4f56d51beeefb2b"
+      "sha256": "ce74c3169f613a5bec42fbe5a1a309669b68d79612e9f0aa7985f4434570337d"
     },
     {
       "path": "static/js/live-call.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "3270f5532b410dff246b66f56d0e8b435ecf8fa803ffddeb4a3648b02baf60d0"
+      "sha256": "95b57aa41389ad552f489b8c82b9d167f6db42d58cef158fe5acf683b4a37c95"
     },
     {
       "path": "static/js/markdown.js",
-      "kind": "source",
-      "sha256": "f79b6ebdc937c74fb0133e35f1cd64d2e311e5820c3d89bd210fa9b38a69078f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "73dd5878e5099446ba9e000005c8e89216aa6e51e24e3636c66d5a75282e0df8"
     },
     {
       "path": "static/js/sanctuary-viewer.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "afb63704320acb1c8e50c3913ac4924bc0dab805fa8d987738b7f108afa3622c"
+      "sha256": "f57b887e8141b860c2ef66534e6515696f83ad7581b9f349b67535f9cb655b91"
     },
     {
       "path": "static/js/settings.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "259dea9d4f61ca006713b8e991ca538897935b4cd873845b883dad65e0c6c782"
+      "sha256": "e06a43aaa04e7639da5ba344e8cfbe921ab67ec23a226cb0c5b8dec1aadd12f5"
     },
     {
       "path": "static/js/sidebar.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "458edbc4573323a2f4b20a512345bdfcee2f95995261c9b0340b9c77f0728ce7"
+      "sha256": "d4f54fca3c41f47352851cff9e391cc29543960deb5377f95fc5e8cce2895e90"
+    },
+    {
+      "path": "static/js/sticker-room.js",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0a89a7cf6700dcc076e3cc7137838f4bc9f0d6e489af9fc2dbf9a828020b8508"
     },
     {
       "path": "static/js/story-state.js",
-      "kind": "source",
-      "sha256": "ba07f7a3a1cd5f6d979172d08d2d1f5b7e7924a65406f60834486a84a9c7a5a9"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e873a9c258915d218ce566b0a68413a2e55e8835f7d107d8bc758b8b9a0a6a5f"
     },
     {
       "path": "static/js/theme-boot.js",
@@ -1528,8 +1693,8 @@
     },
     {
       "path": "static/js/utils.js",
-      "kind": "source",
-      "sha256": "f83b8f8e2c51609e116670b4bc0b6d52188ea01165ca1cc1f5605641446e4bf3"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "582372f98a754f5ea0c612432d15374b43b15d7dc46a5fc6ed69cb046dfc03af"
     },
     {
       "path": "static/js/vendor/d3-dispatch.min.js",
@@ -1553,33 +1718,33 @@
     },
     {
       "path": "static/js/voice-orb.js",
-      "kind": "source",
-      "sha256": "ebee166e964a9b5b2dbf33c2cfb71758a1db1ddde40571f99a2a5b729f417aa1"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "22d4be836677d99c4f42168f850e6f755c735f37c8e140d3f335cc3c52106d07"
     },
     {
       "path": "static/js/voice.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "bf0740e30dc1ed18f5c68fed52b22f840d4a696b87a0e2e3f8b1115570ff7d08"
+      "sha256": "423d444eab19916b062d3519321fe38d7b0f9fea50e49d42df3dfdfd399b0f51"
     },
     {
       "path": "static/js/websocket.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "b388037fa05d776ead2230c6ad4d82a465fdaa506331620f9a3ce5a1c8e3980a"
+      "sha256": "10f1c2c39a54523a5aead492ebf17ac98febf8fbd0e6da26a85aa92d3489a59f"
     },
     {
       "path": "static/js/world-feed-dms.js",
-      "kind": "source",
-      "sha256": "17a0a2d988e3c27926638552d4a3e676cbfa81eb73326701df635de9a894d164"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "34a80f5346c3393b39518751ff62bed0ae32c8d2d9f298af0851e83edb6129cb"
     },
     {
       "path": "static/js/world-feed-social.js",
-      "kind": "source",
-      "sha256": "afd7ba5ab8dad429526af5c27c7141d77ee20b1150c9bee06e8e23e4511ea5b3"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "331b66b9c95a634ad7a081ab325157979de2924b5ae2002d8a5f4196fd79b7bb"
     },
     {
       "path": "static/js/world-feed.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "efdbaf45c4feb85e04913dbbd0e6b5d628890971c969c09b58fbe2e506010938"
+      "sha256": "470003fbbffb22fe6cc6943ae7bca94a53ae8e7913f7b79ad67a68e9944e4aea"
     },
     {
       "path": "static/manifest.json",
@@ -1587,19 +1752,29 @@
       "sha256": "6753b31093eb38b2e834eff8f40bf15e150c8beb848fb59e0eeccc4b8f7a6751"
     },
     {
+      "path": "static/princess.html",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f7190383631d104b7e0f416d7c30e500680c3e8ccb478d5e7b226b8087843297"
+    },
+    {
       "path": "static/settings.html",
-      "kind": "source",
-      "sha256": "877fd91e7ab588fedd57db4404d426ba63db54577f097c23e0f3a740ab6ecfce"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8d5b1337b565a8ec64a45a11f79ef25039f6dcdfa2bbc77f71d48fa1f3826ea7"
+    },
+    {
+      "path": "static/sticker-book.html",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ead1bacb5fdb8cb18e9487898b0b0c50a3211293618458c745b68bf0fba75a2f"
     },
     {
       "path": "static/sw.js",
-      "kind": "source",
-      "sha256": "db6971727ac1262501b3a7de4ebf4c9c3ff9835dc7340dab78a759fc9b12a115"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bdaf4129b6e7212cf5f55659b89e53fb41d460ad1bf048f4c6ce58183a1ea7ba"
     },
     {
       "path": "static/vendor/elevenlabs-client-1.14.1.iife.js",
-      "kind": "source",
-      "sha256": "9ca6a603f32e77e4127909252b7324febb5a67d9d420bad44a11210841821b0f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7448f1374ef634d5e6617c3a331ef82e3f48de39673a6b47aeb158891800dc3c"
     },
     {
       "path": "static/vendor/elevenlabs-client.LICENSE",
@@ -1609,22 +1784,27 @@
     {
       "path": "static/world-feed.html",
       "kind": "reviewed-generic-overlay",
-      "sha256": "c5842d246d667a5d171aa3273ab3bc71add9f285f269d80b1043448105d01ea4"
+      "sha256": "bf430d800cd338748e73fb4c4ce3791016420319593ca74f86c72a613c7e9167"
     },
     {
       "path": "static/wrist.html",
       "kind": "reviewed-generic-overlay",
-      "sha256": "762c1bf31f8ba9ca09b1ac77dc94f258a8a172c2733d661d5b368b4b0bc4686a"
+      "sha256": "bb52ecd6b20f0e9c32a792e9e36450bbbc371ee2fc252cfba3d4484e46470353"
     },
     {
       "path": "tests/conftest.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "ae32140cd14deb1009f0fee2e5cd24483fbb45cb9d1cd530091683efb3ce1ab2"
+      "sha256": "ea83c3093802d83ae5699019cd712e81590c28750f68c596b5ee4f82b9e15891"
+    },
+    {
+      "path": "tests/fixtures/discover_eval.json",
+      "kind": "source",
+      "sha256": "1e13e3fb6886437f3e08cddc2ffd1e1564950a34c68bf23225f1685aaa5728fb"
     },
     {
       "path": "tests/fixtures/gateway-worker/mcp-worker.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "a25a111cd769c39956d2ec8a193fb659978ba78eb1c89192db8a70eb89ed8e55"
+      "sha256": "09fc281ee4a16b888e9ec4c3556d3d424934e569500b1b970108565a5d4fede0"
     },
     {
       "path": "tests/fixtures/gateway-worker/package.json",
@@ -1634,97 +1814,112 @@
     {
       "path": "tests/fixtures/gateway-worker/tool-specs.js",
       "kind": "reviewed-generic-overlay",
-      "sha256": "0e11aef3a6aa8d94765347ae938b2c8a4bee97076854574b5d8dbb0adc589a63"
+      "sha256": "ee7110bd676d69358a6548abc2e196ef2d9aec5dfbe3df90aacbc7a5b32260ad"
     },
     {
-      "path": "tests/test_aisling_stack.py",
+      "path": "tests/README.md",
       "kind": "source",
-      "sha256": "95962f7edc39f4ebd542f8954894b3be67c3a180cc13683fa46073786ba9609b"
+      "sha256": "c89ad835354b50eef3173c04adf45178ca53420ca850527391612d81d45cf5ed"
     },
     {
       "path": "tests/test_anam_context_queries.py",
-      "kind": "source",
-      "sha256": "7a1867576261673fa9a3ec728704df2b92da03a4a9b6f44ab699f38ba361af6d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "cec6bdbc7e27727cd4f3fb0195f566527b313a3e2c097482c752325698fc6885"
     },
     {
       "path": "tests/test_anam_restart_receipt.py",
-      "kind": "source",
-      "sha256": "52571b060b166b1b5e6f396f8c2f90b44faa9d22629e2ec84402b17e099f0aa4"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9e01dfdbee1a555d6a62bc8baa3505baa6a19713c83f0e344982637dd7f36926"
     },
     {
       "path": "tests/test_anam_tool_gateway.py",
-      "kind": "source",
-      "sha256": "4977acd30245478103228eff1cc688a490b99405d1f95d7c2d82669874f12fa4"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3b50512f132927e5bfac13dfe4626a6c9902d1d1b65f79618fde3e8f1e04a708"
+    },
+    {
+      "path": "tests/test_archive_chunks.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4cec998240969198134157d7ac3439f2eb94ad907ed1f448df957c243373c8ca"
     },
     {
       "path": "tests/test_attachment_history_replay.py",
-      "kind": "source",
-      "sha256": "5ef1e327b5ead00bda21e526081548695ef2323d5088707505c9299c61d51197"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9613c7b701df6fcbda16edc6aa5f3b34bc09e13360d5177dce25eca3db1ca4b3"
     },
     {
       "path": "tests/test_attachment_ui_resilience.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "6ae08b9e25af5992cc88dec57265cf0564d2cfcf03017452189e6ae9dcf0ed54"
+      "sha256": "2c8a2c7f2d77de8363fd48d08e65282f483f566d18dd6cb211c8886a4019c939"
     },
     {
       "path": "tests/test_auth_cache.py",
-      "kind": "source",
-      "sha256": "7aea489b386f30e442324ed470ccd8b321b39bb4858cca2d9aa25132073b5ff9"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "08bfa4c3b1a6ab2eff5a14bc68e91d2f8a42567264ae642c2d25f8cdfd084591"
     },
     {
       "path": "tests/test_auth_callback_url.py",
-      "kind": "source",
-      "sha256": "ddd5341d3117aad74b14fe6838e90c9accce537078fe03f69df0c914330dd188"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4d2f25bdb37a49f93cd7a80c154c3fa6f3600ba4289b57804292dde66453c3ab"
+    },
+    {
+      "path": "tests/test_autonomous_turn.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7e64a802da31ffa5a4a21f2a4883dbecfdbaadf5acbec8b25ad80319bd8fa9cd"
     },
     {
       "path": "tests/test_autowake_completion.py",
-      "kind": "source",
-      "sha256": "a1a595d46313f6ce8d3a4c2cf344491eb0cdfd054abe097f55e8331f48311489"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e9c37885bd4ef6ae94c21086cf453aa47623b9e436a8f423dfa4df44492fc860"
     },
     {
       "path": "tests/test_autowake_daily_threads.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "fb28bd3d7003ec6c0be31e8463fbbfc7f2fb7b799475c5b25f0d9ad8ca91e792"
+      "sha256": "e328577e78f0847c3e6cc4d2243b92373c7f0b2a58c0869ba3f69d44c1c0fe91"
     },
     {
       "path": "tests/test_autowake_schedule_provider.py",
-      "kind": "source",
-      "sha256": "f105f7b60f4c57783d33cab83fa0a1a871b97b7245030ab5ef3af66f1d11f105"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "68f6dc76c14f7e63667063291644dc413f8998fbe9ab9bad87993aec9ba42dbd"
     },
     {
       "path": "tests/test_autowake_startup_catchup.py",
-      "kind": "source",
-      "sha256": "811653044cca2a8d6396e51dc0908ff6c8b6f8bd9942af0aa7db638e2ce210de"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "906f19f46c61df93d73dd1fa6b04273011aaf9e6de972dabed38d1ecb36e5a04"
     },
     {
       "path": "tests/test_avatar_assets.py",
-      "kind": "source",
+      "kind": "reviewed-generic-overlay",
       "sha256": "26622e03a27f826eda673e2454178bbcf6b24afc900e505ecace075575281b7f"
     },
     {
       "path": "tests/test_background_generation.py",
-      "kind": "source",
-      "sha256": "0e80ecb8a6053a884be2ff381a82a2ed762b31856e210bbf292616d798debba2"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2dc8354963eec8ec99b843a257fb9868f3c102bbad585e73141356a4192c2831"
     },
     {
       "path": "tests/test_background_projects.py",
-      "kind": "source",
-      "sha256": "1f7a6fe3a8218143d23fe7db23368722d974dffb89a3da577ed5828522d20745"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "89d939f4329091e50127a49d110a6a6f29b20bb7bccc050177d0ad46773e054d"
+    },
+    {
+      "path": "tests/test_bonded_roster.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2825198db7b01990b0ea99be87c30cda090907b994dee703727d50f6ec97bfb9"
     },
     {
       "path": "tests/test_busy_delivery.py",
-      "kind": "source",
-      "sha256": "93622e558857e93955e601815d3681cb4a3ed876602fa7faa09d682fe05a3980"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "84397185ea96faea523883ece74e98e2ee21a1ebb550742643a374baef4cc036"
     },
     {
       "path": "tests/test_calendar_within_trigger.py",
-      "kind": "source",
-      "sha256": "6383f5d867ae950da3a30148951dc689a4bd7b7538af2dd94dbba150f1bd501a"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "cec0cc89321c83f3f528f359ded2b4b7acd1a687a32b73bc45a3fba476d83e47"
     },
     {
       "path": "tests/test_call_presence_registry.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "d1154d3915dc5889fd0d476ae087c36a8aceb676aba470161a5104089af7bdb2"
+      "sha256": "1d6c34cfeb0e4c815db2a87c155470d0af001a0a5a08b21372b862900dae79b4"
     },
     {
       "path": "tests/test_canvas_api.py",
@@ -1738,18 +1933,18 @@
     },
     {
       "path": "tests/test_cc_mcp_oauth.py",
-      "kind": "source",
-      "sha256": "0b58e3966253dc79cf711f7019b04454281fd474e5d57d60a116a8688ecb845b"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4b30299b5f20e30fadada607ac6add098bba18c9671905e8ea8ec4851addbe7b"
     },
     {
       "path": "tests/test_chat_flow_helpers.py",
-      "kind": "source",
-      "sha256": "9cbd43abfbd7828f379ae5398e4c267f042fcdc20cfb4b23f2cb1f8d7316bd2c"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2d6e168680b38b46019b3c5338790f67fe14c7d26583c79460536ed1a7afc88b"
     },
     {
       "path": "tests/test_chat_http_session_state.py",
-      "kind": "source",
-      "sha256": "aeacb5ef2513e342c751cf0c0a9803aa81ea45b2e3e3f34f0e49875eebf689d9"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "597dee7d3fc3a940de3e947ef41aaea9bd44590ea68a8cbeeecbae79f88fbd0b"
     },
     {
       "path": "tests/test_chat_reading_browser.cjs",
@@ -1758,23 +1953,23 @@
     },
     {
       "path": "tests/test_chat_session_ops.py",
-      "kind": "source",
-      "sha256": "c2119b1d703627d16e0b1ae3c12e4f3a556a4237d3663454da29c900a3867114"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7db9c4391278435363102b95ded0c8827596ec37e97e30447dc938435a1b6c38"
     },
     {
       "path": "tests/test_chat_turn_finalize.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "b96ef455205f6ef5c9785ca3e0e157d7b129bf9c32abc46c7f71a29e779b2324"
+      "sha256": "14ab5de8876d7bf6a98dcf2e2f49de1e2c128f3b1bffaa46239b4f85971d0cbf"
     },
     {
       "path": "tests/test_chat_turn_prep.py",
-      "kind": "source",
-      "sha256": "856a43ba73388fa246702c5fe8ae14fc1c7043959ce29debabbf6df79814bd9e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "13bad6e2b821a86ea0977b9ac45110552f743b519329df355ac196014e6cd172"
     },
     {
       "path": "tests/test_chatgpt_actions.py",
-      "kind": "source",
-      "sha256": "72c87fd823d2b08fc19907948f48e49950b5e56bd950879a32e00b356ba4ef3d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "453d54ff05d06a09df3a3ca1b286bb3431ee7c506df458954b0598b28633503a"
     },
     {
       "path": "tests/test_chatgpt_bridge.py",
@@ -1782,129 +1977,159 @@
       "sha256": "bc8df4d7896a151d3457f47a68873dcae48d38d12419dafa1902eaa78bf1852c"
     },
     {
+      "path": "tests/test_claude_ai_connectors.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f5011a08ce8870318e9666323e902e6f8488eed0e8ddf6b3aa9bcc3493bc4fbf"
+    },
+    {
       "path": "tests/test_claude_model_lanes.py",
-      "kind": "source",
-      "sha256": "c509e6d598ae13e1358f1ca894df679c79f275acf3015bb49a766cdcca87658f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8bf0d93de3b8ac660de3b7861c2714d566d102d89f8a082d1385262a0c4b7724"
     },
     {
       "path": "tests/test_claude_subprocess_interrupt.py",
-      "kind": "source",
-      "sha256": "c47c25a8fbb4c161505d5970896213985a448bb75f3cf5236b602585e363a538"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e9fa45fc8b3c2492a4bc6b3269798fa775f193b7a128b8f50f8df1a26320e93a"
     },
     {
       "path": "tests/test_cli_errors.py",
-      "kind": "source",
+      "kind": "reviewed-generic-overlay",
       "sha256": "de0e9ca8b8c55c2bb3c359a0155b2c80e3089ba6083264fe3b61a3ee89dd3b34"
     },
     {
       "path": "tests/test_cli_mcp_config.py",
-      "kind": "source",
-      "sha256": "dc0814dc81554a5cfdb6c54ad74174745eb41c58eebb915aff4e9659bf456ad7"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5633e3bb9ae12a64ecaff719dc4ad3e31f4ced5f422b0121c48846ef98fa4448"
     },
     {
       "path": "tests/test_cloud_display_cache.py",
-      "kind": "source",
-      "sha256": "15c72dca7feb0264fab21e9e9308ce1d6409fb09e2888f85d2a35be036dc9f46"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "00178a8374a092507c8c8b070811bd89a5f1142a449136ed06c49431c0d88625"
     },
     {
       "path": "tests/test_codex_app_server.py",
-      "kind": "source",
-      "sha256": "f9686d9debbc2dfc04e2312b80ac46340d8839f20f5358571f80394009459240"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f1a5fe51311d811b7a11049712e1dbe793653121e7592e36ca4e0f117da1307e"
     },
     {
       "path": "tests/test_codex_launcher.py",
-      "kind": "source",
-      "sha256": "8ec36dcca5cc241dbc0a812157a4ec8328ded6cc11202c84a7eb73cb6d0161d5"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bd8492638d5fbc57bd69d8739cf048be0cec517de2c2265c057ade4a1fb655b6"
     },
     {
       "path": "tests/test_codex_model_validation.py",
-      "kind": "source",
-      "sha256": "ea260e478529937a603536d96bce6404d5519cc7a281a474fb4a1e3de5a293b6"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1083491837c11dab03e9ebdbff5aac2fd68889fc2577c3dfd521d9281fc5cf0b"
     },
     {
       "path": "tests/test_codex_schedule_fallback.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "acbf8a235e220b8d9da026436e4eeb3947f72c07c0ffdbc312d3500ce3295b6d"
+      "sha256": "1fb9bf1ba5a6174b39a3d749c6691ed48c622f88fb44ed5d06345892ab2d220d"
     },
     {
       "path": "tests/test_codex_subprocess.py",
-      "kind": "source",
+      "kind": "reviewed-generic-overlay",
       "sha256": "f69b72779b35388d630c6fef843e9edbd9f3509d0f615b6559ba71bdcda076e0"
     },
     {
+      "path": "tests/test_coloring_drawer.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "19ad992f21a4d6e7a219ec97d020d2e3933157a1a02b834d208ea996e36db09f"
+    },
+    {
       "path": "tests/test_compaction_hygiene.py",
-      "kind": "source",
-      "sha256": "aac79d0565f21d06f7c2777be04efb6eb8f5c06c3ef1b9d724743f435f534a13"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f9f969765eaae784bd0f8cbc944e7a9872b97467455f48822c09a1a452878486"
     },
     {
       "path": "tests/test_computer_tools.py",
-      "kind": "source",
-      "sha256": "fa0f4b5c8da7d7c818435f5ccc8c1b93af44bc6f5111bdf21ddada28197e8ffa"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7a7bb05b9cfab32cfeba6ce122c5efb0fb8ff36a36b9b90b2f52ec2e9bf1dbe5"
     },
     {
       "path": "tests/test_config_runtime_validation.py",
-      "kind": "source",
-      "sha256": "eab5db0dbae5cee1003ec0d4c13ddc8b4b67244aec2546a717813240ea19f62d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "03c9ec477290bd6f82d11307bbdbb04120ebf99d0b8e5440e587a392cf3d6d2c"
     },
     {
       "path": "tests/test_config_security_defaults.py",
-      "kind": "source",
-      "sha256": "d1a0c5e762dc274a6cd27adf1e48e0d2406686a22f2f70873943e9d0fefca2b9"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4b4584fce5c524043380521e5ba9a0984b599e5f3e917c84a0a9f240e04e309d"
     },
     {
       "path": "tests/test_connection_registry.py",
-      "kind": "source",
-      "sha256": "abab1ff5af70ebe9811c4af23d84c5c4f1d3b3b7d0035dcabd9af88510520988"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1d864c6cbcd6a5fbaef081c2c7c6d799f6beea160fd04487a8a13a760b466543"
     },
     {
       "path": "tests/test_context_ledger.py",
-      "kind": "source",
-      "sha256": "ff4f00316a7777c6dc912f0e0cd0acf6b450d8278b488f21964f78360e6d41ad"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fe642c9830e51e743a4a7232f6379db29df81f2fa3bf541e46caba5d63e67c8c"
     },
     {
       "path": "tests/test_conversation_archive.py",
-      "kind": "source",
-      "sha256": "57dea44179368cc6eb0c0b63887a8da10f009b2190e351a4ae0c2acee259d3ef"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "34a358eb174015844eb167311f1cac986bba8dfd9bfdf8cc838e3450f813f97f"
     },
     {
       "path": "tests/test_cross_conversation_memory.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "df04eaa22d595467fc6202d8ba2be7681c8d8d49089e204c9958710baf704279"
+      "sha256": "33f3df26763335ffb4aa1998fd439b1ff6232444833457be5b54244bd767343c"
     },
     {
       "path": "tests/test_db_backup.py",
-      "kind": "source",
-      "sha256": "48fbd6fc94f03c9af8f343021cf457cc1c37485b0faff1137455a218a8efe077"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "341b9dcc7d9299a220f6c60307371ecd43d235d4a5f417d340cba25a7602c882"
     },
     {
       "path": "tests/test_db_pool.py",
-      "kind": "source",
-      "sha256": "fca33a13ccd630999bec6f3582275081b92ca268518ac786b3c4efd77edfcf0d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "da548c407894e598e2c02417224b032bb8c0e13c53ac24d1188bb2ccad3cef8f"
     },
     {
       "path": "tests/test_deep_memory.py",
-      "kind": "source",
-      "sha256": "97402f597d3765d3b6e9d6470d978328cdacdff737ba7322fe94feb12fdbf93a"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "cfeaa16245495c8b6c3903381966fac970675d32018461416faa9b2cfa7a491a"
+    },
+    {
+      "path": "tests/test_disabled_tool_patterns.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "220a96f3bb99174103e9d1793b466bc9bca9c9819c6a6246ad8c9e64ddf1d1f7"
     },
     {
       "path": "tests/test_discord_cloud_migration.py",
-      "kind": "source",
-      "sha256": "c7f28721b3fad683d8ff9e74ee805e39172cd3e929a9e653742f0723e9b8b716"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "09e1356db7af0fdbdefe07037052a507c2ef576441969746c3ebc488080106cd"
+    },
+    {
+      "path": "tests/test_discord_live_map.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a0d4d918c9c63d15043031297d15aa3baf4eedd738402e2977dc9fd478cd9d42"
     },
     {
       "path": "tests/test_discord_mentions_bridge.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "e3ca4bc21fec0065ddcf66b07ce2c004251ea0d24bba1110e779c3634cec6521"
+      "sha256": "14ce94833f7b3bb54f0167abfe303bc0f6db2b5f2c8933614428b3d88f2834ea"
+    },
+    {
+      "path": "tests/test_discord_presence.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5c5c3766a81871e564966bce80f249a8b7e097405ac6c7188c5fbbbdb92f1763"
+    },
+    {
+      "path": "tests/test_discord_split.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "988b8cc585062340c5a9cd5114aa6648a250249ed05ad081322c9ed275ffb104"
     },
     {
       "path": "tests/test_document_attachment_helpers.py",
-      "kind": "source",
-      "sha256": "d1616226b8f732b2947228a58c87904bf2034d0fd2d1fb4b0c6fece1c428f7d5"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "dca3829274bea83ee03247b160bf472d6c5297ea5d2d2aa76f97e259d0835947"
     },
     {
       "path": "tests/test_filtered_vector_cache.py",
-      "kind": "source",
-      "sha256": "7dfd964edab8d8b8ff3e3e29c891e0a6a709081bd9a0330c16b92c9ded2f1c6b"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "0a6643d39efe5d3da1e902e9787c08cba18623b50fa66b6609f31b5425d52998"
     },
     {
       "path": "tests/test_frontend_loading.mjs",
@@ -1914,22 +2139,27 @@
     {
       "path": "tests/test_gateway_worker.mjs",
       "kind": "reviewed-generic-overlay",
-      "sha256": "f0472c2bc3f33e29e3b1ba1a32e1dcd9ef2f935fb54c2f9f8e66a28571419c4d"
+      "sha256": "e3295e8172ae1b4dab13e18bb29357cbd8bf91563e36dc8ea98fba27eb00adf7"
     },
     {
       "path": "tests/test_github_handoff_loader.py",
-      "kind": "source",
+      "kind": "reviewed-generic-overlay",
       "sha256": "7eac3d93f78197578c1fb7a2828558df60efd4ed89420a3b351a340aa5b352a4"
     },
     {
+      "path": "tests/test_head_tail_excerpts.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "28f0407ca325b4138c5477306bd24ef80d35f9b83465feb40867c5a99764b3e5"
+    },
+    {
       "path": "tests/test_health_failsoft.py",
-      "kind": "source",
-      "sha256": "e59133bc767382c78d28b576aabeb06d12a82b17c814d00cf013c9569d81f2c6"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "62548b4fc8ae9a38616e78f760b19f206e506940ad20eedf14f46366ff424379"
     },
     {
       "path": "tests/test_hearth_author.py",
-      "kind": "source",
-      "sha256": "17e65a67a0513fd5449c69b149682f7c215bfdeca5072ef4af9eed3e087d4b6d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "156cba84403e5e91e1d585acd3e161bd988507dc62cfedb7508616a6aa8b0566"
     },
     {
       "path": "tests/test_hermes_skill_runtime.py",
@@ -1937,9 +2167,14 @@
       "sha256": "ea9f6291e3a377d5fa6174684dcfa0886b8418373a3093887a970c44f8e568e9"
     },
     {
+      "path": "tests/test_hook_timeouts.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "cad2b6c2d06865c6c096fd05a2ae4bbba21b6d5df525b4b8890447276620df51"
+    },
+    {
       "path": "tests/test_house_snapshot.py",
-      "kind": "source",
-      "sha256": "febc86da81dbc76e7197a800798d4d1e6d811d2c1b95880bd423e59984aad927"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "414f14b0cb3713765c2e38568e90cce8c853e873782e7d17277dec3cf2c75f51"
     },
     {
       "path": "tests/test_hub_bond_graph.py",
@@ -1948,18 +2183,18 @@
     },
     {
       "path": "tests/test_hub_constellation.py",
-      "kind": "source",
-      "sha256": "568ca0d9912470798b50db478404036a920b4322af13e62893ae287e64983e64"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "01bd44590d2f91f37a33adb65a1c8e4e23d2d274c96464d93056158724898a09"
     },
     {
       "path": "tests/test_hub_context_card.py",
-      "kind": "source",
-      "sha256": "d8078fd3c6afd71238bfe29d1156ec6944707284176588cb801025df01560ce3"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "54887739fb0f930dc1ef79acad31b43624db1e2766b6a6bd1fd4176b278727c5"
     },
     {
       "path": "tests/test_hub_helpers.py",
-      "kind": "source",
-      "sha256": "b142fa80aeb2c6805ca8e75c3f58b7a822761987fd962506d300cf07d0ffd604"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7415b0d0e8fc8d98213d39305c919dc769a14551d389fe561fa27d3843b1ae46"
     },
     {
       "path": "tests/test_hub_orb.py",
@@ -1968,43 +2203,43 @@
     },
     {
       "path": "tests/test_hub_update_broadcast.py",
-      "kind": "source",
-      "sha256": "2ac725945e190df7dc55ea9b7803bc92285c73a21c0703f2c0b0354994f857cb"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1c8c086a3f5d5a065853ec4cd951a2ce59b78017a42f3958cc27eebf6d995fde"
     },
     {
       "path": "tests/test_hume_prosody.py",
-      "kind": "source",
-      "sha256": "ce28cbf5057ae2670bba011e3e2d8b248e08e10f3c773c44265a0c4950e41784"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "231332bc2dec81109b3e4fae27e7e35ddb650eed65dbf2400ff7309200d98a97"
     },
     {
       "path": "tests/test_image_security.py",
-      "kind": "source",
-      "sha256": "f866cec3009d6ad8ea93ae776ca8f4f0359a8d5127aa9c1f920267cf68000d30"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "18cf1641ea8bf9e7290a4e2ace9e07f620fd5e9103338526e0bb78bd5c1a4aec"
     },
     {
       "path": "tests/test_image_upload.py",
-      "kind": "source",
-      "sha256": "84768d2c7e316fbb33dcc9444b82e7e2e2a20b551699b47e5e05a95ec7bdad96"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b94ef2bc04c2fd5f661486542e46768e40fa9e81b3c0629e9398e277b7f5b38a"
     },
     {
       "path": "tests/test_inbound_voice.py",
-      "kind": "source",
-      "sha256": "8e74b03f7c7a31f10656226dc5f688812ee7d6dc39b831057bb44748c9654fd6"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e6b0ade796a16ddfc4ed82ce7bd58b8cddcd84e214975c560396921757dcaedf"
     },
     {
       "path": "tests/test_integration_owner.py",
-      "kind": "source",
-      "sha256": "4494d0b7f6c5591b3438a0acbf80c4e4e39b9a4998eda494fffbd4a4eeb79fe0"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "74152c9b41d8232bbaebfe5a6f98d80b754424538a94e389c7d28590b10500e5"
     },
     {
       "path": "tests/test_interest_scout.py",
-      "kind": "source",
-      "sha256": "c7c82cd55fdb4eb10bf81e202bd3a5b7a1dcd6420027989679153ea73484c61f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "07d49531d3230d04ed613b305a5a4c2b304434f24bed4879a76cbfcfe1c2f29d"
     },
     {
       "path": "tests/test_jev_adapter.py",
-      "kind": "source",
-      "sha256": "d3ede69bd996c0f259cd0e08628f38a402f97fd65acc524925c9283f8fb1ea55"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bc6fa7f465ef2cad410e5171060d6390cb86b3eb3c29189590dfbc3bb04e09cc"
     },
     {
       "path": "tests/test_leading_glitch_strip.py",
@@ -2013,83 +2248,128 @@
     },
     {
       "path": "tests/test_limbic_bridge.py",
-      "kind": "source",
-      "sha256": "7b17505feea395890c0f4620f2011d423c3e2cfcddc72ab0aeaf2e28b91e876d"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "61bf7b97569c5ef47e317d2012e336e49a316b9e9dd1dce59959724f2c7bd212"
+    },
+    {
+      "path": "tests/test_limbic_self_perception.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "79d44598ab198ffd92f5edd6d0c8441d738e65e2e2c84c2efcf158eaeeeb6ac9"
     },
     {
       "path": "tests/test_live_message_injection.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "0d10d2cbbac2569d2c18b40b225b4881e4da61d53184d9cf99e23e022eb04c11"
+      "sha256": "778694808f391ffe91b4319b46e150fbf6069ff52e866b7081048d4f87223ddb"
     },
     {
       "path": "tests/test_log_redaction.py",
-      "kind": "source",
-      "sha256": "e263a7b90d9986d7323af570f114c87ba787c9e13b167ceb1fb9bccd26565465"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "19d170cb7be3c173d5ea7d38683d83f2b9e50f9fa52c75d1bf11248fbecff731"
     },
     {
       "path": "tests/test_mcp_bridge_resilience.py",
-      "kind": "source",
-      "sha256": "7cbf8746ece6a68426aa9e2b1129a90a32662c5ac519759e594076ad1398f2d2"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ea8b362a225fedae220602250f4730c8b539451661227c33209c7ac8f66e04ef"
     },
     {
       "path": "tests/test_mcp_circuit_breaker.py",
-      "kind": "source",
-      "sha256": "14259b9c22540e39d47d6f09f22c356be66a059a77bd1d353ca2e535e5d68b89"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "782ed2575423a95bedaee367286cb03f82801fa866bddc215461d5699ecfaf2a"
     },
     {
       "path": "tests/test_mcp_status_capture.py",
-      "kind": "source",
-      "sha256": "d8b8a5ef3ac91a6c99789493f163a52302f12ca005c172405765058abe775b56"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "dd81c3d71d1f8a053ce7f7776261a5490b0594f5bafa713db19ab863c926013d"
+    },
+    {
+      "path": "tests/test_media_tidy.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8770d304a7f1740448322133ba66d98edbd5d8797116e2ca467ea61f3c9406b2"
     },
     {
       "path": "tests/test_memory_lab.py",
-      "kind": "source",
-      "sha256": "6ebe7fc2360cb24caa8eec06606ae8ae22c63941c113e6f639578d5a9e6684ed"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d115faac7aa224c3579e132d4b4892bc95de715947d69194be65686ae429a985"
+    },
+    {
+      "path": "tests/test_memory_nudges.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "766521d6f67229c2f202f50b2a9469d2e06bd94405520c42b473defe3c987b19"
+    },
+    {
+      "path": "tests/test_model_farewells.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "271ef17143ff499f908a8dcb592943d11348788f66ca01044fd0d41a55412041"
     },
     {
       "path": "tests/test_nightly_consolidation_schedule.py",
-      "kind": "source",
-      "sha256": "970333971410568d40df31f1dbd532adb66ff7103ffd7604ee55603ea1f8f8dc"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "d89c2e76a07f52a3766d8a751a1113cede4619db3fc06f6588f25c93bc9f0958"
     },
     {
       "path": "tests/test_openrouter_tooling.py",
-      "kind": "source",
-      "sha256": "af5a806f3826af195eb97f5c1d3314ff27648171e339e30bcd1091556399a67e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "67d248bd44d92d455cee497f426d8c4a6e8733b7bb7d03c90e2709e0493a3a32"
     },
     {
       "path": "tests/test_operational_health.py",
-      "kind": "source",
-      "sha256": "a985d4ae3bad31edd8dcc183e279ea1c60e117c73a65c281cc804278ca1ab693"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9c0aac1a71103e96518decee7f2f48d0ada0ef8384cd3e8666b84db9463de21a"
     },
     {
       "path": "tests/test_orb_tag.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "9b6c6a55526ffde2f73a624060ea53d74e86c356527a355c5107fbf285e7ec66"
+      "sha256": "2b3427a1c9eb1fd32bb08a28f2815c96eb07e6b2afa275d5981f46039ab163f7"
     },
     {
       "path": "tests/test_owned_process.py",
-      "kind": "source",
+      "kind": "reviewed-generic-overlay",
       "sha256": "99b7dd84bac52379295e7061450af3aa39b8cd9c8ed6f81878f95ff0bed08d9f"
     },
     {
       "path": "tests/test_owner_activity_deferral.py",
-      "kind": "source",
-      "sha256": "311a4ada49dc88ef6c62411242783c139c9af3483376628f796de986f71f54fe"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2f5bd932beabc557dcc13028f92b21126ab1db313bf36b307a9210ff93dbfb43"
+    },
+    {
+      "path": "tests/test_owner_quiet_clock.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "029d81e2ac709af3c8146337632479e1ee4d490c9460ac2c66c04aeedf723a34"
+    },
+    {
+      "path": "tests/test_pack_audio_stale.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "06396092de5ac387d8358b22fff4526f0f23d610db91ba7e30df1e743693c3f7"
+    },
+    {
+      "path": "tests/test_pack_council.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "dcd109f2ae30f4b8443d9d78dbd9200170e9a72efe64aaa490189e99374ca752"
     },
     {
       "path": "tests/test_pack_crosstalk.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "6ab2a806d42f97d894d8e10308e39f3dae167531571824a57c67c4ea96f16c3b"
+      "sha256": "f0fd1c9b5a62b7cb50bbba525630caf15f45883403ffe7432898e7b822053074"
     },
     {
       "path": "tests/test_pack_night_discord.py",
-      "kind": "source",
-      "sha256": "ea48d399064705f3ed0b92409d61bc8b742a70e6d95fcd0ee712434e706e279f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "faf491bd431ae3cf906ff22b807fc3b3dd018e1e5fc128c8b551050b4fc498a4"
+    },
+    {
+      "path": "tests/test_pack_sms.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a2e020a154aadac609e2120e1256d86e67c6f654269b406bd9ec7407d445f5bb"
+    },
+    {
+      "path": "tests/test_package_metadata.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "95383b9e6312b99f389c6fd6c1c04e6c37c5e44d12b1bd9bec898ea2a79b233c"
     },
     {
       "path": "tests/test_participant_integrity.py",
-      "kind": "source",
-      "sha256": "b1691393ba9f56aae24d22b25076a8f237fccb0406216d2a3837398ff3af8c49"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "955f16615e0a6be867fca6d005a34239416eea5d004cd071067f6d64e696c2d9"
     },
     {
       "path": "tests/test_personal_state.py",
@@ -2098,38 +2378,48 @@
     },
     {
       "path": "tests/test_photo_reference_transport.py",
-      "kind": "source",
-      "sha256": "7c46fddc4ef97e2df15eab18faf5c5e87ff8f51a2774c39222ae3f396364384e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2f935f29a31c8d06e713e961275a5c3117ace05c0bf4ae4e1863975514af3fe0"
+    },
+    {
+      "path": "tests/test_platform_idle_watchdog.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fe2e2b899c4c3df255de4e74146773bdea180bc9c1b7e9fa17b8dc6eb42a5d8e"
     },
     {
       "path": "tests/test_platform_inbound_security.py",
-      "kind": "source",
-      "sha256": "8cdc74d2b1bd6202eba46c39c86d1aa30f6bd06446e008c0e3872ccd660543f4"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "702791f88a3e64d253009bf70a74f87d81868d63fab193bf165a0567748c5f1c"
     },
     {
       "path": "tests/test_platform_outbound_artifacts.py",
-      "kind": "source",
-      "sha256": "145895b6f05be05d350633bae512e2f337f4c2a01ab32bed7765c77d3b7ed3bd"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4862b3c669ad16084ac67d6d6bd64570361cc1ec524aa7ee43a36b8a96dacba8"
     },
     {
       "path": "tests/test_platform_stream_cleanup.py",
-      "kind": "source",
-      "sha256": "39b9a074ef88e27cc9d677d818dad97eeda0fa1d22285279d00aea90e720bf4e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "435ee5cdb6464f83d5a601f7c2db0dd8b3f9b8577e9a2cf8068f0796e3824023"
+    },
+    {
+      "path": "tests/test_princess_doors.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c20b4601272c9af7e1bdfb4b20e6ae8750da2b9d52fe429d84943a442933b530"
     },
     {
       "path": "tests/test_priority_turn_gate.py",
-      "kind": "source",
-      "sha256": "e2da363397db312d2e2a8dc3e6ea31c363e79407c8ad21adf3fc37041835b250"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c2829e8cfbbbefee82a9a3f108cfdcf5302e1ed974b1db37171e3396cb364c32"
     },
     {
       "path": "tests/test_provider_router.py",
-      "kind": "source",
-      "sha256": "56f951d3c4e9e734336b5cb37687978252f295190476a900e0d4208782198092"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ff5a817b100216f19c5808ffa150bade55280e616d372015d0ce274f79a737aa"
     },
     {
       "path": "tests/test_pty_file_bridge.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "25bc1006fb4d9087cf187fe6264e201591ffb2c74d6b2eff90c1e60fec5967e1"
+      "sha256": "90fdd3a1b738b04904bb5d43e791fccbf3321737b334b1d3989f3992046c9491"
     },
     {
       "path": "tests/test_public_onboarding.py",
@@ -2143,17 +2433,22 @@
     },
     {
       "path": "tests/test_qualia_context.py",
-      "kind": "source",
-      "sha256": "8a181d9dc9b7e106d6e20ac03cd2434a844f771a46998f6fa31a4a5433811d16"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2b88a69f39bccdc7e1ce98ec2ed9ba1ab75a09d53d9c091ddf4d06ac8c65fbf7"
+    },
+    {
+      "path": "tests/test_read_receipts.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "797f09ffac76b4b0aef6063cb38d84e4f585f79ea6a248a41467250c258a3b6a"
     },
     {
       "path": "tests/test_refresh_server_map.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "a8dc4f7ad419e38c51bd4299ca92e89bd20892a74e99d78bdeff52a641eed154"
+      "sha256": "4f40e8bf5bfdb5b867f018d302dc6f9cd1144a4bc07542b4ec65e81bf5da3636"
     },
     {
       "path": "tests/test_resource_history.py",
-      "kind": "source",
+      "kind": "reviewed-generic-overlay",
       "sha256": "fbe3bacae715416b7bf552cc4a3d45fcd006a44813297d3bb982443776853134"
     },
     {
@@ -2162,59 +2457,79 @@
       "sha256": "6ffb78555e2663050c3a4fdee0a672180618524e7333f27f45a0de43fd21d45c"
     },
     {
+      "path": "tests/test_review_fixes_api_core.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "787bb08672d9a07dda1b7e2f474be8f948c38e8dfeef9da577707cb2926a5287"
+    },
+    {
+      "path": "tests/test_room_crossfeed.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "a8a52924e63335de8a1503867df84b770b29cef64701a296cd4ae11e34a8203b"
+    },
+    {
       "path": "tests/test_room_tap_context_card.py",
       "kind": "reviewed-generic-overlay",
       "sha256": "502761c5e0a7281134f9076bc89f7635a6eb7a940abf9596535551acb188d6b7"
     },
     {
       "path": "tests/test_runtime_improvements.py",
-      "kind": "source",
+      "kind": "reviewed-generic-overlay",
       "sha256": "fc0f1c0f1323e9cda5c276042d27797e6dbd234dc5652af61c1f4fe9acb5e81f"
     },
     {
+      "path": "tests/test_schedule_reload_keeps_jobs.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "daa8f0b1f2cc284c0fdfe1d9ef93762c8d5d8aaab4ea4ad0ba561cea7f28b8eb"
+    },
+    {
       "path": "tests/test_schema_migrations.py",
-      "kind": "source",
-      "sha256": "50ab6161ba13105d5ee3845f5ab9d10b1b97a5ab77084570c66e678337db6105"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "fd20bb67d3b1a1963f4399dbdbf174b72e53dd49fc089c738e9d427766346805"
     },
     {
       "path": "tests/test_scribe_incremental_carry.py",
-      "kind": "source",
-      "sha256": "8dd4e371a38bb24ef1f8ad391dc87695a3f749925c7a125ef14e749fef5091ad"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "44742a8595bfad06fa5aac8e549fd6e4be087c8638bd9e3a4daa11b4ee3bf806"
     },
     {
       "path": "tests/test_scribe_providers.py",
-      "kind": "source",
-      "sha256": "f090ff8374c31f8b117a4219f9a30520c44a82f9cbf4d8283ff07a458f0a5c8c"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2b8e68750117e153e4b48469686306c818843b974974069e5661a7e32f0c00b5"
     },
     {
       "path": "tests/test_session_hash_expiry.py",
-      "kind": "source",
-      "sha256": "e5edb05e1b459b8d6d9033c9ee00b65cad5767d4dc1b5a1de14fa2ba172138cb"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c8a7b28bee7b3956753456b64f5a8d13d23a9119ecc30e6d711013d7ee0fd0ee"
     },
     {
       "path": "tests/test_session_manager.py",
-      "kind": "source",
-      "sha256": "52cba828c7ae2e1b0317fa88be7e913757c72088a426d75ee53507128d02172e"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "85baaf09081a7dbf2d2f6ab4fd417b25ce3429accfb8e0520f250b75282c5a1e"
     },
     {
       "path": "tests/test_session_turn_scope.py",
-      "kind": "source",
-      "sha256": "88ad7605403de02a0646102b8465393bbd2e5952144c66a8b89214b9fa84a190"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8b98e927a51ad3127fffe91ac3eb753c32aa2615ebac840c27125245223820c0"
     },
     {
       "path": "tests/test_settings_schedule_editor.py",
-      "kind": "source",
-      "sha256": "4fa4dace7751e721588e30968f564b543205e2dcb070b1587a49e4d97d8648b3"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1fc39b5c5283882c197b3591dafd722b7a276cb2f89db34d8c4b162235cd3fed"
     },
     {
       "path": "tests/test_shareable_export.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "6d565227913ab27d5cc8fe6d908ad89e318888ab830cf80c80c9c13f9dc22e34"
+      "sha256": "2177914f71885e4f57388b010ae20ec4ab1bc2c40e9e0b469eb2b71eddfacfdc"
     },
     {
       "path": "tests/test_speech_engine_live.py",
-      "kind": "source",
-      "sha256": "ba6edc87d2ee89fad1b9f837df066fc4be7f2b1431ced44602e2419863ad3105"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b467a258daaf04d771836fb3d683f2dc9c4b737f729eca91db17c617e6bccc9b"
+    },
+    {
+      "path": "tests/test_stack_services.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "7586014e866c76d1ff5badf92e8cb4624029d565017d77e95236a8f397485c59"
     },
     {
       "path": "tests/test_stack_watchdog.py",
@@ -2232,69 +2547,129 @@
       "sha256": "404e694c2898e4b44aa434753abec4e4587c5889e3f73ef2b4100884b488356c"
     },
     {
+      "path": "tests/test_sticker_book.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e02847231d8011fb3b1ba6f4be3cce684b14a08db8395be68cb11ccc4040c93f"
+    },
+    {
+      "path": "tests/test_sticker_shelf.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bcb9250711e0e17275fa2d527404707f23290a43d0c54033847b949c8a0643dd"
+    },
+    {
+      "path": "tests/test_sticker_stars.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bac9f914d8c8c6df772224d91d0e64d445d2dc38800af8d0fbecd0502cdcece8"
+    },
+    {
+      "path": "tests/test_sticker_words.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "46afbc9273bacb200ab5b2e77233bcb676b025880c26d6629c2af7dd33baed2e"
+    },
+    {
+      "path": "tests/test_story_state_write.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "bda04429c6d8f20408b9819c76152b7e8d497d534af49cd860a81376f5f800b0"
+    },
+    {
+      "path": "tests/test_studio_ledger.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "8e847450369a260a395a56018ae91e7004b35dd4c77dd4d8b36650715f9b9487"
+    },
+    {
+      "path": "tests/test_switch_boy_mid_reply.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "ff74a6267bd61f5d0739508f725465fc972fdd54f1f9a1d3fa73276f2b27ba15"
+    },
+    {
       "path": "tests/test_tag_poisoning.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "af89a7ffc95430cfa3a14e731d007c11a40e3f5d327ba639651433dba0a29451"
+      "sha256": "d04c700bd507a87afa7e84a30564afe627cb23202821185441410d17faeb12da"
+    },
+    {
+      "path": "tests/test_tag_strip_keeps_code.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "1d6ab8b4f113603e426b86635571c731202d64728f675d1ddd3c800c517bdc48"
+    },
+    {
+      "path": "tests/test_text_block_separator.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "29f46a6419c4f156a27ff2d7c5ac690a1430becd7cba9992881d821df3026d2b"
+    },
+    {
+      "path": "tests/test_text_blocks_spaced.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "2cc862d2eea281f55aa6f8ce95e9c7f566ccd979c294f0d03e73c01a3b4291b1"
     },
     {
       "path": "tests/test_theme_settings.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "ed18a8008e20ac35dc2c5080566b6be4fc98d25c4bf7a2894ac930a75742d634"
+      "sha256": "c9ed53ffa3fb0a41668979974b5d53a4e08a4894fd0631c962841de632f1b73a"
     },
     {
       "path": "tests/test_timer_claiming.py",
-      "kind": "source",
-      "sha256": "5cc177a24d0232dd16361876c4612f0e9cf91c23e3c2fa99733c295446e3811f"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "db1f1076daff4773287f821d25b3c6c055015ac67724ab278bd2edb74e9bd577"
     },
     {
       "path": "tests/test_timer_recovery.py",
-      "kind": "source",
-      "sha256": "79ea16a4bc3c1eab61b25b29b38e1c59603c314448113c1ca594b9fb3225e0ee"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "e8b00d73a04cced68970ced5ca94839f6921fb635857ba7b1437f21c6ad2c1ff"
     },
     {
       "path": "tests/test_timer_write_guards.py",
-      "kind": "source",
-      "sha256": "387801b64726f1b04c4ce1f1d4fd2452a5054dad1257c44de289d63f7fb84bbf"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "9e517018fb579492401ba5bf033351840186fa95fb0002d907818ee9b6cfbbd7"
     },
     {
       "path": "tests/test_tool_audit.py",
-      "kind": "source",
-      "sha256": "cbc96509a9a3e96534e65aa2878e5f903c893cfc11b1f6658d42931dc5c941c6"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "51969fbcb88d751e858876bb8fe781047d9b1ce5482fed50ee0d8948d5f90920"
+    },
+    {
+      "path": "tests/test_tool_discovery_rank.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "c3939f6e8622d5aa747df90fbd7f3fe5b96c4d5e0a04d62b7bdcb06c8466a9b0"
     },
     {
       "path": "tests/test_tool_loop_guard.py",
-      "kind": "source",
-      "sha256": "ca26222c1decbca9110cf0c8af8df3d6655e6c60ecbcd85477e2b1a948b06f1a"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3d683b5f72085078f9bfc739c8664840ac1191e4cb2843c08f354aad963852b3"
     },
     {
       "path": "tests/test_tool_loop_ring.py",
-      "kind": "source",
-      "sha256": "5337f55bf0ca85357e5d21ab74ce1cbc795ae7322284c274e1c02d4f169c06d9"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3b9bc975903ddabd466b0efbdf9f80ddeaf53c4a593bfe1fb76b06bf37af3c37"
     },
     {
       "path": "tests/test_tool_search.py",
-      "kind": "source",
-      "sha256": "7ec552d4283b67e62145d557473302f2976ba3b1d51e78dfca040359b5f5a246"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "5ca1fe38eb5d190a3788042250a180e1dae3d61660db81b5d6b7c4e2d6ee597b"
     },
     {
       "path": "tests/test_trigger_service.py",
-      "kind": "source",
-      "sha256": "f871f73a2bf23e89f50c3aee90591894197321ae8489bce3123e73f9a1d17b18"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "936427b87bd3cd28c2f043efcc7fa7dd7580f9d0662b113cb8c2aa6944afada0"
+    },
+    {
+      "path": "tests/test_turn_ceiling.py",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "b2c4aedae86caaaeac7c17f05811d20ca84a474991294708de549bae4cbb9ef3"
     },
     {
       "path": "tests/test_voice_api.py",
-      "kind": "source",
+      "kind": "reviewed-generic-overlay",
       "sha256": "763ab8c7c0d170a34e664e16eec52f72caf12dacdd7915ddaadb961107dc2c6f"
     },
     {
       "path": "tests/test_voice_calibration.py",
-      "kind": "source",
-      "sha256": "9ff062aa8040260f2eefd7a2eab15124ed4e9f88edd33be865e3a4f479444d54"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "99511238e37df575bfde8ea311a63aaf63d041422459676590ec1d157e97ba3d"
     },
     {
       "path": "tests/test_voice_call.py",
-      "kind": "source",
-      "sha256": "c2902bdd50f55b37bd92253cb65708f40cd2acd774e5aeb266b72d1ad8012cd9"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "28de329040e8ea070f730b2f12b5c6bcdce4fb6359a53d0fbae2867da09140b2"
     },
     {
       "path": "tests/test_voice_engine_setting.py",
@@ -2303,23 +2678,23 @@
     },
     {
       "path": "tests/test_voice_wiring.py",
-      "kind": "source",
-      "sha256": "c9b7749827961b03273606cc5eb0cf640e82a546431aaeae0672b6ef36684e09"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "235c1b5aca1711f2f3f62e37d229fdc83d5fd067c461e6db7b458e659550e5f5"
     },
     {
       "path": "tests/test_wearable_api.py",
-      "kind": "source",
-      "sha256": "85132790eec8a84295fff26ca51b89c71f6319ec1de595a8be8f2381444d41d4"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "f2e80349537e6bea202f1c5acdafa99a6c055ae7942fad0956a9e79da4dc658f"
     },
     {
       "path": "tests/test_websocket_mobile_resume.py",
-      "kind": "source",
-      "sha256": "c57ab76406297a75c0babf013ffd3a30eeccd4422fc4b34834192aa92ccf6de4"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "52393af4176faaa85b8d3d6c93b1a2023959adcc81a95f89d875dad0e77eedf2"
     },
     {
       "path": "tests/test_world_feed_photo_setup.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "a8365a68278b84a946ad9a5cbc901851f62e9436205bf21919a0fa9a9a2611a1"
+      "sha256": "4fc8e4d765e04e6471590a0c2fa20a9e08e4c8e115884c1fbc899f36f14e8cde"
     },
     {
       "path": "tests/test_world_feed_setup.cjs",
@@ -2329,27 +2704,27 @@
     {
       "path": "tests/test_world_feed_setup.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "8b751dff9164454b7ef84f4797006e0f94eee0821bc815a83576f75f65717974"
+      "sha256": "0ed70b1c8dbb9a2477383ded5ebb8c63a68c4ca1117a140c83cd245a7c7f9961"
     },
     {
       "path": "tests/test_world_feed_ui.cjs",
       "kind": "reviewed-generic-overlay",
-      "sha256": "fad0471844c3df7e565744c734e3862605aec4463ebef7b4a583eec9fa347870"
+      "sha256": "25fdfed25d48e3812013b42c2ccb7529c5f513bec5b67d13607c7e20dd48edfb"
     },
     {
-      "path": "tools/README.md",
+      "path": "tests/test_ws_one_reader.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "3e49b3d38c279f31a102314590d0ef05792a86b4ea76331c22cb86b4bb2901a5"
+      "sha256": "850dec6c8ec86cea8aded48bfb9cefb1a6ddde64b4a75437b250cd07287509c1"
     },
     {
       "path": "tools/anam.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "262e5ec1962dc57295d8abea36b27d20d85b8f596ed90863b5f343d2ae4967ee"
+      "sha256": "4926d7c047f666955ab5bf75e24dc883b77e0d5bae332fa7f27ad34e56681f4c"
     },
     {
       "path": "tools/canvas_vault_backfill.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "1271e3f22d76400786453c0286f153699a603096fd481ebd7e02722b35f87e6a"
+      "sha256": "749be9672dee4769a8166cbc5af1a8ebf23147563b49d916a44be5670c5ea873"
     },
     {
       "path": "tools/carry_check.py",
@@ -2367,34 +2742,39 @@
       "sha256": "66042d5cecce6d1945745983e613e1e6afcbacc9bbd64b896e9b3bd986956cc9"
     },
     {
+      "path": "tools/README.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "3e49b3d38c279f31a102314590d0ef05792a86b4ea76331c22cb86b4bb2901a5"
+    },
+    {
       "path": "tools/story_agent_coverage.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "e5e1d684775a0d8d59ba9e96fb39bd5ea69a729b5a0abfb1434e792021350cec"
+      "sha256": "ae22d0aab69a72848bb8767dbe981bca51a3c716723672b6e68edd91f679812c"
     },
     {
       "path": "tools/timer_check.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "31f04e8027d103cf770c0c3472cd48596ad471250d527e82857b8d5bbeb809a9"
+      "sha256": "a014d6888bfa65900984299a182fbe3d49a12d521b4b40e4c1e24958b5fbac65"
     },
     {
       "path": "tools/tool_loop_guard.py",
-      "kind": "source",
-      "sha256": "87e9edc70092edbb2e3e9c44dcda32c671cacfe2c0e1eef70ca316e0ce7c0b2b"
+      "kind": "reviewed-generic-overlay",
+      "sha256": "4c24d96cd54acca7fd1df5dfa06dada8c99396121438f9fb13c9653ba6ecda18"
     },
     {
       "path": "tools/wrist_check.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "362cded2814b9709b12a5674e57e0fb719d147204fd90330a791d190b9db2f07"
+      "sha256": "4f520be93bc7f459d1125d28cddae830e45e3b2aed6196877c4a9f9d545ff43d"
     },
     {
       "path": "tools/wrist_gate.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "117f678a97f1392f5925f02c43c2ff9ffc111b3aa8c030f1495a45f5a4a899aa"
+      "sha256": "56d1c78f7b75ccb17b3d81f97072131cb390c168eef92f932cc446d6ded42196"
     },
     {
       "path": "tools/wrist_heard.py",
       "kind": "reviewed-generic-overlay",
-      "sha256": "ec8d2ce359f126deed1d802bb07d0e6b35a4a5faded5558c1aca683ef3487367"
+      "sha256": "7cb892472a7cf23ce17e86548761571594540eb8b275a5326d2639101c863896"
     },
     {
       "path": "uv.lock",
@@ -2407,19 +2787,14 @@
       "sha256": "67c81d13f86618db8617381d7682c0e1c558c1797c9794ac92471d3cd5b50b86"
     },
     {
-      "path": "wearable/AnamCompanion/README.md",
-      "kind": "reviewed-generic-overlay",
-      "sha256": "6c6f4733123a6cbb1ee4f341b790820accc52228fcb794ec02f1a386762c7f15"
-    },
-    {
       "path": "wearable/AnamCompanion/app/build.gradle.kts",
       "kind": "reviewed-generic-overlay",
-      "sha256": "a30d09421bf4fa81f529e7f2705c3489db5315649b96fb1a0e546022c2e73060"
+      "sha256": "b63a3c951a0754d769278d6c8f580fcb101651f42874eeb253307a0bcb3306ff"
     },
     {
       "path": "wearable/AnamCompanion/app/src/main/AndroidManifest.xml",
       "kind": "reviewed-generic-overlay",
-      "sha256": "870d424844b095392de47ed172fd3540ce4293b328cc9fcce5c1110467a2555b"
+      "sha256": "088029c47d824d3cdacbf17a365d6e2f298caca62f81b5773c8b137a835e9555"
     },
     {
       "path": "wearable/AnamCompanion/app/src/main/java/org/example/anam/companion/AnamConfig.kt",
@@ -2454,27 +2829,27 @@
     {
       "path": "wearable/AnamCompanion/app/src/main/res/values/colors.xml",
       "kind": "reviewed-generic-overlay",
-      "sha256": "99d9da9d7c8f8ff884086a3f7517d7e8143f4954f6cfee96b743591d6966f499"
+      "sha256": "65e29c912b6cc2e21ce91ec230e590bfe20e7eacf43c48df8d09b65ba3ace786"
     },
     {
       "path": "wearable/AnamCompanion/app/src/main/res/values/strings.xml",
       "kind": "reviewed-generic-overlay",
-      "sha256": "14cd72fcbb90b6ef7785a8a20ed089423763d0c1afefec0a0d7977aeeedfe7f4"
+      "sha256": "7ae3f2d7e9871e44f0a93d58112231417d84c455248b352588c7a4abb05f1e41"
     },
     {
       "path": "wearable/AnamCompanion/app/src/main/res/values/themes.xml",
       "kind": "reviewed-generic-overlay",
-      "sha256": "d112b0bec9aee5355bec74d79f3178ef1aa677da0daf24f8b847bdd817f9a27e"
+      "sha256": "a87fc31e7af530e6337344a61a8cfe55989a1adb86f98ccb48294b343387d713"
     },
     {
       "path": "wearable/AnamCompanion/build.gradle.kts",
       "kind": "reviewed-generic-overlay",
-      "sha256": "087019bf3c478ea275982621b7b83d568edc4a9976bfb3766689602f310b6471"
+      "sha256": "48f7c9d13c50fa379dce0a2b7c028bcffe60d428eada35b12cfb8af28b31c962"
     },
     {
       "path": "wearable/AnamCompanion/gradle.properties",
       "kind": "reviewed-generic-overlay",
-      "sha256": "0c495a571fdc2d2ee3e9e1cba39b093a8723f0b73f8ce5256fcc23defb24efb4"
+      "sha256": "678c35a27eeda302d6a960484179d118d08fb1edf05c1b40745bc7aed6e88f03"
     },
     {
       "path": "wearable/AnamCompanion/local.properties.example",
@@ -2482,12 +2857,17 @@
       "sha256": "bbe025f4250f9bd7766271f6456a7e12499faaf0ef802395d557e736553c337c"
     },
     {
+      "path": "wearable/AnamCompanion/README.md",
+      "kind": "reviewed-generic-overlay",
+      "sha256": "6c6f4733123a6cbb1ee4f341b790820accc52228fcb794ec02f1a386762c7f15"
+    },
+    {
       "path": "wearable/AnamCompanion/settings.gradle.kts",
       "kind": "reviewed-generic-overlay",
-      "sha256": "448fe79e08b7e46048d51bfd118e4471eb4c150dd9b5b5aa448ecd2acccd54ed"
+      "sha256": "4cf7a2b221b9c12bb9d077861a579c62c80c19099b22d9b6d690b3d2546ad04e"
     }
   ],
-  "excluded_count": 1276,
-  "source_files": 254,
-  "overlay_files": 243
+  "excluded_count": 1427,
+  "source_files": 37,
+  "overlay_files": 536
 }

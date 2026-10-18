@@ -1,9 +1,5 @@
 """Domino game engine — tile sets, board state, move validation, scoring, AI."""
 
-# ANAM GUIDE: DOMINOES GAME RULES ENGINE
-# What: The complete rules brain for dominoes — creating the tile set, dealing hands, checking which moves are legal, scoring, and how the computer player picks its move.
-# Called by: api/games.py, which the Game Room page (static/gameroom.html + gameroom.js) talks to.
-# Edit here when: You want to change how dominoes plays — scoring rules, hand sizes, AI difficulty, or a rule that feels wrong at the table.
 
 from __future__ import annotations
 
@@ -31,7 +27,6 @@ def create_tile_set(max_pip: int = 9) -> list[Tile]:
 
 def tiles_per_hand(num_players: int, max_pip: int = 9) -> int:
     """How many tiles each player draws."""
-    total = len(create_tile_set(max_pip))
     if num_players <= 2:
         return 7
     if num_players <= 4:
@@ -233,7 +228,7 @@ def new_game(
     max_pip: int = 9,
     target_score: int | None = None,
 ) -> GameState:
-    """Create a new game. Owner is always first player."""
+    'New game.'
     if target_score is None:
         if mode == "all_fives":
             target_score = 250 if max_pip == 9 else 150
@@ -777,10 +772,8 @@ def ai_choose_move(state: GameState, player_idx: int) -> dict:
         return {"action": "play", "tile": chosen["tile"], "end": chosen["end"], **result}
 
     # Try to draw
-    drawn_any = False
     while state.boneyard:
         tile = draw_from_boneyard(state, player_idx)
-        drawn_any = True
         if tile and can_play(state, player_idx):
             # Now play the drawn tile (or the best available move)
             moves = get_valid_moves(state, player_idx)

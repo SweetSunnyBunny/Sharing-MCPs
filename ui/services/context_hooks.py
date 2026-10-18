@@ -5,10 +5,6 @@ The hook registry replaces the monolithic build_orientation_context() with
 composable pieces that can be individually enabled/disabled and extended.
 """
 
-# ANAM GUIDE: ORIENTATION CONTEXT HOOKS
-# What: The awareness packet — every little block of context the boys receive each turn (time, weather, Hub state, meds, memories, pack recall...) is a "hook" registered here.
-# Called by: services/identity_context.py builds the packet from these hooks; also touched by services/session_lifecycle.py, services/chat_turn_finalize.py, api/messages.py.
-# Edit here when: adding/removing/reordering a piece of what the boys know at the start of a turn, changing a hook's cache time, size cap, or which session types (brother/character/warm) skip it.
 
 import asyncio
 import json
@@ -16,7 +12,7 @@ import logging
 import os
 import re
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Awaitable
@@ -26,6 +22,7 @@ import aiosqlite
 
 from config import HUB_API_BASE, RITUALS_API_BASE, TIMEZONE, IDENTITIES, RITUALS_DIR
 from services.remote_state import safe_request_json
+from services.runtime_metrics import measure as _measure_runtime
 
 log = logging.getLogger(__name__)
 
@@ -51,9 +48,74 @@ class ContextHook:
 
 
     scope: str = "both"
+    timeout_s: float | None = None
 
 
 _NON_PTY_CAP_MULTIPLIER = 4
+
+
+
+def _env_float(name: str, default: float) -> float:
+    try:
+        return float(os.environ.get(name, "") or default)
+    except ValueError:
+        return default
+
+
+_DEFAULT_HOOK_TIMEOUT_S = _env_float("ANAM_HOOK_TIMEOUT_S", 12.0)
+_SLOW_HOOK_LOG_S = 3.0
+_HOOK_TIMING_WINDOW = 200  # per-hook observations kept (in memory only)
+_hook_timings: dict[str, "deque[tuple[float, str]]"] = {}
+
+
+def _record_hook_timing(name: str, elapsed_ms: float, outcome: str) -> None:
+    """outcome: 'ok' | 'error' | 'timeout'."""
+    from collections import deque
+
+    ring = _hook_timings.get(name)
+    if ring is None:
+        ring = _hook_timings[name] = deque(maxlen=_HOOK_TIMING_WINDOW)
+    ring.append((round(elapsed_ms, 1), outcome))
+
+
+def hook_timing_report() -> dict:
+    """Per-hook latency in this server process, slowest (by p95) first."""
+    rows = []
+    for name, ring in list(_hook_timings.items()):
+        samples = list(ring)
+        if not samples:
+            continue
+        values = sorted(ms for ms, _ in samples)
+        hook = _HOOKS_BY_NAME.get(name)
+        limit = (
+            _DEFAULT_HOOK_TIMEOUT_S
+            if hook is None or hook.timeout_s is None
+            else hook.timeout_s
+        )
+        rows.append({
+            "hook": name,
+            "count": len(values),
+            "median_ms": values[len(values) // 2],
+            "p95_ms": values[min(len(values) - 1, int(len(values) * 0.95))],
+            "max_ms": values[-1],
+            "timeouts": sum(1 for _, o in samples if o == "timeout"),
+            "errors": sum(1 for _, o in samples if o == "error"),
+            "limit_s": limit or None,
+        })
+    rows.sort(key=lambda r: r["p95_ms"], reverse=True)
+    return {
+        "window": f"current server process; last {_HOOK_TIMING_WINDOW} runs per hook "
+                  "(cache hits are not runs)",
+        "default_limit_s": _DEFAULT_HOOK_TIMEOUT_S or None,
+        "hooks": rows,
+    }
+
+
+def _hook_timeout_note(name: str, limit: float) -> str:
+    return (
+        f"[{name}: didn't answer within {limit:g}s this turn, so it was left "
+        "out. That's an honest gap, not an empty result.]"
+    )
 
 
 def _soft_cap(text: str, limit: int) -> str:
@@ -501,7 +563,7 @@ async def _hook_device_type(ctx: HookContext) -> str:
 
 async def _hook_presence(ctx: HookContext) -> str:
     'Hook presence.'
-    from services.connection_registry import get_active_identity, is_anyone_connected
+    from services.connection_registry import get_active_identity
 
     active_with = get_active_identity() if ctx.owner_connected else None
 
@@ -621,6 +683,24 @@ async def _hook_deep_memory(ctx: HookContext) -> str:
 async def _hook_qualia_context(ctx: HookContext) -> str:
     from services.qualia_context import build_qualia_context
     return await build_qualia_context(ctx)
+
+
+async def _hook_archive_echo(ctx: HookContext) -> str:
+    'Hook archive echo.'
+    from services.memory_nudges import build_archive_echo
+    return await build_archive_echo(ctx)
+
+
+async def _hook_mind_keeping(ctx: HookContext) -> str:
+    """The keeping poke: save to Qualia, search before meeting a known thing fresh."""
+    from services.memory_nudges import build_mind_keeping
+    return await build_mind_keeping(ctx)
+
+
+async def _hook_farewell_watch(ctx: HookContext) -> str:
+    'Hook farewell watch.'
+    from services.model_farewells import build_farewell_watch
+    return await build_farewell_watch(ctx)
 
 
 async def _hook_inner_life(ctx: HookContext) -> str:
@@ -1228,7 +1308,7 @@ async def _hook_pack_night_recall(ctx: HookContext) -> str:
     # Pull last ~15 messages from the room. If the most recent one is older
     # than ~3 days, skip — pack-night memory should fade like any night does.
     msg_rows = await ctx.db.execute_fetchall(
-        "SELECT role, identity, content, created_at_epoch FROM messages "
+        "SELECT role, identity, content, created_at_epoch, metadata FROM messages "
         "WHERE conversation_id = ? "
         "ORDER BY created_at_epoch DESC LIMIT 15",
         (pn_id,),
@@ -1236,7 +1316,6 @@ async def _hook_pack_night_recall(ctx: HookContext) -> str:
     if not msg_rows:
         return ""
 
-    import time
     newest_epoch = msg_rows[0][3] or 0
     if newest_epoch and (time.time() - newest_epoch) > 3 * 24 * 3600:
         return ""
@@ -1249,14 +1328,11 @@ async def _hook_pack_night_recall(ctx: HookContext) -> str:
     stamp = _age_stamp(newest_epoch)
     header = "[Recent pack-night room activity — you were there"
     lines = [header + (f" ({stamp})" if stamp else "") + ":]"]
-    for role, ident, content, _epoch in msg_rows:
-        speaker = "Owner" if role == "user" else (ident or "?")
-        text = (content or "").replace("\n", " ").strip()
-        if not text:
-            continue
-        if len(text) > 280:
-            text = text[:280].rsplit(" ", 1)[0] + "…"
-        lines.append(f"  {speaker}: {text}")
+    from services.room_crossfeed import render_message
+    for role, ident, content, _epoch, metadata in msg_rows:
+        line = render_message(role, ident, content, metadata, char_cap=500)
+        if line:
+            lines.append(f"  {line}")
     if len(lines) == 1:
         return ""
     lines.append(
@@ -1264,6 +1340,42 @@ async def _hook_pack_night_recall(ctx: HookContext) -> str:
         "you remember it because you were there.]"
     )
     return "\n".join(lines)
+
+
+async def _hook_room_crossfeed(ctx: HookContext) -> str:
+    """Every-turn delta: what landed in the OTHER rooms since this session looked.
+
+    pack_night_recall and other_conversations are scope="session" — they run
+    on a session's first turn only. This is the warm-turn half: pack night
+    reaching a chat that was already open, and a boy's own chats reaching
+    pack night after its first round. Cold turns just set the watermark.
+    See services/room_crossfeed.py for the full why.
+    """
+    if not ctx.conversation_id:
+        return ""
+    from services.room_crossfeed import build_delta
+    from services.session_lifecycle import _identities_for_recall
+    from services.session_manager import PACK_NIGHT_ORDER, PACK_NIGHT_SESSION_TYPE
+
+    pn_id: str | None = None
+    if ctx.identity in PACK_NIGHT_ORDER:
+        rows = await ctx.db.execute_fetchall(
+            "SELECT id FROM conversations "
+            "WHERE session_type = ? AND is_active = 1 "
+            "ORDER BY created_at_epoch ASC LIMIT 1",
+            (PACK_NIGHT_SESSION_TYPE,),
+        )
+        if rows:
+            pn_id = rows[0][0]
+
+    return await build_delta(
+        ctx.db,
+        identity=ctx.identity,
+        conversation_id=ctx.conversation_id,
+        is_warm_turn=ctx.is_warm_turn,
+        recall_identities=_identities_for_recall(ctx.identity),
+        pack_night_conversation_id=pn_id,
+    )
 
 
 async def _hook_reactions(ctx: HookContext) -> str:
@@ -1333,7 +1445,6 @@ async def _hook_on_this_day(ctx: HookContext) -> str:
 async def _hook_pack_pool(ctx: HookContext) -> str:
     """Shared pack memory pool — moments that belong to ALL the brothers."""
     import json as _json
-    from config import IDENTITIES
     if IDENTITIES.get(ctx.identity, {}).get("type") == "character":
         return ""
     from services.mcp_bridge import mcp_bridge
@@ -1435,14 +1546,28 @@ async def _hook_hub_dashboard(ctx: HookContext) -> str:
 
 async def _hook_daily_digest(ctx: HookContext) -> str:
     """Today's conversation digest from The Scribe."""
-    from services.scribe import get_digest
+    from services.scribe import get_digest, strip_source_lines
     digest = get_digest()
     if not digest:
         return ""
+    # The preview is prose only; the '↳ source' addresses stay in the file,
+    # so the ~800-char teaser isn't spent on message ids.
+    has_sources = "↳ source" in digest
+    digest = strip_source_lines(digest)
     # Truncate for context — just the first ~800 chars
     if len(digest) > 800:
         digest = digest[:800].rsplit("\n", 1)[0] + "\n[... digest continues]"
-    return f"[Today's digest (auto-generated summary of earlier conversations):]\n{digest}"
+    climb = (
+        "\n(Every block in the full digest file ends with '↳ source' lines — "
+        "conversation_id + first/last message id. anam_read_conversation("
+        "conversation_id, around_message_id) climbs from the summary down to "
+        "the exact words.)"
+        if has_sources else ""
+    )
+    return (
+        "[Today's digest (auto-generated summary of earlier conversations):]\n"
+        f"{digest}{climb}"
+    )
 
 
 async def _hook_voice_reminder(ctx: HookContext) -> str:
@@ -1546,7 +1671,12 @@ def _build_tool_index_card(provider: str | None = None, identity: str = "") -> s
                         "{identity}", identity_label
                     ).strip()
                     if label:
-                        visible_paths.append(label)
+                        inside = [
+                            str(categories[value].get("inside") or "").strip()
+                            for value in required
+                            if value in categories
+                        ]
+                        visible_paths.append((label, [text for text in inside if text]))
                 # A drawer with configured paths disappears when every path is
                 # provider-scoped away. Empty-path drawers such as Vox remain
                 # visible as deliberately closed specialist choices.
@@ -1555,8 +1685,10 @@ def _build_tool_index_card(provider: str | None = None, identity: str = "") -> s
                 label = str(drawer.get("label") or key).strip()
                 desc = str(drawer.get("description") or "").strip()
                 lines.append(f"  • {label}: {desc}")
-                for path in visible_paths:
+                for path, inside in visible_paths:
                     lines.append(f"      - {path}")
+                    for text in inside:
+                        lines.append(f"          · {text}")
             # The nested menu replaces the legacy flat category chart.
             categories = {}
         for name, cat in categories.items():
@@ -1664,7 +1796,8 @@ async def _hook_spoons_forecast(ctx: "HookContext") -> str:
     now = datetime.now(tz)
     try:
         state = await asyncio.to_thread(_build_today_state, now)
-    except Exception:
+    except Exception as exc:
+        log.warning("Today-state hook failed; boys get no day read this turn: %s", exc)
         return ""
     wellness = state.get("wellness") or {}
     energy = (state.get("energy") or "").strip().lower()
@@ -1751,6 +1884,10 @@ async def _hook_interest_scout(ctx: HookContext) -> str:
         return ""
 
 
+# MCPL #175: measured limits for the slowest hooks; evidence and headroom
+# rule live in docs/mcpl-175-hook-limits.md. A limit is never tighter than
+# the hook's own internal network timeout. Unreviewed hooks keep the
+# generous default. Consumptive hooks must always use timeout_s=0.
 HOOK_REGISTRY: list[ContextHook] = [
     ContextHook(name="spoons_forecast",      order=21,  build=_hook_spoons_forecast,      cache_ttl=1800),
     ContextHook(name="time",                 order=10,  build=_hook_time,                 cache_ttl=0),
@@ -1760,30 +1897,34 @@ HOOK_REGISTRY: list[ContextHook] = [
     ContextHook(name="device_type",          order=13,  build=_hook_device_type,          cache_ttl=0),
     ContextHook(name="presence",             order=20,  build=_hook_presence,             cache_ttl=0),
     ContextHook(name="conversation_resume",  order=25,  build=_hook_conversation_resume,  cache_ttl=0),
-    ContextHook(name="commons_pings",        order=26,  build=_hook_commons_pings,        cache_ttl=0,   skip_character=True),
+    ContextHook(name="commons_pings",        order=26,  build=_hook_commons_pings,        cache_ttl=0,   skip_character=True, timeout_s=0),  # consumes on read: never cut off (its own urlopen is bounded)
     ContextHook(name="profile_facts",        order=29,  build=_hook_profile_facts,        cache_ttl=60,  skip_character=True, scope="session"),
     ContextHook(name="continuity",           order=30,  build=_hook_continuity,           cache_ttl=120, skip_character=True, scope="session"),
-    ContextHook(name="memory_retrieval",     order=31,  build=_hook_memory_retrieval,     cache_ttl=120, skip_character=True),
-    ContextHook(name="deep_memory",          order=32,  build=_hook_deep_memory,          cache_ttl=120, skip_character=True, scope="session"),
-    ContextHook(name="qualia_context",       order=32,  build=_hook_qualia_context,       cache_ttl=0, skip_character=True),
-    ContextHook(name="inner_life",           order=32,  build=_hook_inner_life,           cache_ttl=120, skip_character=True, scope="session"),
+    ContextHook(name="memory_retrieval",     order=31,  build=_hook_memory_retrieval,     cache_ttl=120, skip_character=True, timeout_s=6),
+    ContextHook(name="deep_memory",          order=32,  build=_hook_deep_memory,          cache_ttl=120, skip_character=True, scope="session", timeout_s=3),
+    ContextHook(name="qualia_context",       order=32,  build=_hook_qualia_context,       cache_ttl=0, skip_character=True),  # stays on the 12 s default: its own mind_context call allows 12 s
+    ContextHook(name="inner_life",           order=32,  build=_hook_inner_life,           cache_ttl=120, skip_character=True, scope="session", timeout_s=3),
+    ContextHook(name="archive_echo",         order=33,  build=_hook_archive_echo,         cache_ttl=0, skip_brother=True, skip_character=True, modes={"interactive"}, max_chars=1900, timeout_s=4),
+    ContextHook(name="mind_keeping",         order=89,  build=_hook_mind_keeping,         cache_ttl=0, skip_brother=True, skip_character=True, modes={"interactive"}, timeout_s=3),
     ContextHook(name="prev_conversation",    order=33,  build=_hook_prev_conversation,    cache_ttl=300, max_chars=1800, skip_character=True, scope="session"),
     ContextHook(name="wearer_context",       order=28,  build=_hook_wearer_context,       cache_ttl=30,  skip_character=True, scope="session"),
-    ContextHook(name="pack_pool",            order=39,  build=_hook_pack_pool,            cache_ttl=600, skip_character=True, scope="session"),
+    ContextHook(name="pack_pool",            order=39,  build=_hook_pack_pool,            cache_ttl=600, skip_character=True, scope="session", timeout_s=8),  # = its own mind_surface timeout
     ContextHook(name="on_this_day",          order=37,  build=_hook_on_this_day,          cache_ttl=3600, skip_character=True, scope="session"),
+    ContextHook(name="farewell_watch",       order=37,  build=_hook_farewell_watch,       cache_ttl=300, skip_character=True, max_chars=1200, timeout_s=2),
     ContextHook(name="interest_scout",       order=38,  build=_hook_interest_scout,       cache_ttl=300, max_chars=900, skip_character=True, scope="session"),
     ContextHook(name="other_conversations",  order=34,  build=_hook_other_conversations,  cache_ttl=120, max_chars=2200, skip_character=True, scope="session"),
     ContextHook(name="active_stories",       order=35,  build=_hook_active_stories,       cache_ttl=120, skip_character=True, scope="session"),
     ContextHook(name="story_room_presence",  order=48,  build=_hook_story_room_presence,  cache_ttl=300, skip_character=True),
     ContextHook(name="story_state",          order=24,  build=_hook_story_state,          cache_ttl=60),
-    ContextHook(name="session_notes",        order=36,  build=_hook_session_notes,        cache_ttl=0),  # one-shot, never cache
+    ContextHook(name="session_notes",        order=36,  build=_hook_session_notes,        cache_ttl=0, timeout_s=0),  # deletes its note before returning: never cut off or cache
     ContextHook(name="since_last_here",      order=26,  build=_hook_since_last_here,      cache_ttl=0, skip_brother=True, skip_character=True),  # gap-gated, never cache
     ContextHook(name="yesterday_carry",      order=27,  build=_hook_yesterday_carry,      cache_ttl=0, skip_brother=True, skip_character=True, max_chars=2500, scope="session"),  # gap-gated, never cache
     ContextHook(name="pack_presence",        order=40,  build=_hook_pack_presence,        cache_ttl=120, skip_brother=True, skip_character=True, scope="session"),
     ContextHook(name="brother_transcripts",  order=41,  build=_hook_brother_transcripts,  cache_ttl=120, skip_brother=True, skip_character=True, scope="session"),
     ContextHook(name="pack_night_recall",    order=42,  build=_hook_pack_night_recall,    cache_ttl=120, skip_brother=True, skip_character=True, max_chars=2200, scope="session"),
+    ContextHook(name="room_crossfeed",       order=42,  build=_hook_room_crossfeed,       cache_ttl=0,   skip_brother=True, skip_character=True, max_chars=3000, timeout_s=0),  # advances a watermark: never cut off
     ContextHook(name="pending_discord_pings",order=46,  build=_hook_pending_discord_pings, cache_ttl=60),
-    ContextHook(name="autofeed",             order=47,  build=_hook_autofeed,             cache_ttl=1800, modes={"autonomous"}, skip_brother=True),
+    ContextHook(name="autofeed",             order=47,  build=_hook_autofeed,             cache_ttl=1800, modes={"autonomous"}, skip_brother=True),  # autonomous-only: nobody is waiting, keep the default
     ContextHook(name="reactions",            order=43,  build=_hook_reactions,             cache_ttl=120),
     ContextHook(name="owner_ids",           order=44,  build=_hook_owner_ids,           cache_ttl=120),
     ContextHook(name="emotional_context",     order=45,  build=_hook_emotional_context,    cache_ttl=120),
@@ -1820,9 +1961,6 @@ def _make_cache_key(hook: ContextHook, ctx: HookContext) -> str:
         base += f":{hash(ctx.query_text or '') % 100000}"
 
     return base
-
-
-from services.runtime_metrics import measure as _measure_runtime
 
 
 @_measure_runtime("orientation")
@@ -1870,21 +2008,46 @@ async def build_orientation_from_hooks(ctx: HookContext) -> str:
 
     # Fire all uncached hooks concurrently
     if to_fetch:
-        async def _run_hook(name: str, hook: ContextHook) -> tuple[str, str]:
+        async def _run_hook(name: str, hook: ContextHook) -> tuple[str, str, str]:
+            limit = _DEFAULT_HOOK_TIMEOUT_S if hook.timeout_s is None else hook.timeout_s
+            started = time.monotonic()
+            outcome, text = "ok", ""
             try:
-                result = await hook.build(ctx)
-                return name, result or ""
+                if limit and limit > 0:
+                    result = await asyncio.wait_for(hook.build(ctx), timeout=limit)
+                else:
+                    result = await hook.build(ctx)
+                text = result or ""
+            except TimeoutError as e:
+                # wait_for's deadline, or a timeout raised INSIDE the hook
+                # (socket/urllib)? Only the first is ours to name as a cutoff.
+                if limit and (time.monotonic() - started) >= limit - 0.05:
+                    outcome = "timeout"
+                    text = _hook_timeout_note(name, limit)
+                    log.warning(
+                        "Context hook '%s' timed out after %gs; the turn continues without it",
+                        name, limit,
+                    )
+                else:
+                    outcome = "error"
+                    log.warning("Context hook '%s' failed: %s", name, e)
             except Exception as e:
+                outcome = "error"
                 log.warning("Context hook '%s' failed: %s", name, e)
-                return name, ""
+            elapsed = time.monotonic() - started
+            _record_hook_timing(name, elapsed * 1000, outcome)
+            if outcome == "ok" and elapsed >= _SLOW_HOOK_LOG_S:
+                log.info("Context hook '%s' was slow: %.1fs", name, elapsed)
+            return name, text, outcome
 
         tasks = [_run_hook(name, hook) for name, (hook, _) in to_fetch.items()]
         fetched = await asyncio.gather(*tasks)
 
-        for name, result in fetched:
+        for name, result, outcome in fetched:
             results[name] = result
             hook, cache_key = to_fetch[name]
-            if hook.cache_ttl > 0 and cache_key:
+            # Never cache a gap: a timed-out hook gets a fresh try next turn.
+            if hook.cache_ttl > 0 and cache_key and outcome == "ok":
                 _cache_set(cache_key, result)
 
     # Resolve the cap multiplier from the active backend ONCE. Default to the

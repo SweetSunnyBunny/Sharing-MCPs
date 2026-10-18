@@ -1,5 +1,6 @@
 """Continuously mirror conversation text to the per-identity OneDrive Vault."""
 
+
 from __future__ import annotations
 
 import asyncio

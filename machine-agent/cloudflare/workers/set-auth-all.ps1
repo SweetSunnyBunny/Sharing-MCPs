@@ -9,7 +9,6 @@ $servers = @(
     "terminal-mcp",
     "filesystem-mcp",
     "krita-mcp",
-    "muse-tts-mcp",
     "books-tools-mcp",
     "obsidian-mcp"
 )

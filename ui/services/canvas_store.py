@@ -10,10 +10,6 @@ live or from history) -- this is a pure side effect, read-only against the
 message text.
 """
 
-# ANAM GUIDE: CANVAS LIBRARY STORAGE + VAULT ARCHIVE
-# What: Saves every <canvas> block a boy writes into the canvases table so it survives past the chat — the permanent library behind the slide-out canvas panel — AND mirrors each one to disk as markdown in that identity's Vault folder (C:/Users/YOU\OneDrive\Companion Vault\01_Identities\<NN_Name>\canvases), the same way conversations get archived.
-# Called by: services/chat_turn_finalize.py (right after a reply saves) and api/canvases.py (the library's web routes).
-# Edit here when: You want to change what gets saved to the canvas library, how <canvas> tags are found in a reply, or the shape/location of the markdown archive files. The panel LOOK and the ⬇ download button live in static/js/canvas.js; the Vault paths are built in config.py (VAULT_CANVAS_DIRS, derived from VAULT_CONVERSATION_DIRS — override the root with ANAM_CANVAS_VAULT_DIR, which tests/conftest.py points at a temp dir).
 
 import asyncio
 import logging
@@ -63,14 +59,7 @@ def canvas_slug(title: str, limit: int = 50) -> str:
 
 
 def canvas_vault_path(identity: str, title: str, canvas_id: int, when: datetime) -> Path:
-    """Where a canvas's markdown archive lives on disk.
-
-    Bonded boys get their own numbered folder's `canvases` sibling; anyone
-    without a mapped folder (Atlas, River, character masks) goes to the
-    shared bucket with the identity in the filename. The canvas id suffix
-    guarantees uniqueness -- two canvases with the same title on the same day
-    would otherwise overwrite each other (the exact bug the conversation
-    exporter fixed with its conv-id suffix)."""
+    "Where a canvas's markdown archive lives on disk."
     from config import VAULT_CANVAS_DIRS, VAULT_CANVAS_FALLBACK_DIR
 
     vault_dir = VAULT_CANVAS_DIRS.get(identity)

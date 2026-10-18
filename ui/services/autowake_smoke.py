@@ -1,14 +1,5 @@
-"""Manual autowake smoke-test runner.
+'Manual autowake smoke-test runner.'
 
-Usage:
-  python services/autowake_smoke.py --identity Avery
-  python services/autowake_smoke.py --identity Claude --prompt "Twitter smoke test..."
-"""
-
-# ANAM GUIDE: AUTOWAKE MANUAL SMOKE TEST
-# What: A little terminal script you run by hand to test that an autowake session works for one boy, without waiting for the real schedule.
-# Called by: Nobody in the app — you run it yourself from a terminal (see Usage above). It just calls run_manual_smoke_test in services/autowake.py.
-# Edit here when: You want to change the command-line options or what the test prints; the actual test logic lives in autowake.py.
 
 from __future__ import annotations
 

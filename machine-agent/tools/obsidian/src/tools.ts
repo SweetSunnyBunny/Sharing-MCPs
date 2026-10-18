@@ -843,6 +843,12 @@ export async function createDailyNote(options?: {
 
   const fullPath = normalizePath(ensureMarkdownExtension(notePath));
 
+  // `folder` comes from the caller; without this check the read below could
+  // return any .md file on the machine.
+  if (!isWithinVault(fullPath)) {
+    throw new Error("Path is outside the vault");
+  }
+
   // Check if it already exists
   if (await fileExists(fullPath)) {
     const content = await fs.readFile(fullPath, "utf-8");
@@ -887,6 +893,10 @@ export async function addJournalEntry(
 ): Promise<{ path: string; success: boolean }> {
   const journalPath = options?.journalPath || `Daily Notes/${formatDateForDailyNote()}.md`;
   const fullPath = normalizePath(ensureMarkdownExtension(journalPath));
+
+  if (!isWithinVault(fullPath)) {
+    throw new Error("Path is outside the vault");
+  }
 
   // Create the note if it doesn't exist
   if (!(await fileExists(fullPath))) {

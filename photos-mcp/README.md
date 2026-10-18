@@ -119,3 +119,26 @@ Keep your real MCP configuration, generated output and account information priva
 
 Start with [server.py](server.py). The installation steps above describe the runtime configuration.
 Behavioral regression checks live in [tests/](tests/).
+
+## Optional separate ChatGPT image login
+
+The current image adapter also includes the maintained subscription provider.
+The default remains `road="api"`; choose `road="subscription"` explicitly to use
+your separate image login. That choice never falls back to the paid API.
+
+```powershell
+.\.venv\Scripts\python.exe .\chatgpt_image_login.py start
+# Approve the displayed one-time code in your own browser.
+.\.venv\Scripts\python.exe .\chatgpt_image_login.py finish
+```
+
+The login lives in this package's private `data/private` folder. An optional
+`PHOTOS_CHATGPT_AUTH_FILE` can select another dedicated image-login file. Both the
+login helper and subscription provider use that same setting. Keep it separate
+from other clients' authentication stores: refresh tokens rotate. No tokens are
+included and `--check-config` neither signs in nor generates an image.
+
+The subscription provider uses the installed implementation's website endpoint.
+Availability, limits, model, quality and output size depend on that account and
+endpoint; this export does not establish account entitlement or future service
+availability. The route was verified here with mocked responses only.

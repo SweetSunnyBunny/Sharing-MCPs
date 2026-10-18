@@ -4,6 +4,8 @@ Every image starts as a canon-review draft. No automatic retries of paid calls.
 The scheduler owns execution; HTTP requests only enqueue durable work. Background
 generation is bounded separately from deliberate Photo Studio requests.
 """
+
+
 from __future__ import annotations
 
 import asyncio
@@ -23,9 +25,10 @@ log = logging.getLogger(__name__)
 _worker_lock = asyncio.Lock()
 DAY = 86400
 MAX_DAILY_LIMIT = 20
-PLAN_SYSTEM = subjects.SUBJECT_GUIDANCE + """\nYou plan one fictional social-media photo post, not a story scene.
+PLAN_SYSTEM = subjects.SUBJECT_GUIDANCE + visuals.CHARACTER_GUIDANCE + """\nYou plan one fictional social-media photo post, not a story scene.
 Return ONLY a JSON object with caption, image_prompt, alt_text (all strings),
-includes_player (boolean), and source_beat_id (string or null).
+includes_player (boolean), source_beat_id (string or null), and
+depicted_profile_ids (array of exact NPC profile IDs from character_references).
 Use the supplied author's facts, voice, private character guidance and authored
 relationship context. Private guidance shapes characterization but must never be
 quoted, named as notes, or exposed as private knowledge in the public caption.
@@ -84,16 +87,54 @@ def settings(world):
 
 
 async def configure(db, world_id, enabled, daily_limit, profile_ids):
-    world = await feed.get_world(db, world_id)
-    for profile_id in profile_ids:
-        await eligible(db, world_id, profile_id)
-    if enabled and not profile_ids:
-        raise feed.WorldFeedError("Choose at least one photo-sharing account")
-    metadata = {**world["metadata"], "photos": {
-        "enabled": bool(enabled), "daily_limit": max(1, min(MAX_DAILY_LIMIT, daily_limit)),
-        "profile_ids": list(dict.fromkeys(profile_ids)),
-    }}
-    return await feed.update_world(db, world_id, {"metadata": metadata})
+    # Serialize with admission and other world-settings writes. Never replace
+    # unrelated world metadata using a snapshot read before a competing save.
+    await db.execute("BEGIN IMMEDIATE")
+    try:
+        world = await feed.get_world(db, world_id)
+        # Saved selections must always be real, active NPCs in this world, even
+        # while paused, so re-enabling can never activate a stale or foreign id.
+        # Enabling with a bad id is an error. Pausing must never be blocked (it
+        # cancels pending paid work), so a paused save drops ineligible ids instead.
+        valid_ids = []
+        for profile_id in profile_ids:
+            try:
+                await eligible(db, world_id, profile_id)
+            except feed.WorldFeedError:
+                if enabled:
+                    raise
+                continue
+            valid_ids.append(profile_id)
+        profile_ids = valid_ids
+        if enabled and not profile_ids:
+            raise feed.WorldFeedError("Choose at least one photo-sharing account")
+        if not enabled:
+            await db.execute(
+                "UPDATE story_feed_photo_jobs SET status='cancelled',error=?,updated_at_epoch=? "
+                "WHERE world_id=? AND automatic=1 AND status IN ('queued','planning')",
+                ('Automatic photos paused before generation.', int(time.time()), world_id))
+        metadata = {**world["metadata"], "photos": {
+            "enabled": bool(enabled), "daily_limit": max(1, min(MAX_DAILY_LIMIT, daily_limit)),
+            "profile_ids": list(dict.fromkeys(profile_ids)),
+        }}
+        return await feed.update_world(db, world_id, {"metadata": metadata})
+    except BaseException:
+        await db.rollback()
+        raise
+
+
+async def check_automatic_policy(db, world, profile_id, *, admitted=False):
+    config = settings(world)
+    if not config['enabled']:
+        raise feed.WorldFeedError('Automatic photos are paused')
+    if profile_id not in config['profile_ids']:
+        raise feed.WorldFeedError('This account is no longer selected for automatic photos')
+    rows = await db.execute_fetchall(
+        "SELECT COUNT(*) AS count FROM story_feed_photo_jobs "
+        "WHERE world_id=? AND automatic=1 AND created_at_epoch>?", (world['id'], int(time.time()) - DAY))
+    # A job already in the queue counts as its own reserved attempt.
+    if rows[0]['count'] >= config['daily_limit'] + int(admitted):
+        raise feed.WorldFeedError('Automatic photo daily limit reached (rolling 24 hours, including failed attempts)')
 
 
 async def eligible(db, world_id, profile_id):
@@ -141,15 +182,8 @@ async def enqueue(db, world_id, profile_id, idea="", *, job_id=None, automatic=F
             await db.commit()
             return row
         if automatic:
-            rows = await db.execute_fetchall(
-                "SELECT COUNT(*) AS count FROM story_feed_photo_jobs "
-                "WHERE world_id=? AND automatic=1 AND created_at_epoch>?",
-                (world_id, now - DAY),
-            )
-            if rows[0]["count"] >= settings(world)["daily_limit"]:
-                raise feed.WorldFeedError(
-                    "Automatic photo daily limit reached (rolling 24 hours, including failed attempts)"
-                )
+            world = await feed.get_world(db, world_id)
+            await check_automatic_policy(db, world, profile_id)
             rows = await db.execute_fetchall(
                 "SELECT COUNT(*) AS count FROM story_feed_photo_jobs j LEFT JOIN story_feed_posts p ON p.id=j.post_id "
                 "WHERE j.world_id=? AND (j.status IN ('queued','planning','rendering') OR p.canon_status='draft')",
@@ -176,7 +210,8 @@ async def list_jobs(db, world_id):
     )
     ref = visuals.public_reference(world)
     return {"settings": settings(world), "jobs": [dict(row) for row in rows],
-            "visual_references": [ref] if ref else []}
+            "visual_references": [ref] if ref else [],
+            "character_references": await visuals.character_roster(db, world_id)}
 
 
 async def recover_interrupted(db):
@@ -201,8 +236,7 @@ def photo_style(world):
         return style.strip()[:500]
     return "Storybook illustration, framed like a candid everyday snapshot."
 
-
-async def plan_photo(world, profile, recent, idea, protected, relationships=None, visual_context=None, recent_photo_plans=None):
+async def plan_photo(world, profile, recent, idea, protected, relationships=None, visual_context=None, recent_photo_plans=None, character_references=None):
     from services.background_generation import generate_background_text
 
     text = await generate_background_text(
@@ -215,6 +249,7 @@ async def plan_photo(world, profile, recent, idea, protected, relationships=None
                     "recent_photo_plans": recent_photo_plans or [],
                     "authored_relationships": relationships or [],
                     "visual_context": visual_context,
+                    "character_references": character_references or [],
                     "protected_characters": protected}, ensure_ascii=False),
         system_prompt=PLAN_SYSTEM, identity=world["story_identity"],
     )
@@ -231,6 +266,7 @@ async def plan_photo(world, profile, recent, idea, protected, relationships=None
     check_protected(" ".join(plan[key] for key in ("caption", "image_prompt", "alt_text")),
                     visuals.remaining_protected(protected, visual_context, bool(provenance)))
     clean = {key: plan[key].strip() for key in ("caption", "image_prompt", "alt_text")}
+    clean['depicted_profile_ids'] = visuals.validate_characters(plan, character_references or [], required=True)
     if provenance:
         clean.update(provenance, includes_player=True, source_beat_id=plan.get('source_beat_id'))
         clean.setdefault('fictional_at', world['fictional_now'])
@@ -245,10 +281,28 @@ async def render_photo(job_id, prompt, reference=None):
         "to": "chat", "identity": "Worldfeed", "subject": job_id,
         "size": "square", "quality": "medium",
     }
-    if reference:
-        args['prompt'] += '\nRequired Player visual identity:\n' + reference['prompt']
-        args['reference_paths'] = [reference['path']]
-    else:
+    # New jobs (process_job) pass a labeled list, in the exact order sent to the
+    # image service. The dict branch is test-only compatibility: no production
+    # caller passes a single Player reference dict any more (tests still do).
+    references = ([{**reference, 'label': 'Player Character', 'is_player': True}]
+                  if isinstance(reference, dict) else (reference or []))
+    paths = []
+    if references:
+        args['prompt'] += ('\nVisual identity references follow. Preserve each person separately: face, hair, eyes, '
+                           'skin tone, distinctive anatomy and visible build. Do not blend identities. '
+                           'References override conflicting appearance guesses in the scene prompt. '
+                           'Use the requested new scene and pose; do not copy avatar circles, text, backgrounds '
+                           'or outfits unless the scene calls for them. Do not add people from reference backgrounds. '
+                           'Respect the current story era and age; no later-arc injuries or time-skip designs.')
+    for ref in references:
+        label = ref['label']
+        if ref.get('path'):
+            paths.append(ref['path'])
+            args['prompt'] += f'\nReference image {len(paths)} is ONLY {label}.'
+        args['prompt'] += f'\nRequired appearance for {label}: ' + ref.get('prompt', '')
+    if paths:
+        args['reference_paths'] = paths
+    if not any(ref.get('is_player') for ref in references):
         args['prompt'] += '\nDo not depict unapproved user-controlled characters.'
     result = await mcp_bridge.call_tool("photo_generate", args, timeout=360)
     match = re.search(r"^Saved \([^\n]+\): ([^\r\n]+)", result)
@@ -312,7 +366,7 @@ async def recover_saved_photo(db, job_id, path):
 
 def visual_metadata(plan):
     return {key: plan[key] for key in ('visual_subject', 'visual_basis', 'visual_source_hash',
-                                      'reference_sha256') if key in plan}
+                                      'reference_sha256', 'depicted_profile_ids', 'character_references') if key in plan}
 
 
 async def validate_current_plan(db, world, profile, job, plan):
@@ -336,13 +390,14 @@ async def process_job(db, job):
         return
     try:
         world = await feed.get_world(db, job["world_id"])
-        if job["automatic"] and not settings(world)["enabled"]:
-            raise feed.WorldFeedError("Automatic photos were switched off before this job started")
+        if job["automatic"]:
+            await check_automatic_policy(db, world, job['profile_id'], admitted=True)
         profile = await eligible(db, job["world_id"], job["profile_id"])
         protected = await protected_names(db, job["world_id"])
         visual_context = await visuals.context(db, world, profile, job['idea'])
         recent = await feed.list_feed(db, world["id"], author_profile_id=profile["id"], limit=8)
         recent_photos = await subjects.recent_plans(db, world['id'])
+        character_references = await visuals.character_roster(db, world['id'])
         relationships = []
         for relation in await feed.list_relationships(db, world["id"]):
             source = relation["from_profile"]
@@ -361,12 +416,14 @@ async def process_job(db, job):
         plan = await asyncio.wait_for(
             plan_photo(
                 world, profile, [p["body"] for p in recent], job["idea"], protected,
-                relationships, visual_context, recent_photos,
+                relationships, visual_context, recent_photos, character_references,
             ),
             240,
         )
         if plan is None:
-            await db.execute("UPDATE story_feed_photo_jobs SET status='skipped',error=?,updated_at_epoch=? WHERE id=?",
+            # Guarded like the rendering transition: a pause during planning
+            # cancels the job, and that cancellation must not be overwritten.
+            await db.execute("UPDATE story_feed_photo_jobs SET status='skipped',error=?,updated_at_epoch=? WHERE id=? AND status='planning'",
                              ('No distinct character moment to photograph. No image requested.', int(time.time()), job_id))
             await db.commit()
             return
@@ -374,7 +431,7 @@ async def process_job(db, job):
             assessment = await asyncio.wait_for(subjects.review(world, profile, plan, recent_photos), 120)
             plan['subject_review'] = assessment
             if not assessment['generate']:
-                await db.execute("UPDATE story_feed_photo_jobs SET status='skipped',plan_json=?,error=?,updated_at_epoch=? WHERE id=?",
+                await db.execute("UPDATE story_feed_photo_jobs SET status='skipped',plan_json=?,error=?,updated_at_epoch=? WHERE id=? AND status='planning'",
                                  (json.dumps(plan, ensure_ascii=False), 'Photo skipped before image generation: ' + assessment['reason'], int(time.time()), job_id))
                 await db.commit()
                 return
@@ -384,16 +441,23 @@ async def process_job(db, job):
         if (current_world['story_branch'], current_world['fictional_now']) != (world['story_branch'], world['fictional_now']):
             raise feed.WorldFeedError('The story clock changed during planning; request a fresh photo')
         await validate_current_plan(db, current_world, profile, job, plan)
-        reference = visuals.render_reference(current_world, plan)
-        if reference:
-            plan['reference_sha256'] = reference['sha256']
-        if job["automatic"] and not settings(current_world)["enabled"]:
-            raise feed.WorldFeedError("Automatic photos were switched off during planning")
-        await db.execute("UPDATE story_feed_photo_jobs SET status='rendering',plan_json=?,updated_at_epoch=? WHERE id=?",
+        references = await visuals.render_characters(db, current_world, plan)
+        plan['character_references'] = [
+            {k: ref[k] for k in ('profile_id', 'handle', 'sha256') if k in ref}
+            for ref in references]
+        for ref in references:
+            if ref.get('is_player'):
+                plan['reference_sha256'] = ref['sha256']
+        await db.execute('BEGIN IMMEDIATE')
+        if job["automatic"]:
+            await check_automatic_policy(db, await feed.get_world(db, world['id']), job['profile_id'], admitted=True)
+        cursor = await db.execute("UPDATE story_feed_photo_jobs SET status='rendering',plan_json=?,updated_at_epoch=? WHERE id=? AND status='planning'",
                          (json.dumps(plan, ensure_ascii=False), int(time.time()), job_id))
         await db.commit()
-        url = (await render_photo(job_id, plan['image_prompt'], reference)
-               if reference else await render_photo(job_id, plan['image_prompt']))
+        if cursor.rowcount != 1:
+            return  # Pausing during planning cancels the job, even if re-enabled.
+        url = (await render_photo(job_id, plan['image_prompt'], references)
+               if references else await render_photo(job_id, plan['image_prompt']))
         await db.execute("UPDATE story_feed_photo_jobs SET image_url=? WHERE id=?", (url, job_id))
         await db.commit()
         await eligible(db, world["id"], profile["id"])
@@ -413,6 +477,8 @@ async def process_job(db, job):
         await db.rollback()
         log.exception("World Feed photo %s failed", job_id)
         phase = (await db.execute_fetchall("SELECT status FROM story_feed_photo_jobs WHERE id=?", (job_id,)))[0]["status"]
+        if phase == 'cancelled':
+            return
         message = str(exc) if isinstance(exc, feed.WorldFeedError) else (
             "Photo planning failed before requesting an image. No automatic retry."
             if phase == 'planning' else

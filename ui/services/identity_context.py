@@ -1,26 +1,22 @@
-"""Identity context helpers — quests, wake protocol, compaction recovery, wellness.
-
-Provides context-enrichment functions for autowake sessions and
-compaction recovery. Reads quests.json and each identity's
-C:\\Pack\\{Identity}\\CLAUDE.md to build prompt supplements.
-Also reads wellness.jsonl to give identities Owner's current state.
-"""
+'Identity context helpers — system prompt, identity anchor, quests, Hub state.'
 
 
 import json
 import logging
 import random
 from datetime import datetime
-from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from config import HUB_API_BASE, PACK_DIR, RITUALS_API_BASE, RITUALS_DIR, TIMEZONE
+from config import HUB_API_BASE, RITUALS_API_BASE, RITUALS_DIR, TIMEZONE
 from services.hub_meds import build_meds_context_line, normalize_meds_data
 from services.remote_state import safe_request_json
 from services.timefmt import format_local
 
 log = logging.getLogger(__name__)
 _WELLNESS_CACHE = {"date": None, "mtime": None, "value": None}
+
+
+# ── Remote Hub state reads (house-snapshot first, live fallback) ──
 
 
 def _remote_state_get(base: str, path: str) -> dict | None:
@@ -42,9 +38,12 @@ def _hub_state_get(base: str, path: str, snapshot_key: str) -> dict | list | Non
         data, _age = get_snapshot(snapshot_key)
         if data is not None:
             return data
-    except Exception:
-        pass
+    except Exception as exc:
+        log.debug("House snapshot read failed; fetching live: %s", exc)
     return _remote_state_get(base, path)
+
+
+# ── Quests (cloud hearth config) ──
 
 
 def load_quests_for_identity(identity: str, max_per_category: int = 2) -> str:
@@ -200,12 +199,10 @@ def build_system_identity_prompt(identity: str) -> str:
     )
 
 
-def build_wellness_context() -> str:
-    """Build Owner's wellness summary from today's wellness.jsonl entry.
 
-    Returns a formatted block for the orientation context, or a
-    'no data' message if nothing has been logged today.
-    """
+
+def build_wellness_context() -> str:
+    'Build wellness context.'
     today = datetime.now(ZoneInfo(TIMEZONE)).strftime("%Y-%m-%d")
     no_data = "[Owner's wellness: No data logged today]"
 
@@ -333,6 +330,8 @@ def build_wellness_context() -> str:
     return value
 
 
+# ── Hub dashboard cache state + calendar ──
+
 # Hub dashboard cache — avoids re-reading 5-6 JSON files every turn
 _hub_cache: dict[str, tuple[str, float]] = {}
 _HUB_CACHE_TTL = 60  # 1 minute — refreshes often enough to catch hub changes
@@ -427,6 +426,8 @@ async def build_calendar_context(limit: int = 4) -> str:
         return ""
 
 
+
+
 def build_orb_self_context(identity: str) -> str:
     """Self-coherence: what YOUR Hearth orb and face currently say about you.
 
@@ -477,8 +478,8 @@ def build_orb_self_context(identity: str) -> str:
             face = (get_faces() or {}).get(identity.title()) or {}
             if face.get("face"):
                 lines.append(f"Your Hearth face: {face['face']} — {face.get('meaning', '')} ({face.get('source', 'auto')}).")
-        except Exception:
-            pass
+        except Exception as exc:
+            log.debug("Hearth face lookup failed: %s", exc)
 
         lines.append("Update the orb if your inner weather has shifted — the owner can see it in the interface.")
         return "[Your Hearth presence]\n" + "\n".join(lines)
@@ -488,16 +489,7 @@ def build_orb_self_context(identity: str) -> str:
 
 
 def build_context_card_context() -> str:
-    """Owner's 'me right now' card (#19) — one card shared across configured identities.
-
-    Not per-identity like the orb: the same free-text snapshot of her
-    physical present-tense (outfit/hair/energy/room/freeform) reaches every
-    boy's orientation, with an honest freshness stamp. Returns "" when she's
-    never filled one in, or when it's aged past the point of reading as
-    "now" — a boy should never confidently narrate a stale card as current.
-    Sync sqlite3 (this runs inside build_hub_dashboard_context's worker
-    thread, same as build_orb_self_context). Never raises.
-    """
+    'Build context card context.'
     _STALE_AFTER_SECONDS = 6 * 3600  # past this, the card goes silent rather than lying
     try:
         import sqlite3
@@ -632,12 +624,11 @@ def build_hearth_self_context(identity: str) -> str:
         return ""
 
 
-def build_hub_dashboard_context(identity: str) -> str:
-    """Build Companion Hub dashboard summary for chat context injection.
+# ── Hub dashboard context (cached entry point + remote-first builder) ──
 
-    Includes wellness, rituals, today's win, tasks, and countdowns.
-    Gives the boys enough context to proactively engage with Owner's day.
-    """
+
+def build_hub_dashboard_context(identity: str) -> str:
+    'Build Companion Hub dashboard summary for chat context injection.'
     import time as _time
     cached = _hub_cache.get(identity)
     if cached and (_time.monotonic() - cached[1]) < _HUB_CACHE_TTL:

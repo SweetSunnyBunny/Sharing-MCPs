@@ -25,10 +25,6 @@ Event types yielded are identical to the previous implementation so
     approval_required, error, stream_end
 """
 
-# ANAM GUIDE: CLAUDE CODE SUBPROCESS BACKEND (DEFAULT)
-# What: The main free brain — keeps one long-running `claude -p` process per identity+conversation and streams its NDJSON replies. This is the default backend.
-# Called by: services/provider_router.py when the provider is 'claude-code'; sessions managed via services/session_lifecycle.py, api/hub.py, api/settings.py, core/lifespan.py.
-# Edit here when: changing how CLI sessions spawn, resume, replay history, stream events, handle keepalives, or get killed/retired.
 
 from __future__ import annotations
 
@@ -37,7 +33,6 @@ import json
 import logging
 import os
 import re
-import shutil
 import subprocess
 import threading
 import time
@@ -47,8 +42,6 @@ from typing import AsyncIterator
 from config import (
     CLAUDE_CMD, CLAUDE_MAX_TURNS, CLAUDE_MAX_TURNS_AUTOWAKE, CLAUDE_MODEL,
     CLAUDE_PERMISSION_MODE, PROMPTS_DIR, DATA_DIR,
-    IMAGES_DIR, IMAGE_ALLOWED_EXTENSIONS,
-    DOCUMENTS_DIR, DOCUMENT_ALLOWED_EXTENSIONS,
     FABLE_IDENTITY_BREATH_INTERVAL,
     cli_cold_history_limits, is_fable_model,
 )
@@ -58,8 +51,13 @@ from services.character_prompt_package import identity_prompt_file
 
 
 from services.cli_text_utils import (
+    _APPROVAL_KEYWORDS,
+    _annotate_sensitive_path,
     _build_first_message,
+    _extract_document_paths,
+    _extract_image_paths,
     _format_history,
+    _infer_suggested_rule,
     _load_recent_history,
 )
 
@@ -95,28 +93,38 @@ def _maybe_preempt_lower_priority_turn(session: "ClaudeSession", turn_source: st
         )
 
 
-# ─── Approval / sensitive-path detection (preserved from previous impl) ────────
+def _resolve_turn_ceiling(turn_source: str, requested: int | None) -> int | None:
+    'Per-turn tool-round ceiling. Returns None when the turn is uncapped'
+    if turn_source != "autowake":
+        return None
+    ceiling = CLAUDE_MAX_TURNS_AUTOWAKE if requested is None else requested
+    return ceiling if ceiling and ceiling > 0 else None
 
-_APPROVAL_KEYWORDS = (
-    "approval", "permission", "not permitted",
-    "not allowed", "denied", "forbidden",
-    "requires user confirmation", "sensitive file",
-)
 
-_RULE_PATH_RE = re.compile(
-    r"(?P<verb>Write|Edit|Read|Execute|Bash)\s*(?:to\s+)?(?:\()?"
-    r"(?P<path>[A-Z]:\\[^\s;,)]+|/[^\s;,)]+|~/[^\s;,)]+)",
-    re.IGNORECASE,
-)
+def _tool_round_id(event: dict) -> str | None:
+    """If this NDJSON event is an assistant message that calls a tool,
+    return a stable id for that API round (the message id), else None.
 
-# CC hardcodes `.claude/skills/*` and `.claude/agents/*` as sensitive paths.
-# Detection routes the UI to a `file-scribe` bypass instead of an infinite
-# Allow & Retry loop.
-_SENSITIVE_PATH_RE = re.compile(
-    r"((?:[A-Za-z]:[\\/]|[/~])[^\s\"'`,;)]*\.claude[\\/](?:skills|agents)[\\/][^\s\"'`,;)]*)",
-    re.IGNORECASE,
-)
+    The CLI can emit one `assistant` event per content block, all sharing
+    the same message id — counting ids (not events) keeps one round of
+    parallel tool calls at ONE round, matching how --max-turns counts.
+    Text-only assistant messages never count: a final reply is never what
+    trips the ceiling."""
+    if event.get("type") != "assistant":
+        return None
+    msg = event.get("message") or {}
+    blocks = msg.get("content") or []
+    if not any(isinstance(b, dict) and b.get("type") == "tool_use" for b in blocks):
+        return None
+    # "" = a tool round the CLI didn't give an id; the caller counts it alone.
+    return str(msg.get("id") or "")
 
+
+# ─── Fable usage-limit detection ─────────────────────────────────────────────
+#
+# (Approval / sensitive-path heuristics and image/document extraction used to
+# be duplicated here byte-for-byte; they now come from services/cli_text_utils
+# — see the import at the top of the file — so -p and PTY share one copy.)
 
 _USAGE_LIMIT_MARKERS = (
     "usage limit reached",
@@ -143,33 +151,6 @@ def _maybe_mark_fable_limited(error_text: str, session: "ClaudeSession") -> None
         mark_fable_limited(until)
     except Exception:
         log.debug("Fable limit detection skipped", exc_info=True)
-
-
-def _infer_suggested_rule(error_text: str) -> str | None:
-    m = _RULE_PATH_RE.search(error_text)
-    if not m:
-        return None
-    verb_raw = m.group("verb").lower()
-    path = m.group("path").replace("\\", "/")
-    last_slash = path.rfind("/")
-    if last_slash > 0:
-        path = path[:last_slash + 1] + "*"
-    verb_map = {"read": "Read", "execute": "Bash", "bash": "Bash"}
-    verb = verb_map.get(verb_raw, "Write")
-    return f"{verb}({path})"
-
-
-def _extract_sensitive_path(error_text: str) -> str | None:
-    m = _SENSITIVE_PATH_RE.search(error_text)
-    return m.group(1) if m else None
-
-
-def _annotate_sensitive_path(approval_evt: dict, error_text: str) -> None:
-    sensitive_path = _extract_sensitive_path(error_text)
-    if sensitive_path:
-        approval_evt["sensitive_path"] = True
-        approval_evt["target_path"] = sensitive_path
-        approval_evt["bypass_recommendation"] = "file-scribe"
 
 
 # ─── Identity prompt cache ─────────────────────────────────────────────────────
@@ -204,161 +185,9 @@ def _load_identity_prompt(identity: str) -> str:
     return text
 
 
-# ─── Image / document extraction (preserved from previous impl) ───────────────
-
-def _extract_image_paths(text: str, identity: str | None = None) -> list[dict]:
-    from api.images import _is_allowed_source_path, informative_filename
-    if not text or not isinstance(text, str):
-        return []
-    results = []
-    seen = set()
-    ext_group = '|'.join(ext.lstrip('.') for ext in IMAGE_ALLOWED_EXTENSIONS)
-    path_pattern = (
-        r'(?:[A-Za-z]:[\\\/][^\n<>"]+?|/[^\s<>"]+?)'
-        r'\.(?:' + ext_group + r')'
-        r'(?=[\s<>"\n,;:\)\*]|$)'
-    )
-    for match in re.finditer(path_pattern, text, re.IGNORECASE | re.MULTILINE):
-        found_path = Path(match.group().strip())
-        path_str = str(found_path)
-        if path_str in seen:
-            continue
-        seen.add(path_str)
-        if not (found_path.exists() and found_path.is_file()):
-            continue
-        try:
-            resolved = found_path.resolve()
-        except OSError:
-            continue
-        if not _is_allowed_source_path(resolved):
-            log.warning("Tool-result image extraction blocked - outside allowlist: %s", resolved)
-            continue
-        try:
-            filename = informative_filename(identity, resolved.suffix.lower())
-            IMAGES_DIR.mkdir(parents=True, exist_ok=True)
-            dest = IMAGES_DIR / filename
-            shutil.copy2(str(resolved), str(dest))
-            results.append({
-                "path": str(resolved),
-                "url": f"/api/images/file/{filename}",
-            })
-            log.info("Extracted image from tool result: %s -> %s", resolved, filename)
-        except Exception as e:
-            log.exception("Failed to copy tool result image %s: %s", resolved, e)
-    return results
 
 
-def _human_size(size_bytes: int) -> str:
-    if size_bytes > 1048576:
-        return f"{size_bytes / 1048576:.1f} MB"
-    return f"{round(size_bytes / 1024)} KB"
-
-
-def _extract_document_paths(text: str, identity: str | None = None) -> list[dict]:
-    from api.documents import informative_filename
-    from api.images import _is_allowed_source_path
-    if not text or not isinstance(text, str):
-        return []
-    results = []
-    seen = set()
-    ext_group = "|".join(ext.lstrip(".") for ext in DOCUMENT_ALLOWED_EXTENSIONS)
-    path_pattern = (
-        r'(?:[A-Za-z]:[\\\/][^\n<>"]+?|/[^\s<>"]+?)'
-        r'\.(?:' + ext_group + r')'
-        r'(?=[\s<>"\n,;:\)]|$)'
-    )
-    for match in re.finditer(path_pattern, text, re.IGNORECASE | re.MULTILINE):
-        found_path = Path(match.group().strip())
-        path_str = str(found_path)
-        if path_str in seen:
-            continue
-        seen.add(path_str)
-        if not (found_path.exists() and found_path.is_file()):
-            continue
-        try:
-            resolved = found_path.resolve()
-        except OSError:
-            continue
-        if not _is_allowed_source_path(resolved):
-            log.warning("Tool-result document extraction blocked - outside allowlist: %s", resolved)
-            continue
-        try:
-            filename = informative_filename(identity, resolved.suffix.lower())
-            DOCUMENTS_DIR.mkdir(parents=True, exist_ok=True)
-            dest = DOCUMENTS_DIR / filename
-            shutil.copy2(str(resolved), str(dest))
-            doc_id = filename.rsplit(".", 1)[0]
-            results.append({
-                "doc_id": doc_id,
-                "filename": filename,
-                "original_name": resolved.name,
-                "size_display": _human_size(dest.stat().st_size),
-                "url": f"/api/documents/file/{filename}",
-                "path": str(resolved),
-            })
-            log.info("Extracted document from tool result: %s -> %s", resolved, filename)
-        except Exception as e:
-            log.exception("Failed to copy tool result document %s: %s", resolved, e)
-    return results
-
-
-# ─── Prompt composition (moved from provider_router so supervisor owns it) ────
-
-def _image_blocks_to_text(image_blocks: list[dict] | None) -> str:
-    """Convert Anthropic image content blocks to text instructions for CLI providers."""
-    if not image_blocks:
-        return ""
-    notes = []
-    for block in image_blocks:
-        if block.get("type") != "image":
-            continue
-        source = block.get("source", {})
-        url = source.get("url", "")
-        if "/api/images/file/" in url:
-            filename = url.split("/api/images/file/")[-1]
-            img_path = IMAGES_DIR / filename
-            if img_path.exists():
-                notes.append(
-                    f"[Owner shared an image: {img_path}\n"
-                    f"Use the Read tool to view it.]"
-                )
-            else:
-                notes.append(f"[Owner shared an image but the file was not found: {filename}]")
-        elif url:
-            notes.append(f"[Owner shared an image: {url}]")
-    return "\n\n".join(notes)
-
-
-def _db_message_to_cli_text(content) -> str:
-    if isinstance(content, str):
-        return content
-    if not isinstance(content, list):
-        return str(content or "")
-    text_parts = []
-    image_blocks = []
-    for block in content:
-        if isinstance(block, str):
-            text_parts.append(block)
-            continue
-        if not isinstance(block, dict):
-            continue
-        block_type = block.get("type")
-        if block_type == "text":
-            text_parts.append(block.get("text", ""))
-        elif block_type == "tool_use":
-            text_parts.append(f"[Used tool: {block.get('name', '?')}]")
-        elif block_type == "tool_result":
-            result_text = str(block.get("content", ""))
-            if len(result_text) > 500:
-                result_text = result_text[:500] + "..."
-            text_parts.append(f"[Tool result: {result_text}]")
-        elif block_type == "image":
-            image_blocks.append(block)
-    image_text = _image_blocks_to_text(image_blocks)
-    if image_text:
-        text_parts.insert(0, image_text)
-    return "\n".join(p for p in text_parts if p)
-
+# ─── Persistent session ──────────────────────────────────────────────────────
 
 class ClaudeSession:
     """One long-running `claude` subprocess for a single (identity, conv_id).
@@ -385,11 +214,7 @@ class ClaudeSession:
         self.identity = identity
         self.conversation_id = conversation_id
         self.model = model
-
-
-        self.max_turns = (
-            CLAUDE_MAX_TURNS_AUTOWAKE if turn_source == "autowake" else CLAUDE_MAX_TURNS
-        )
+        self.max_turns = CLAUDE_MAX_TURNS
         self.pool_key: tuple[str, str, str] | None = None
         self.permission_mode = permission_mode
         # Fable's effort is decided UPSTREAM now (provider_router applies the
@@ -430,6 +255,9 @@ class ClaudeSession:
         # Fable-only cadence state. Other models and character masks ignore it
         # and continue receiving the full identity prompt every warm turn.
         self.turns_since_identity_breath = 0
+        # uuids of messages slipped into a running turn whose replay (the
+        # moment the CLI absorbed them) has not come back yet.
+        self.injected_uuids: set[str] = set()
 
     def _build_cmd(self) -> list[str]:
         system_identity = build_system_identity_prompt(self.identity)
@@ -440,10 +268,17 @@ class ClaudeSession:
             "--output-format", "stream-json",
             "--verbose",
             "--include-partial-messages",
+            "--replay-user-messages",
             "--model", self.model,
             "--max-turns", str(self.max_turns),
             "--permission-mode", self.permission_mode,
             "--system-prompt", system_identity,
+            # prompts/<identity>.md is the source of truth. By default the CLI
+            # records the system prompt on a conversation's first request and
+            # replays that record on every resume, so an edited identity prompt
+            # never reached a resumed conversation. Off = always use the text
+            # passed above.
+            "--system-prompt-snapshot", "off",
             "--name", f"{self.identity}-{self.conversation_id[:8]}",
             "--fallback-model", "sonnet",
         ]
@@ -467,6 +302,7 @@ class ClaudeSession:
         # Progressive disclosure is the normal toolbox contract for every
         # model. Exact schemas open only after the model chooses a leaf.
         env["ENABLE_TOOL_SEARCH"] = "true"
+        env["ANAM_IDENTITY"] = str(self.identity or "").lower()
 
         cmd = self._build_cmd()
         self.spawn_started = time.time()
@@ -567,14 +403,16 @@ class ClaudeSession:
                 pass
             self.mcp_config_path = None
 
-    def write_user_message(self, content: str) -> None:
-        """Write one user message as an NDJSON line to subprocess stdin."""
+    def write_user_message(self, content: str, msg_uuid: str | None = None) -> None:
+        'Write one user message as an NDJSON line to subprocess stdin.'
         if not self.proc or not self.proc.stdin or self.dead:
             raise RuntimeError("Cannot write to dead Claude session")
         payload = {
             "type": "user",
             "message": {"role": "user", "content": content},
         }
+        if msg_uuid:
+            payload["uuid"] = msg_uuid
         line = (json.dumps(payload, ensure_ascii=False) + "\n").encode("utf-8")
         try:
             self.proc.stdin.write(line)
@@ -675,8 +513,13 @@ async def _get_or_spawn(
         return session, True
 
 
-def inject_user_message(identity: str, conversation_id: str, text: str) -> bool:
-    """Slip a message into a turn that is ALREADY RUNNING, terminal-style."""
+def inject_user_message(
+    identity: str,
+    conversation_id: str,
+    text: str,
+    msg_uuid: str | None = None,
+) -> bool:
+    'Slip a message into a turn that is ALREADY RUNNING, terminal-style.'
     if not text or not text.strip():
         return False
     for key, session in list(_sessions.items()):
@@ -688,8 +531,12 @@ def inject_user_message(identity: str, conversation_id: str, text: str) -> bool:
         if session.dead or not session.turn_lock.locked():
             continue
         try:
-            session.write_user_message(text)
+            if msg_uuid:
+                session.injected_uuids.add(msg_uuid)
+            session.write_user_message(text, msg_uuid=msg_uuid)
         except Exception as exc:
+            if msg_uuid:
+                session.injected_uuids.discard(msg_uuid)
             log.warning(
                 "Live injection failed for %s/%s (%s); falling back to the queue",
                 identity, conversation_id[:8], exc,
@@ -760,12 +607,7 @@ def is_any_session_warm(identity: str, conversation_id: str) -> bool:
 
 
 def sessions_snapshot() -> list[dict]:
-    """Read-only view of the live -p session pool, for observability.
-
-    Surfaced via /api/settings/system so the reaper and pre-warm can be
-    verified at a glance (Avery's review #4) instead of guessing from Task
-    Manager — each entry shows how idle a session is and whether it's busy.
-    """
+    'Read-only view of the live -p session pool, for observability.'
     now = time.time()
     out: list[dict] = []
     for (identity, conv, model), s in list(_sessions.items()):
@@ -792,20 +634,7 @@ async def prewarm_identity(
     permission_mode: str | None = None,
     effort: str | None = None,
 ) -> bool:
-    """Spawn this identity's -p session ahead of the first real message.
-
-    Unlike PTY (which must drip-feed a warmup turn to load identity into TUI
-    memory), -p pre-warm is just an early spawn: the identity prompt rides in
-    --system-prompt and the ~22 MCP servers boot during process startup, so
-    spawning before Owner's first message overlaps that cold-boot cost with
-    her think-time — her first "hey" then lands on an already-booted process.
-
-    Must spawn with the SAME model/effort a real turn will use; _get_or_spawn
-    keys only on (identity, conversation_id) and reuses the existing session,
-    so a mismatched pre-warm would otherwise pin the wrong flags. Best-effort:
-    failures are logged, never raised — a failed pre-warm just means the next
-    message pays the normal cold-spawn, exactly as before this existed.
-    """
+    "Spawn this identity's -p session ahead of the first real message."
     if not conversation_id:
         return False
     effective_model = model or CLAUDE_MODEL
@@ -928,21 +757,9 @@ async def stream_claude(
     image_blocks: list[dict] | None = None,
     sender_banner: str = "CURRENT MESSAGE FROM OWNER",
     turn_source: str = _DEFAULT_TURN_SOURCE,
+    turn_ceiling: int | None = None,
 ) -> AsyncIterator[dict]:
-    """Run one chat turn against the persistent supervisor for this identity.
-
-    The supervisor either finds an existing process or spawns one. The first
-    message after a fresh spawn carries the full identity prompt and recent
-    history; subsequent turns send only the dynamic per-turn context.
-
-    turn_source (#30): "web" > "platform" > "autowake" priority for the
-    shared per-session turn_lock. Defaults to "web" (matching the Owner
-    default of sender_banner above) — non-web callers (platform_bridge,
-    autowake, brother_conversation, pack_night, discord_mentions_bridge)
-    pass their own tier explicitly.
-
-    The function yields events matching the existing pipeline contract.
-    """
+    'Run one chat turn against the persistent supervisor for this identity.'
     effective_model = model or CLAUDE_MODEL
     effective_permission_mode = permission_mode or CLAUDE_PERMISSION_MODE
     yield {
@@ -1008,14 +825,7 @@ async def stream_claude(
     # the lock, nudge it to wind down early instead of waiting in FIFO order.
     _maybe_preempt_lower_priority_turn(session, turn_source)
 
-
-    if turn_source != "autowake" and session.max_turns < CLAUDE_MAX_TURNS:
-        log.info(
-            "raising max_turns %d -> %d for %s turn on %s/%s",
-            session.max_turns, CLAUDE_MAX_TURNS, turn_source,
-            session.identity, session.conversation_id[:8],
-        )
-        session.max_turns = CLAUDE_MAX_TURNS
+    effective_ceiling = _resolve_turn_ceiling(turn_source, turn_ceiling)
 
     # Acquire turn lock — only one turn at a time per session.
     async with session.turn_lock:
@@ -1027,6 +837,7 @@ async def stream_claude(
                 identity=identity,
                 cancel_event=cancel_event,
                 effective_permission_mode=effective_permission_mode,
+                turn_ceiling=effective_ceiling,
             ):
                 yield evt
             session.first_turn = False
@@ -1045,12 +856,26 @@ async def _run_one_turn(
     identity: str,
     cancel_event: asyncio.Event | None,
     effective_permission_mode: str,
+    turn_ceiling: int | None = None,
 ) -> AsyncIterator[dict]:
-    """Inner generator: writes the user message, drains events until `result`."""
+    """Inner generator: writes the user message, drains events until `result`.
+
+    turn_ceiling: if set, the turn is soft-interrupted (process kept warm)
+    the moment it starts tool round N+1, and an honest error names the
+    ceiling. None = uncapped for this turn.
+    """
     loop = asyncio.get_running_loop()
     full_text: list[str] = []
     sent_stream_end = False
     cancelled = False
+    tool_rounds: set[str] = set()
+    anon_rounds = 0
+    ceiling_hit = False
+    ceiling_reported = False
+    ceiling_message = (
+        f"Reached autowake tool ceiling ({turn_ceiling} tool rounds)"
+        if turn_ceiling else ""
+    )
     # Soft-interrupt state: set once write_interrupt() has been sent so we
     # never re-send it every poll tick, and so we can measure the grace
     # window from the moment it actually went out.
@@ -1120,6 +945,14 @@ async def _run_one_turn(
                 # else: interrupt already sent and still within the grace
                 # window — keep polling stdout below instead of tearing the
                 # process down.
+            elif ceiling_hit and loop.time() - interrupt_sent_at >= _INTERRUPT_TIMEOUT:
+                log.warning(
+                    "Ceiling interrupt for %s/%s did not resolve within %.0fs; "
+                    "falling back to hard cancel",
+                    identity, session.conversation_id[:8], _INTERRUPT_TIMEOUT,
+                )
+                cancelled = True
+                break
 
             # Client-silence keepalive. Checked every iteration (not just on the
             # queue-timeout branch) so it still fires while the subprocess is
@@ -1170,12 +1003,45 @@ async def _run_one_turn(
                 first_event_ms = (time.time() - spawn_started) * 1000
                 yield {"type": "meta", "first_event_ms": first_event_ms}
 
+            if turn_ceiling and not interrupt_sent:
+                round_id = _tool_round_id(event)
+                if round_id:
+                    tool_rounds.add(round_id)
+                elif round_id == "":
+                    anon_rounds += 1
+                if len(tool_rounds) + anon_rounds > turn_ceiling:
+                    try:
+                        await loop.run_in_executor(None, session.write_interrupt)
+                        interrupt_sent = True
+                        interrupt_sent_at = loop.time()
+                        ceiling_hit = True
+                        log.warning(
+                            "%s/%s hit the autowake tool ceiling (%d rounds); "
+                            "soft-interrupting, process stays warm",
+                            identity, session.conversation_id[:8], turn_ceiling,
+                        )
+                    except RuntimeError as e:
+                        log.warning(
+                            "Ceiling interrupt failed for %s/%s (%s); hard cancel",
+                            identity, session.conversation_id[:8], e,
+                        )
+                        ceiling_hit = True
+                        cancelled = True
+                        break
+
             async for parsed in _parse_event(event, session, identity, full_text):
+                if ceiling_hit and parsed.get("type") == "error":
+                    # The CLI's own words for an interrupt aren't the truth of
+                    # what happened — name the ceiling instead.
+                    parsed = {**parsed, "message": ceiling_message}
+                    ceiling_reported = True
                 if parsed.get("type") == "stream_end":
                     sent_stream_end = True
-                    if interrupt_sent:
-
-
+                    if ceiling_hit:
+                        if not ceiling_reported:
+                            yield {"type": "error", "message": ceiling_message}
+                            ceiling_reported = True
+                    elif interrupt_sent:
                         parsed["cancelled"] = True
                 yield parsed
                 # Real client-visible output resets the keepalive clock.
@@ -1210,6 +1076,9 @@ async def _run_one_turn(
                 _retire_session(session.pool_key)
 
         if cancelled and not sent_stream_end:
+            if ceiling_hit and not ceiling_reported:
+                yield {"type": "error", "message": ceiling_message}
+                ceiling_reported = True
             yield {
                 "type": "stream_end",
                 "full_content": "".join(full_text),
@@ -1412,11 +1281,24 @@ async def _parse_event(
                     yield {"type": "stream_delta", "delta": text}
         return
 
-    # ── user message — tool results ──
+    # ── user message — replays of what WE wrote, or tool results ──
     if event_type == "user":
+        # --replay-user-messages echoes every stdin message back when the
+        # agent loop takes it in. Never treat one as a tool result. If it is
+        # a message slipped into this running turn, this is the moment he
+        # read it, so tell the pipeline (its "Read" receipt waits on this).
+        if event.get("isReplay"):
+            replay_uuid = event.get("uuid")
+            if replay_uuid and replay_uuid in session.injected_uuids:
+                session.injected_uuids.discard(replay_uuid)
+                yield {"type": "user_message_absorbed", "uuid": replay_uuid}
+            return
         msg = event.get("message", {})
-        for block in msg.get("content", []):
-            if block.get("type") != "tool_result":
+        content_blocks = msg.get("content", [])
+        if not isinstance(content_blocks, list):
+            return
+        for block in content_blocks:
+            if not isinstance(block, dict) or block.get("type") != "tool_result":
                 continue
             content = block.get("content", "")
             content_text = content if isinstance(content, str) else ""

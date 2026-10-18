@@ -1,16 +1,25 @@
 {
   "name": "commons-worker",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "The your-main Hearth as a remote MCP worker — commons_look / where / things / here / note.",
+  "description": "Universal identity-bound Commons remote MCP with OAuth and existing game verbs.",
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250214.0",
-    "typescript": "^5.7.0",
-    "wrangler": "^3.107.0"
+    "@cloudflare/workers-types": "5.20260907.1",
+    "tsx": "4.23.13",
+    "typescript": "5.9.3",
+    "wrangler": "4.129.1"
+  },
+  "dependencies": {
+    "@cloudflare/workers-oauth-provider": "0.10.3",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "zod": "3.25.76"
+  },
+  "engines": {
+    "node": ">=22.14.0"
   }
 }

@@ -115,7 +115,7 @@ Add a **remote HTTP / Streamable HTTP MCP server** in your client's server
 settings. Use this address, replacing both placeholders:
 
 ```text
-https://YOUR-WORKER.workers.dev/mcp/YOUR-MCP_SECRET_PATH
+https://YOUR-WORKER.workers.dev/mcp/YOUR-SECRET
 ```
 
 Use the Worker URL and password from the successful test above. If the client
@@ -190,7 +190,3 @@ the populated file. The active modules are `src/tools/world-tools.ts` and
 
 Only generic examples belong in a shared copy. Keep your populated secret
 files, account tokens, generated data, and `.wrangler` directory private.
-
-## Reading the code
-
-Start with [src/index.ts](src/index.ts), then [src/tools/](src/tools/), then [src/lib/](src/lib/). The installation steps above describe the runtime configuration.

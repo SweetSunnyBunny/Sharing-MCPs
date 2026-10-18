@@ -1,11 +1,4 @@
-"""Owner-labelled voice samples for personal speech-emotion calibration.
-
-The recognizer's prediction is deliberately SHADOW data: it is saved beside
-the audio for later evaluation, but never changes the message, prompt, or
-limbic touch. Owner's one-tap label is the ground truth. This gives the next
-emotion backend a corpus of her actual voice instead of treating a generic
-training-population average as authority.
-"""
+'Application module.'
 
 
 from __future__ import annotations
@@ -122,12 +115,7 @@ def save_live_call_sample(
     *,
     model_id: str,
 ) -> dict[str, Any]:
-    """Persist an accepted Wolf's Ear utterance so its button can label it.
-
-    Presence-listen audio never calls this function and remains ephemeral.
-    Untrusted model output stays in a sidecar and is not returned to the live
-    page before Owner chooses her ground-truth label.
-    """
+    "Persist an accepted Wolf's Ear utterance so its button can label it."
     if not audio_bytes:
         raise ValueError("Cannot save an empty voice calibration sample")
     audio_id = uuid.uuid4().hex[:12]
@@ -174,7 +162,7 @@ async def save_calibration(
     target_identity: str | None = None,
     conversation_id: str | None = None,
 ) -> dict[str, Any]:
-    """Insert or correct Owner's ground-truth label for one stored clip."""
+    'Save calibration.'
     label = validate_label(label)
     audio_path = resolve_audio_path(audio_id)
     if audio_path is None:

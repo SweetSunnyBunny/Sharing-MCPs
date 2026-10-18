@@ -29,15 +29,9 @@ async def process_chat_message(
     pending_messages: deque,
     _register_content_images,
     _register_content_documents,
+    attach_bridge=None,
 ) -> tuple[str, str | None, object | None]:
-    """
-    Process a single chat message, stream the response back via the websocket,
-    and update conversation state.
-
-    Returns:
-        tuple (updated_identity, updated_conversation, status_or_None)
-        where status is _DISCONNECTED if the WebSocket died mid-stream.
-    """
+    ''
     await set_active_identity(current_identity, ws=ws)
     record_web_activity()
     from services.emotional_capture import increment_message_counter
@@ -83,6 +77,19 @@ async def process_chat_message(
 
     turn_started = asyncio.get_running_loop().time()
     stream_bridge = StreamWebSocketBridge(ws, log)
+    if attach_bridge is not None:
+        stream_bridge.stamp = {"identity": current_identity}
+        attach_bridge(stream_bridge)
+
+    # Read receipts (services/read_receipts.py): "Delivered" the instant her
+    # message is saved, "Read" the moment his model starts answering it.
+    from services.read_receipts import delivered_event, is_read_signal, mark_read_and_send
+    client_msg_id = msg.get("client_msg_id")
+
+    async def _send_delivered(message_id: str, delivered_at: str) -> None:
+        await stream_bridge.send(delivered_event(
+            message_id, current_conversation, delivered_at, client_msg_id,
+        ))
 
     prep_started = asyncio.get_running_loop().time()
     db = await get_db()
@@ -92,6 +99,8 @@ async def process_chat_message(
             db, current_identity, current_conversation
         )
         set_active_conversation(current_identity, current_conversation)
+        if stream_bridge.stamp is not None and current_conversation:
+            stream_bridge.stamp["conversation_id"] = current_conversation
 
         # Inject reply-to context if replying to a specific message
         effective_text = text
@@ -119,6 +128,7 @@ async def process_chat_message(
             active_categories=active_categories,
             log=log,
             skip_user_save=is_approval_retry or is_regenerate,
+            on_user_saved=_send_delivered,
         )
         prompt = prepared_turn.prompt
         image_content_blocks = prepared_turn.image_content_blocks
@@ -170,6 +180,35 @@ async def process_chat_message(
         cancel_event=stream_bridge.cancel_event,
     )
 
+    # Ids of messages slipped into this running turn, awaiting their "Read".
+    injected_unread: list[str] = []
+    # Replay uuid -> saved message id for each slip-in. The CLI echoes the
+    # uuid back the moment it absorbs the message (user_message_absorbed),
+    # which is when her "Read" lands. The turn's finish stays the fallback.
+    injected_by_uuid: dict[str, str] = {}
+    # Absorbed before the DB save finished (the write goes down stdin first).
+    absorbed_early: set[str] = set()
+
+    async def _mark_injected_read(replay_uuid: str, *, flush: bool = True) -> None:
+        """He just took in a slipped-in message: stamp its "Read" now.
+
+        ``flush`` sends any buffered reply text first so event order stays
+        exact; only the stream loop itself may flush the coalescer.
+        """
+        if not replay_uuid:
+            return
+        msg_id = injected_by_uuid.pop(replay_uuid, None)
+        if not msg_id:
+            # The CLI can absorb it before the DB save returns; the injector
+            # checks this set right after saving.
+            absorbed_early.add(replay_uuid)
+            return
+        if msg_id in injected_unread:
+            injected_unread.remove(msg_id)
+        if flush:
+            await coalescer.flush()
+        await mark_read_and_send(msg_id, current_identity, stream_bridge.send)
+
     # Finalize is shared between the main stream and the stale-session retry
     # stream so a successful retry is always persisted (not just shown) and both
     # paths accumulate tool/thinking state identically via the same accumulator.
@@ -204,6 +243,11 @@ async def process_chat_message(
             register_content_documents=_register_content_documents,
         )
         finalized = True
+        # Messages she slipped into this running turn are absorbed by now.
+        while injected_unread:
+            await mark_read_and_send(
+                injected_unread.pop(0), current_identity, stream_bridge.send,
+            )
         content = finalized_turn.content
         msg_id = finalized_turn.msg_id
         # Send stream_end with rewritten content + msg_id for reactions
@@ -307,9 +351,7 @@ async def process_chat_message(
 
     async def _inject_live_message(incoming: dict) -> bool:
         i_text, i_images, i_docs, i_audio = normalize_incoming_message(incoming)
-        # Text-only for now: attachments still need the full prep pipeline
-        # (upload registration, image blocks), so they queue as their own turn.
-        if not i_text or i_images or i_docs or i_audio:
+        if not i_text and not i_images and not i_docs and not i_audio:
             return False
         if incoming.get("approval_retry") or incoming.get("regenerate_nudge"):
             return False
@@ -325,34 +367,71 @@ async def process_chat_message(
             i_preview = (i_reply.get("preview") or "")[:150]
             i_text = '[Replying to: "' + i_preview + '"]\n' + i_text
         from services.claude_subprocess import inject_user_message
+        from services.chat_turn_prep import (
+            build_cli_image_notes, compose_attachment_prompt,
+        )
+        from services.chat_flow import build_user_message_metadata
+        import uuid as _uuid
+        i_prompt = await asyncio.to_thread(
+            compose_attachment_prompt,
+            i_text, build_cli_image_notes(i_images), i_docs, i_audio,
+        )
+        if not i_prompt.strip():
+            return False
         banner = (
             "[Owner, just now — she sent this while you were mid-turn, so it "
             "arrived in the middle of the work you're already doing. Take it "
             "in and keep going; let her know you heard her.]\n"
         )
+        replay_uuid = str(_uuid.uuid4())
         injected = await asyncio.to_thread(
             inject_user_message,
             current_identity,
             current_conversation,
-            banner + i_text,
+            banner + i_prompt,
+            replay_uuid,
         )
         if not injected:
             return False
         # Persist it so the saved transcript matches what he actually received.
+        from services.read_receipts import now_iso
+        i_delivered_at = now_iso()
+        i_metadata = build_user_message_metadata(i_images, i_docs, i_audio) or {}
+        i_metadata["receipt"] = {"delivered_at": i_delivered_at}
         idb = await get_db()
         try:
-            await save_message(
+            i_msg_id = await save_message(
                 idb, current_conversation, "user", i_text,
                 identity=current_identity,
+                metadata=i_metadata,
             )
         finally:
             await release_db(idb)
+        # Delivered now. "Read" lands when the CLI echoes replay_uuid back
+        # (the moment he takes it in, right after his current tool call);
+        # the turn's finish marks anything still unread as a fallback.
+        if i_msg_id:
+            injected_unread.append(i_msg_id)
+            # Delivered goes out BEFORE the uuid is mapped, so "Read" can
+            # never reach the browser ahead of the event that ties this
+            # message id to her bubble.
+            await stream_bridge.send(delivered_event(
+                i_msg_id, current_conversation, i_delivered_at,
+                incoming.get("client_msg_id"),
+            ))
+            injected_by_uuid[replay_uuid] = i_msg_id
+            if replay_uuid in absorbed_early:
+                absorbed_early.discard(replay_uuid)
+                await _mark_injected_read(replay_uuid, flush=False)
         try:
             from services.limbic_bridge import touch_interactive_message
             touch_interactive_message(current_identity, i_text)
+        except Exception as exc:
+            log.debug("Limbic touch skipped for injected message: %s", exc)
+        try:
             record_web_activity()
-        except Exception:
-            pass
+        except Exception as exc:
+            log.debug("Web activity record skipped: %s", exc)
         await stream_bridge.send({
             "type": "message_injected",
             "conversation_id": current_conversation,
@@ -366,13 +445,33 @@ async def process_chat_message(
 
     stream_bridge.inject_hook = _inject_live_message
 
-    # Start concurrent WS listener for stop_streaming
-    listener_task = asyncio.create_task(stream_bridge.listen_during_stream())
+    # Start concurrent WS listener for stop_streaming — unless the /ws/chat
+    # router is reading the socket for us (attach_bridge), in which case it
+    # sets cancel_event / calls inject_hook on this bridge itself.
+    listener_task = (
+        None if attach_bridge is not None
+        else asyncio.create_task(stream_bridge.listen_during_stream())
+    )
     was_cancelled = False
     stream_error: Exception | None = None
+    receipt_read = False
     try:
         async for event in stream_source:
+            event_type = event.get("type")
+            if event_type == "user_message_absorbed":
+                # Receipt plumbing only: never shown, never accumulated.
+                await _mark_injected_read(event.get("uuid") or "")
+                continue
             event_type = acc.observe(event)
+
+            # First real sign of him working on it = he's read her message.
+            # Sent BEFORE the event itself so "Read" never trails his words.
+            if not receipt_read and is_read_signal(event_type, event):
+                receipt_read = True
+                await coalescer.flush()
+                await mark_read_and_send(
+                    prepared_turn.user_message_id, current_identity, stream_bridge.send,
+                )
 
             if event_type == "stream_end":
                 # Flush buffered deltas BEFORE stream_end goes out — the
@@ -386,7 +485,10 @@ async def process_chat_message(
         log.exception("Stream failed mid-turn for %s: %s", current_identity, exc)
     finally:
         # Always stop the listener, even on exception, so it can't leak.
-        was_cancelled = await stream_bridge.stop_listener(listener_task)
+        if listener_task is not None:
+            was_cancelled = await stream_bridge.stop_listener(listener_task)
+        else:
+            was_cancelled = stream_bridge.cancel_event.is_set()
         # Final flush — never leave coalesced text buffered on stop/error;
         # the partial-save path below sends its own stream_end afterwards.
         await coalescer.flush()

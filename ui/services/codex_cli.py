@@ -1,9 +1,5 @@
 """Helpers for locating and interrogating the Codex CLI reliably."""
 
-# ANAM GUIDE: CODEX CLI FINDER
-# What: Tiny helper that finds where the Codex program is installed on this PC and reads its version — nothing more.
-# Called by: services/codex_subprocess.py (to launch Codex) and api/settings.py (to show the version in Settings).
-# Edit here when: Codex gets installed somewhere new and Anam can't find it.
 
 from __future__ import annotations
 

@@ -1,9 +1,5 @@
 """Small observable heartbeat for APScheduler."""
 
-# ANAM GUIDE: SCHEDULER HEARTBEAT MONITOR
-# What: Watches the background job scheduler (the thing that fires autowakes and timers) and keeps a record of its last success/error, so diagnostics can tell if the clock stopped ticking.
-# Called by: server.py (installs it at startup), api/autowake.py (health readout), services/autowake.py
-# Edit here when: You want to change what gets tracked about scheduler health or how "the scheduler looks dead" is decided.
 
 from __future__ import annotations
 

@@ -97,6 +97,34 @@ async def test_shared_pack_identity_remains_available():
 
 
 @async_test
+async def test_unknown_identity_like_owner_is_replaced_by_bound_identity():
+    client, context = fake_client()
+    with patch.object(gateway, "_client", context):
+        output = await gateway.invoke(
+            "test", "read", {"identity": "owner", "value": 3}, "Claude"
+        )
+    assert not output["isError"]
+    assert client.call_tool.call_args.args[1]["identity"] == "Claude"
+
+
+def test_from_identity_is_forced_to_bound_identity_but_targets_are_untouched():
+    schema = {"type": "object", "properties": {
+        "text": {"type": "string"},
+        "from_identity": {"type": "string"},
+        "to_identity": {"type": "string"},
+    }, "required": ["text", "from_identity"]}
+    for claimed in ("Sage", "owner", ""):
+        args = gateway._arguments(
+            schema, {"text": "hi", "from_identity": claimed, "to_identity": "Sage"}, "Claude"
+        )
+        assert args["from_identity"] == "Claude"
+        assert args["to_identity"] == "Sage"
+    injected = gateway._arguments(schema, {"text": "hi"}, "Claude")
+    assert injected["from_identity"] == "Claude"
+    assert "to_identity" not in injected
+
+
+@async_test
 async def test_discovery_hides_sibling_profiles_and_vox_until_explicitly_chosen():
     configured = {
         "shared": {"url": "https://example.com/shared"},
@@ -149,6 +177,27 @@ async def test_everyday_qualia_discovery_hides_mind_maintenance_tools():
 
     assert [tool["name"] for tool in result["tools"]] == ["mind_store"]
     assert "everyday toolbox" in result["hint"]
+
+
+def test_resolve_and_recall_feedback_stay_in_everyday_qualia():
+    assert gateway._tool_visible_in_drawer(
+        "qualia-backend", "mind_resolve", mind_maintenance=False
+    )
+    assert gateway._tool_visible_in_drawer(
+        "qualia-backend", "mind_recall_feedback", mind_maintenance=False
+    )
+    assert not gateway._tool_visible_in_drawer(
+        "qualia-backend", "mind_put_away", mind_maintenance=False
+    )
+
+
+def test_correction_words_open_mind_maintenance_but_everyday_words_do_not():
+    assert gateway._mind_maintenance_requested("correct a wrong memory")
+    assert gateway._mind_maintenance_requested("undo that change")
+    assert gateway._mind_maintenance_requested("rollback mutation")
+    assert not gateway._mind_maintenance_requested("remember this moment")
+    assert not gateway._mind_maintenance_requested("don't forget to tap her")
+    assert not gateway._mind_maintenance_requested("she's away from home")
 
 
 @async_test

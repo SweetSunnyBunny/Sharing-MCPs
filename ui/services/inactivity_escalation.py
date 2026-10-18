@@ -1,13 +1,4 @@
-"""Failsafe inactivity escalation — graduated check-ins when Owner goes quiet.
-
-Runs every 5 minutes. Tracks how long since Owner's last web activity and
-escalates through three levels:
-  Level 1 (gentle): Broadcast a soft check-in via WebSocket
-  Level 2 (concerned): Send a push notification
-  Level 3 (emergency): Push notification + autowake session
-
-Respects quiet hours. Resets when Owner sends a message or reconnects.
-"""
+'Application module.'
 
 
 import asyncio
@@ -78,7 +69,7 @@ async def load_config_from_db():
 
 
 def reset_escalation():
-    """Reset escalation level. Call when Owner sends a message or reconnects."""
+    'Reset escalation.'
     global _current_level, _level_fired_at
     if _current_level > 0:
         log.info("Inactivity escalation reset (was level %d)", _current_level)

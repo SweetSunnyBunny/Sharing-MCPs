@@ -26,6 +26,9 @@ COMMAND_TIMEOUT = int(os.environ.get("TERMINAL_TIMEOUT", "120"))  # seconds
 MAX_OUTPUT_CHARS = int(os.environ.get("TERMINAL_MAX_OUTPUT", "100000"))
 MAX_SESSIONS = int(os.environ.get("TERMINAL_MAX_SESSIONS", "10"))
 
+# Longest single output line the reader accepts (asyncio's default is 64 KB).
+_STREAM_LIMIT = 16 * 1024 * 1024
+
 # Sentinel used to detect when a command finishes
 _SENTINEL_PREFIX = "__TERMINAL_MCP_DONE__"
 
@@ -129,8 +132,37 @@ class SessionManager:
             stderr=asyncio.subprocess.STDOUT,
             cwd=session.cwd,
             env=env,
+            # readline() raises past this limit. The 64 KB default broke on one
+            # long line (a minified JSON file) and left the rest in the pipe.
+            limit=_STREAM_LIMIT,
         )
         session.process = process
+
+    async def _kill_shell(self, session: TerminalSession):
+        """Kill the session's shell and whatever it is running.
+
+        The session itself stays; the next execute() respawns a shell in the
+        session's last known cwd.
+        """
+        proc = session.process
+        session.process = None
+        if proc is None or proc.returncode is not None:
+            return
+        try:
+            if os.name == "nt":
+                # proc.kill() ends powershell.exe only; /T takes the command's
+                # own child processes with it.
+                killer = await asyncio.create_subprocess_exec(
+                    "taskkill", "/PID", str(proc.pid), "/T", "/F",
+                    stdout=asyncio.subprocess.DEVNULL,
+                    stderr=asyncio.subprocess.DEVNULL,
+                )
+                await killer.wait()
+            if proc.returncode is None:
+                proc.kill()
+            await proc.wait()
+        except (ProcessLookupError, OSError):
+            pass
 
     async def execute(
         self,
@@ -143,14 +175,14 @@ class SessionManager:
         if not session:
             raise KeyError(f"Session '{session_id}' not found")
 
-        # Check if process is still alive; respawn if needed
-        if session.process is None or session.process.returncode is not None:
-            log.warning("Session %s shell died — respawning", session_id)
-            await self._spawn(session)
-
         timeout = timeout or COMMAND_TIMEOUT
 
         async with session._lock:
+            # Check if process is still alive; respawn if needed. Inside the
+            # lock, so two calls on a dead session cannot both spawn a shell.
+            if session.process is None or session.process.returncode is not None:
+                log.warning("Session %s shell died — respawning", session_id)
+                await self._spawn(session)
             return await self._run_command(session, command, timeout)
 
     async def _run_command(
@@ -169,8 +201,13 @@ class SessionManager:
         # 3. Print the cwd for tracking
         # 4. Echo the sentinel with exit code
         if os.name == "nt":
+            # The blank line after the command matters: `powershell -Command -`
+            # only runs a multi-line block (if/foreach/function) once it sees an
+            # empty line. Without it the block swallowed the sentinel lines as
+            # its own continuation and the session hung for good.
             wrapped = (
                 f"{command}\n"
+                f"\n"
                 f"$__terminal_ok = $?\n"
                 f"$__ec = if ($__terminal_ok) {{ 0 }} else {{ 1 }}\n"
                 f'Write-Output "{sentinel} $__ec $((Get-Location).Path)"\n'
@@ -190,6 +227,7 @@ class SessionManager:
         exit_code = 0
         new_cwd = session.cwd
         timed_out = False
+        shell_lost = False
 
         try:
             deadline = asyncio.get_event_loop().time() + timeout
@@ -209,7 +247,9 @@ class SessionManager:
                     break
 
                 if not line:
-                    # Process exited
+                    # Shell exited before the sentinel: that is not a success.
+                    exit_code = -1
+                    shell_lost = True
                     break
 
                 decoded = line.decode("utf-8", errors="replace").rstrip("\n").rstrip("\r")
@@ -231,6 +271,16 @@ class SessionManager:
 
         except Exception as e:
             output_lines.append(f"\n[Terminal error: {e}]")
+            exit_code = -1
+            shell_lost = True
+
+        # A command that timed out is still running, and after a read error the
+        # pipe holds leftovers. Either way the next command would read this
+        # one's output, so the shell is killed and respawned on the next call.
+        if timed_out or shell_lost:
+            if timed_out:
+                exit_code = -1
+            await self._kill_shell(session)
 
         # Update session state
         session.cwd = new_cwd
@@ -244,18 +294,20 @@ class SessionManager:
             stripped = line.strip()
             # Remove carriage returns / ANSI escapes
             stripped_clean = stripped.replace("\r", "")
-            # Skip prompt lines
-            if stripped_clean.startswith("$ "):
-                continue
-            # Skip our internal bookkeeping
-            if stripped_clean.startswith("__ec="):
-                continue
+            # Prompt lines, the `__ec=` bookkeeping and echoed command lines only
+            # come from `bash -i`. PowerShell on stdin echoes nothing, so on
+            # Windows these filters could only ever delete real output (any
+            # line starting "$ ", or equal to a line of the command).
+            if os.name != "nt":
+                if stripped_clean.startswith("$ "):
+                    continue
+                if stripped_clean.startswith("__ec="):
+                    continue
+                if stripped_clean in cmd_lines:
+                    continue
             if sentinel in stripped_clean:
                 continue
             if _SENTINEL_PREFIX in stripped_clean:
-                continue
-            # Skip exact echoes of command lines
-            if stripped_clean in cmd_lines:
                 continue
             # Skip empty lines at the very start
             if not clean_lines and not stripped_clean:
@@ -285,7 +337,15 @@ class SessionManager:
         }
 
         if timed_out:
-            result["warning"] = f"Command timed out after {timeout}s. Output may be incomplete."
+            result["warning"] = (
+                f"Command timed out after {timeout}s and was killed. Output may be incomplete. "
+                "The session's shell was restarted: cwd is kept, environment variables are not."
+            )
+        elif shell_lost:
+            result["warning"] = (
+                "The shell exited or its output could not be read. "
+                "The session's shell will be restarted on the next command: cwd is kept, environment variables are not."
+            )
 
         return result
 

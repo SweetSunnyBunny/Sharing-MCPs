@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "anam-touch": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/anam-touch-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/anam-touch-mcp/server.py"
+      ],
+      "env": {
+        "ANAM_URL": "http://127.0.0.1:8790",
+        "ANAM_API_KEY": "YOUR-ANAM-KEY",
+        "ANAM_TIMEZONE": "UTC"
+      }
+    }
+  }
+}

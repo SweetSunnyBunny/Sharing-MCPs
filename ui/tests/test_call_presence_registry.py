@@ -77,7 +77,7 @@ class CallActiveEndpointTests(unittest.TestCase):
         self.assertEqual(payload["identities"], ["Avery"])
 
     def test_identity_filter_isolates_the_boys(self):
-        """Claude on a call must not keep Avery's Ear off its own mic."""
+        'Test identity filter isolates the boys.'
         voice_call.call_started("Claude")
         self.assertFalse(self._get(identity="Avery")["active"])
         self.assertTrue(self._get(identity="Claude")["active"])

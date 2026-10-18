@@ -1,19 +1,5 @@
-"""Nightly online backup of anam.db.
+'Nightly online backup of anam.db.'
 
-The database is the single file holding every conversation Owner has ever
-had with the pack. This service uses SQLite's online backup API,
-which safely copies a live database while
-the server is still reading and writing it.
-
-Schedule: nightly at 03:30 via APScheduler (registered in core/lifespan.py),
-plus a catch-up backup at startup when the newest copy is older than 24h —
-covering the machine being asleep or the server being down at 3am.
-"""
-
-# ANAM GUIDE: NIGHTLY DATABASE BACKUP
-# What: Safely refreshes one recovery copy of anam.db in the Vault each night at 3:30am.
-# Called by: core/lifespan.py — registers the 3:30am schedule and runs a catch-up backup at server startup if the newest copy is over a day old.
-# Edit here when: changing backup timing, where backups go, or how many copies to keep (those live in config.py as DB_BACKUP_DIR / DB_BACKUP_KEEP).
 
 from __future__ import annotations
 

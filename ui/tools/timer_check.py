@@ -20,7 +20,8 @@ for _stream in (sys.stdout, sys.stderr):
     except (AttributeError, ValueError):
         pass
 
-DB = Path(__file__).resolve().parents[1] / "data" / "anam.db"
+# The app's own DB path, so ANAM_DB_PATH / ANAM_DATA_DIR overrides are honored.
+from config import DB_PATH as DB  # noqa: E402
 LOCAL = ZoneInfo("America/Chicago")
 
 # A minute of slop is fine — anything past that is a real disagreement, not

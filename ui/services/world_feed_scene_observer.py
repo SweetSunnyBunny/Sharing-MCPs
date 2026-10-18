@@ -1,4 +1,6 @@
 """Bounded, source-grounded roleplay observations, using the existing activity queue."""
+
+
 import asyncio
 import hashlib
 import json
@@ -95,7 +97,11 @@ async def _sources(db, request, world):
 
 
 async def enqueue(db, world_id, conversation_id, user_message_id, assistant_message_id):
-    """Only queue identifiers here; no generation and no chat latency from a model."""
+    """Only queue identifiers here; no generation and no chat latency from a model.
+
+    Does not commit: the caller owns the transaction and commits (the story
+    bridge commits the memory row and this queued run together).
+    """
     from services.world_feed_activity import settings
     world = await feed.get_world(db, world_id)
     config = settings(world)
@@ -248,9 +254,16 @@ async def process(db, row):
     except asyncio.CancelledError:
         await db.rollback()
         raise
-    except Exception:
+    except Exception as exc:
         await db.rollback()
-        log.exception("World Feed scene observer %s failed", row["id"])
+        if isinstance(exc, feed.WorldFeedError):
+            # Expected outcomes (scene edited, story time moved, invalid evidence):
+            # record the reason for the status panel, no traceback noise.
+            log.info("World Feed scene observer %s not published: %s", row["id"], exc)
+            error = str(exc)
+        else:
+            log.exception("World Feed scene observer %s failed", row["id"])
+            error = "Scene observation could not be published; not retried."
         iso, now = feed._now()
-        await db.execute("UPDATE story_feed_ai_runs SET status='failed',error='Scene observation could not be published; not retried.',completed_at=?,completed_at_epoch=? WHERE id=? AND status='running'", (iso, now, row["id"]))
+        await db.execute("UPDATE story_feed_ai_runs SET status='failed',error=?,completed_at=?,completed_at_epoch=? WHERE id=? AND status='running'", (error, iso, now, row["id"]))
         await db.commit()

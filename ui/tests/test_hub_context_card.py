@@ -1,9 +1,4 @@
-"""Owner's context card (#19) — "me right now", one card read by all six.
-
-GET/POST /api/hub/context-card (patch-style save, always refreshes
-updated_at) and the orientation-side honesty grammar: silent when empty,
-silent past 6h stale, an age stamp past 10 minutes.
-"""
+'Application module.'
 
 import json
 import time

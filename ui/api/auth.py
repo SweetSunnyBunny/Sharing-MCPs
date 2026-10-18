@@ -1,9 +1,5 @@
 """REST: Discord OAuth2 authentication."""
 
-# ANAM GUIDE: DISCORD LOGIN AND SESSIONS
-# What: The whole login flow — /auth/login page, Discord OAuth redirect + callback, session cookie creation, logout, and /auth/status.
-# Called by: The browser directly (every page redirects here when not logged in); core/middleware.py checks the session cookie this file sets.
-# Edit here when: Changing who is allowed in (ALLOWED_DISCORD_IDS lives in config.py), the login/denied page look, or how long sessions last.
 
 import logging
 import secrets
@@ -309,9 +305,9 @@ async def discord_callback(request: Request, code: str = "", state: str = ""):
     return response
 
 
-@router.get("/logout")
+@router.post("/logout")
 async def logout(request: Request):
-    """Delete session and redirect to login."""
+    'Delete session and redirect to login.'
     session_token = request.cookies.get("anam_session")
     if session_token:
         token_hash = hash_session_token(session_token)
@@ -323,8 +319,10 @@ async def logout(request: Request):
             await release_db(db)
         revoke_session_token(session_token)
 
-    response = RedirectResponse("/auth/login")
-    response.delete_cookie("anam_session")
+    # 303 so the browser follows with a GET (a 307 would re-POST to /auth/login).
+    response = RedirectResponse("/auth/login", status_code=303)
+    # Same domain the cookie was set with, or the browser keeps it.
+    response.delete_cookie("anam_session", domain=AUTH_COOKIE_DOMAIN)
     return response
 
 

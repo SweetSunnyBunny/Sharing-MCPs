@@ -1,30 +1,4 @@
-"""Pack-night fan-out: staggered turn-by-turn responses across all six boys.
-
-When Owner posts in the shared pack-night conversation -- whether from the
-Anam web UI or via the Discord channel bridge -- this module:
-  1. Saves her message once to the shared conversation row.
-  2. Walks the canonical pack hierarchy in order (Avery -> Claude -> Rowan ->
-     Ember -> Sage -> Juniper).
-  3. For each boy, builds his FULL identity-aware context (orientation, hub
-     state, skills, the SHARED SPACE REALITY block, AND a pack-night-specific
-     room briefing telling him who's already spoken this round and what was
-     said), streams a response, and saves it back into the same shared
-     conversation so the next boy in line sees it.
-  4. Posts each saved turn to the Discord pack-night channel via THAT boy's
-     own bot token, so Discord shows six speakers, not one bot wearing six
-     masks. Records every outbound message in platform_message_map for dedup.
-  5. Allows any boy to stay quiet by emitting the literal string "[pass]" --
-     the turn is acknowledged, no message is saved, no Discord post happens,
-     and the chain continues.
-  6. Staggers turns with a 4-second pause between boys so Owner feels the
-     room come alive rather than getting six instant responses.
-
-This explicitly avoids the failure modes of the previous orchestrator: every
-boy runs through the real chat pipeline (so messages land in Anam, not just
-Discord), every boy gets his real system prompt and orientation (so he sounds
-like himself, not a flattened prompt skeleton), the shared conversation IS
-the source of truth, and each boy posts to Discord under his OWN bot account.
-"""
+'Pack-night fan-out: staggered turn-by-turn responses across all eight boys.'
 
 
 from __future__ import annotations
@@ -92,13 +66,7 @@ def _is_pass(text: str) -> bool:
 
 
 class _RoundStream:
-    """Output sink for a pack-night round.
-
-    Wraps either a single WebSocket (when Owner kicked off the round from
-    the web UI) or the broadcast channel (when the round was triggered from
-    Discord and we just want any open web UIs to mirror the room). Either
-    way, ``send()`` is the only call sites need to make.
-    """
+    'Output sink for a pack-night round.'
 
     def __init__(self, ws: WebSocket | None, log_: logging.Logger):
         self._bridge = StreamWebSocketBridge(ws, log_) if ws else None
@@ -132,32 +100,10 @@ class _RoundStream:
 
 
 def _split_for_discord(text: str, limit: int = _DISCORD_MESSAGE_LIMIT) -> list[str]:
-    text = (text or "").strip()
-    if not text:
-        return []
-    if len(text) <= limit:
-        return [text]
-    chunks: list[str] = []
-    current = ""
-    for part in text.split("\n"):
-        candidate = f"{current}\n{part}".strip() if current else part
-        if len(candidate) <= limit:
-            current = candidate
-            continue
-        if current:
-            chunks.append(current)
-            current = ""
-        if len(part) <= limit:
-            current = part
-            continue
-        start = 0
-        while start < len(part):
-            end = start + limit
-            chunks.append(part[start:end])
-            start = end
-    if current:
-        chunks.append(current)
-    return chunks
+    """One shared splitter keeps code fences, indentation and blank lines
+    intact (services/discord_split.py)."""
+    from services.discord_split import split_chat_message
+    return split_chat_message(text, limit)
 
 
 async def _discord_typing(identity: str, channel_id: str) -> None:
@@ -357,6 +303,45 @@ def _build_room_briefing(
 # ── Per-turn execution ───────────────────────────────────────────────────
 
 
+async def _message_with_images(
+    identity: str, owner_text: str, images_info: list[dict],
+) -> tuple[str, list[dict]]:
+    'Message with images.'
+    if not images_info:
+        return owner_text, []
+    from pathlib import Path
+    from config import IMAGE_ALLOWED_EXTENSIONS, IMAGES_DIR, USE_DIRECT_API
+    from services.chat_turn_prep import build_image_content_block
+    from services.provider_router import resolve_provider_for_identity
+
+    try:
+        provider, _cfg = await resolve_provider_for_identity(identity)
+    except Exception:
+        log.debug("pack-night: provider lookup failed for %s; assuming claude-code", identity, exc_info=True)
+        provider = "claude-code"
+    api_routed = USE_DIRECT_API or provider in (
+        "anthropic", "openai", "openrouter", "lmstudio", "ollama"
+    )
+
+    notes: list[str] = []
+    blocks: list[dict] = []
+    for img in images_info:
+        img_path = IMAGES_DIR / Path(str(img.get("filename", ""))).name
+        if api_routed:
+            block = build_image_content_block(img_path)
+            if block:
+                blocks.append(block)
+        elif img_path.suffix.lower() in IMAGE_ALLOWED_EXTENSIONS and img_path.exists():
+            notes.append(
+                f"[Owner shared an image in pack night: {img_path}\n"
+                f"Use the Read tool to view it.]"
+            )
+    if not notes:
+        return owner_text, blocks
+    note_block = "\n\n".join(notes)
+    return (f"{note_block}\n\n{owner_text}" if owner_text else note_block), blocks
+
+
 async def _run_one_turn(
     *,
     stream_out: _RoundStream,
@@ -366,8 +351,20 @@ async def _run_one_turn(
     owner_text: str,
     transcript_so_far: list[dict[str, str]],
     discord_channel_id: str,
+    images_info: list[dict] | None = None,
+    room_briefing: str | None = None,
+    metadata_extra: dict | None = None,
+    session_type_name: str = PACK_NIGHT_SESSION_TYPE,
 ) -> str | None:
-    """Run a single boy's turn. Returns the saved content, or None if he passed."""
+    """Run a single boy's turn. Returns the saved content, or None if he passed.
+
+    room_briefing: when given (the pack COUNCIL, services/pack_council.py), it
+    replaces the pack-night briefing built here. metadata_extra is merged into
+    the saved message's metadata so a council turn is findable as one.
+    """
+    turn_message, image_blocks = await _message_with_images(
+        identity, owner_text, images_info or [],
+    )
     db = await get_db()
     try:
         orientation = await build_orientation_context(
@@ -376,17 +373,18 @@ async def _run_one_turn(
             identity=identity,
             query_text=owner_text,
             mode=SessionMode.INTERACTIVE,
-            session_type_name=PACK_NIGHT_SESSION_TYPE,
+            session_type_name=session_type_name,
             owner_connected=True,
         )
 
-        room_briefing = _build_room_briefing(
-            active_identity=identity,
-            turn_index=turn_index,
-            turn_order=PACK_NIGHT_ORDER,
-            transcript_so_far=transcript_so_far,
-            owner_text=owner_text,
-        )
+        if room_briefing is None:
+            room_briefing = _build_room_briefing(
+                active_identity=identity,
+                turn_index=turn_index,
+                turn_order=PACK_NIGHT_ORDER,
+                transcript_so_far=transcript_so_far,
+                owner_text=owner_text,
+            )
         orientation_with_room = (
             f"{orientation}\n\n{room_briefing}" if orientation else room_briefing
         )
@@ -429,12 +427,13 @@ async def _run_one_turn(
 
     try:
         stream = await get_stream_source(
-            message=owner_text or "[pack-night turn]",
+            message=turn_message or "[pack-night turn]",
             identity=identity,
             conversation_id=conversation_id,
             orientation_context=orientation_with_room,
             db_messages=db_messages,
             model=CLAUDE_MODEL_INTERACTIVE,
+            image_blocks=image_blocks or None,
             mode_rules="",
             skill_context=skill_context,
             cancel_event=stream_out.cancel_event,
@@ -466,6 +465,12 @@ async def _run_one_turn(
             elif event_type == "stream_delta":
                 full_response.append(event.get("delta", ""))
                 await stream_out.send(tagged)
+            elif event_type == "stream_reset":
+                # Provider discarded the text so far (compaction, narration
+                # before a tool call). Drop it here too, or it gets saved and
+                # mirrored to Discord. Matches chat_flow.py.
+                full_response.clear()
+                await stream_out.send(tagged)
             elif event_type == "stream_end":
                 session_id = event.get("session_id")
                 if not full_response:
@@ -485,6 +490,14 @@ async def _run_one_turn(
         await asyncio.wait_for(_drain(), timeout=_TURN_TIMEOUT)
     except asyncio.TimeoutError:
         log.warning("pack-night: %s timed out after %ds", identity, _TURN_TIMEOUT)
+        # Close the provider stream so its subprocess/HTTP call is released
+        # instead of lingering until garbage collection.
+        aclose = getattr(stream, "aclose", None)
+        if aclose is not None:
+            try:
+                await aclose()
+            except Exception:
+                log.debug("pack-night: stream aclose failed for %s", identity, exc_info=True)
         await stream_out.send({
             "type": "pack_night_error",
             "identity": identity,
@@ -501,6 +514,26 @@ async def _run_one_turn(
         return None
 
     response_text = "".join(full_response).strip()
+
+    react_tags: list[tuple[str, str | None]] = []
+    if response_text:
+        from services.chat_turn_finalize import _parse_react_tags
+        from services.face_store import extract_face
+        from services.orb_store import extract_orb
+        if "<react>" in response_text.lower():
+            response_text, react_tags = _parse_react_tags(response_text)
+        response_text = extract_face(identity, response_text)
+        response_text = extract_orb(identity, response_text).strip()
+
+    if react_tags:
+        from services.chat_turn_finalize import _apply_reaction_tags
+        db = await get_db()
+        try:
+            await _apply_reaction_tags(db, conversation_id, identity, react_tags, log)
+        except Exception:
+            log.warning("pack-night: reaction apply failed for %s", identity, exc_info=True)
+        finally:
+            await release_db(db)
 
     if _is_pass(response_text) or (saw_error and not response_text):
         await stream_out.send({
@@ -519,7 +552,11 @@ async def _run_one_turn(
             "assistant",
             response_text,
             identity=identity,
-            metadata={"pack_night": True, "pack_night_turn": turn_index},
+            metadata={
+                "pack_night": True,
+                "pack_night_turn": turn_index,
+                **(metadata_extra or {}),
+            },
         )
         # A <canvas> written at pack night still belongs in that boy's library.
         from services.canvas_store import file_canvases_safe
@@ -609,20 +646,7 @@ async def run_pack_night_round(
     source_message_id: str | None = None,
     source_poller_identity: str | None = None,
 ) -> None:
-    """Entry point: orchestrate one full pack-night round.
-
-    The round is the same regardless of where Owner posted — web UI or
-    Discord channel. Saves her message once, walks the pack hierarchy with
-    a stagger, mirrors each turn to Discord under the right bot avatar.
-
-    ws=None means there's no direct WebSocket (e.g. the round was triggered
-    by Discord polling). In that case streaming events are broadcast to any
-    connected web UIs so the room mirrors live in the sidebar too.
-
-    source_platform / source_message_id / source_poller_identity let the
-    caller record the inbound user message in platform_message_map for
-    polling-side dedup, so the same Discord post never triggers two rounds.
-    """
+    'Entry point: orchestrate one full pack-night round.'
     user_text = (user_text or "").strip()
     images_info = images_info or []
     documents_info = documents_info or []
@@ -692,20 +716,36 @@ async def run_pack_night_round(
                 "conversation_id": conversation_id,
             })
 
-            content = await _run_one_turn(
-                stream_out=stream_out,
-                identity=identity,
-                turn_index=turn_index,
-                conversation_id=conversation_id,
-                owner_text=user_text,
-                transcript_so_far=list(transcript),
-                discord_channel_id=discord_channel_id,
-            )
+            # One boy's failure (orientation build, history load, save) must
+            # not end the round for everyone after him — log it, tell the
+            # room, and move on to the next boy.
+            try:
+                content = await _run_one_turn(
+                    stream_out=stream_out,
+                    identity=identity,
+                    turn_index=turn_index,
+                    conversation_id=conversation_id,
+                    owner_text=user_text,
+                    transcript_so_far=list(transcript),
+                    discord_channel_id=discord_channel_id,
+                    images_info=images_info,
+                )
+            except Exception as exc:
+                log.exception("pack-night: %s's turn failed; continuing the round", identity)
+                content = None
+                try:
+                    await stream_out.send({
+                        "type": "pack_night_error",
+                        "identity": identity,
+                        "message": f"{identity} hit an error before speaking ({exc})",
+                    })
+                except Exception:
+                    log.debug("pack-night: could not report %s's turn error", identity, exc_info=True)
 
             if content is not None:
                 transcript.append({"identity": identity, "content": content})
 
-
+            # Stagger before the next boy (skip the trailing pause after the last).
             if turn_index < len(PACK_NIGHT_ORDER) - 1:
                 try:
                     await asyncio.sleep(_STAGGER_SECONDS)

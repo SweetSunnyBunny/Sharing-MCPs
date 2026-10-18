@@ -4,10 +4,6 @@ Only one Anam process should own MCP/platform/scheduler side effects at a time.
 Extra instances stay in standby instead of competing for the same tools.
 """
 
-# ANAM GUIDE: SINGLE-SERVER LOCK
-# What: a lock file that makes sure only ONE running Anam owns the Discord/Telegram bridges, MCP servers, and scheduler — a second accidental server stays in standby instead of double-posting.
-# Called by: server.py and core/lifespan.py at startup; api/settings.py can show/steal ownership.
-# Edit here when: you want to change which integrations are exclusive (that list lives in config.py) or how a stale lock from a dead process gets taken over.
 
 from __future__ import annotations
 
@@ -147,7 +143,7 @@ def _try_acquire_once() -> bool:
 
 
 def claim_integration_ownership() -> dict[str, Any]:
-    """Attempt to become the singleton owner of external integrations."""
+    'Claim integration ownership.'
     global _LOCK_METADATA
     if not EXCLUSIVE_INTEGRATIONS:
         _LOCK_METADATA = _build_metadata()

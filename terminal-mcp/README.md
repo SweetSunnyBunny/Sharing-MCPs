@@ -1,6 +1,6 @@
 # Terminal MCP
 
-Persistent Bash shell sessions for an MCP client. Commands share directory/environment within a session. On Windows install Git Bash; this implementation does not support PowerShell or cmd as TERMINAL_SHELL.
+Persistent shell sessions for an MCP client: PowerShell on Windows and Bash on macOS/Linux. Commands share directory and environment within a session. After a timeout, the process tree is stopped; the next call restarts the shell and preserves the last known directory, but not its environment.
 
 ## 1. Prepare the folder and Python
 
@@ -18,17 +18,19 @@ py -3.11 -m venv .venv
 
 `.venv` keeps this package's Python libraries together. Using its executable directly avoids installing into the wrong Python and needs no activation script or PowerShell policy change.
 
-## 2. Install and check Bash
+## 2. Choose your shell and starting directory
 
-Install [Git for Windows](https://git-scm.com/downloads/win). Check the usual Bash path in PowerShell:
+On Windows the default is powershell.exe. Optionally select pwsh.exe if you have
+PowerShell 7 installed. The Windows implementation uses PowerShell syntax and
+flags; do not point it at Git Bash or cmd.exe. macOS/Linux uses Bash.
 
 ```powershell
-& "C:\Program Files\Git\bin\bash.exe" --version
-$env:TERMINAL_SHELL = "C:\Program Files\Git\bin\bash.exe"
+$env:TERMINAL_SHELL = "powershell.exe"
 $env:TERMINAL_DEFAULT_CWD = "C:\MCP-Starter\Sharing-MCPs"
 ```
 
-Adjust the executable path if Git is elsewhere. The source uses Bash-specific flags and syntax to detect completed commands. Its tools run **Bash commands**, even though installation uses PowerShell. No API key is required. The client configuration below repeats these variables because a GUI client does not inherit this PowerShell session.
+The client configuration repeats these variables because a GUI client need not
+inherit this terminal's environment. No API key is required.
 
 ## 3. Check startup
 
@@ -51,7 +53,7 @@ Claude Desktop: **Settings → Developer → Edit Config**. [Client connection g
         "C:/MCP-Starter/Sharing-MCPs/terminal-mcp/run_server.py"
       ],
       "env": {
-        "TERMINAL_SHELL": "C:/Program Files/Git/bin/bash.exe",
+        "TERMINAL_SHELL": "powershell.exe",
         "TERMINAL_DEFAULT_CWD": "C:/MCP-Starter/Sharing-MCPs"
       }
     }
@@ -61,7 +63,7 @@ Claude Desktop: **Settings → Developer → Edit Config**. [Client connection g
 
 If you already have servers, add this entry inside the existing `mcpServers` object and keep the others. Forward slashes in these Windows JSON paths are intentional. Save, fully quit the client, then reopen it. The client starts Python for you; do not leave a second manual copy running.
 
-Ask the client to call `terminal_execute` with command `pwd`. The result should contain a directory and exit code. Then call `terminal_list` to see the session. Start with read-only commands.
+Ask the client to call `terminal_execute` with command `Get-Location` on Windows (or `pwd` with Bash). The result should contain a directory and exit code. Then call `terminal_list` to see the session. Start with read-only commands.
 
 ## If something goes wrong
 

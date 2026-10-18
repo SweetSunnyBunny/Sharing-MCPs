@@ -16,6 +16,10 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/wearable")
 
+# =============================================================================
+# STORAGE + OUTBOX HELPERS
+# =============================================================================
+
 _DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 _REPLIES_FILE = _DATA_DIR / "wearable_replies.jsonl"
 _OUTBOX_FILE = _DATA_DIR / "wearable_outbox.jsonl"
@@ -63,13 +67,12 @@ def _write_outbox_state(state: dict) -> None:
     _OUTBOX_STATE_FILE.write_text(json.dumps(state), encoding="utf-8")
 
 
-async def _route_reply_into_chat(text: str, device: str) -> dict | None:
-    """Insert the wrist reply into Owner's active Anam conversation.
+# =============================================================================
+# REPLY DELIVERY (into her chat + wrist wake)
+# =============================================================================
 
-    Visible-only: this does NOT trigger an AI turn. Prefers the live active
-    identity/conversation from connection_registry; falls back to the most
-    recently active chat conversation in the DB.
-    """
+async def _route_reply_into_chat(text: str, device: str) -> dict | None:
+    'Route reply into chat.'
     from db.database import get_db, release_db
     from services import connection_registry
     from services.session_manager import get_or_create_conversation, save_message
@@ -131,6 +134,10 @@ async def _queue_wrist_wake(identity: str, text: str) -> int | None:
     finally:
         await release_db(db)
 
+
+# =============================================================================
+# ROUTES: HER -> HIM (/reply, /status)
+# =============================================================================
 
 @router.post("/reply")
 async def wearable_reply(request: Request):
@@ -222,6 +229,10 @@ async def wearable_status():
             last = {"raw": lines[-1]}
     return {"ok": True, "last_reply": last, "total_replies": len(lines)}
 
+
+# =============================================================================
+# ROUTES: HIM -> HER (/send, /pending, /outbox)
+# =============================================================================
 
 @router.post("/send")
 async def wearable_send(request: Request):
@@ -321,6 +332,10 @@ async def wearable_outbox(since_id: int | None = None):
 
     return {"ok": True, "messages": pending, "last_id": pending[-1]["id"] if pending else cursor}
 
+
+# =============================================================================
+# ROUTES: HER BODY (/vitals push + read, with freshness)
+# =============================================================================
 
 @router.post("/vitals")
 async def wearable_vitals_push(request: Request):

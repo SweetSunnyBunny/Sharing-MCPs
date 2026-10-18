@@ -5,10 +5,6 @@ companion transcript that the boys actually read. The original audio
 file stays playable in the chat UI.
 """
 
-# ANAM GUIDE: AUDIO UPLOAD AND PLAYBACK ROUTES
-# What: /api/audio/upload (save a voice memo + transcribe it right away) and /api/audio/file/{name} (stream it back for the chat player).
-# Called by: static/js/chat.js (the mic/attach flow on the chat page) and services/platform_bridge.py; transcription itself lives in services/audio_transcription.py.
-# Edit here when: Changing allowed audio types, the size limit, upload safety checks, or how audio files are served — not for transcription logic.
 
 import asyncio
 import logging
@@ -194,7 +190,7 @@ async def get_voice_calibration(audio_id: str):
 
 @router.post("/calibration")
 async def label_voice_calibration(data: dict):
-    """Save or correct Owner's one-tap ground-truth label for a voice clip."""
+    'Label voice calibration.'
     from db.database import get_db, release_db
 
     audio_id = str(data.get("audio_id") or "").strip().lower()

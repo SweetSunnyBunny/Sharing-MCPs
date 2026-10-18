@@ -1,12 +1,5 @@
-"""Cross-session activity tracking helpers.
+'Cross-session activity tracking helpers.'
 
-Reads the activity log so the boys know Owner has been active elsewhere.
-"""
-
-# ANAM GUIDE: CROSS-SESSION ACTIVITY READER
-# What: Reads data/rituals/activity_log.json and turns recent Discord/platform sessions into a short "[External sessions today:]" note.
-# Called by: services/context_hooks.py (build_orientation_context) — it's a context helper, not a web route, despite living in api/.
-# Edit here when: You want to change how "she was with you elsewhere" shows up in a boy's orientation — the wording, the 24h window, or the 5-entry cap.
 
 import json
 import logging

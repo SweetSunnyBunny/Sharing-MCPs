@@ -1,11 +1,3 @@
-# ANAM GUIDE: SERVER STARTUP AND SHUTDOWN
-# What: Everything that happens when the server turns on (create the database, start
-#       the autowake scheduler, warm up voices, wait for MCP servers, claim ownership
-#       of Discord/Telegram bridges) and off (stop it all cleanly).
-# Called by: server.py hands this to FastAPI as the app's lifespan; services/db_backup.py
-#            also peeks at it for uptime.
-# Edit here when: Something new needs to start with the server or be shut down with it,
-#                 or startup order/readiness waits need adjusting.
 
 import asyncio
 import time
@@ -26,9 +18,11 @@ from config import (
     MCP_DUPLICATE_AUDIT_MINUTES,
     validate_runtime_config,
 )
+from core.readiness import get_server_start_time, set_system_ready
 from db.database import close_all_db_connections, get_db, release_db
 from db.schema import init_db
-from services.autowake import start_scheduler, stop_scheduler
+from services.scheduler import scheduler
+from services.scheduler_jobs import start_scheduler, stop_scheduler
 from services.integration_owner import (
     claim_integration_ownership,
     release_integration_ownership,
@@ -41,8 +35,10 @@ _never_throttle(label="anam server")
 
 log = logging.getLogger("anam")
 
-_server_start_time = time.time()
-_system_ready = False
+# =============================================================================
+# MODULE STATE + READINESS HELPERS
+# =============================================================================
+
 _integration_owner_state: dict[str, object] = {
     "exclusive": False,
     "owner": True,
@@ -126,15 +122,15 @@ async def _warm_local_tts_after_ready():
         if attempt == 1:
             await asyncio.sleep(30)
 
-def is_system_ready() -> bool:
-    return _system_ready
-
-def get_server_start_time() -> float:
-    return _server_start_time
+# =============================================================================
+# LIFESPAN (startup above the yield, shutdown below it)
+# =============================================================================
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global _integration_owner_state, _system_ready
+    global _integration_owner_state
+
+    # ---- STARTUP: config check + database -----------------------------------
     log.info("Starting Anam...")
     owns_integrations = False
     warmup_task: asyncio.Task | None = None
@@ -167,19 +163,22 @@ async def lifespan(app: FastAPI):
     db = await get_db()
     await init_db(db)
 
-    # Restore effort level from DB
+    # Report the saved effort level. Deliberately does NOT copy it onto
+    # config.CLAUDE_EFFORT: services/provider_router.py reads the
+    # `claude_effort` setting per turn and uses config.CLAUDE_EFFORT only as
+    # the fallback for an unset/INVALID value — overwriting the fallback with
+    # an unvalidated DB value would let a bad row poison it.
     row = await db.execute("SELECT value FROM settings WHERE key = 'claude_effort'")
     row = await row.fetchone()
     if row and row[0]:
-        import config as cfg
-        cfg.CLAUDE_EFFORT = row[0]
-        log.info("Restored effort level: %s", row[0])
+        log.info("Saved effort level: %s", row[0])
 
     await release_db(db)
     log.info("Database initialized")
 
-    # Ensure the shared pack-night room exists with all six identities as
-    # participants, so it shows up in the sidebar from the moment the app
+    # ---- STARTUP: pack-night room + integration ownership -------------------
+    # Ensure the shared pack-night room exists with every pack identity as a
+    # participant, so it shows up in the sidebar from the moment the app
     # boots and never has to be lazily-created mid-session.
     try:
         from services.session_manager import get_or_create_pack_night_conversation
@@ -208,6 +207,7 @@ async def lifespan(app: FastAPI):
 
     owns_integrations = bool(_integration_owner_state.get("owner"))
 
+    # ---- STARTUP: MCP bridge + scheduler jobs --------------------------------
     # Start MCP bridge — needed for hub endpoints (calendar, etc.) regardless
     # of LLM provider mode, and for direct API tool calls when enabled.
     if owns_integrations:
@@ -224,7 +224,6 @@ async def lifespan(app: FastAPI):
     if owns_integrations:
         await _wait_for_mcp_servers()
         await start_scheduler()
-        from services.autowake import scheduler
         from services.world_feed_photos import photo_tick, recover_interrupted
         from services import world_feed_activity, world_feed_dms
 
@@ -257,7 +256,6 @@ async def lifespan(app: FastAPI):
     # Direct-API-specific: it refreshes the Anthropic OAuth token, which only
     # matters when the direct API provider is in play.
     if USE_DIRECT_API and owns_integrations:
-        from services.autowake import scheduler
         from services.claude_api import proactive_token_refresh
 
         scheduler.add_job(
@@ -277,7 +275,6 @@ async def lifespan(app: FastAPI):
     # crashed connector never self-healed while a non-Anthropic provider was
     # active; the only recovery was a full server restart.
     if owns_integrations:
-        from services.autowake import scheduler
         from services.mcp_bridge import mcp_bridge
 
         # MCP bridge auto-reconnection - check for crashed/late servers every 5 min
@@ -346,7 +343,36 @@ async def lifespan(app: FastAPI):
         db_backup_catchup_task = asyncio.create_task(backup_if_stale())  # noqa: F841
         log.info("Nightly anam.db backup scheduled (03:30, catch-up check queued)")
 
+        if os.environ.get("ANAM_MEDIA_TIDY_ENABLED", "false").lower() == "true":
+            from services.media_tidy import media_tidy_job, video_sweep_job
 
+            scheduler.add_job(
+                media_tidy_job,
+                "cron",
+                hour=3,
+                minute=45,
+                id="media_tidy",
+                name="Nightly Media Tidy",
+                max_instances=1,
+                coalesce=True,
+                replace_existing=True,
+            )
+            scheduler.add_job(
+                video_sweep_job,
+                "interval",
+                minutes=15,
+                id="pack_video_sweep",
+                name="Pack Videos to OneDrive",
+                max_instances=1,
+                coalesce=True,
+                replace_existing=True,
+            )
+            log.info("Media tidy scheduled (03:45 nightly; pack videos to OneDrive every 15 min)")
+
+        # Qualia context is read directly from cloud; no local mirror writer.
+
+
+    # ---- STARTUP: Discord/Telegram platform bridges -------------------------
     if PLATFORM_BRIDGE_ENABLED and owns_integrations:
         from services.platform_bridge import platform_bridge
 
@@ -363,6 +389,11 @@ async def lifespan(app: FastAPI):
             log.info("Discord mentions bridge started")
         except Exception as exc:
             log.warning("Discord mentions bridge failed to start: %s", exc)
+        try:
+            from services.discord_presence import discord_presence
+            await discord_presence.start()
+        except Exception as exc:
+            log.warning("Discord presence failed to start: %s", exc)
     elif PLATFORM_BRIDGE_ENABLED:
         log.info("Platform bridge standby - another instance owns background integrations")
     else:
@@ -370,8 +401,9 @@ async def lifespan(app: FastAPI):
 
     (DATA_DIR / "logs").mkdir(parents=True, exist_ok=True)
 
-    _system_ready = True
-    startup_secs = round(time.time() - _server_start_time, 1)
+    # ---- READY: background warmups (never block the port) -------------------
+    set_system_ready(True)
+    startup_secs = round(time.time() - get_server_start_time(), 1)
     log.info("=== Anam fully ready (%.1fs startup) ===", startup_secs)
     warmup_task = asyncio.create_task(_warm_local_tts_after_ready())
 
@@ -380,10 +412,9 @@ async def lifespan(app: FastAPI):
         if not owns_integrations:
             log.info("Discord server map standby - another instance owns background integrations")
             return
-        from services.autowake import scheduler as _sched
         from services.discord_server_map import refresh_server_map
 
-        _sched.add_job(
+        scheduler.add_job(
             refresh_server_map,
             "interval",
             hours=6,
@@ -468,7 +499,8 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    _system_ready = False
+    # ---- SHUTDOWN ------------------------------------------------------------
+    set_system_ready(False)
 
     for task in (warmup_task, server_map_task, backfill_task, prewarm_task, orient_warm_task, resource_history_task):
         if task and not task.done():
@@ -492,6 +524,11 @@ async def lifespan(app: FastAPI):
                 await discord_mentions_bridge.stop()
             except Exception as exc:
                 log.debug("Discord mentions bridge stop failed: %s", exc)
+            try:
+                from services.discord_presence import discord_presence
+                await discord_presence.stop()
+            except Exception as exc:
+                log.debug("Discord presence stop failed: %s", exc)
 
         from services.mcp_bridge import mcp_bridge
         await mcp_bridge.stop()

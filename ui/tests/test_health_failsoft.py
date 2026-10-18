@@ -54,7 +54,7 @@ class HealthFailSoftTests(unittest.IsolatedAsyncioTestCase):
         ), patch(
             "server.get_db", new=AsyncMock(return_value=_FakeDb())
         ), patch("server.release_db", new=AsyncMock()), patch(
-            "services.autowake.scheduler", new=SimpleNamespace(running=True)
+            "server.scheduler", new=SimpleNamespace(running=True)
         ), patch(
             "services.mcp_bridge.mcp_bridge", new=_FakeMcpBridge(mcp_status)
         ), patch(
@@ -83,7 +83,7 @@ class HealthFailSoftTests(unittest.IsolatedAsyncioTestCase):
         ), patch(
             "server.get_db", new=AsyncMock(return_value=_FakeDb())
         ), patch("server.release_db", new=AsyncMock()), patch(
-            "services.autowake.scheduler", new=SimpleNamespace(running=False)
+            "server.scheduler", new=SimpleNamespace(running=False)
         ), patch(
             "services.google_auth_health.get_google_token_status",
             return_value={"status": "expired", "services": []},
@@ -123,7 +123,7 @@ class HealthFailSoftTests(unittest.IsolatedAsyncioTestCase):
             "server.get_integration_owner_status",
             return_value={"exclusive": True, "owner": True, "reason": "owned_by_this_instance", "metadata": {"pid": 1}},
         ), patch("server.release_db", new=AsyncMock()), patch(
-            "services.autowake.scheduler", new=SimpleNamespace(running=True)
+            "server.scheduler", new=SimpleNamespace(running=True)
         ), patch(
             "services.mcp_bridge.mcp_bridge", new=_FakeMcpBridge(mcp_status)
         ), patch(
@@ -165,7 +165,7 @@ class HealthFailSoftTests(unittest.IsolatedAsyncioTestCase):
             "server.get_integration_owner_status",
             return_value={"exclusive": True, "owner": True, "reason": "owned_by_this_instance", "metadata": {"pid": 1}},
         ), patch("server.release_db", new=AsyncMock()), patch(
-            "services.autowake.scheduler", new=SimpleNamespace(running=True)
+            "server.scheduler", new=SimpleNamespace(running=True)
         ), patch(
             "services.mcp_bridge.mcp_bridge", new=_FakeMcpBridge(mcp_status)
         ), patch(

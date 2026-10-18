@@ -6,6 +6,7 @@ This module intentionally parses glTF metadata without Blender or a new Python
 dependency so Anam can report what a body can actually do before loading it.
 """
 
+
 from __future__ import annotations
 
 import json

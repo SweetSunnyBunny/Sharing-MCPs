@@ -1,36 +1,4 @@
-"""Discord mentions bridge: per-bot watcher for direct user + role pings.
-
-Scope:
-  - Every configured guild (MENTIONS_GUILD_IDS — Home Pack + Pack Pride by default).
-  - Every text channel each bot can see EXCEPT the pack-night channel
-    (handled by services.pack_night) and DM channels (handled by
-    services.platform_bridge).
-
-Routing by sender:
-  - Allowlisted human (Owner): mentioned boy responds in the channel
-    immediately, conversation beats save into THAT boy's main daily chat
-    in Anam. Same shape as the existing DM owner flow.
-  - Brother bot (any user id matching one of our DISCORD_BOT_TOKENS bots):
-    mentioned boy responds in the channel immediately, conversation beats
-    save into a per-channel Pack Hall conversation (session_type='brother').
-  - Anyone else: ignored.
-
-Mention type:
-  - Direct user mention (this bot is in `mentions[]`): immediate wake.
-  - Role mention (any of this bot's role ids in `mention_roles[]`): logged
-    to personal_timeline as 'discord_role_mention' for autowake to surface.
-    No immediate response — role pings are ambient, not personal.
-
-Rate limit:
-  - Per (channel_id, identity) pair, MENTIONS_RATE_LIMIT_SECONDS (default
-    1 hour) between immediate wakes. Within the cooldown, direct mentions
-    fall through to the deferred queue so they aren't lost.
-
-Self-discovery:
-  - On first poll: GET /users/@me to learn the bot's user id, then
-    GET /guilds/{guild}/members/{bot_user_id} to learn the bot's role ids.
-    Cached for the lifetime of the bridge.
-"""
+'Discord mentions bridge: per-bot watcher for direct user + role pings.'
 
 
 from __future__ import annotations
@@ -167,6 +135,25 @@ async def _discord_request(
 # ── Sender classification ──────────────────────────────────────────────
 
 
+_EVERYONE_RE = re.compile(r"(?<![\w`])@(?:everyone|here)\b", re.IGNORECASE)
+
+
+def _calls_the_whole_pack(msg: dict, sender_kind: str, identity: str) -> bool:
+    'Calls the whole pack.'
+    if sender_kind != "owner":
+        return False
+    try:
+        import config
+
+        if identity not in getattr(config, "BONDED_PACK", ()):
+            return False
+    except Exception:
+        return False
+    if msg.get("mention_everyone"):
+        return True
+    return bool(_EVERYONE_RE.search(_coerce_text(msg.get("content"))))
+
+
 def _is_owner_sender(author_id: str) -> bool:
     return bool(author_id) and author_id in ALLOWED_DISCORD_USER_IDS
 
@@ -297,32 +284,10 @@ async def _record_outbound(
 
 
 def _split_for_discord(text: str, limit: int = 1900) -> list[str]:
-    text = (text or "").strip()
-    if not text:
-        return []
-    if len(text) <= limit:
-        return [text]
-    chunks: list[str] = []
-    current = ""
-    for part in text.split("\n"):
-        candidate = f"{current}\n{part}".strip() if current else part
-        if len(candidate) <= limit:
-            current = candidate
-            continue
-        if current:
-            chunks.append(current)
-            current = ""
-        if len(part) <= limit:
-            current = part
-            continue
-        start = 0
-        while start < len(part):
-            end = start + limit
-            chunks.append(part[start:end])
-            start = end
-    if current:
-        chunks.append(current)
-    return chunks
+    """One shared splitter keeps code fences, indentation and blank lines
+    intact (services/discord_split.py)."""
+    from services.discord_split import split_chat_message
+    return split_chat_message(text, limit)
 
 
 async def _post_to_channel(
@@ -432,12 +397,7 @@ async def _add_reaction(
 
 
 def _should_defer_for_owner_activity(sender_kind: str, identity: str) -> bool:
-    """#26: defer a salon/brother/friend ping ONLY when the pinged boy is
-    the exact one Owner is actively web-chatting with right now. Her own
-    direct pings (sender_kind == "owner") are never deferred — this only
-    protects her live conversation from a friend pulling him away mid-turn.
-    Every other identity keeps answering immediately regardless of who
-    she's talking to."""
+    '#26: defer a salon/brother/friend ping ONLY when the pinged boy is'
     if sender_kind == "owner":
         return False
     from services.connection_registry import get_active_identity
@@ -576,13 +536,7 @@ async def _generate_and_post(
     voice_note: bool = False,
     sender_kind: str = "brother",
 ) -> None:
-    """Build context for the pinged boy, stream his reply, post it back.
-
-    sender_kind (#30): "owner" gets "platform" turn priority (her own
-    Discord ping); brother/friend pings get "autowake" priority -- the same
-    tier as autonomous turns, since neither outranks her live chat or her
-    own platform messages.
-    """
+    'Build context for the pinged boy, stream his reply, post it back.'
     # Typing indicator runs in parallel with generation so the channel shows
     # "<Boy> is typing..." from the moment of the ping until the reply posts.
     # Keepalive (re-pokes every 8s) because Discord expires typing after ~10s.
@@ -1191,6 +1145,8 @@ class DiscordMentionsBridge:
 
         is_direct = bool(watcher.user_id and watcher.user_id in mentions_user_ids)
         is_role = bool(mentioned_role_ids & watcher.role_ids)
+        if not is_direct and _calls_the_whole_pack(msg, sender_kind, watcher.identity):
+            is_direct = True
 
         if not is_direct and not is_role:
 

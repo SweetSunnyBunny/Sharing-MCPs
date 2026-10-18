@@ -9,8 +9,7 @@ Enable: Settings > Configure Krita > Python Plugin Manager > Krita MCP Plugin
 """
 
 from krita import Krita, Extension
-from PyQt5.QtCore import QThread, pyqtSignal, QTimer
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QObject, QTimer, Qt, pyqtSignal, pyqtSlot
 import json
 import http.server
 import socketserver
@@ -18,6 +17,59 @@ import threading
 import traceback
 
 PORT = 5678
+DEFAULT_COMMAND_TIMEOUT = 30.0
+FILE_COMMAND_TIMEOUT = 90.0
+command_executor = None
+
+
+class CommandExecutor(QObject):
+    """Marshal Krita API work back onto Krita's main Qt thread."""
+
+    execute_requested = pyqtSignal(object)
+
+    def __init__(self):
+        super().__init__()
+        self.execute_requested.connect(self._execute, Qt.QueuedConnection)
+
+    @pyqtSlot(object)
+    def _execute(self, request):
+        try:
+            request["result"] = execute_command(request["action"], request["params"])
+        except Exception as e:
+            request["result"] = {"error": str(e), "traceback": traceback.format_exc()}
+        finally:
+            request["done"].set()
+
+
+def dispatch_command(action, params, timeout):
+    """Execute a command on Krita's main thread and wait for the result."""
+    if command_executor is None:
+        return {"error": "Krita command executor is not ready yet. Wait a moment and try again."}
+
+    request = {
+        "action": action,
+        "params": params,
+        "done": threading.Event(),
+        "result": None,
+    }
+    command_executor.execute_requested.emit(request)
+
+    if not request["done"].wait(timeout):
+        return {
+            "error": (
+                f"Command '{action}' did not finish within {timeout:.1f}s. "
+                "Krita may be blocked on a modal dialog or a long-running file operation."
+            )
+        }
+
+    return request["result"] or {"error": f"Command '{action}' returned no result."}
+
+
+class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    """Allow concurrent HTTP requests while Krita processes commands serially."""
+
+    allow_reuse_address = True
+    daemon_threads = True
 
 class CommandHandler(http.server.BaseHTTPRequestHandler):
     """Handle incoming MCP commands."""
@@ -50,8 +102,8 @@ class CommandHandler(http.server.BaseHTTPRequestHandler):
 
             action = data.get("action", "")
             params = data.get("params", {})
-
-            result = execute_command(action, params)
+            timeout = FILE_COMMAND_TIMEOUT if action in {"export", "save", "save_as"} else DEFAULT_COMMAND_TIMEOUT
+            result = dispatch_command(action, params, timeout)
 
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -127,8 +179,15 @@ def execute_command(action, params):
 
         elif action == "get_document_info":
             doc = get_document()
+            file_name = ""
+            if hasattr(doc, "fileName"):
+                try:
+                    file_name = doc.fileName() or ""
+                except Exception:
+                    file_name = ""
             return {
                 "name": doc.name(),
+                "fileName": file_name,
                 "width": doc.width(),
                 "height": doc.height(),
                 "activeLayer": doc.activeNode().name() if doc.activeNode() else None
@@ -766,21 +825,37 @@ def execute_command(action, params):
         # ============ FILE OPERATIONS ============
         elif action == "export":
             path = params.get("path", "")
-            format = params.get("format", "png")
+            if not path:
+                return {"error": "Export path is required."}
 
             doc = get_document()
-            doc.exportImage(path, None)
+            exported = doc.exportImage(path, None)
+            if exported is False:
+                return {"error": f"Krita failed to export to '{path}'."}
             return {"success": True, "path": path}
 
         elif action == "save":
             doc = get_document()
-            doc.save()
-            return {"success": True}
+            saved = doc.save()
+            if saved is False:
+                return {"error": "Krita reported that save() failed."}
+
+            file_name = ""
+            if hasattr(doc, "fileName"):
+                try:
+                    file_name = doc.fileName() or ""
+                except Exception:
+                    file_name = ""
+            return {"success": True, "path": file_name}
 
         elif action == "save_as":
             path = params.get("path", "")
+            if not path:
+                return {"error": "Save path is required."}
             doc = get_document()
-            doc.saveAs(path)
+            saved = doc.saveAs(path)
+            if saved is False:
+                return {"error": f"Krita reported that saveAs() failed for '{path}'."}
             return {"success": True, "path": path}
 
         elif action == "undo":
@@ -812,7 +887,7 @@ class KritaMCPServer(Extension):
     def start_server(self):
         """Start the HTTP server in a background thread."""
         try:
-            self.server = socketserver.TCPServer(("", PORT), CommandHandler)
+            self.server = ThreadingTCPServer(("", PORT), CommandHandler)
             self.server_thread = threading.Thread(target=self.server.serve_forever)
             self.server_thread.daemon = True
             self.server_thread.start()
@@ -829,8 +904,9 @@ krita_mcp_instance = None
 
 def start_plugin():
     """Called when Krita starts."""
-    global krita_mcp_instance
+    global krita_mcp_instance, command_executor
     krita_mcp_instance = KritaMCPServer(Krita.instance())
+    command_executor = CommandExecutor()
 
     # Delay server start to ensure Krita is fully loaded
     QTimer.singleShot(2000, krita_mcp_instance.start_server)

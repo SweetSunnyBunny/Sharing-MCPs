@@ -361,7 +361,7 @@ async function handleVoiceRequest(request: Request, env: Env): Promise<Response>
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PACK RADIO — "Alexa, open wolf den" / "ask wolf den to play <playlist>"
-// Streams the family's own songs from your configured music server via AudioPlayer, reading
+// Streams the family's own songs from pack.aibaile.uk via AudioPlayer, reading
 // the live station.json the boys curate. Continuous play via NearlyFinished.
 // ─────────────────────────────────────────────────────────────────────────────
 

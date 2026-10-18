@@ -3,7 +3,11 @@
 This layer records source excerpts, which can contain unwitnessed narration or OOC:
 the exact user turn and its own response. It does not tell uninvolved profiles,
 advance the World Feed clock, or invent a scene summary.
+
+It also queues a scene observation (world_feed_scene_observer.enqueue) for the
+same turn — identifiers only; any NPC post is decided later by the activity tick.
 """
+
 
 from __future__ import annotations
 
@@ -31,6 +35,14 @@ async def capture_roleplay_turn(
     assistant_content: str,
     user_message_id: str | None = None,
 ) -> int:
+    """Record the matching NPC's memory of one roleplay turn and queue a scene observation.
+
+    ``assistant_content`` is accepted for the caller's convenience but is NOT
+    trusted: the saved assistant row is re-read from the DB and that copy wins.
+    The DB row is the canonical, finalized text (the same one the scene observer
+    hashes later), and re-reading it also proves the message really was saved
+    in this conversation by this identity before anything is remembered.
+    """
     if not user_message_id:
         return 0
     rows = await db.execute_fetchall(
@@ -93,7 +105,7 @@ async def capture_roleplay_turn(
     )
     if not assistant_rows:
         return 0
-    assistant_content = assistant_rows[0]["content"]
+    assistant_content = assistant_rows[0]["content"]  # DB copy wins; see docstring
     user_profile, actor = users[0], actors[0]
     summary = (
         f'Private roleplay source with @{user_profile["handle"]}; narration/OOC is not automatically witnessed. '

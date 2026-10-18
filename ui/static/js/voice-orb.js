@@ -1,7 +1,4 @@
-/* ANAM GUIDE: VOICE CALL ORB ANIMATION
-   What: The pretty full-screen glowing orb with drifting particles shown during voice calls — pure visuals, with phases for idle/listening/thinking/speaking.
-   Loaded by: static/index.html (main chat page); chat.js switches its phase as a call moves along.
-   Edit here when: You want to change the orb's colors, particle look, or how each call phase animates. No audio logic lives here. */
+
 
 /**
  * Voice Orb — Full-screen cosmic particle visualization

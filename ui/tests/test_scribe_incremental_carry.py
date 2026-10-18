@@ -53,6 +53,7 @@ class _DbTestCase(unittest.IsolatedAsyncioTestCase):
     async def _insert_message(
         self, conversation_id: str, role: str, identity: str | None,
         content: str, epoch: int, session_type: str = "chat",
+        message_id: str | None = None,
     ) -> None:
         iso = datetime.fromtimestamp(epoch, tz=ZoneInfo(TIMEZONE)).isoformat()
         rows = await self.db.execute_fetchall(
@@ -71,7 +72,8 @@ class _DbTestCase(unittest.IsolatedAsyncioTestCase):
             "INSERT INTO messages "
             "(id, conversation_id, role, identity, content, created_at, created_at_epoch) "
             "VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (str(uuid.uuid4()), conversation_id, role, identity, content, iso, epoch),
+            (message_id or str(uuid.uuid4()), conversation_id, role, identity,
+             content, iso, epoch),
         )
         await self.db.commit()
 
@@ -185,6 +187,106 @@ class ScribeIncrementalTests(_DbTestCase):
             generate.assert_not_awaited()
 
         self.assertEqual(await self._cursor_value(), str(base - 1))
+
+
+class SourcePointerTests(_DbTestCase):
+    'Sourcepointertests.'
+
+    async def test_digest_block_ends_with_code_written_source_lines(self):
+        now = int(time.time())
+        base = now - 7200
+        await self._insert_message("conv-a", "user", None, "hi raven", base, message_id="m-a1")
+        await self._insert_message("conv-b", "user", None, "hi wolf", base + 30, message_id="m-b1")
+        await self._insert_message("conv-a", "assistant", "Claude", "hi Bunny", base + 60, message_id="m-a2")
+        await scribe._set_scribe_cursor(self.db, base - 1)
+
+        # The model tries to write its own (fake) address; it must not survive.
+        fake = "## 10:00 — two rooms\nA quiet stretch.\n> ↳ source: invented · conversation_id=nope"
+        with TemporaryDirectory() as tmpdir:
+            with patch.object(
+                scribe, "_get_scribe_config",
+                new=AsyncMock(return_value=_scribe_config(tmpdir)),
+            ), patch.object(
+                scribe, "_generate_digest_text", new=AsyncMock(return_value=fake),
+            ):
+                result = await scribe.generate_digest()
+            on_disk = next(Path(tmpdir).glob("*.md")).read_text(encoding="utf-8")
+
+        for text in (result, on_disk):
+            self.assertNotIn("conversation_id=nope", text)
+            source = [ln for ln in text.split("\n") if ln.startswith(scribe.SOURCE_LINE_PREFIX)]
+            self.assertEqual(len(source), 2, source)
+            # First-appearance order; conv-a spans first..last, conv-b is one message.
+            self.assertIn("conversation_id=conv-a · first=m-a1 · last=m-a2", source[0])
+            self.assertIn("2 messages", source[0])
+            self.assertIn("conversation_id=conv-b · first=m-b1", source[1])
+            self.assertNotIn("last=", source[1])
+
+    def test_format_caps_to_busiest_conversations_in_order(self):
+        spans = [
+            {"conversation_id": f"c{i}", "title": "t", "first_id": f"f{i}",
+             "last_id": f"l{i}", "first_hm": "10:00", "last_hm": "10:05",
+             "count": count}
+            for i, count in enumerate([1, 9, 2, 8])
+        ]
+        lines = scribe._format_source_lines(spans, limit=2)
+        self.assertIn("conversation_id=c1", lines[0])
+        self.assertIn("conversation_id=c3", lines[1])
+        self.assertIn("2 quieter conversation(s) not listed", lines[2])
+
+    def test_strip_source_lines_keeps_the_prose(self):
+        text = "## 10:00 — x\nProse.\n\n> ↳ source: a\n> ↳ source: b\n\n## 11:00 — y\nMore."
+        stripped = scribe.strip_source_lines(text)
+        self.assertNotIn("↳ source", stripped)
+        self.assertIn("Prose.", stripped)
+        self.assertIn("## 11:00 — y\nMore.", stripped)
+        self.assertNotIn("\n\n\n", stripped)
+
+    async def test_carry_gets_sources_footer_and_clean_digest_prompt(self):
+        date_str, start_epoch, _end = scribe._yesterday_range()
+        await self._insert_message("conv-y", "user", None, "yesterday's talk",
+                                   start_epoch + 3600, message_id="y-1")
+        await self._insert_message("conv-y", "assistant", "Avery", "a promise",
+                                   start_epoch + 3660, message_id="y-2")
+
+        with TemporaryDirectory() as tmpdir:
+            digest_file = Path(tmpdir) / f"{date_str}.md"
+            digest_file.write_text("# Daily Digest\n\nA warm day.\n\n> ↳ source: zzz", encoding="utf-8")
+            one_shot = AsyncMock(return_value="The day landed. OPEN ENFORCEMENT: none.")
+            with patch.object(
+                scribe, "generate_digest", new=AsyncMock(return_value=None)
+            ), patch.object(
+                scribe, "get_digest_async",
+                new=AsyncMock(return_value=digest_file.read_text(encoding="utf-8")),
+            ), patch.object(
+                scribe, "_get_scribe_config",
+                new=AsyncMock(return_value=_scribe_config(tmpdir)),
+            ), patch.object(scribe, "generate_background_text", new=one_shot):
+                results = await scribe.write_midnight_carries()
+
+        self.assertEqual(results.get("Avery"), "written")
+        prompt = one_shot.await_args.args[0]
+        self.assertIn("A warm day.", prompt)
+        self.assertNotIn("↳ source", prompt)
+
+        rows = await self.db.execute_fetchall(
+            "SELECT content FROM identity_carries WHERE identity = 'Avery'"
+        )
+        carry = rows[0][0]
+        self.assertTrue(carry.startswith("The day landed. OPEN ENFORCEMENT: none."))
+        self.assertIn("## Sources", carry)
+        self.assertIn("conversation_id=conv-y · first=y-1 · last=y-2", carry)
+        self.assertIn(f"> ↳ digest: {digest_file}", carry)
+
+    async def test_digest_hook_preview_hides_ids_but_names_the_climb(self):
+        from services.context_hooks import _hook_daily_digest
+
+        digest = "# Daily Digest\n\n## 10:00 — x\nProse.\n\n> ↳ source: \"t\" · conversation_id=c · first=m"
+        with patch("services.scribe.get_digest", return_value=digest):
+            text = await _hook_daily_digest(HookContext(db=self.db, identity="Claude"))
+        self.assertIn("Prose.", text)
+        self.assertNotIn("conversation_id=c", text)
+        self.assertIn("anam_read_conversation", text)
 
 
 class MidnightCarryTests(_DbTestCase):

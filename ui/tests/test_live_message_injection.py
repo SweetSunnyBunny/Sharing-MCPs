@@ -105,6 +105,136 @@ class InjectUserMessageTests(unittest.IsolatedAsyncioTestCase):
         )
 
 
+async def _collect(event, session):
+    return [
+        e async for e in claude_subprocess._parse_event(event, session, "Claude", [])
+    ]
+
+
+class ExactReadMomentTests(unittest.IsolatedAsyncioTestCase):
+    'Exactreadmomenttests.'
+
+    def tearDown(self):
+        claude_subprocess.kill_all_sessions()
+
+    async def test_injection_tags_the_line_and_remembers_the_uuid(self):
+        session = await _make_session(identity="Claude", conversation_id="conv-uuid")
+        async with session.turn_lock:
+            ok = claude_subprocess.inject_user_message(
+                "Claude", "conv-uuid", "look at this", "uuid-123",
+            )
+        self.assertTrue(ok)
+        payload = json.loads(session.proc.stdin.write.call_args[0][0].decode("utf-8"))
+        self.assertEqual(payload["uuid"], "uuid-123")
+        self.assertIn("uuid-123", session.injected_uuids)
+
+    async def test_untagged_injection_writes_no_uuid(self):
+        session = await _make_session(identity="Claude", conversation_id="conv-nouuid")
+        async with session.turn_lock:
+            claude_subprocess.inject_user_message("Claude", "conv-nouuid", "hi")
+        payload = json.loads(session.proc.stdin.write.call_args[0][0].decode("utf-8"))
+        self.assertNotIn("uuid", payload)
+        self.assertEqual(session.injected_uuids, set())
+
+    async def test_failed_write_forgets_the_uuid(self):
+        session = await _make_session(identity="Claude", conversation_id="conv-fail")
+        session.proc.stdin.write.side_effect = BrokenPipeError()
+        async with session.turn_lock:
+            ok = claude_subprocess.inject_user_message(
+                "Claude", "conv-fail", "hi", "uuid-gone",
+            )
+        self.assertFalse(ok)
+        self.assertEqual(session.injected_uuids, set())
+
+    async def test_replay_of_a_slipped_in_message_yields_the_read_moment_once(self):
+        session = await _make_session(identity="Claude", conversation_id="conv-replay")
+        session.injected_uuids.add("uuid-abc")
+        replay = {
+            "type": "user", "isReplay": True, "uuid": "uuid-abc",
+            "message": {"role": "user", "content": "hi"},
+        }
+        self.assertEqual(
+            await _collect(replay, session),
+            [{"type": "user_message_absorbed", "uuid": "uuid-abc"}],
+        )
+        self.assertEqual(session.injected_uuids, set())
+        # A second echo of the same uuid is silent.
+        self.assertEqual(await _collect(replay, session), [])
+
+    async def test_replay_of_the_turns_own_message_is_swallowed(self):
+        """Every stdin message replays, including the normal turn message,
+        whose content is a plain STRING. It must never reach the tool-result
+        parser (iterating a string there would crash the turn)."""
+        session = await _make_session(identity="Claude", conversation_id="conv-own")
+        replay = {
+            "type": "user", "isReplay": True, "uuid": "someone-else",
+            "message": {"role": "user", "content": "the whole prompt"},
+        }
+        self.assertEqual(await _collect(replay, session), [])
+
+    async def test_string_content_user_event_without_replay_flag_is_harmless(self):
+        session = await _make_session(identity="Claude", conversation_id="conv-str")
+        evt = {"type": "user", "message": {"role": "user", "content": "plain"}}
+        self.assertEqual(await _collect(evt, session), [])
+
+    async def test_tool_results_still_parse(self):
+        session = await _make_session(identity="Claude", conversation_id="conv-tool")
+        evt = {
+            "type": "user",
+            "message": {"content": [
+                {"type": "tool_result", "tool_use_id": "t1", "content": "done"},
+            ]},
+        }
+        out = await _collect(evt, session)
+        self.assertEqual(out[0]["type"], "tool_result")
+        self.assertEqual(out[0]["tool_use_id"], "t1")
+
+    async def test_cli_is_launched_with_replay_enabled(self):
+        session = await _make_session(identity="Claude", conversation_id="conv-cmd")
+        with patch.object(claude_subprocess, "build_system_identity_prompt", return_value="x"), \
+             patch.object(claude_subprocess, "write_claude_mcp_config", return_value=None):
+            cmd = session._build_cmd()
+        self.assertIn("--replay-user-messages", cmd)
+        self.assertIn("--input-format", cmd)
+
+
+class AttachmentSlipInTests(unittest.TestCase):
+    'Attachmentslipintests.'
+
+    def test_image_notes_skip_bad_names_and_suffixes(self):
+        from services.chat_turn_prep import build_cli_image_notes
+        notes = build_cli_image_notes([
+            {"filename": "a.png"}, {"filename": ""}, {"filename": "evil.exe"},
+            {"filename": "../../sneaky.jpg"},
+        ])
+        self.assertEqual(len(notes), 2)
+        self.assertIn("a.png", notes[0])
+        self.assertIn("Use the Read tool", notes[0])
+        # Path traversal is flattened to the bare filename inside IMAGES_DIR.
+        self.assertNotIn("..", notes[1])
+
+    def test_compose_stacks_audio_docs_images_then_text(self):
+        from services import chat_turn_prep
+        with patch.object(chat_turn_prep, "build_document_note", return_value="[DOC]"), \
+             patch.object(chat_turn_prep, "build_audio_note", return_value="[AUDIO]"):
+            prompt = chat_turn_prep.compose_attachment_prompt(
+                "hello", ["[IMG]"], [{"filename": "d.pdf"}], [{"filename": "v.webm"}],
+            )
+        self.assertEqual(prompt, "[AUDIO]\n\n[DOC]\n\n[IMG]\n\nhello")
+
+    def test_compose_with_no_text_is_just_the_notes(self):
+        from services import chat_turn_prep
+        with patch.object(chat_turn_prep, "build_audio_note", return_value="[AUDIO]"):
+            prompt = chat_turn_prep.compose_attachment_prompt(
+                "", [], [], [{"filename": "v.webm"}],
+            )
+        self.assertEqual(prompt, "[AUDIO]")
+
+    def test_compose_with_text_only_is_unchanged(self):
+        from services.chat_turn_prep import compose_attachment_prompt
+        self.assertEqual(compose_attachment_prompt("just words", [], [], []), "just words")
+
+
 class _FakeWs:
     """Feeds the bridge a scripted set of frames, then blocks forever."""
 

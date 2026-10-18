@@ -5,6 +5,7 @@ changing engines cannot silently change story continuity. Files are read fresh;
 the bridge's existing identity receipt hashes handle identity refresh delivery.
 """
 
+
 from pathlib import Path
 
 from config import IDENTITIES, PROMPTS_DIR

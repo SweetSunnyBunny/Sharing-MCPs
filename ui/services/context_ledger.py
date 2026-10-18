@@ -6,6 +6,7 @@ about to hand to a provider.  The Hub reads the latest record per identity;
 it never rebuilds context merely to inspect it (some hooks are consumptive).
 """
 
+
 from __future__ import annotations
 
 import hashlib
@@ -18,8 +19,12 @@ from pathlib import Path
 from typing import Any
 
 
+from config import DATA_DIR
+
 ROOT_DIR = Path(__file__).resolve().parents[1]
-LEDGER_PATH = ROOT_DIR / "data" / "context_ledger.json"
+# Follows ANAM_DATA_DIR (via config.DATA_DIR) so tests, which redirect it to a
+# temp folder, can never overwrite the live ledger the Hub reads.
+LEDGER_PATH = Path(DATA_DIR) / "context_ledger.json"
 _LOCK = threading.RLock()
 _PENDING_ORIENTATIONS: dict[tuple[str, str], dict[str, Any]] = {}
 _PARAGRAPH_MIN_CHARS = 80

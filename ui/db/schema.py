@@ -1,10 +1,5 @@
 """Database schema creation and tracked in-place migrations."""
 
-# ANAM GUIDE: DATABASE TABLES AND MIGRATIONS
-# What: Defines every table in anam.db (the SCHEMA text at the top) plus one-time "migrations" that reshape old databases safely.
-# Called by: core/lifespan.py runs init_db() once at server startup; many tests import it to build throwaway databases.
-# Edit here when: You add a new table or column. Add it to SCHEMA for fresh databases AND write a small _migration_ function
-#                 (listed in MIGRATIONS at the bottom) so the existing live database gets the change too.
 
 import json
 import logging
@@ -15,6 +10,14 @@ import aiosqlite
 log = logging.getLogger(__name__)
 
 from services.session_auth import hash_session_token, looks_like_sha256_hex
+
+# =============================================================================
+# SCHEMA — fresh-install DDL. init_db() runs only its CREATE TABLE statements
+# first, then the migrations, then the whole script (indexes/triggers).
+# ⚠️ The story-world block (from "CREATE TABLE IF NOT EXISTS story_worlds" to
+# the end of this string) is ALSO executed verbatim by migrations 028/029 —
+# see _migration_add_story_world_feed before appending anything below it.
+# =============================================================================
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS conversations (
@@ -682,6 +685,10 @@ CREATE INDEX IF NOT EXISTS idx_story_ai_runs_world_time
 """
 
 
+# =============================================================================
+# MIGRATION HELPERS — schema_migrations bookkeeping + shared parsing
+# =============================================================================
+
 def _parse_epoch(value: str | None) -> int | None:
     if not value:
         return None
@@ -722,6 +729,12 @@ async def _apply_migration(db: aiosqlite.Connection, name: str, fn):
     )
     await db.commit()
 
+
+# =============================================================================
+# MIGRATIONS — one _migration_* function per MIGRATIONS entry, oldest first.
+# Each runs once per database (recorded in schema_migrations) and must be safe
+# on both a fresh DB (tables just created from SCHEMA) and an old live one.
+# =============================================================================
 
 async def _migration_ensure_legacy_columns(db: aiosqlite.Connection):
     migrations = {
@@ -1228,12 +1241,7 @@ async def _migration_add_schedule_effort(db: aiosqlite.Connection):
 
 
 async def _migration_add_schedule_model(db: aiosqlite.Connection):
-    """Per-schedule model override — e.g. River's chapter reviews on Fable 5
-    while everything else stays on the global autowake model. Accepts full
-    model ids ("claude-fable-5") or CLI aliases ("fable", "opus", "sonnet",
-    "haiku"). NULL/empty means "use the global autowake/interactive model",
-    same as before this column existed. Mirrors the per-schedule effort
-    column (#27) exactly."""
+    'Migration add schedule model.'
     try:
         await db.execute("ALTER TABLE autowake_schedule ADD COLUMN model TEXT")
     except Exception:
@@ -1249,17 +1257,7 @@ async def _migration_add_schedule_provider(db: aiosqlite.Connection):
 
 
 async def _migration_archive_legacy_pack_night(db: aiosqlite.Connection):
-    """Archive ghost pack-night conversations from the failed orchestrator.
-
-    Avery's earlier orchestrator created per-boy `session_type='pack-night'`
-    rows directly in Anam (lowercase identity names, no platform_chat_id),
-    each containing the broken transcript from last night. They aren't the
-    new shared room and they shouldn't share its sidebar slot. Move them to
-    a distinct session_type and mark them inactive so the new singleton --
-    which has platform_chat_id='pack-night:home' -- is the only Pack Night
-    card visible going forward. The messages themselves stay in the DB if
-    Owner ever wants to look back.
-    """
+    'Archive ghost pack-night conversations from the failed orchestrator.'
     await db.execute(
         "UPDATE conversations "
         "SET session_type = 'pack-night-legacy', is_active = 0 "
@@ -1464,7 +1462,7 @@ async def _migration_add_provider_sessions(db: aiosqlite.Connection):
 
 
 async def _migration_add_voice_calibration_samples(db: aiosqlite.Connection):
-    """Personal ground-truth corpus for Owner's voice-emotion recognizer."""
+    'Migration add voice calibration samples.'
     await db.execute("""
         CREATE TABLE IF NOT EXISTS voice_calibration_samples (
             audio_id TEXT PRIMARY KEY,
@@ -1507,6 +1505,17 @@ async def _migration_story_history_order(db: aiosqlite.Connection):
                      '(world_id, COALESCE(timeline_order, created_at_epoch) DESC, id DESC)')
 
 
+async def _migration_add_nudge_log(db: aiosqlite.Connection):
+    'Migration add nudge log.'
+    from services.memory_nudges import ensure_nudge_table
+    await ensure_nudge_table(db)
+
+
+# =============================================================================
+# MIGRATIONS LIST — order matters; names are the permanent record in
+# schema_migrations, so never rename or reorder an entry that has shipped.
+# =============================================================================
+
 MIGRATIONS = [
     ("001_ensure_legacy_columns", _migration_ensure_legacy_columns),
     ("002_migrate_sessions_to_token_hash", _migration_sessions_to_token_hash),
@@ -1535,9 +1544,17 @@ MIGRATIONS = [
     ("025_add_provider_sessions", _migration_add_provider_sessions),
     ("026_add_voice_calibration_samples", _migration_add_voice_calibration_samples),
     ("027_add_schedule_provider", _migration_add_schedule_provider),
+    # 028 AND 029 both run _migration_add_story_world_feed, which executes
+    # SCHEMA[start:] — everything from "CREATE TABLE IF NOT EXISTS story_worlds"
+    # to the END of SCHEMA (029 re-ran it so existing DBs picked up
+    # story_feed_photo_jobs, added to that block after 028 had shipped).
+    # WARNING for future additions: anything appended to SCHEMA after the
+    # story_worlds block will NOT reach an existing live DB through these
+    # migrations (both already ran). Give it its own new migration.
     ("028_add_story_world_feed", _migration_add_story_world_feed),
     ("029_add_story_photo_jobs", _migration_add_story_world_feed),
     ("030_story_history_order", _migration_story_history_order),
+    ("031_add_nudge_log", _migration_add_nudge_log),
 ]
 
 
@@ -1545,6 +1562,10 @@ MIGRATIONS = [
 # proprioception log, not an archive. Rows older than this are shed at startup.
 TOOL_AUDIT_RETENTION_DAYS = 30
 
+
+# =============================================================================
+# INIT_DB — tables, then migrations, then indexes/triggers, then retention
+# =============================================================================
 
 async def init_db(db: aiosqlite.Connection):
     # Step 1: Create tables only (no indexes/triggers that depend on

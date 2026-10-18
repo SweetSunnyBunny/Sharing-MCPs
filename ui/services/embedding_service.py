@@ -5,15 +5,9 @@ Stores vectors as BLOBs in SQLite and computes cosine similarity in Python.
 Auto-embeds new messages via background task.
 """
 
-# ANAM GUIDE: MESSAGE MEANING INDEX (EMBEDDINGS)
-# What: Quietly turns every chat message into a "meaning fingerprint" (a vector) stored in the database, so search can find messages by what they MEAN, not just exact words.
-# Called by: core/lifespan.py starts the background embedder; api/search.py uses it for semantic search; api/hub.py (Stars tab), services/anam_context_queries.py, claude_api.py, and session_manager.py read from it.
-# Edit here when: You want to tune semantic search quality/speed (model, batch size, minimum message length) or investigate the embed-failure counter shown at /api/search/embeddings/status.
 
 import asyncio
-import json
 import logging
-import struct
 import time
 from typing import Optional
 

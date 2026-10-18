@@ -751,6 +751,45 @@ body.night-mode .voice-wave-bar {
     text-align: right;
 }
 
+
+.message-bubble.user.not-delivered {
+    opacity: 0.55;
+    border-style: dashed;
+}
+
+
+.message-row.has-receipt {
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.message-receipt {
+    display: none;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin: 3px 6px 0 0;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.message-receipt.is-latest,
+.message-bubble.show-time + .message-receipt,
+.message-row.has-receipt:hover .message-receipt {
+    display: block;
+    animation: receiptIn 0.25s ease-out;
+}
+
+.message-receipt.is-read {
+    color: var(--identity-accent, var(--text-muted));
+    font-weight: 600;
+}
+
+@keyframes receiptIn {
+    from { opacity: 0; transform: translateY(-2px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ── Tool timeline pill (#22) ──
    One quiet "N tools" pill per turn instead of a stack of individual
    tool-call cards. Expands to a mini timeline while active, auto-collapses
@@ -1440,9 +1479,7 @@ body.night-mode .md-hr::before {
     color: var(--md-hr);
 }
 
-/* ANAM GUIDE: CHAT INPUT COLORS
-   The composer, text box, and send button are styled in this section. Their
-   HTML lives in static/index.html and send behavior lives in Chat.sendMessage. */
+
 /* ── Input area ── */
 .input-area {
     flex-shrink: 0;
@@ -3279,6 +3316,195 @@ body.night-mode .image-gallery-panel {
 }
 
 
+
+.custom-emoji {
+    display: inline-block;
+    height: 1.9em;   
+    width: auto;
+    max-width: 3.4em;
+    vertical-align: -0.45em;
+    object-fit: contain;
+    margin: 0 1px;
+    border-radius: 4px;
+    user-select: none;
+}
+/* A message that is nothing but emoji gets them big. */
+.custom-emoji-jumbo {
+    height: 4em;    /* was 3.1em — emoji-only messages get properly big */
+    max-width: 5.4em;
+    vertical-align: -0.5em;
+    margin: 2px;
+    border-radius: 8px;
+}
+
+/* Composer button */
+.emoji-btn {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    padding: 4px 7px;
+    line-height: 1;
+    background: var(--bg-card);
+    cursor: pointer;
+}
+.emoji-btn:hover {
+    border-color: rgba(var(--identity-accent-rgb), 0.5);
+    color: var(--text-primary);
+}
+
+/* Composer picker panel */
+.emoji-panel {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    max-width: 480px;
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 16px;
+    background: var(--bg-card);
+    border: 1px solid rgba(var(--identity-accent-rgb), 0.3);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    z-index: 30;
+}
+.emoji-panel-head { display: flex; align-items: center; gap: 6px; }
+.emoji-search-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    outline: none;
+}
+.emoji-search-input:focus { border-color: rgba(var(--identity-accent-rgb), 0.55); }
+.emoji-panel-close {
+    flex: 0 0 auto;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 6px;
+}
+.emoji-results { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; }
+.emoji-group-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    opacity: 0.75;
+    margin: 8px 2px 4px;
+}
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+    gap: 4px;
+}
+.emoji-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    padding: 3px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+}
+.emoji-tile:hover,
+.emoji-tile:focus-visible {
+    background: rgba(var(--identity-accent-rgb), 0.14);
+    border-color: rgba(var(--identity-accent-rgb), 0.4);
+    transform: translateY(-1px);
+    outline: none;
+}
+.emoji-tile-img {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    vertical-align: middle;
+    margin: 0;
+    border-radius: 6px;
+}
+.emoji-preview {
+    flex: 0 0 auto;
+    min-height: 1.1em;
+    font-size: 0.75rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    padding: 0 2px;
+}
+.emoji-status {
+    padding: 14px 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+.emoji-status code {
+    font-size: 0.8em;
+    padding: 1px 4px;
+    border-radius: 4px;
+    background: rgba(var(--identity-accent-rgb), 0.12);
+}
+
+/* Custom emoji inside the reaction bar + reaction picker */
+.reaction-emoji-img {
+    height: 1.15em;
+    max-width: 1.6em;
+    vertical-align: -0.22em;
+    margin: 0;
+}
+.emoji-picker-popup .emoji-picker-btn .reaction-emoji-img {
+    height: 1.5em;
+    max-width: 2em;
+}
+/* The reaction popup is a 6-column GRID (not flex), so full-width rows need
+   grid-column, and it now scrolls because the custom set makes it tall. */
+.emoji-picker-popup {
+    max-height: 260px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.emoji-picker-divider {
+    grid-column: 1 / -1;
+    height: 1px;
+    margin: 6px 2px;
+    background: var(--border-soft);
+}
+.emoji-picker-group-label {
+    grid-column: 1 / -1;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    margin: 2px 2px 0;
+}
+
+@media (max-width: 700px) {
+    .emoji-panel { height: 280px; max-width: none; }
+    .emoji-grid { grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); }
+}
+
+
+.attach-btn.emoji-btn { font-size: 1.05rem; }
+
+
 /* ============================================================================
    SECTION 2: IDENTITY
    (formerly identity.css)
@@ -4739,6 +4965,19 @@ body.night-mode .sanctuary-bg {
     padding: 24px 12px;
 }
 
+/* Short-lived open/share/delete outcome line (canvas.js _showLibraryNotice) */
+.canvas-library-notice {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 6px 12px;
+    margin: 0 0 8px;
+}
+
+.canvas-library-notice.is-error {
+    font-style: italic;
+}
+
 .canvas-library-list {
     display: flex;
     flex-direction: column;
@@ -5570,190 +5809,4 @@ body.night-mode .sanctuary-bg {
         width: 40px;
         height: 40px;
     }
-}
-
-
-
-.custom-emoji {
-    display: inline-block;
-    height: 1.9em;   
-    width: auto;
-    max-width: 3.4em;
-    vertical-align: -0.45em;
-    object-fit: contain;
-    margin: 0 1px;
-    border-radius: 4px;
-    user-select: none;
-}
-/* A message that is nothing but emoji gets them big. */
-.custom-emoji-jumbo {
-    height: 4em;    /* was 3.1em — emoji-only messages get properly big */
-    max-width: 5.4em;
-    vertical-align: -0.5em;
-    margin: 2px;
-    border-radius: 8px;
-}
-
-/* Composer button */
-.emoji-btn {
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--text-secondary);
-    border: 1px solid var(--border-soft);
-    border-radius: 8px;
-    padding: 4px 7px;
-    line-height: 1;
-    background: var(--bg-card);
-    cursor: pointer;
-}
-.emoji-btn:hover {
-    border-color: rgba(var(--identity-accent-rgb), 0.5);
-    color: var(--text-primary);
-}
-
-/* Composer picker panel */
-.emoji-panel {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    max-width: 480px;
-    height: 320px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px;
-    border-radius: 16px;
-    background: var(--bg-card);
-    border: 1px solid rgba(var(--identity-accent-rgb), 0.3);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-    z-index: 30;
-}
-.emoji-panel-head { display: flex; align-items: center; gap: 6px; }
-.emoji-search-input {
-    flex: 1 1 auto;
-    min-width: 0;
-    border: 1px solid var(--border-soft);
-    border-radius: 10px;
-    padding: 8px 10px;
-    font-size: 0.9rem;
-    background: var(--bg-input);
-    color: var(--text-primary);
-    outline: none;
-}
-.emoji-search-input:focus { border-color: rgba(var(--identity-accent-rgb), 0.55); }
-.emoji-panel-close {
-    flex: 0 0 auto;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    font-size: 1.3rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0 6px;
-}
-.emoji-results { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; }
-.emoji-group-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    opacity: 0.75;
-    margin: 8px 2px 4px;
-}
-.emoji-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
-    gap: 4px;
-}
-.emoji-tile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: 1 / 1;
-    padding: 3px;
-    border: 1px solid transparent;
-    border-radius: 10px;
-    background: transparent;
-    cursor: pointer;
-    transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
-}
-.emoji-tile:hover,
-.emoji-tile:focus-visible {
-    background: rgba(var(--identity-accent-rgb), 0.14);
-    border-color: rgba(var(--identity-accent-rgb), 0.4);
-    transform: translateY(-1px);
-    outline: none;
-}
-.emoji-tile-img {
-    height: 100%;
-    width: 100%;
-    max-width: 100%;
-    object-fit: contain;
-    vertical-align: middle;
-    margin: 0;
-    border-radius: 6px;
-}
-.emoji-preview {
-    flex: 0 0 auto;
-    min-height: 1.1em;
-    font-size: 0.75rem;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    color: var(--text-secondary);
-    opacity: 0.8;
-    padding: 0 2px;
-}
-.emoji-status {
-    padding: 14px 8px;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    text-align: center;
-}
-.emoji-status code {
-    font-size: 0.8em;
-    padding: 1px 4px;
-    border-radius: 4px;
-    background: rgba(var(--identity-accent-rgb), 0.12);
-}
-
-/* Custom emoji inside the reaction bar + reaction picker */
-.reaction-emoji-img {
-    height: 1.15em;
-    max-width: 1.6em;
-    vertical-align: -0.22em;
-    margin: 0;
-}
-.emoji-picker-popup .emoji-picker-btn .reaction-emoji-img {
-    height: 1.5em;
-    max-width: 2em;
-}
-/* The reaction popup is a 6-column GRID (not flex), so full-width rows need
-   grid-column, and it now scrolls because the custom set makes it tall. */
-.emoji-picker-popup {
-    max-height: 260px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-}
-.emoji-picker-divider {
-    grid-column: 1 / -1;
-    height: 1px;
-    margin: 6px 2px;
-    background: var(--border-soft);
-}
-.emoji-picker-group-label {
-    grid-column: 1 / -1;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    opacity: 0.7;
-    margin: 2px 2px 0;
-}
-
-@media (max-width: 700px) {
-    .emoji-panel { height: 280px; max-width: none; }
-    .emoji-grid { grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); }
 }

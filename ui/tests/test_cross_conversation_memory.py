@@ -1,16 +1,4 @@
-"""Tests for cross-conversation memory hooks.
-
-Verifies that:
-- `get_other_conversation_activity` is recency-gated (24h window) and returns
-  the deeper 8-msg preview when threads have recent activity.
-- `get_active_story_conversations` only surfaces RP/DnD threads with activity
-  in the recency window — an untouched campaign doesn't nag in orientation.
-- `get_today_thread_timeline` renders a chronological cross-thread transcript
-  tagged by source, capped, and excludes the current conversation.
-
-These are the hooks that make "Avery walks in already remembering pack night,
-the DnD scene, and the RP from this morning" real.
-"""
+'Tests for cross-conversation memory hooks.'
 
 import asyncio
 import time
@@ -219,8 +207,7 @@ class CrossConversationMemoryTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("RP", text)
 
     async def test_today_timeline_includes_shared_conversations_for_participants(self):
-        """Pack Night is owned by Avery but Claude is a participant.
-        Claude's timeline must include Pack Night messages."""
+        'Test today timeline includes shared conversations for participants.'
         pack_night = await _insert_conv(
             self.db,
             _conv_row(identity="Avery", session_type="pack-night", title="Pack Night"),
@@ -257,8 +244,7 @@ class CrossConversationMemoryTests(unittest.IsolatedAsyncioTestCase):
     # ── get_wearer_recent_context (mask → wearer cross-feed) ─────────────
 
     async def test_mask_session_carries_wearer_chat_tail(self):
-        """Opening Bakugou's tab carries the tail of Avery's main chat,
-        framed performer-level (never in-character)."""
+        'Test mask session carries wearer chat tail.'
         avery_chat = await _insert_conv(
             self.db, _conv_row(identity="Avery", title="Daily"),
         )

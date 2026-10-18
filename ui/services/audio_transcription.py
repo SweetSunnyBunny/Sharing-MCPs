@@ -10,10 +10,6 @@ The companion file is the source of truth the boys actually read. The
 original audio file stays on disk for playback in the chat UI.
 """
 
-# ANAM GUIDE: AUDIO TRANSCRIPT CACHE
-# What: Transcribes an uploaded audio file once (via Groq Whisper) and saves the words in a .txt file right next to the audio, so it never has to be transcribed twice.
-# Called by: api/audio.py (on upload), services/attachment_context.py (building prompts), services/inbound_voice.py and platform_bridge.py (voice notes from Discord/Telegram).
-# Edit here when: changing where transcripts are cached or how a failed/missing transcription is handled. The actual Groq API call lives in services/groq_transcription.py.
 
 from __future__ import annotations
 

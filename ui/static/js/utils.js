@@ -1,8 +1,5 @@
 /* Helpers — date formatting, etc. */
-/* ANAM GUIDE: SHARED PAGE HELPERS
-   What: Little helper functions every page shares — apiFetch() for talking to the server, escapeHtml() for safe text, time/date formatting, and the CDN URL resolver.
-   Loaded by: Every page (index, hub, settings, gameroom, diagnostics) — always loaded first so other scripts can use it.
-   Edit here when: You need a small utility that more than one page will use. Keep this file dependency-free; everything else assumes it loaded first. */
+
 
 /**
  * Resolve the API base URL. Same-origin is the default, so this normally
@@ -184,7 +181,7 @@ function convertDocumentPath(url) {
     return url;
 }
 
-/* ── Focus trap for modals ── */
+/* ── CDN URL resolver ── */
 function resolveAnamCdnUrl(path = '') {
     const rawBase = typeof window !== 'undefined' ? (window.__anamCdnUrl || '') : '';
     const trimmedBase = String(rawBase).trim();
@@ -204,6 +201,7 @@ function resolveAnamCdnUrl(path = '') {
     return path.startsWith('/') ? `${base}${path}` : `${base}/${path}`;
 }
 
+/* ── Focus trap for modals ── */
 const FocusTrap = {
     _previousFocus: null,
     _handler: null,

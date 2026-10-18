@@ -1,9 +1,5 @@
 """REST: Autowake schedule CRUD + failsafe settings."""
 
-# ANAM GUIDE: AUTOWAKE SETTINGS ROUTES
-# What: /api/autowake/* — create/edit/toggle the boys' wake schedules and one-off timers, plus failsafe and care-signal settings and scheduler health.
-# Called by: static/js/settings.js (Settings Hub → Autowake tab); the real scheduling engine is services/autowake.py + services/autowake_service.py.
-# Edit here when: Adding a new schedule/timer field or endpoint. For WHAT happens when a wake fires, edit services/autowake.py instead.
 
 import logging
 from datetime import datetime, timezone
@@ -14,7 +10,9 @@ from pydantic import BaseModel, Field
 
 from config import IDENTITIES
 from db.database import get_db, release_db
-from services.autowake import load_and_schedule, scheduler, FAILSAFE_DEFAULTS, get_care_signal_settings
+from services.autowake import FAILSAFE_DEFAULTS, get_care_signal_settings
+from services.scheduler import scheduler
+from services.scheduler_jobs import load_and_schedule
 from services.autowake_service import (
     AutowakeValidationError,
     list_schedules,

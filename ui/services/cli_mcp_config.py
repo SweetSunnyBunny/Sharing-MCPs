@@ -1,17 +1,12 @@
 """Helpers for giving CLI providers the same MCP server map Anam already owns."""
 
-# ANAM GUIDE: CLI MCP TOOL CONFIG WRITER
-# What: Writes identity-scoped MCP config. Claude Code and Codex receive only
-# the compact Anam gateway; Anam owns the plugin forest once and opens exact
-# schemas after the identity chooses a toolbox leaf.
-# Called by: services/claude_subprocess.py, services/claude_pty.py, services/claude_agent_sdk_provider.py, services/codex_subprocess.py at session spawn.
-# Edit here when: changing which MCP servers CLI sessions can see, or how the anam-context server (port 8814) is wired in.
 
 from __future__ import annotations
 
 import json
 import logging
 import os
+import socket
 import sys
 import tempfile
 from pathlib import Path
@@ -99,13 +94,46 @@ def _active_bridge_servers(identity: str = "", conversation_id: str = "") -> dic
     return servers
 
 
+# The shared tools host (C:/path/to/example.com/scripts/combined_tools_server.py, run by
+# the house supervisor) serves one Anam gateway for every Claude conversation.
+TOOLS_HOST_PORT = int(os.environ.get("TOOLS_HOST_PORT", "8815"))
+
+
+def _tools_host_is_up() -> bool:
+    try:
+        with socket.create_connection(("127.0.0.1", TOOLS_HOST_PORT), timeout=0.25):
+            return True
+    except OSError:
+        return False
+
+
+def _shared_claude_gateway(identity: str, conversation_id: str) -> dict[str, Any] | None:
+    """The gateway on the shared tools host, bound to this session by headers.
+
+    Each Claude session used to start its own gateway process (about 100 MB,
+    alive until server shutdown). Returns None when the session has no identity
+    to bind or the host is not answering, so the caller keeps the per-session
+    stdio gateway and a boy never loses his tools to a fallen host.
+    """
+    if not str(identity or "").strip() or not _tools_host_is_up():
+        return None
+    headers = {"X-Anam-Identity": identity}
+    if conversation_id:
+        headers["X-Anam-Conversation-Id"] = conversation_id
+    return {
+        "type": "http",
+        "url": f"http://127.0.0.1:{TOOLS_HOST_PORT}/anam-gateway/mcp",
+        "headers": headers,
+    }
+
+
 def write_claude_mcp_config(identity: str = "", conversation_id: str = "") -> Path | None:
     """Write a temp Claude config containing only the bound Anam gateway."""
     servers = _active_bridge_servers(identity, conversation_id)
     gateway = servers.get("anam-gateway") if servers else None
     if not isinstance(gateway, dict):
         return None
-    servers = {"anam-gateway": gateway}
+    servers = {"anam-gateway": _shared_claude_gateway(identity, conversation_id) or gateway}
 
     try:
         DATA_DIR.mkdir(parents=True, exist_ok=True)

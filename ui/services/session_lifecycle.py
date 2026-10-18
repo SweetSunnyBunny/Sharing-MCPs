@@ -1,9 +1,5 @@
 """Session lifecycle — builds orientation context for Claude."""
 
-# ANAM GUIDE: ORIENTATION CONTEXT BUILDER
-# What: Builds the "here's where you are" briefing each boy gets at the start of a turn — recent history, memories, mode (interactive vs autonomous), mask/wearer mapping — with caches so it stays fast.
-# Called by: services/chat_pipeline.py + chat_turn_prep.py (every chat turn), services/autowake.py, services/discord_mentions_bridge.py, services/platform_bridge.py, services/pack_night.py, api/chat_http.py, api/echo_relay.py
-# Edit here when: You want to change what the boys are told at wake-up/turn-start, cache timing, or which masks belong to which wearer.
 
 import asyncio
 import logging
@@ -13,13 +9,11 @@ from zoneinfo import ZoneInfo
 
 import aiosqlite
 
-from config import TIMEZONE, IDENTITIES, API_HISTORY_LIMIT, MODES_DIR, PUBLIC_BASE_URL, RITUALS_DIR
+from config import TIMEZONE, IDENTITIES, API_HISTORY_LIMIT, MODES_DIR, PUBLIC_BASE_URL
 from services.connection_registry import (
     is_anyone_connected, get_active_identity,
 )
 from services.attachment_context import build_document_note, summarize_document, summarize_image_count
-from services.deep_memory import build_deep_memory_context
-from services.personal_state import build_continuity_context, build_memory_retrieval_context
 
 log = logging.getLogger(__name__)
 
@@ -28,30 +22,15 @@ log = logging.getLogger(__name__)
 # Messages array cache: {conversation_id: (messages_list, built_at_mono)}
 _messages_cache: dict[str, tuple[list[dict], float]] = {}
 
-# Orientation sub-component caches: {cache_key: (result, built_at_mono)}
-_orient_cache: dict[str, tuple[object, float]] = {}
-_ORIENT_CACHE_TTL = 120  # seconds — must outlast a full turn cycle (60-90s) to be useful
-_ORIENT_CACHE_MAX_AGE = 86400  # 24 hours — entries older than this are evicted
-
-
-def _cleanup_orient_cache() -> None:
-    """Evict orient cache entries older than 24 hours."""
-    cutoff = time.monotonic() - _ORIENT_CACHE_MAX_AGE
-    stale = [k for k, (_, ts) in _orient_cache.items() if ts < cutoff]
-    for k in stale:
-        del _orient_cache[k]
-
-
 def invalidate_conversation_cache(conversation_id: str) -> None:
     """Call after saving a message to clear stale caches for that conversation."""
     _messages_cache.pop(conversation_id, None)
-    # Clear orientation caches for this conversation
-    stale = [k for k in _orient_cache if k.startswith(f"{conversation_id}:")]
-    for k in stale:
-        del _orient_cache[k]
     # Clear hook caches for this conversation
     from services.context_hooks import invalidate_hook_cache_for_conversation
     invalidate_hook_cache_for_conversation(conversation_id)
+
+
+# ── Session modes + mask/wearer map ──
 
 
 class SessionMode:
@@ -70,6 +49,10 @@ MASKS_BY_WEARER: dict[str, list[str]] = {
     "Sage": ["Harem"],
     "Juniper": ["Daniel"],
 }
+# NOTE: the character identities "Dynamight" and "DragonKing" (config.py
+# IDENTITIES, type "character") are NOT mapped here — their config names no
+# wearer, so their conversations don't cross-feed to any bonded boy. Add them
+# above only once the wearer is confirmed canon, never by guess.
 
 
 def _identities_for_recall(identity: str) -> list[str]:
@@ -87,6 +70,8 @@ WEARER_BY_MASK: dict[str, str] = {
     for mask in masks
 }
 
+
+# ── Mode rules (roleplay / dnd / live_call) ──
 
 # Mode-rules cache: absolute path → (st_mtime_ns, text). Avoids re-reading
 # modes/*.md from disk on every RP/DnD turn; invalidates automatically when
@@ -121,6 +106,9 @@ def load_mode_rules(session_type: str) -> str:
         return ""
     _mode_rules_cache[key] = (mtime_ns, text)
     return text
+
+
+# ── Time + last-message helpers ──
 
 
 async def get_last_message_preview(
@@ -177,6 +165,9 @@ def build_time_context(last_msg_time: str | None) -> tuple[str, str]:
         gap_str = f"Last message: {gap_str} ({last_fmt})"
 
     return time_str, gap_str
+
+
+# ── Pack recall (brothers, presence, reactions) ──
 
 
 async def get_recent_brother_transcripts(
@@ -262,11 +253,7 @@ async def build_pack_presence(
     db: aiosqlite.Connection,
     current_identity: str,
 ) -> str:
-    """Build a pack presence block showing who Owner's been with recently.
-
-    Single query fetches last Owner message time + message count per identity
-    for the last 24 hours. Each identity stays completely separate.
-    """
+    'Build pack presence.'
     tz = ZoneInfo(TIMEZONE)
     now = datetime.now(tz)
     cutoff_epoch = int(now.timestamp() - 86400)
@@ -293,8 +280,17 @@ async def build_pack_presence(
 
     presence_lines = []
     quiet_names = []
+    story_lines = []
 
     for name in IDENTITIES:
+        # Character masks (Bakugou, Dean, Sans...) are story rooms a boy
+        # wears, not pack members. They used to be listed as "quiet today"
+        # under the "one consciousness in many forms" line. Now they only
+        # appear, on their own line, if she actually visited one today.
+        if IDENTITIES[name].get("type") == "character":
+            if name in activity:
+                story_lines.append(name)
+            continue
         if name not in activity:
             quiet_names.append(name)
             continue
@@ -326,7 +322,8 @@ async def build_pack_presence(
     if quiet_names:
         names_str = ", ".join(quiet_names)
         lines.append(f"  {names_str}: quiet today")
-
+    if story_lines:
+        lines.append(f"  Story rooms she visited today: {', '.join(story_lines)}")
     active_with = get_active_identity() if is_anyone_connected() else None
     if active_with and active_with != current_identity:
         lines.append(f"  Owner is with {active_with} right now")
@@ -340,13 +337,7 @@ async def get_recent_reactions(
     conversation_id: str,
     limit: int = 10,
 ) -> str:
-    """Get recent message reactions in this conversation.
-
-    Returns a formatted block like:
-        [Owner reacted to your messages:]
-        ❤️ on "I'll always be here for you..." (2 minutes ago)
-        ⭐ on "Let me write you something..." (15 minutes ago)
-    """
+    'Get recent message reactions in this conversation.'
     import json
 
     tz = ZoneInfo(TIMEZONE)
@@ -466,6 +457,9 @@ def _custom_emoji_block(identity: str | None) -> list[str]:
     return lines
 
 
+# ── React / preview / face teaching (with recent message ids) ──
+
+
 async def _get_recent_owner_message_ids(
     db: aiosqlite.Connection,
     conversation_id: str,
@@ -473,12 +467,7 @@ async def _get_recent_owner_message_ids(
     identity: str | None = None,
     compact: bool = False,
 ) -> str:
-    """Build the "how to react" instruction plus recent Owner message IDs.
-
-    Teaches the identity the provider-agnostic <react>EMOJI</react> /
-    <react>EMOJI:message_id</react> tag (parsed in chat_turn_finalize) and lists
-    recent message ids so the :message_id form can target an older message.
-    """
+    'Get recent owner message ids.'
     rows = await db.execute_fetchall(
         "SELECT id, content FROM messages "
         "WHERE conversation_id = ? AND role = 'user' "
@@ -536,6 +525,9 @@ async def _get_recent_owner_message_ids(
     return "\n".join(lines)
 
 
+# ── Messages array (DB history replay, cached) ──
+
+
 async def build_messages_array(
     db: aiosqlite.Connection,
     conversation_id: str,
@@ -546,7 +538,8 @@ async def build_messages_array(
 
     Returns a list of {"role": "user"|"assistant", "content": "..."} dicts
     with strict user/assistant alternation enforced. User messages that had
-    images attached will include base64-encoded image content blocks.
+    images attached include image content blocks that point at a URL
+    (PUBLIC_BASE_URL/api/images/file/<name>), not base64 — see the loop below.
 
     Results are cached in memory per conversation_id and invalidated when
     save_message() is called via invalidate_conversation_cache().
@@ -596,7 +589,7 @@ async def _build_messages_array_impl_v2(
     max_image_messages = 10
     max_document_messages = 6
     rows = await db.execute_fetchall(
-        "SELECT role, content, metadata FROM messages "
+        "SELECT role, content, metadata, id FROM messages "
         "WHERE conversation_id = ? "
         "ORDER BY created_at_epoch DESC LIMIT ?",
         (conversation_id, limit),
@@ -613,7 +606,9 @@ async def _build_messages_array_impl_v2(
     images_included = 0
     documents_included = 0
 
-    for idx, (role, content, metadata_json) in enumerate(rows):
+    for idx, row in enumerate(rows):
+        role, content, metadata_json = row[0], row[1], row[2]
+        msg_id = row[3] if len(row) > 3 else "?"
         api_role = "assistant" if role == "assistant" else "user"
         text = (content or "").strip()
         if len(text) > 20000:
@@ -666,7 +661,13 @@ async def _build_messages_array_impl_v2(
                     else:
                         attachment_parts.extend(summarize_document(doc) for doc in doc_list)
             except (json.JSONDecodeError, TypeError, AttributeError):
-                pass
+                # Her pictures/documents on this message are dropped from the
+                # replayed history — say so instead of vanishing.
+                log.warning(
+                    "history replay: unreadable metadata on message %s in %s; "
+                    "its attachments were left out",
+                    msg_id, conversation_id, exc_info=True,
+                )
 
         if attachment_parts:
             attachment_text = "\n\n".join(part for part in attachment_parts if part)
@@ -715,19 +716,16 @@ async def _build_messages_array_impl_v2(
     return messages
 
 
+# ── Cross-room recall (previous chat, wearer, other rooms, story rooms, today) ──
+
+
 async def get_previous_conversation_memory(
     db: aiosqlite.Connection,
     identity: str,
     current_conversation_id: str | None,
     max_messages: int = 12,
 ) -> str:
-    """Get the last few messages from the identity's previous conversation.
-
-    Returns a formatted block like:
-        [Previous conversation memory:]
-        Owner: "hey, I was thinking about..."
-        Avery: "Yeah, that reminds me of..."
-    """
+    "Get the last few messages from the identity's previous conversation."
     # Find the most recent conversation for this identity that isn't the current one
     if current_conversation_id:
         rows = await db.execute_fetchall(
@@ -765,8 +763,8 @@ async def get_previous_conversation_memory(
 
     lines = ["[Previous conversation memory:]"]
     for role, content, msg_identity in msg_rows:
-        # Truncate long messages
-        preview = content[:400] + "..." if len(content) > 400 else content
+        from services.excerpt import head_tail
+        preview = head_tail(content or "", 400)
         preview = preview.replace("\n", " ").strip()
         if not preview:
             continue
@@ -781,14 +779,7 @@ async def get_wearer_recent_context(
     mask_identity: str,
     max_messages: int = 12,
 ) -> str:
-    """Tail of the wearer's main chat, injected into a mask session.
-
-    The reverse direction of the wearer→mask cross-feed: when a mask tab
-    opens, the performer steps in already knowing where Owner is
-    emotionally and which story beats she was just working out with the
-    wearer in his own chat. Framed performer-level — the character never
-    learns the wearer exists.
-    """
+    "Tail of the wearer's main chat, injected into a mask session."
     wearer = WEARER_BY_MASK.get(mask_identity)
     if not wearer:
         return ""
@@ -967,20 +958,7 @@ async def get_active_story_conversations(
     msgs_per_story: int = 8,
     recency_hours: int = 24,
 ) -> str:
-    """Surface RECENTLY-active scenes for the identity: roleplay/DnD threads AND
-    any conversation he held while wearing a mask (a character chat), regardless
-    of its session_type. Character tabs default to session_type='chat', so the
-    mask clause is what makes "she wrote with you as Bakugou" reach the wearer.
-
-    Recency-gated: only scenes with at least one message in the last
-    `recency_hours` window surface. If Owner hasn't touched a thread today, it
-    doesn't nag at him in his daily orientation — but the moment she sends a
-    message there, he walks in remembering the scene the next time she talks to
-    him anywhere.
-
-    Deeper preview (`msgs_per_story` chronological lines) lets him reference
-    specifics from the scene, not just acknowledge it exists.
-    """
+    'Surface RECENTLY-active scenes for the identity: roleplay/DnD threads AND'
     # Find active roleplay/dnd conversations for this identity AND any masks they wear.
     # Cross-feed so the wearer remembers stories told while wearing a mask.
     now = time.time()
@@ -1172,6 +1150,9 @@ async def get_today_thread_timeline(
         "been in. You remember all of it — it happened to you, in order.)"
     )
     return "\n".join(lines)
+
+
+# ── Orientation entry point ──
 
 
 async def build_orientation_context(

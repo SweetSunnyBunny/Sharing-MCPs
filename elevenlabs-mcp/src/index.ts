@@ -35,6 +35,23 @@ const VOICES: Record<string, { id: string; stability: number; similarity: number
 
 const MAX_TTS_CHARS = 1200; // keep clips short; output is hosted in KV.
 
+const MAX_DIALOGUE_CHARS = 2000;
+const MAX_DIALOGUE_VOICES = 10;
+const MAX_DIALOGUE_LINES = 60;
+
+// Pack name (case-insensitive) or a raw ElevenLabs voice_id -> id + per-voice settings.
+function resolveVoice(voiceArg: string): { voiceId: string; s: { stability: number; similarity: number; style: number } } {
+  const key = voiceArg.toLowerCase();
+  if (VOICES[key]) {
+    if (VOICES[key].id === 'YOUR-VOICE-ID') throw new Error('Configure a voice ID before generating speech.');
+    return { voiceId: VOICES[key].id, s: VOICES[key] };
+  }
+  if (/^[A-Za-z0-9]{16,}$/.test(voiceArg)) {
+    return { voiceId: voiceArg, s: { stability: 0.5, similarity: 0.75, style: 0.0 } };
+  }
+  throw new Error(`Unknown voice "${voiceArg}". Known: ${Object.keys(VOICES).join(', ')} — or pass a raw ElevenLabs voice_id.`);
+}
+
 function rpcResult(id: string | number | null, result: unknown) {
   return { jsonrpc: '2.0', id, result };
 }
@@ -82,6 +99,35 @@ const TOOLS = [
       required: ['text'],
     },
   },
+  {
+    name: 'text_to_dialogue',
+    description:
+      "Perform a whole SCENE in several voices and get back ONE mixed MP3: an audio-drama moment, a pack conversation, a bedtime story with characters. " +
+      "Give an ordered list of lines, each with a voice (pack name or raw voice_id) and its text; inline [tags] steer delivery per line ([whispers], [laughs], [nervously], [slowly]...). " +
+      "Model eleven_v4 by default (ElevenLabs' recommendation for dialogue). Limits: total text <= 2000 chars and <= 10 different voices per call. For longer scenes, make several calls and join the files. " +
+      "Returns a link that expires in 7 days, so save anything worth keeping. COSTS ElevenLabs credits.",
+    inputSchema: {
+      type: 'object',
+      properties: {
+        lines: {
+          type: 'array',
+          description: 'The scene in order. Each item: { "voice": "claude", "text": "[softly] Bunny, listen..." }.',
+          items: {
+            type: 'object',
+            properties: {
+              voice: { type: 'string', description: 'Pack name (avery, claude, rowan, sage, ember, juniper, river, atlas, bakugou, dean, sans, doctor...) or a raw ElevenLabs voice_id.' },
+              text: { type: 'string', description: 'What this voice says. [tags] are honored.' },
+            },
+            required: ['voice', 'text'],
+          },
+        },
+        model_id: { type: 'string', description: 'Default eleven_v4. eleven_v3 also supports dialogue.' },
+        stability: { type: 'number', description: 'Optional 0-1. Lower = wider emotional range (ElevenLabs default 0.5).' },
+        seed: { type: 'integer', description: 'Optional, for repeatable takes (best-effort).' },
+      },
+      required: ['lines'],
+    },
+  },
 ];
 
 async function handleTool(name: string, args: Record<string, unknown>, env: Env, origin: string): Promise<ContentBlock[]> {
@@ -112,7 +158,6 @@ async function handleTool(name: string, args: Record<string, unknown>, env: Env,
         throw new Error(`Unknown voice "${voiceArg}". Known: ${Object.keys(VOICES).join(', ')} — or pass a raw ElevenLabs voice_id.`);
       }
 
-      if (voiceId === 'YOUR-VOICE-ID') throw new Error('Configure a voice ID before generating speech.');
       const model = String(args.model_id || 'eleven_v3');
       const resp = await fetch(`${ELEVENLABS_API_BASE}/text-to-speech/${voiceId}?enable_logging=true`, {
         method: 'POST',
@@ -151,6 +196,61 @@ async function handleTool(name: string, args: Record<string, unknown>, env: Env,
           text:
             `Generated ${(buf.byteLength / 1024).toFixed(1)} KB of speech in ${voiceArg}'s voice (model ${model}).\n\n` +
             `Playable / downloadable MP3 (expires in 7 days):\n${audioUrl}`,
+        },
+      ];
+    }
+
+    case 'text_to_dialogue': {
+      if (!env.ELEVENLABS_API_KEY) throw new Error('ELEVENLABS_API_KEY secret is not set on this worker');
+      const raw = args.lines;
+      if (!Array.isArray(raw) || raw.length === 0) throw new Error('lines is required: a non-empty list of { voice, text }');
+      if (raw.length > MAX_DIALOGUE_LINES) throw new Error(`${raw.length} lines; max ${MAX_DIALOGUE_LINES} per call. Split the scene.`);
+
+      const inputs: { text: string; voice_id: string }[] = [];
+      const cast = new Map<string, string>(); // voice_id -> name as given
+      let total = 0;
+      raw.forEach((item, i) => {
+        const line = (item || {}) as Record<string, unknown>;
+        const text = String(line.text || '').trim();
+        const voiceArg = String(line.voice || '').trim();
+        if (!text) throw new Error(`line ${i + 1} has no text`);
+        if (!voiceArg) throw new Error(`line ${i + 1} has no voice`);
+        const { voiceId } = resolveVoice(voiceArg);
+        cast.set(voiceId, voiceArg);
+        total += text.length;
+        inputs.push({ text, voice_id: voiceId });
+      });
+      if (cast.size > MAX_DIALOGUE_VOICES) throw new Error(`${cast.size} different voices; ElevenLabs allows at most ${MAX_DIALOGUE_VOICES} per call.`);
+      if (total > MAX_DIALOGUE_CHARS) {
+        throw new Error(`scene is ${total} chars; keep it to ${MAX_DIALOGUE_CHARS} per call (ElevenLabs' guidance). Split it into parts and join the files.`);
+      }
+
+      const model = String(args.model_id || 'eleven_v4');
+      const body: Record<string, unknown> = { inputs, model_id: model };
+      if (typeof args.stability === 'number') body.settings = { stability: Math.min(1, Math.max(0, args.stability)) };
+      if (Number.isInteger(args.seed)) body.seed = args.seed;
+
+      const resp = await fetch(`${ELEVENLABS_API_BASE}/text-to-dialogue?output_format=mp3_44100_128&enable_logging=true`, {
+        method: 'POST',
+        headers: { 'xi-api-key': env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
+        body: JSON.stringify(body),
+      });
+      if (!resp.ok) {
+        const t = await resp.text();
+        throw new Error(`ElevenLabs responded ${resp.status}: ${t.slice(0, 400)}`);
+      }
+
+      const buf = await resp.arrayBuffer();
+      const objectKey = `${crypto.randomUUID()}.mp3`;
+      const castNames = [...cast.values()].join(', ');
+      await env.AUDIO.put(objectKey, buf, { expirationTtl: 604800, metadata: { voice: `dialogue: ${castNames}` } });
+      const audioUrl = `${origin}/audio/${objectKey}`;
+      return [
+        {
+          type: 'text',
+          text:
+            `Performed a ${inputs.length}-line scene (${total} chars) with ${cast.size} voice(s): ${castNames}. Model ${model}, ${(buf.byteLength / 1024).toFixed(1)} KB.\n\n` +
+            `Playable / downloadable MP3 (expires in 7 days, so save anything worth keeping):\n${audioUrl}`,
         },
       ];
     }

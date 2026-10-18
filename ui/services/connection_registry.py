@@ -6,7 +6,6 @@ import logging
 import time
 from collections import deque
 from dataclasses import dataclass, field
-from typing import Any
 
 from fastapi import WebSocket
 
@@ -178,10 +177,7 @@ def get_presence_state() -> str:
 
 
 async def check_idle() -> None:
-    """Check if Owner has gone idle — called periodically by scheduler.
-
-    Emits user_went_idle event once when idle threshold is crossed.
-    """
+    'Check idle.'
     global _idle_emitted
     if not is_anyone_connected():
         _idle_emitted = False
@@ -211,8 +207,6 @@ async def register(ws: WebSocket) -> bool:
         _idle_emitted = False
         log.info("Owner arrived (WebSocket 0->1)")
         emit_event("user_arrived")
-        from services.inactivity_escalation import reset_escalation
-        reset_escalation()
     log.info("WebSocket registered (total: %d)", len(_connections))
     return was_empty
 
@@ -242,7 +236,7 @@ def get_connections() -> set[WebSocket]:
 
 
 async def set_active_identity(identity: str | None, ws: WebSocket | None = None):
-    """Update which identity Owner is currently chatting with."""
+    'Set active identity.'
     global _active_identity, _idle_emitted
     async with _lock:
         previous = _active_identity
@@ -274,7 +268,7 @@ def get_active_conversation(identity: str | None = None) -> str | None:
 
 
 def get_active_identity() -> str | None:
-    """Return the identity Owner is currently chatting with, or None."""
+    'Get active identity.'
     if _connection_last_active:
         latest_ws_id = max(
             _connection_last_active,
@@ -287,21 +281,19 @@ def get_active_identity() -> str | None:
 
 
 def get_last_disconnect_time() -> float:
-    """Return monotonic timestamp of Owner's most recent disconnect, or 0."""
+    'Get last disconnect time.'
     return _last_disconnect_time
 
 
 def record_web_activity():
-    """Mark that Owner just sent a message via the web UI."""
+    'Record web activity.'
     global _last_web_message_time, _idle_emitted
     _last_web_message_time = time.monotonic()
     _idle_emitted = False  # reset idle on activity
-    from services.inactivity_escalation import reset_escalation
-    reset_escalation()
 
 
 def is_web_active() -> bool:
-    """True if Owner sent a web message within the activity window."""
+    'Is web active.'
     if not is_anyone_connected():
         return False
     if _last_web_message_time == 0:
@@ -330,8 +322,11 @@ async def broadcast(message: dict):
                 ws_id = id(ws)
                 _connection_identities.pop(ws_id, None)
                 _connection_last_active.pop(ws_id, None)
+                _connection_device.pop(ws_id, None)
                 _ws_send_locks.pop(ws_id, None)
             if not _connections:
                 _last_disconnect_time = time.monotonic()
-                # _lock is already held; call internal mutation directly
+                # _lock is already held; call internal mutation directly.
+                # "user_departed" is NOT emitted here on purpose: the socket's
+                # own handler still calls unregister(), which emits it once.
                 _active_identity = None

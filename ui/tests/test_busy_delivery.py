@@ -44,7 +44,7 @@ class TriggerBusyQueueTests(_BusyDeliveryBase):
             patch.object(db_database, "release_db", AsyncMock()),
             patch.object(trigger_engine, "evaluate_condition", eval_mock),
             patch.object(trigger_engine, "_fire_trigger", fire_mock),
-            patch.object(autowake, "is_identity_busy", Mock(return_value=busy)),
+            patch.object(trigger_engine, "is_identity_busy", Mock(return_value=busy)),
         ]
         return patches, eval_mock, fire_mock
 

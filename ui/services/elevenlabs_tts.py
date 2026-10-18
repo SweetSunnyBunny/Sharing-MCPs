@@ -1,11 +1,6 @@
 """ElevenLabs API client for text-to-speech."""
 
-# ANAM GUIDE: ELEVENLABS VOICE MAKER
-# What: Talks to ElevenLabs to turn a boy's text into real spoken audio, using each identity's own voice from the voice config file (and handling expression tags like [softly]).
-# Called by: api/voice.py (voice playback routes), services/chat_turn_finalize.py (<voice> tags in replies), and services/speech_engine_live.py (live calls).
-# Edit here when: A boy's voice sounds wrong (settings/model), you want to allow or strip different [expression] tags, or ElevenLabs changes their API. To change WHICH voice a boy uses, edit the voice config JSON (path in config.py), not this file.
 
-import json
 import logging
 import re
 
@@ -47,13 +42,7 @@ _declared_tags: frozenset[str] | None = None
 
 
 def _declared_expression_tags() -> frozenset[str]:
-    """Every bracketed tag declared in any identity's expression_guide.
-
-    Owner authors these per-boy in voice_config.json (preferred_tags,
-    emotional_range, wolf_sounds, example). They are, by definition, the
-    intended vocabulary — so they are preserved rather than stripped.
-    Union across identities: a cross-boy tag is harmless and rare.
-    """
+    "Every bracketed tag declared in any identity's expression_guide."
     global _declared_tags
     if _declared_tags is not None:
         return _declared_tags
@@ -136,7 +125,7 @@ async def synthesize(
     """
     config = _load_config()
     api_key = config.get("api_key", "")
-    model = model_override or config.get("model", "eleven_v3")
+    model = model_override or config.get("model", "eleven_v4")
     output_format = output_format_override or config.get("output_format", "mp3_44100_128")
     voices = config.get("voices", {})
     voice_cfg = voices.get(identity) or next(

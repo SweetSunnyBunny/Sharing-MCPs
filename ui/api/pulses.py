@@ -1,9 +1,5 @@
 """REST API for pulse management — user-configurable periodic checks."""
 
-# ANAM GUIDE: PULSES MANAGEMENT API
-# What: Create, list, edit, toggle, and delete "pulses" — repeating checks that can notify or wake a boy on a schedule.
-# Called by: no browser page right now — pulses are managed by direct API calls; the pulses themselves are run every minute by services/pulse_evaluator.py.
-# Edit here when: changing what fields a pulse accepts or its validation rules. The actual firing logic lives in services/pulse_evaluator.py and services/pulse_service.py.
 
 import logging
 
@@ -33,19 +29,7 @@ async def api_list_pulses():
 
 @router.post("")
 async def api_create_pulse(request: Request):
-    """Create a new pulse.
-
-    Body: {
-        "name": "Check wellness",
-        "identity": "Juniper",         # optional — rotates if null
-        "interval_seconds": 900,     # 15 minutes
-        "action_type": "notify",     # notify | autowake | broadcast
-        "prompt": "Check on Owner's energy",
-        "condition": {"type": "wellness_state", ...},  # optional
-        "session_type": "custom",
-        "max_duration_minutes": 5
-    }
-    """
+    'Create a new pulse.'
     body = await request.json()
     name = body.get("name", "").strip()
     if not name:

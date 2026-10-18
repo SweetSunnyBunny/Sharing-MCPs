@@ -115,15 +115,6 @@ const Chat = {
             || normalized === 'command_execution';
     },
 
-
-
-
-
-
-
-
-
-
     isSilentToolName(toolName) {
         const normalized = (toolName || '').trim().toLowerCase();
         return normalized === 'read'
@@ -131,13 +122,6 @@ const Chat = {
             || normalized === 'grep';
     },
 
-    // =========================================================================
-    // CHAT-HEADER MINI-ORB — the ACTIVE boy's inner weather next to his name.
-    // The orb CSS primitive lives in main.css; these rendering helpers are a
-    // twin of the ones in hub.js — keep them in sync. No hub WS event exists
-    // for orb changes, so we refresh on identity switches and poll gently
-    // every few minutes while the tab is visible.
-    // =========================================================================
     _ORB_SHAPES: ['solid', 'ring', 'halo', 'sphere', 'crescent', 'pulse', 'cluster', 'ember', 'spire', 'fracture'],
     _ORB_MOTIONS: ['breathing', 'warble', 'spin', 'drift', 'still', 'slow-drift', 'hold-steady', 'fast-flicker', 'surge', 'tremor'],
     _ORB_INTENSITIES: ['dull', 'normal', 'bright', 'neon'],
@@ -166,11 +150,6 @@ const Chat = {
         return (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]) / 255 < 0.09;
     },
 
-    // Paint an orb element from an orb payload. Colors stay free-hex:
-    // highlight/edge shades are derived here and set as inline custom props —
-    // the registered props in main.css crossfade color changes (~2.4s).
-    // Below mantel size, shapes collapse to sphere/ember (fracture → tremor
-    // + dull — Friend's collapse rules).
     _applyOrbTo(orbEl, orb, size = 'mantel', sizeClass = '') {
         if (!orbEl) return;
         if (!orbEl.querySelector('.cc-orb-core')) {
@@ -339,17 +318,8 @@ const Chat = {
             if (!sel || sel.isCollapsed) return;
 
             const range = sel.getRangeAt(0);
-                                                                              
-                                                                               
-                                                                            
-                                                                                  
-                                                                                   
-                                                                                
-                                                                               
-                                                                                
-                                                                               
 
-                                                                                    
+            // Collect text only from .message-content elements within the selection
             const bubbles = this.container.querySelectorAll('.message-content');
             const parts = [];
             for (const mc of bubbles) {
@@ -430,11 +400,8 @@ const Chat = {
             this.saveDraft(App.conversationId);
         });
 
-                                                                                
+        // Draft restore happens in loadHistory() after conversation ID is known
 
-                                                                           
-                                                                           
-                                                                       
         const attachBtn = document.getElementById('attach-btn');
         const fileInput = document.getElementById('file-input');
         const previewRemove = document.getElementById('image-preview-remove');
@@ -459,32 +426,43 @@ const Chat = {
         this._initMemoryModal();
 
         // Listen to WebSocket events
-        App.ws.on('stream_start', (msg) => this.onStreamStart(msg));
-        App.ws.on('stream_delta', (msg) => this.onStreamDelta(msg));
-        App.ws.on('stream_reset', () => this.onStreamReset());
-        App.ws.on('stream_end', (msg) => this.onStreamEnd(msg));
-        App.ws.on('tool_use_start', (msg) => this.onToolStart(msg));
-        App.ws.on('tool_input', (msg) => this.onToolInput(msg));
-        App.ws.on('tool_result', (msg) => this.onToolResult(msg));
-        App.ws.on('content_block_stop', () => this.onContentBlockStop());
-        App.ws.on('thinking_start', () => this.onThinkingStart());
-        App.ws.on('thinking_delta', (msg) => this.onThinkingDelta(msg));
-        App.ws.on('voice_message', (msg) => this.onVoiceMessage(msg));
-        App.ws.on('response_images', (msg) => this.onResponseImages(msg));
-        App.ws.on('response_documents', (msg) => this.onResponseDocuments(msg));
+        // _fromOtherBoy() fences off a reply that belongs to the boy she just
+        // switched away from (see detachActiveStream), so it can't paint into,
+        // or re-point, the chat she switched to.
+        App.ws.on('stream_start', (msg) => { if (!this._fromOtherBoy('stream_start', msg)) this.onStreamStart(msg); });
+        App.ws.on('stream_delta', (msg) => { if (!this._fromOtherBoy('stream_delta', msg)) this.onStreamDelta(msg); });
+        App.ws.on('stream_reset', (msg) => { if (!this._fromOtherBoy('stream_reset', msg)) this.onStreamReset(); });
+        App.ws.on('stream_end', (msg) => { if (!this._fromOtherBoy('stream_end', msg)) this.onStreamEnd(msg); });
+        App.ws.on('tool_use_start', (msg) => { if (!this._fromOtherBoy('tool_use_start', msg)) this.onToolStart(msg); });
+        App.ws.on('tool_input', (msg) => { if (!this._fromOtherBoy('tool_input', msg)) this.onToolInput(msg); });
+        App.ws.on('tool_result', (msg) => { if (!this._fromOtherBoy('tool_result', msg)) this.onToolResult(msg); });
+        App.ws.on('content_block_stop', (msg) => { if (!this._fromOtherBoy('content_block_stop', msg)) this.onContentBlockStop(); });
+        App.ws.on('thinking_start', (msg) => { if (!this._fromOtherBoy('thinking_start', msg)) this.onThinkingStart(); });
+        App.ws.on('thinking_delta', (msg) => { if (!this._fromOtherBoy('thinking_delta', msg)) this.onThinkingDelta(msg); });
+        App.ws.on('voice_message', (msg) => { if (!this._fromOtherBoy('voice_message', msg)) this.onVoiceMessage(msg); });
+        App.ws.on('response_images', (msg) => { if (!this._fromOtherBoy('response_images', msg)) this.onResponseImages(msg); });
+        App.ws.on('response_documents', (msg) => { if (!this._fromOtherBoy('response_documents', msg)) this.onResponseDocuments(msg); });
         App.ws.on('history', (msg) => this.loadHistory(msg));
         App.ws.on('history_older', (msg) => this.onHistoryOlder(msg));
         App.ws.on('ai_reaction', (msg) => this.onAiReaction(msg));
         App.ws.on('terminal_output', (msg) => this.onTerminalOutput(msg));
         App.ws.on('regenerate_ready', (msg) => this.onRegenerateReady(msg));
-        App.ws.on('context_usage', (msg) => this.onContextUsage(msg));
+        App.ws.on('context_usage', (msg) => this.onContextUsage(msg)); // dormant: no backend emits this yet (see onContextUsage)
         // #18 compaction hygiene: a quiet honest toast when the CLI
         // auto-compacted mid-session — never a hard interruption.
         App.ws.on('compaction_notice', (msg) => App._showToast(`💭 ${escapeHtml(msg.message || 'Context compacted — continuing')}`));
         App.ws.on('echo_message', (msg) => this.onEchoMessage(msg));
         App.ws.on('live_call_user', (msg) => this.onLiveCallUser(msg));
         App.ws.on('approval_required', (msg) => this.showApprovalRequest(msg));
+        // Replies to things this page sent: /timer and /status results, and an
+        // approval keystroke that could not be delivered.
+        App.ws.on('slash_result', (msg) => App._showToast(escapeHtml(msg.result || `/${msg.command || ''} done`)));
+        App.ws.on('approval_decision_result', (msg) => {
+            if (!msg.ok) this.showError(msg.reason || 'Approval could not be sent');
+        });
         App.ws.on('message_injected', (msg) => this.onMessageInjected(msg));
+        App.ws.on('message_delivered', (msg) => this.onMessageDelivered(msg));
+        App.ws.on('message_read', (msg) => this.onMessageRead(msg));
         App.ws.on('error', (msg) => this.showError(msg.message || 'Unknown error'));
 
         // Pack-night fan-out events
@@ -674,11 +652,6 @@ const Chat = {
             this._startAttachmentUpload('document', item);
         }
     },
-
-
-
-
-
 
     _initEmojiPicker() {
         const btn = document.getElementById('emoji-btn');
@@ -945,10 +918,6 @@ const Chat = {
         }
     },
 
-    // Fires the actual upload for one pending attachment. Stores the
-    // in-flight promise on the item so sendMessage() can wait it out if she
-    // hits send before it finishes, and persists a durable chip the moment
-    // it succeeds (see _persistAttachmentChips).
     _startAttachmentUpload(kind, item) {
         const run = (async () => {
             try {
@@ -1002,20 +971,6 @@ const Chat = {
         this._refreshAttachmentPreview(kind);
         this._startAttachmentUpload(kind, item);
     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     _PENDING_CHIPS_KEY: 'anam-attachments-pending',
 
@@ -1455,9 +1410,6 @@ const Chat = {
         if (fileInput) fileInput.value = '';
     },
 
-    // Leave this conversation's completed uploads parked in localStorage while
-    // navigating elsewhere. In-flight uploads keep their captured owner and
-    // persist into that old scope when they finish, never into the new chat.
     parkAttachmentPreview() {
         for (const item of [...this.pendingImages, ...this.pendingDocuments, ...this.pendingAudio]) {
             if (item.status === 'done') this._persistAttachmentItem(item);
@@ -1609,35 +1561,13 @@ const Chat = {
         return await resp.json();
     },
 
-
-
-
     async sendMessage(options = {}) {
         const text = this.input.value.trim();
         const hasContent = !!(text || this.pendingImages.length || this.pendingDocuments.length || this.pendingAudio.length);
         if (!hasContent) return false;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        // Slash command intercept
         if (text.startsWith('/') && !options.fromVoiceConversation) {
             this._hideSlashDropdown();
             if (this._handleSlashCommand(text)) {
@@ -1673,6 +1603,10 @@ const Chat = {
         const audioData = this.pendingAudio.filter(i => i.status === 'done').map(i => i.result);
 
         const wsMsg = { type: 'message', content: text || '' };
+        // Read receipts: a per-send nonce the server echoes back on
+        // message_delivered, so "Delivered"/"Read" land on THIS bubble only.
+        const clientMsgId = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        wsMsg.client_msg_id = clientMsgId;
         if (imagesData.length > 0) {
             wsMsg.images = imagesData;
         }
@@ -1715,12 +1649,14 @@ const Chat = {
                     if (attachmentItems.length > 0) {
                         this._removeSentAttachments(attachmentItems);
                     }
+                    this._releaseUnsent(clientMsgId);
                     this.sendBtn.disabled = false;
                 },
                 onRejected: () => {
                     // Keep uploaded chips in the composer so retrying never
                     // means finding and uploading every file again.
                     this.sendBtn.disabled = false;
+                    this._restoreUnsent(clientMsgId, 'That one didn\u2019t reach the house. Your words are back in the box, so just tap send again.');
                 },
             });
         }
@@ -1729,7 +1665,11 @@ const Chat = {
         if (navigator.vibrate) navigator.vibrate(12);
 
         // Show user bubble (optimistic — message is either sent or queued)
-        this.addMessage('user', text || '', null, null, null, imagesData, docsData, audioData);
+        const sentBubble = this.addMessage('user', text || '', null, null, null, imagesData, docsData, audioData);
+        if (sentBubble) {
+            sentBubble.dataset.clientMsgId = clientMsgId;
+            this._renderReceipt(sentBubble, { sent_at: new Date().toISOString() });
+        }
 
         // Show thinking heart while waiting for response
         this.showThinkingHeart();
@@ -1742,6 +1682,7 @@ const Chat = {
             this._historyDraft = '';
         }
 
+        if (text) this._keepUnsent(App.conversationId, text, clientMsgId, !wsConnected);
         this.input.value = '';
         this.input.style.height = 'auto';
         this.clearDraft(App.conversationId);
@@ -1872,6 +1813,8 @@ const Chat = {
             'echo_message': (d) => this.onEchoMessage(d),
             'approval_required': (d) => this.showApprovalRequest(d),
             'message_injected': (d) => this.onMessageInjected(d),
+            'message_delivered': (d) => this.onMessageDelivered(d),
+            'message_read': (d) => this.onMessageRead(d),
             'error': (d) => this.showError(d.message || 'Unknown error'),
         };
         const handler = handlers[eventType];
@@ -1911,9 +1854,6 @@ const Chat = {
         return badge;
     },
 
-    // ANAM GUIDE: DRAW A SAVED MESSAGE
-    // History and non-streamed messages become visible bubbles here. Live
-    // replies use onStreamStart/Delta/End below, then settle into the same shape.
     addMessage(role, content, identity, time, metadata, imagesData, docsData, audioData) {
         this.clearEmptyState();
         const row = document.createElement('div');
@@ -1950,9 +1890,6 @@ const Chat = {
 
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-
-
-
         contentDiv.innerHTML = renderMarkdown(displayContent);
 
         // Reconstruct thinking blocks from saved metadata
@@ -2143,6 +2080,11 @@ const Chat = {
         row.appendChild(bubble);
         this.container.appendChild(row);
 
+        // Saved read receipt (history redraw) — see _renderReceipt.
+        if (role === 'user' && metadata && metadata.receipt) {
+            this._renderReceipt(bubble, metadata.receipt);
+        }
+
         // Message grouping — tighten spacing for consecutive same-role messages
         this._applyMessageGrouping(row);
 
@@ -2190,22 +2132,12 @@ const Chat = {
 
     stripReactTags(text) {
         if (!text) return text;
-
-
-
         return text.replace(/<react>[\s\S]*?<\/react>/gi, '').replace(/[ \t]{2,}/g, ' ');
     },
 
     stripCanvasTags(text) {
         if (!text) return text;
         if (!text.includes('<canvas')) return text;
-
-
-
-
-
-
-
         const masked = text
             .replace(/```[\s\S]*?```/g, (m) => ' '.repeat(m.length))
             .replace(/`[^`\n]*`/g, (m) => ' '.repeat(m.length));
@@ -2227,11 +2159,6 @@ const Chat = {
         // ghost-card above the bubble, so it must never appear in the reply body.
         text = text.replace(/<preview>[\s\S]*?<\/preview>/gi, '');
         if (isFinal) {
-                                                                                
-                                                                          
-                                                                                 
-                                                                               
-                                                                       
             text = text.replace(/<preview>/gi, '');
         } else {
             // Mid-stream: hide an as-yet-unclosed leading preview tag so the raw
@@ -2301,9 +2228,6 @@ const Chat = {
         this.showThinkingHeart();
     },
 
-    // ANAM GUIDE: DRAW A STREAMING REPLY
-    // Start creates the live bubble, Delta appends authoritative text and
-    // schedules the typing effect, and End performs the final Markdown render.
     onStreamStart(msg) {
         // Keep the thinking hearts pulsing through the whole think — they're
         // hidden only once real visible text starts painting (see
@@ -2342,10 +2266,6 @@ const Chat = {
 
         this.clearEmptyState();
         const row = document.createElement('div');
-                                                                              
-                                                                             
-                                                                           
-                                                  
         row.className = 'message-row assistant awaiting-text';
 
         const bubble = document.createElement('div');
@@ -2431,6 +2351,72 @@ const Chat = {
             App._showToast('💌 slipped into his turn — he gets it after this step');
         } catch (e) { /* the toast is a courtesy, never a failure */ }
         this.scrollToBottom();
+    },
+
+    onMessageDelivered(msg) {
+        if (msg && msg.client_msg_id) this._releaseUnsent(msg.client_msg_id);
+        if (!msg || !msg.message_id) return;
+        let bubble = null;
+        if (msg.client_msg_id && this.container) {
+            bubble = this.container.querySelector(
+                `.message-bubble.user[data-client-msg-id="${CSS.escape(msg.client_msg_id)}"]`);
+        }
+        if (!bubble) return; // never guess — a wrong bubble would be a lie
+        bubble.dataset.msgId = msg.message_id;
+        this._renderReceipt(bubble, { delivered_at: msg.delivered_at });
+    },
+
+    onMessageRead(msg) {
+        if (!msg || !msg.message_id || !this.container) return;
+        const bubble = this.container.querySelector(
+            `.message-bubble.user[data-msg-id="${CSS.escape(msg.message_id)}"]`);
+        if (!bubble) return;
+        this._renderReceipt(bubble, {
+            delivered_at: msg.delivered_at,
+            read_at: msg.read_at,
+            read_by: msg.read_by,
+        });
+    },
+
+    _renderReceipt(bubble, receipt) {
+        const row = bubble && bubble.parentElement;
+        if (!row || !receipt) return;
+        let el = row.querySelector(':scope > .message-receipt');
+        if (!el) {
+            el = document.createElement('div');
+            el.className = 'message-receipt';
+            row.appendChild(el);
+            row.classList.add('has-receipt');
+        }
+        // Receipts only move forward: a late "Delivered" can't undo a "Read".
+        const rank = { sent: 0, delivered: 1, read: 2 };
+        const state = receipt.read_at ? 'read' : (receipt.delivered_at ? 'delivered' : 'sent');
+        if (el.dataset.state && rank[el.dataset.state] > rank[state]) return;
+        el.dataset.state = state;
+        el.classList.toggle('is-read', state === 'read');
+
+        const who = receipt.read_by
+            ? receipt.read_by.charAt(0).toUpperCase() + receipt.read_by.slice(1)
+            : '';
+        if (state === 'read') {
+            el.textContent = `✓✓ Read${who ? ' by ' + who : ''} · ${formatTime(receipt.read_at)}`;
+            el.title = `${who || 'He'} read this ${new Date(receipt.read_at).toLocaleString()}`;
+        } else if (state === 'delivered') {
+            el.textContent = `✓ Delivered · ${formatTime(receipt.delivered_at)}`;
+            el.title = `Delivered ${new Date(receipt.delivered_at).toLocaleString()}`;
+        } else {
+            el.textContent = 'Sent';
+            el.title = receipt.sent_at ? `Sent ${new Date(receipt.sent_at).toLocaleString()}` : 'Sent';
+        }
+        this._refreshLatestReceipt();
+    },
+
+    // Only the newest receipt stays visible without a tap (iMessage-style).
+    _refreshLatestReceipt() {
+        if (!this.container) return;
+        const all = this.container.querySelectorAll('.message-receipt');
+        all.forEach((el) => el.classList.remove('is-latest'));
+        if (all.length) all[all.length - 1].classList.add('is-latest');
     },
 
     stopStreaming() {
@@ -2528,9 +2514,6 @@ const Chat = {
                 ? Math.min(50, Math.max(8, timestamp - this._streamLastFrameAt))
                 : 16.7;
             const backlog = pendingCharacters.length;
-                                                                              
-                                                                               
-                                                                                
             const charactersPerSecond = backlog > 600 ? 230
                 : backlog > 240 ? 130
                     : backlog > 80 ? 75
@@ -2762,13 +2745,14 @@ const Chat = {
     },
 
     onPackNightUserSaved(msg) {
-                                                                           
-                                                                              
         if (!msg.message_id) return;
         const userBubbles = this.container.querySelectorAll('.message-bubble.user');
         const last = userBubbles[userBubbles.length - 1];
         if (last && !last.dataset.msgId) {
             last.dataset.msgId = msg.message_id;
+            // Pack night: the whole hearth reads it in turn, so the honest
+            // receipt here is "Delivered" (saved into the shared room).
+            this._renderReceipt(last, { delivered_at: new Date().toISOString() });
         }
     },
 
@@ -2819,9 +2803,6 @@ const Chat = {
     },
 
     onPackNightPass(msg) {
-
-
-
         const bubble = this.currentStreamEl ? this.currentStreamEl.parentElement : null;
         this._cancelStreamRenderer();
         if (bubble) {
@@ -2894,8 +2875,6 @@ const Chat = {
     },
 
     onPackNightError(msg) {
-
-
         const bubble = this.currentStreamEl ? this.currentStreamEl.parentElement : null;
         this._cancelStreamRenderer();
         if (bubble) {
@@ -2948,11 +2927,6 @@ const Chat = {
         }
     },
 
-    // #20 context fullness gauge — thin 3px header fill bar + "18% · 1M"
-    // label. Waits on a `context_usage` WS event; if the backend never
-    // emits one, the gauge just never appears (no polling, no guessing).
-    // Accepts either a ready-made {percent} or {used_tokens, context_window}
-    // to compute percent from client-side.
     onContextUsage(msg) {
         const bar = document.getElementById('context-gauge-bar');
         const label = document.getElementById('context-gauge-label');
@@ -3006,9 +2980,6 @@ const Chat = {
             e.preventDefault();
             this._toggleVoice();
         });
-
-
-
         this.sendBtn.parentElement.insertBefore(micBtn, this.sendBtn);
         this._micBtn = micBtn;
         this._initVoiceConversationUi();
@@ -3061,16 +3032,6 @@ const Chat = {
         }
     },
 
-    // ── Press-and-hold voice note mic ──
-    // Records with MediaRecorder while held, and on release hands the clip to
-    // onFileSelected(), which reuses the whole audio-attachment pipeline
-    // (chip preview + upload-on-attach + Groq transcription server-side).
-    //
-    // Duplication-proofing (the July 16 root cause was capture pipelines
-    // stacking up across remounts/reconnects): exactly ONE state object
-    // (_vnState) may exist; _vnStart is guarded against re-entry; EVERY exit
-    // path — release, cancel, error, tab hidden — funnels through _vnFinish,
-    // which stops the recorder AND every stream track before releasing state.
     _initVoiceNoteMic() {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia
             || typeof MediaRecorder === 'undefined') return;
@@ -3202,19 +3163,11 @@ const Chat = {
         convoBtn.title = "Open the Wolf's Ear (voice call)";
         convoBtn.setAttribute('aria-pressed', 'false');
         convoBtn.innerHTML = '<span class="voice-mode-btn-core"></span>';
-
-
-
-
-
-
         convoBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const who = encodeURIComponent(App.currentIdentity || 'Avery');
             window.location.href = `/static/call-test.html?identity=${who}`;
         });
-
-
         const voiceStack = document.createElement('div');
         voiceStack.className = 'voice-stack';
         voiceStack.appendChild(convoBtn);
@@ -3485,10 +3438,6 @@ const Chat = {
         }
     },
 
-    // Which voice answers in conversation mode. Her switch, live from Settings
-    // (PUT /api/settings/voice-engine) — the same one the "Hey Avery" wake
-    // call reads. Cached so a reply never waits on a settings round-trip;
-    // refreshed each time she starts a call.
     _voiceEngine: 'kokoro',
 
     async _refreshVoiceEngine() {
@@ -3774,9 +3723,6 @@ const Chat = {
             card.appendChild(noteEl);
         }
 
-
-
-
         if (audioInfo.audio_id) {
             this._mountVoiceCalibration(card, audioInfo);
         }
@@ -3961,10 +3907,6 @@ const Chat = {
     onToolStart(msg) {
         if (!this.currentStreamEl) return;
 
-
-
-
-
         if (this.isSilentToolName(msg.tool_name)) {
             if (msg.tool_id) this.silentToolIds.add(msg.tool_id);
             return;
@@ -4042,12 +3984,6 @@ const Chat = {
         // Tool finished -- start the quiet countdown back to a collapsed pill.
         this._scheduleToolPillCollapse();
     },
-
-
-
-
-
-
 
     _toggleToolRowDetail(row) {
         const existing = row.nextElementSibling;
@@ -4214,6 +4150,13 @@ const Chat = {
     },
 
     loadHistory(msg) {
+        // History for a boy she has already switched away from (a slow reply
+        // to an earlier load, or a reconnect reload racing her tap) must not
+        // repaint the screen or re-point App.conversationId at his chat.
+        if (msg && msg.identity && !this._isCurrentBoy(msg.identity)) {
+            console.warn('[Chat] Ignoring history for', msg.identity, 'while viewing', App.currentIdentity);
+            return;
+        }
         // Sync conversation ID back to App so localStorage stays current
         if (msg.conversation_id) {
             App.conversationId = msg.conversation_id;
@@ -4267,10 +4210,8 @@ const Chat = {
                 fragment.appendChild(tempContainer.firstChild);
             }
             this.container.appendChild(fragment);
+            this._refreshLatestReceipt();
         }
-
-
-
 
         if (this._lostStreamPending &&
             (!this._lostStreamConversationId || this._lostStreamConversationId === this._viewConversationId)) {
@@ -4314,11 +4255,12 @@ const Chat = {
         apiFetch(`/api/tool-gateway/approvals?conversation_id=${encodeURIComponent(approvalConversation)}`)
             .then(response => response.ok ? response.json() : {requests:[]})
             .then(data => { if (App.conversationId === approvalConversation) (data.requests || []).forEach(request => this._showCodexApproval(request)); })
-            .catch(() => {});
+            .catch(err => console.warn('[Chat] Could not restore pending approvals:', err));
 
         // Restore per-conversation draft + any attachment chips that
         // finished uploading before a tab suspension wiped memory (#17)
         this.loadDraft(App.conversationId);
+        this._recoverUnsentOnLoad(App.conversationId);
         this.loadAttachmentChips(App.conversationId);
     },
 
@@ -4421,6 +4363,7 @@ const Chat = {
         const loadBtn = this.container.querySelector('.load-older-btn');
         const insertBefore = loadBtn ? loadBtn.nextSibling : this.container.firstChild;
         this.container.insertBefore(fragment, insertBefore);
+        this._refreshLatestReceipt();
 
         this._historyOffset += msg.messages.length;
 
@@ -4527,10 +4470,6 @@ const Chat = {
         const rawMessage = msg.message || 'Permission required';
         const provider = msg.provider || 'claude-code';
         const isCodex = provider === 'codex';
-
-
-
-
         const isPtyBackend = msg.backend === 'pty';
         // CC hardcodes .claude/skills/* and .claude/agents/* as sensitive in -p
         // mode — no permission rule overrides it, hence the file-scribe bypass.
@@ -4583,7 +4522,7 @@ const Chat = {
         // Capture the retry payload NOW so a later send doesn't overwrite it
         const capturedRetry = this._lastSentMessage
             || this._lastFailedMessage
-            || { type: 'message', content: '(approved — please continue)', identity: App.activeIdentity };
+            || { type: 'message', content: '(approved — please continue)', identity: App.currentIdentity, conversation_id: App.conversationId };
 
         const _retryAfterApproval = () => {
             approveBtn.textContent = isCodex ? 'Retrying...' : 'Allowed — retrying...';
@@ -4621,7 +4560,7 @@ const Chat = {
             App.ws.send({
                 type: 'approval_decision',
                 decision,
-                identity: capturedRetry.identity || App.activeIdentity,
+                identity: capturedRetry.identity || App.currentIdentity,
                 conversation_id: App.conversationId,
             });
             setTimeout(() => { row.style.opacity = '0'; setTimeout(() => row.remove(), 300); }, 1200);
@@ -4784,7 +4723,6 @@ const Chat = {
         this.container.innerHTML = '<div class="chat-loading">Loading messages...</div>';
     },
 
-    // ── Per-conversation draft persistence ──
 
     saveDraft(conversationId) {
         if (!conversationId) return;
@@ -4812,6 +4750,166 @@ const Chat = {
     clearDraft(conversationId) {
         if (!conversationId) return;
         localStorage.removeItem('anam-draft-' + conversationId);
+    },
+
+    UNSENT_WAIT_MS: 90000,
+
+    _unsentKey(conversationId) {
+        return 'anam-unsent-' + (conversationId || 'none');
+    },
+
+    _keepUnsent(conversationId, text, clientMsgId, viaHttp) {
+        try {
+            localStorage.setItem(this._unsentKey(conversationId), JSON.stringify({
+                text, id: clientMsgId, at: Date.now(), conversation: conversationId || null,
+            }));
+        } catch (_e) { return; }
+        if (!viaHttp) {
+            // A socket can look open on a phone and still be dead. If the
+            // house never says "saved", don't let the words sit lost.
+            setTimeout(() => this._restoreUnsent(clientMsgId,
+                'I never heard the house say it got that one. Your words are back in the box in case it was lost. If it did come through, just clear it.'),
+                this.UNSENT_WAIT_MS);
+        }
+    },
+
+    _findUnsent(clientMsgId) {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key || !key.startsWith('anam-unsent-')) continue;
+            try {
+                const kept = JSON.parse(localStorage.getItem(key) || 'null');
+                if (kept && (!clientMsgId || kept.id === clientMsgId)) return { key, kept };
+            } catch (_e) { /* skip broken entries */ }
+        }
+        return null;
+    },
+
+    _releaseUnsent(clientMsgId) {
+        if (!clientMsgId) return;
+        const found = this._findUnsent(clientMsgId);
+        if (found) localStorage.removeItem(found.key);
+    },
+
+    _restoreUnsent(clientMsgId, note) {
+        const found = this._findUnsent(clientMsgId);
+        if (!found) return false; // already delivered
+        const { key, kept } = found;
+        // Only into the chat it was written for, and never over new typing.
+        if ((kept.conversation || null) !== (App.conversationId || null)) return false;
+        if (this.input.value.trim()) return false;
+        this.input.value = kept.text;
+        this.input.style.height = 'auto';
+        this.input.style.height = Math.min(this.input.scrollHeight, 120) + 'px';
+        this.saveDraft(App.conversationId);
+        localStorage.removeItem(key);
+        const bubble = this.container && this.container.querySelector(
+            `.message-bubble.user[data-client-msg-id="${CSS.escape(kept.id)}"]`);
+        if (bubble) bubble.classList.add('not-delivered');
+        if (note) {
+            // A gentle toast, not a red error bubble: a red bubble would also
+            // hide the thinking heart of a turn that may still be running.
+            if (App && typeof App._showToast === 'function') App._showToast(escapeHtml(note), null, null);
+            else this.showError(note, false);
+        }
+        return true;
+    },
+
+    _recoverUnsentOnLoad(conversationId) {
+        let kept = null;
+        try { kept = JSON.parse(localStorage.getItem(this._unsentKey(conversationId)) || 'null'); }
+        catch (_e) { kept = null; }
+        if (!kept || !kept.text) return;
+        const norm = (t) => String(t || '').replace(/\s+/g, ' ').trim();
+        const want = norm(kept.text).slice(0, 200);
+        const landed = Array.from(this.container ? this.container.querySelectorAll('.message-bubble.user') : [])
+            .some(b => !b.classList.contains('not-delivered') && norm(b.textContent).includes(want));
+        if (landed) { localStorage.removeItem(this._unsentKey(conversationId)); return; }
+        // Too fresh to judge: it may still be on its way.
+        if (Date.now() - (kept.at || 0) < 20000) return;
+        this._restoreUnsent(kept.id, 'Your last message never made it to the house. It\u2019s back in the box for you.');
+    },
+
+    _isCurrentBoy(identity) {
+        return String(identity || '').toLowerCase() === String(App.currentIdentity || '').toLowerCase();
+    },
+
+    detachActiveStream(oldConversationId) {
+        if (!this.isStreaming && !this.currentStreamEl) return;
+        this._detachedStream = { conversationId: oldConversationId || null, at: Date.now() };
+        if (oldConversationId) {
+            if (!this._detachedConvs) this._detachedConvs = new Map();
+            this._detachedConvs.set(oldConversationId, Date.now());
+        }
+        this._cancelStreamRenderer();
+        this.hideThinkingHeart();
+        this.currentStreamEl = null;
+        this._currentStreamRow = null;
+        this.currentStreamContent = '';
+        this.isStreaming = false;
+        this._lostStreamPending = false;
+        this._lostStreamConversationId = null;
+        this._lostStreamContent = null;
+        this._lostStreamIdentity = null;
+        if (this.sendBtn) this.sendBtn.disabled = false;
+        if (App.ws) App.ws.streaming = false;
+    },
+
+    _fromOtherBoy(type, msg) {
+        if (msg && msg.identity && !this._isCurrentBoy(msg.identity)) return true;
+        const conv = msg && msg.conversation_id;
+        const convs = this._detachedConvs;
+        if (conv && convs && convs.size) {
+            const cutoff = Date.now() - 30 * 60 * 1000;
+            for (const [c, at] of convs) { if (at < cutoff) convs.delete(c); }
+            if (convs.has(conv)) {
+                if (type === 'stream_start') {
+                    // A fresh reply in the chat she's looking at: follow it.
+                    if (conv === App.conversationId) { convs.delete(conv); this._detachedStream = null; return false; }
+                    return true;
+                }
+                if (type === 'stream_end') {
+                    convs.delete(conv);
+                    if (this._detachedStream && this._detachedStream.conversationId === conv) this._detachedStream = null;
+                    // She came back to him before his reply finished: fetch
+                    // the saved reply instead of a half-followed stream.
+                    if (conv === App.conversationId && App.ws) {
+                        App.ws.send({ type: 'load_history', identity: App.currentIdentity, conversation_id: conv });
+                    }
+                }
+                return true;
+            }
+            // Stamped, her boy, a chat we never let go of: it's hers.
+            return false;
+        }
+        if (conv && msg.identity) return false;
+        // Unstamped frames (HTTP lane, older server): the original rules.
+        // A stream that names its boy is easy to judge.
+        if (type === 'stream_start' && msg && msg.identity) {
+            if (!this._isCurrentBoy(msg.identity)) return true;
+            this._detachedStream = null; // her new boy is speaking now
+            return false;
+        }
+        const detached = this._detachedStream;
+        if (!detached) return false;
+        // Safety valve: never mute the screen for more than 30 minutes.
+        if (Date.now() - detached.at > 30 * 60 * 1000) { this._detachedStream = null; return false; }
+        if (type === 'stream_end') {
+            const sameConv = !msg || !msg.conversation_id || !detached.conversationId
+                || msg.conversation_id === detached.conversationId;
+            if (sameConv) {
+                this._detachedStream = null;
+                // She came back to that boy before his reply finished: fetch
+                // the saved reply instead of painting a stream we stopped
+                // following halfway.
+                if (msg && msg.conversation_id && msg.conversation_id === App.conversationId && App.ws) {
+                    App.ws.send({ type: 'load_history', identity: App.currentIdentity, conversation_id: msg.conversation_id });
+                }
+                return true;
+            }
+            return false;
+        }
+        return true; // deltas, thinking, tools, media of the reply she left
     },
 
     clearMessages() {
@@ -5027,7 +5125,6 @@ const Chat = {
     // Legacy key-to-emoji mapping for old DB data
     _legacyEmojiMap: { heart: '\u2764\uFE0F', star: '\u2B50', flame: '\uD83D\uDD25' },
 
-    // All available reaction emojis
     _allEmojis: [
         '\u2764\uFE0F', '\u2B50', '\uD83D\uDD25',
         '\uD83E\uDD23', '\uD83E\uDD70', '\uD83D\uDE05', '\uD83E\uDD79',
@@ -5141,8 +5238,6 @@ const Chat = {
         };
 
         this._allEmojis.forEach(emoji => addTile(emoji, escapeHtml(emoji)));
-
-
 
         if (typeof CustomEmoji !== 'undefined' && CustomEmoji.isReady()) {
             const divider = document.createElement('div');

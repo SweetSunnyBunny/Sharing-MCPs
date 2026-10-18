@@ -176,11 +176,7 @@ class ChatTurnFinalizeTests(unittest.IsolatedAsyncioTestCase):
                     send=_send,
                 )
 
-        synth_mock.assert_awaited_once_with(
-            "Claude",
-            "spoken",
-            model_override="eleven_v3",
-        )
+        synth_mock.assert_awaited_once_with("Claude", "spoken")
         metadata_mock.assert_awaited_once_with(fake_db, "msg-1", {"has_voice": True})
         self.assertEqual(payload["audio_url"], "/api/voice/file/msg-1")
         self.assertEqual(sent[0]["message_id"], "msg-1")

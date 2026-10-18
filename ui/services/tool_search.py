@@ -5,23 +5,18 @@ auto mode this module replaces a large MCP catalog with three small bridge
 tools.  Core Anam tools remain directly visible.
 """
 
-# ANAM GUIDE: MCP TOOL CATALOG SHRINKER
-# What: When the MCP tool list is huge, this hides it behind three small "search /
-#       describe / call" bridge tools so every paid API call doesn't resend hundreds
-#       of tool descriptions (big token savings).
-# Called by: services/claude_api.py and services/openai_provider.py (direct-API
-#            providers only — the Claude Code CLI path doesn't need it).
-# Edit here when: You want to change when it kicks in (ANAM_MCP_TOOL_SEARCH env vars,
-#                 minimum tool count/size) or how tool search ranking works.
 
 from __future__ import annotations
 
 import json
+import logging
 import math
 import os
 import re
 from collections import Counter
 from typing import Any
+
+log = logging.getLogger(__name__)
 
 
 BRIDGE_NAMES = {"anam_tool_search", "anam_tool_describe", "anam_tool_call"}
@@ -42,6 +37,7 @@ def _load_taxonomy() -> dict:
         return {k: v for k, v in taxonomy.items()
                 if not k.startswith("_") and isinstance(v, dict)}
     except Exception:
+        log.debug("tool search: toolTaxonomy unavailable; plain TF-IDF ranking", exc_info=True)
         return {}
 
 

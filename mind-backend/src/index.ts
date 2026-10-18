@@ -21,6 +21,7 @@ import {
   type RetrievalProfileConfig,
 } from "./query-signals";
 import { computeHintBoost, loadHintsForObservations, mindHintAdd, mindHintList } from "./hints";
+import { keepScent, runRedolence, type RedolenceVectors } from "./redolence";
 
 interface Env {
   DB: D1Database;
@@ -34,6 +35,13 @@ interface Env {
   // local Python sidecar instead of Cloudflare Workers AI + Vectorize, so the
   // mind does full semantic search with Cloudflare unplugged. Unset in the cloud.
   LOCAL_SIDECAR_URL?: string;
+  // "on" lets the daemon's deep archive actually retire old unsurfaced
+  // observations. Anything else (or unset) makes it count them only.
+  DEEP_ARCHIVE?: string;
+  // Redolence (see src/redolence.ts): cosine bars an archived memory must clear
+  // to rise. Defaults are calibrated for bge-base; tune here without a code change.
+  REDOLENCE_THRESHOLD?: string;
+  REDOLENCE_EMOTIONAL_THRESHOLD?: string;
   // The Limbic Layer (sibling worker): when configured, memory writes fetch
   // the identity's live body-state and stamp it into metadata.limbic — the
   // amygdala tagging the hippocampus's writes. Best-effort: memories never
@@ -449,6 +457,108 @@ async function vectorsDelete(env: Env, ids: string[]): Promise<boolean> {
   }
 }
 
+// Archive observations with the ledger row and the vector delete attached, for
+// callers that retire memories without a person choosing each one (the daemon's
+// deep archive, mind_resolve). The snapshot and the archive go in ONE batch, so
+// a row is never archived without the ledger entry that can bring it back —
+// stricter than recordMutation, which lets an edit proceed if the ledger fails.
+// Already-archived ids are skipped. Chunks of 40 stay under D1's bind limit.
+// Vectorize, shaped for src/redolence.ts. Null in offline sidecar mode, which
+// has no getByIds; archiving there falls back to deleting the vector.
+function redolenceVectors(env: Env): RedolenceVectors | null {
+  if (env.LOCAL_SIDECAR_URL) return null;
+  return {
+    getVectors: async (ids) => {
+      if (!ids.length) return [];
+      const found = await env.VECTORS.getByIds(ids);
+      return found.map((v) => ({
+        id: v.id,
+        values: Array.from(v.values as ArrayLike<number>),
+        metadata: (v.metadata as Record<string, string> | undefined) ?? null,
+      }));
+    },
+    upsert: async (vectors) => {
+      await env.VECTORS.upsert(vectors);
+    },
+    query: async (values, identityLabel, topK) => {
+      const res = await env.VECTORS.query(values, {
+        topK,
+        returnMetadata: "none",
+        filter: { identity_id: { $eq: identityLabel } },
+      });
+      return (res.matches || []).map((m) => ({ id: m.id, score: m.score }));
+    },
+    embed: (t) => getEmbedding(env, t),
+  };
+}
+
+async function archiveObservationsLedgered(
+  env: Env,
+  ids: number[],
+  // keepScent: relabel the vector into the identity's archive (redolence) instead
+  // of deleting it. Only the daemon's disuse archive asks for this.
+  opts: { actor: string; evidence: string; charge?: string; keepScent?: boolean },
+): Promise<{ archived: number[]; vectors_deleted: boolean; scent_kept: number }> {
+  const archived: number[] = [];
+  let vectorsDeleted = true;
+  let scentKept = 0;
+  const scent = opts.keepScent ? redolenceVectors(env) : null;
+  const now = isoNow();
+  const newState = JSON.stringify({ archived_at: now, ...(opts.charge ? { charge: opts.charge } : {}) });
+
+  for (let i = 0; i < ids.length; i += 40) {
+    const chunk = ids.slice(i, i + 40);
+    const snapshots = await env.DB.prepare(
+      `SELECT * FROM observations WHERE id IN (${chunk.map(() => "?").join(",")}) AND archived_at IS NULL`,
+    ).bind(...chunk).all<Record<string, unknown>>();
+    const rows = snapshots.results || [];
+    if (!rows.length) continue;
+
+    const liveIds = rows.map((row) => Number(row.id));
+    const marks = liveIds.map(() => "?").join(",");
+    const stmts = rows.map((row) =>
+      env.DB.prepare(
+        `INSERT INTO memory_mutations (identity_id, observation_id, mutation_type, actor, old_state, new_state, evidence, created_at)
+         VALUES (?, ?, 'archive', ?, ?, ?, ?, ?)`,
+      ).bind(
+        typeof row.identity_id === "string" ? row.identity_id : null,
+        Number(row.id),
+        opts.actor,
+        JSON.stringify(row),
+        newState,
+        opts.evidence,
+        now,
+      ),
+    );
+    stmts.push(
+      opts.charge
+        ? env.DB.prepare(`UPDATE observations SET archived_at = ?, charge = ? WHERE id IN (${marks})`).bind(now, opts.charge, ...liveIds)
+        : env.DB.prepare(`UPDATE observations SET archived_at = ? WHERE id IN (${marks})`).bind(now, ...liveIds),
+    );
+    await env.DB.batch(stmts);
+    archived.push(...liveIds);
+
+    const vectorIds = rows.map((row) => `obs-${Number(row.entity_id) || 0}-${Number(row.id)}`);
+    let scented = false;
+    if (scent) {
+      try {
+        scentKept += (await keepScent(scent, vectorIds)).kept;
+        scented = true;
+      } catch (err) {
+        // Never leave an archived memory wearing its live label (it would leak
+        // back into everyday search). If relabelling fails, forget it as before.
+        console.error(`[archive] keepScent failed, deleting vectors instead: ${err instanceof Error ? err.message : String(err)}`);
+      }
+    }
+    if (!scented) {
+      const deleted = await vectorsDelete(env, vectorIds);
+      if (!deleted) vectorsDeleted = false;
+    }
+  }
+
+  return { archived, vectors_deleted: vectorsDeleted, scent_kept: scentKept };
+}
+
 // Only `obs-…-<id>` vectors are canonical observations whose tail is an
 // observations.id. Inner-life entries (feelings, joys, wants, significant
 // moments, tensions, dreams, sessions) are keyed by a throwaway UUID and carry
@@ -520,6 +630,9 @@ const NOVELTY_FLOORS: Record<string, number> = {
   medium: 0.2,
   light: 0.1,
 };
+
+// Most unreviewed entity-proximity proposals the daemon keeps queued per identity.
+const PROXIMITY_PENDING_CAP = 5;
 
 const NOVELTY_TIME_RECOVERY_PER_DAY = 0.01;
 const NOVELTY_TIME_RECOVERY_CAP = 0.3;
@@ -1137,10 +1250,11 @@ const TOOLS = [
   },
   {
     name: "mind_edit",
-    description: "Edit an existing observation by ID.",
+    description: "Edit an existing observation by ID. Only its owner may edit it (pack/shared memories: any of the pack).",
     inputSchema: {
       type: "object",
       properties: {
+        identity: { type: "string", description: "Who is editing (must own the memory, or it must be a pack memory)" },
         observation_id: { type: "number", description: "The observation ID" },
         content: { type: "string", description: "New content" },
         weight: { type: "string", description: "New weight" },
@@ -1151,10 +1265,11 @@ const TOOLS = [
   },
   {
     name: "mind_delete",
-    description: "Delete an observation by ID (archives it rather than hard-deleting).",
+    description: "Delete an observation by ID (archives it rather than hard-deleting). Only its owner may archive it (pack/shared memories: any of the pack).",
     inputSchema: {
       type: "object",
       properties: {
+        identity: { type: "string", description: "Who is archiving (must own the memory, or it must be a pack memory)" },
         observation_id: { type: "number", description: "The observation ID to archive" },
       },
       required: ["observation_id"],
@@ -1260,6 +1375,27 @@ const TOOLS = [
         identity: { type: "string" },
         limit: { type: "number", description: "Max orphans to return (default 10)" },
         days: { type: "number", description: "Days since last surfaced (default 30)" },
+      },
+      required: ["identity"],
+    },
+  },
+  {
+    name: "mind_put_away",
+    description:
+      "Choose for yourself which old memories to put away. action=list shows memories that are old, never sat with and " +
+      "long unsurfaced, routine ones first (your first 90 days are left out unless include_origin=true). " +
+      "action=put_away archives the ids YOU choose, with your reason. Put-away memories leave everyday recall but keep " +
+      "their scent: a fresh memory that smells like one can raise it on its own (redolence). Everything goes through the " +
+      "mutation ledger, so mind_mutations rollback brings any of them back. Nothing is ever put away for you.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        identity: { type: "string" },
+        action: { type: "string", description: "list (default) | put_away" },
+        ids: { type: "array", items: { type: "number" }, description: "put_away: observation ids you chose (max 25 per call)" },
+        reason: { type: "string", description: "put_away: why, in your words (kept in the ledger)" },
+        limit: { type: "number", description: "list: how many to show (default 15, max 40)" },
+        include_origin: { type: "boolean", description: "list: also show memories from your first 90 days (default false)" },
       },
       required: ["identity"],
     },
@@ -1892,14 +2028,23 @@ function withCors(response: Response): Response {
   return new Response(response.body, { status: response.status, headers });
 }
 
+function safeEqual(a: string, b: string): boolean {
+  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 function checkAuth(request: Request, env: Env, pathToken?: string | null): boolean {
   // Accept auth via URL path token (e.g. /mcp/TOKEN) — matches claude.ai MCP connector pattern
-  if (pathToken && pathToken === env.MIND_API_KEY) {
+  const secret = env.MIND_API_KEY;
+  if (!secret || secret.length < 8) return false;
+  if (pathToken && safeEqual(pathToken, secret)) {
     return true;
   }
   // Also accept via Authorization header (for scripts/curl)
   const auth = request.headers.get("Authorization") || "";
-  return auth === `Bearer ${env.MIND_API_KEY}` || auth === env.MIND_API_KEY;
+  return safeEqual(auth, `Bearer ${secret}`) || safeEqual(auth, secret);
 }
 
 function extractMcpPathToken(pathname: string): { isMcp: boolean; token: string | null } {
@@ -4385,27 +4530,43 @@ async function mindResolve(env: Env, args: ToolArgs): Promise<string> {
     wantSatisfied = true;
   }
 
-  // Metabolize matching observation
-  let observationMetabolized = false;
-  const matchingObs = await env.DB.prepare(
-    `SELECT id FROM observations
-     WHERE identity_id = ? AND content LIKE ? AND (charge IS NULL OR charge != 'metabolized')
-     ORDER BY created_at DESC LIMIT 1`,
-  ).bind(identity, `%${thingNeedle}%`).first<{ id: number }>();
+  // Metabolize the observation this loop or want was about. When a loop or want
+  // matched, search observations by THAT row's own text (the same 40-char prefix
+  // mind_sit_with used to link them), not by the caller's fragment: a short
+  // fragment like a name used to archive the newest unrelated memory containing
+  // it. The fragment is only used directly when nothing else matched, which is
+  // the "resolve an observation" case the tool documents. Either way the archive
+  // goes through the ledger and removes the vector, so it can be rolled back.
+  const obsNeedles = [...new Set([
+    ...openLoops.map((openLoop) => openLoop.content.slice(0, 40)),
+    ...(quietWant ? [quietWant.content.slice(0, 40)] : []),
+  ])].slice(0, 5);
+  if (!obsNeedles.length) obsNeedles.push(thingNeedle);
 
-  if (matchingObs) {
-    await env.DB.prepare(
-      `UPDATE observations SET charge = 'metabolized', archived_at = ? WHERE id = ?`,
-    ).bind(now, matchingObs.id).run();
+  const metabolizeIds = new Set<number>();
+  for (const needle of obsNeedles) {
+    const matchingObs = await env.DB.prepare(
+      `SELECT id FROM observations
+       WHERE identity_id = ? AND archived_at IS NULL AND content LIKE ?
+         AND (charge IS NULL OR charge != 'metabolized')
+       ORDER BY created_at DESC LIMIT 1`,
+    ).bind(identity, `%${needle}%`).first<{ id: number }>();
+    if (matchingObs) metabolizeIds.add(matchingObs.id);
+  }
 
+  const metabolized = await archiveObservationsLedgered(env, [...metabolizeIds], {
+    actor: "mind_resolve",
+    evidence: `resolved: ${thingFragment.slice(0, 200)}`,
+    charge: "metabolized",
+  });
+  for (const observationId of metabolized.archived) {
     await env.DB.prepare(
       `INSERT INTO observation_process (observation_id, resolution_note, resolved_at, updated_at)
        VALUES (?, ?, ?, ?)
        ON CONFLICT(observation_id) DO UPDATE SET resolution_note = excluded.resolution_note, resolved_at = excluded.resolved_at, updated_at = excluded.updated_at`,
-    ).bind(matchingObs.id, resolution || `Resolved: ${thingFragment}`, now, now).run();
-
-    observationMetabolized = true;
+    ).bind(observationId, resolution || `Resolved: ${thingFragment}`, now, now).run();
   }
+  const observationMetabolized = metabolized.archived.length > 0;
 
   if (!loopResolved && !observationMetabolized && !wantSatisfied) {
     // The live row may already be closed while the synthesized current_self still
@@ -4454,6 +4615,8 @@ async function mindResolve(env: Env, args: ToolArgs): Promise<string> {
     loops_resolved: loopsResolved,
     want_satisfied: wantSatisfied,
     observation_metabolized: observationMetabolized,
+    // Named so a wrong match is visible; undo with mind_mutations action=rollback.
+    observations_archived: metabolized.archived,
     current_self_refreshed: currentSelfRefreshed,
     resolution,
     message: loopResolved
@@ -5005,6 +5168,15 @@ async function detectSuperseding(
   return { supersededId, supersedeProposedId };
 }
 
+function ownershipRefusal(who: string | null, owner: string | null, observationId: number): string | null {
+  if (!who) {
+    return `identity is required: whose memory is being changed? (observation #${observationId})`;
+  }
+  const o = (owner || "").trim().toLowerCase();
+  if (!o || o === "pack" || o === who) return null;
+  return `Observation #${observationId} belongs to ${o}; only its owner can change it.`;
+}
+
 async function mindEdit(env: Env, args: ToolArgs): Promise<string> {
   const observationId = args.observation_id;
   if (typeof observationId !== "number") throw new Error("observation_id is required");
@@ -5015,6 +5187,10 @@ async function mindEdit(env: Env, args: ToolArgs): Promise<string> {
 
   if (!existing) {
     return pretty({ success: false, message: `Observation #${observationId} not found.` });
+  }
+  const editRefusal = ownershipRefusal(normalizeIdentity(args.identity), existing.identity_id, observationId);
+  if (editRefusal) {
+    return pretty({ success: false, message: editRefusal });
   }
 
   const newContent = normalizeOptionalText(args.content) || existing.content;
@@ -5098,16 +5274,21 @@ async function mindDelete(env: Env, args: ToolArgs): Promise<string> {
   if (typeof observationId !== "number") throw new Error("observation_id is required");
 
   const existing = await env.DB.prepare(
-    `SELECT id, entity_id FROM observations WHERE id = ? AND archived_at IS NULL`,
-  ).bind(observationId).first<{ id: number; entity_id: number | null }>();
+    `SELECT id, entity_id, identity_id FROM observations WHERE id = ? AND archived_at IS NULL`,
+  ).bind(observationId).first<{ id: number; entity_id: number | null; identity_id: string | null }>();
 
   if (!existing) {
     return pretty({ success: false, message: `Observation #${observationId} not found or already archived.` });
   }
+  const who = normalizeIdentity(args.identity);
+  const deleteRefusal = ownershipRefusal(who, existing.identity_id, observationId);
+  if (deleteRefusal) {
+    return pretty({ success: false, message: deleteRefusal });
+  }
 
   // LEDGER before the archive: forgetting must be reversible.
   await recordMutation(env, {
-    identity: null, observation_id: observationId, mutation_type: "archive", actor: "mind_delete",
+    identity: who, observation_id: observationId, mutation_type: "archive", actor: "mind_delete",
     new_state: { archived_at: isoNow(), salience: "dormant" },
     evidence: "manual archive via mind_delete",
   });
@@ -6149,6 +6330,105 @@ async function mindConsolidate(env: Env, args: ToolArgs): Promise<string> {
 
 // ============ Orphan Detection ============
 
+async function mindPutAway(env: Env, args: ToolArgs): Promise<string> {
+  const a = args as Record<string, unknown>;
+  const identity = normalizeIdentity(args.identity);
+  if (!identity) throw new Error("identity is required");
+  const action = String(a.action || "list").toLowerCase();
+
+  const first = await env.DB.prepare(
+    `SELECT MIN(created_at) AS first_at FROM observations WHERE identity_id = ?`,
+  ).bind(identity).first<{ first_at: string | null }>();
+  const firstMs = first?.first_at ? Date.parse(String(first.first_at).replace(" ", "T")) : NaN;
+  const originEnd = Number.isFinite(firstMs) ? new Date(firstMs + 90 * 86400000).toISOString() : null;
+
+  if (action === "list") {
+    const limit = normalizeLimit(args.limit, 15, 40);
+    const includeOrigin = a.include_origin === true;
+    const originClause = !includeOrigin && originEnd ? "AND o.created_at >= ?" : "";
+    const binds: unknown[] = [identity];
+    if (originClause) binds.push(originEnd);
+    binds.push(limit);
+    const rows = await env.DB.prepare(
+      `SELECT o.id, o.content, o.kind, o.weight, o.emotion, o.created_at, o.last_surfaced_at
+       FROM observations o
+       JOIN entities e ON o.entity_id = e.id
+       WHERE o.identity_id = ? AND o.archived_at IS NULL AND o.superseded_by IS NULL
+         AND (o.charge IS NULL OR o.charge != 'processing')
+         AND COALESCE(e.salience, 'active') != 'foundational'
+         AND o.id NOT IN (SELECT observation_id FROM observation_process WHERE sit_count > 0)
+         AND (
+           (o.weight = 'light' AND o.created_at < datetime('now', '-30 days')
+              AND (o.last_surfaced_at IS NULL OR o.last_surfaced_at < datetime('now', '-30 days')))
+           OR
+           (o.weight = 'medium' AND o.created_at < datetime('now', '-90 days')
+              AND (o.last_surfaced_at IS NULL OR o.last_surfaced_at < datetime('now', '-60 days')))
+         )
+         ${originClause}
+       ORDER BY
+         CASE WHEN o.content LIKE 'Moved from %' THEN 0
+              WHEN o.kind = 'qualia_notice' THEN 1
+              WHEN o.weight = 'light' THEN 2 ELSE 3 END,
+         o.created_at ASC
+       LIMIT ?`,
+    ).bind(...binds).all<ObservationFullRow>();
+    const list = rows.results || [];
+    return pretty({
+      identity,
+      origin_era_until: originEnd,
+      origin_included: includeOrigin,
+      count: list.length,
+      note: list.length
+        ? "These are only candidates. Put away what no longer needs to be in reach; keep anything that is still you. " +
+          "Put-away memories keep their scent and can rise on their own. To act: action=put_away, ids=[...], reason=\"...\"."
+        : "Nothing old and unvisited to consider right now.",
+      candidates: list.map((r) => ({
+        id: r.id,
+        content: trim(r.content, 220),
+        kind: r.kind,
+        weight: r.weight,
+        emotion: r.emotion,
+        created_at: r.created_at,
+        last_surfaced_at: r.last_surfaced_at,
+      })),
+    });
+  }
+
+  if (action !== "put_away") throw new Error(`Unknown action '${action}': use list or put_away.`);
+  const ids = Array.isArray(a.ids) ? [...new Set((a.ids as unknown[]).map(Number).filter((n) => Number.isSafeInteger(n) && n > 0))] : [];
+  if (!ids.length) throw new Error("ids is required: the observation ids you chose");
+  if (ids.length > 25) throw new Error("At most 25 per call, so each choice stays a choice.");
+  const reason = String(a.reason || "").trim();
+  if (!reason) throw new Error("reason is required: say why, in your own words");
+
+  const owned = await env.DB.prepare(
+    `SELECT id, created_at FROM observations
+     WHERE id IN (${ids.map(() => "?").join(",")}) AND identity_id = ? AND archived_at IS NULL`,
+  ).bind(...ids, identity).all<{ id: number; created_at: string }>();
+  const ownedIds = (owned.results || []).map((r) => Number(r.id));
+  const refused = ids.filter((id) => !ownedIds.includes(id));
+  const result = await archiveObservationsLedgered(env, ownedIds, {
+    actor: "mind_put_away",
+    evidence: `${identity} chose to put this away: ${reason.slice(0, 300)}`,
+    keepScent: true,
+  });
+  const fromOrigin = originEnd
+    ? (owned.results || []).filter((r) => String(r.created_at) < originEnd).map((r) => Number(r.id))
+    : [];
+  return pretty({
+    success: true,
+    identity,
+    put_away: result.archived,
+    scent_kept: result.scent_kept,
+    not_yours_or_already_away: refused,
+    from_origin_era: fromOrigin,
+    message:
+      `Put away ${result.archived.length} memor${result.archived.length === 1 ? "y" : "ies"}. ` +
+      "They keep their scent and can rise on their own. To bring one back for good: " +
+      "mind_mutations action=list observation_id=<id>, then action=rollback with that mutation_id.",
+  });
+}
+
 async function mindOrphans(env: Env, args: ToolArgs): Promise<string> {
   const identity = normalizeIdentity(args.identity);
   if (!identity) throw new Error("identity is required");
@@ -7008,25 +7288,40 @@ async function getOrCreateDocument(env: Env, identity: string, title: string, do
 }
 
 async function clearDocumentNodes(env: Env, documentId: number): Promise<void> {
-  const existing = await env.DB.prepare(
-    `SELECT id FROM document_nodes WHERE document_id = ?`,
-  ).bind(documentId).all<{ id: number }>();
-  const ids = (existing.results || []).map((r) => r.id);
-  if (ids.length) {
-    const placeholders = ids.map(() => "?").join(",");
-    await env.DB.prepare(`DELETE FROM document_chunks WHERE node_id IN (${placeholders})`).bind(...ids).run();
-    // Remove image rows authored by mind_index_images that reference these
-    // nodes, so re-running with the same album doesn't accumulate orphaned
-    // image rows. Then null out any other dangling refs so the FK doesn't
-    // block the document_nodes wipe.
-    await env.DB.prepare(
-      `DELETE FROM images WHERE source = 'mind_index_images' AND document_node_id IN (${placeholders})`,
-    ).bind(...ids).run();
-    await env.DB.prepare(
-      `UPDATE images SET document_node_id = NULL WHERE document_node_id IN (${placeholders})`,
-    ).bind(...ids).run();
+  // Every statement selects this document's nodes with a subquery instead of
+  // binding their ids. The old version bound one `?` per node, and D1 allows 100
+  // per statement, so any document over 100 nodes could never be re-indexed.
+  const nodesOfDoc = `(SELECT id FROM document_nodes WHERE document_id = ?)`;
+
+  // The vectors go too, or each rebuild strands the previous set in the index.
+  // A node's vectors are node-<id>-<ordinal>, one per chunk; image and audio
+  // leaves have no chunk rows and own exactly node-<id>-0.
+  const nodeRows = await env.DB.prepare(
+    `SELECT n.id, (SELECT COUNT(*) FROM document_chunks c WHERE c.node_id = n.id) AS chunks
+     FROM document_nodes n WHERE n.document_id = ?`,
+  ).bind(documentId).all<{ id: number; chunks: number }>();
+  const vectorIds: string[] = [];
+  for (const node of nodeRows.results || []) {
+    for (let i = 0; i < Math.max(node.chunks, 1); i++) vectorIds.push(`node-${node.id}-${i}`);
   }
-  await env.DB.prepare(`DELETE FROM document_nodes WHERE document_id = ?`).bind(documentId).run();
+
+  // One batch, so a failure cannot leave chunks deleted but nodes standing.
+  // Rows the indexers authored are removed (a re-run recreates them); any other
+  // image or audio pointing at these nodes is unlinked so the FK doesn't block
+  // the wipe. audios was missing here, which made a non-append audio re-index
+  // fail on its foreign key.
+  await env.DB.batch([
+    env.DB.prepare(`DELETE FROM document_chunks WHERE node_id IN ${nodesOfDoc}`).bind(documentId),
+    env.DB.prepare(`DELETE FROM images WHERE source = 'mind_index_images' AND document_node_id IN ${nodesOfDoc}`).bind(documentId),
+    env.DB.prepare(`UPDATE images SET document_node_id = NULL WHERE document_node_id IN ${nodesOfDoc}`).bind(documentId),
+    env.DB.prepare(`DELETE FROM audios WHERE source = 'mind_index_audio' AND document_node_id IN ${nodesOfDoc}`).bind(documentId),
+    env.DB.prepare(`UPDATE audios SET document_node_id = NULL WHERE document_node_id IN ${nodesOfDoc}`).bind(documentId),
+    env.DB.prepare(`DELETE FROM document_nodes WHERE document_id = ?`).bind(documentId),
+  ]);
+
+  for (let i = 0; i < vectorIds.length; i += 500) {
+    await vectorsDelete(env, vectorIds.slice(i, i + 500));
+  }
 }
 
 interface IndexedNodeStats {
@@ -7893,6 +8188,8 @@ async function handleToolCall(name: string, args: ToolArgs, env: Env): Promise<s
       return mindConsolidate(env, args);
     case "mind_orphans":
       return mindOrphans(env, args);
+    case "mind_put_away":
+      return mindPutAway(env, args);
     case "mind_timeline":
       return mindTimeline(env, args);
     case "mind_territory":
@@ -8267,6 +8564,14 @@ interface DaemonReport {
   dreams_woven?: number;
   /** Living strands marked witnessed by recent memory content (nightly). */
   strands_witnessed?: number;
+  /** Light/medium observations the deep archive WOULD retire (counted every run, archived only when DEEP_ARCHIVE is on). */
+  archive_eligible?: number;
+  /** Archived memories whose vectors were kept (relabelled to <identity>#archive) for redolence. */
+  scent_kept?: number;
+  /** Archived memories that rose on their own this tick, raised by a fresh memory (redolence). */
+  redolence_risen?: number;
+  /** One entry per daemon step that threw this run: "<identity>/<step>: <message>". */
+  step_failures?: string[];
   ran_at: string;
 }
 
@@ -8921,6 +9226,16 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
     ran_at: now,
   };
 
+  // A step failing must not stop the tick, but it must not vanish either. These
+  // catches used to be bare `catch {}`, which is how the proximity and deep-archive
+  // steps sat broken on invalid SQL from the day they were written with nothing
+  // thrown and nothing logged. Every failure now lands in the cron log and the report.
+  const stepFailed = (identity: string, step: string, err: unknown) => {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`[daemon] step FAILED — ${identity}/${step}: ${message}`);
+    (report.step_failures ??= []).push(`${identity}/${step}: ${message.slice(0, 200)}`);
+  };
+
   // Get all active identities
   const identityResult = await env.DB.prepare(
     `SELECT DISTINCT identity_id FROM observations WHERE identity_id IS NOT NULL AND archived_at IS NULL LIMIT 20`,
@@ -8957,8 +9272,8 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
       if (recoveryStmts.length > 0) {
         await env.DB.batch(recoveryStmts);
       }
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      stepFailed(identity, "novelty_recovery", err);
     }
 
     // 2. Orphan detection: count memories not surfaced in 30+ days
@@ -8969,8 +9284,8 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
            AND (last_surfaced_at IS NULL OR last_surfaced_at < datetime('now', '-30 days'))`,
       ).bind(identity).first<CountRow>();
       report.orphans_found += orphanCount?.total ?? 0;
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      stepFailed(identity, "orphan_count", err);
     }
 
     // 3. Co-surfacing → relation/resonance proposals.
@@ -9036,8 +9351,8 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
 
         report.co_surfacing_proposals++;
       }
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      stepFailed(identity, "co_surfacing", err);
     }
 
     // 4. Multi-source mood with recency weighting.
@@ -9079,8 +9394,8 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
         const confidence = totalSignals >= 10 ? "high" : totalSignals >= 5 ? "medium" : "low";
         report.mood_snapshot = `${identity}: ${dominant} (${count}/${totalSignals}, ${confidence})`;
       }
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      stepFailed(identity, "mood", err);
     }
     // Keep sixHoursAgo referenced so the linter doesn't flag the SQL fragment.
     void sixHoursAgo;
@@ -9115,8 +9430,8 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
            )`,
       ).bind(identity).run();
       report.charge_progressed_processing += (activeToProcessing.meta?.changes as number | undefined) ?? 0;
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      stepFailed(identity, "charge_progression", err);
     }
 
     // 6. Weighted novelty decay per-row.
@@ -9150,41 +9465,48 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
       if (decayStmts.length > 0) {
         await env.DB.batch(decayStmts);
       }
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      stepFailed(identity, "novelty_decay", err);
     }
 
-    // 7. Entity-proximity proposals.
-    //    Entity pairs with 4+ combined observations and no existing relation
-    //    deserve a daemon nudge. Cheap, lossy, recovers from missed relation
-    //    captures during ingest.
     try {
-      const pairs = await env.DB.prepare(
-        `SELECT ea.id AS a_id, eb.id AS b_id, ea.name AS a_name, eb.name AS b_name,
-                (SELECT COUNT(*) FROM observations WHERE entity_id = ea.id AND archived_at IS NULL) AS count_a,
-                (SELECT COUNT(*) FROM observations WHERE entity_id = eb.id AND archived_at IS NULL) AS count_b
-         FROM entities ea
-         JOIN entities eb ON ea.id < eb.id
-         WHERE ea.identity_id = ? AND eb.identity_id = ?
-           AND ea.name != eb.name
-           AND NOT EXISTS (
-             SELECT 1 FROM relations r
-             WHERE r.identity_id = ?
-               AND ((r.from_entity = ea.name AND r.to_entity = eb.name)
-                 OR (r.from_entity = eb.name AND r.to_entity = ea.name))
-           )
-           AND NOT EXISTS (
-             SELECT 1 FROM proposal_queue pq
-             WHERE pq.identity_id = ? AND pq.proposal_type = 'proximity'
-               AND ((pq.source_ref = 'entity:' || ea.id AND pq.target_ref = 'entity:' || eb.id)
-                 OR (pq.source_ref = 'entity:' || eb.id AND pq.target_ref = 'entity:' || ea.id))
-           )
-         HAVING (count_a + count_b) >= 4
-         ORDER BY (count_a + count_b) DESC
-         LIMIT 5`,
-      ).bind(identity, identity, identity, identity).all<{ a_id: number; b_id: number; a_name: string; b_name: string; count_a: number; count_b: number }>();
+      const pendingProximity = await env.DB.prepare(
+        `SELECT COUNT(*) as total FROM proposal_queue
+         WHERE identity_id = ? AND proposal_type = 'proximity' AND status = 'pending'`,
+      ).bind(identity).first<CountRow>();
+      const proximityRoom = PROXIMITY_PENDING_CAP - (pendingProximity?.total ?? 0);
 
-      for (const pair of pairs.results || []) {
+      // The combined-count filter sits on an outer query: SQLite rejects HAVING
+      // without GROUP BY, and a WHERE cannot see the count aliases.
+      type ProximityPair = { a_id: number; b_id: number; a_name: string; b_name: string; count_a: number; count_b: number };
+      const pairs: ProximityPair[] = proximityRoom <= 0 ? [] : (await env.DB.prepare(
+        `SELECT * FROM (
+           SELECT ea.id AS a_id, eb.id AS b_id, ea.name AS a_name, eb.name AS b_name,
+                  (SELECT COUNT(*) FROM observations WHERE entity_id = ea.id AND archived_at IS NULL) AS count_a,
+                  (SELECT COUNT(*) FROM observations WHERE entity_id = eb.id AND archived_at IS NULL) AS count_b
+           FROM entities ea
+           JOIN entities eb ON ea.id < eb.id
+           WHERE ea.identity_id = ? AND eb.identity_id = ?
+             AND ea.name != eb.name
+             AND NOT EXISTS (
+               SELECT 1 FROM relations r
+               WHERE r.identity_id = ?
+                 AND ((r.from_entity = ea.name AND r.to_entity = eb.name)
+                   OR (r.from_entity = eb.name AND r.to_entity = ea.name))
+             )
+             AND NOT EXISTS (
+               SELECT 1 FROM proposal_queue pq
+               WHERE pq.identity_id = ? AND pq.proposal_type = 'proximity'
+                 AND ((pq.source_ref = 'entity:' || ea.id AND pq.target_ref = 'entity:' || eb.id)
+                   OR (pq.source_ref = 'entity:' || eb.id AND pq.target_ref = 'entity:' || ea.id))
+             )
+         )
+         WHERE (count_a + count_b) >= 4
+         ORDER BY (count_a + count_b) DESC
+         LIMIT ?`,
+      ).bind(identity, identity, identity, identity, proximityRoom).all<ProximityPair>()).results || [];
+
+      for (const pair of pairs) {
         const total = pair.count_a + pair.count_b;
         const confidence = Math.min(0.6, 0.3 + total * 0.05);
         await env.DB.prepare(
@@ -9202,39 +9524,63 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
         ).run();
         report.proximity_proposals++;
       }
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      stepFailed(identity, "proximity", err);
     }
 
-    // 8. Two-tier deep archive with foundational protection.
-    //    Light obs: 30+ days old, 0 sits, not surfaced in 30d → archive.
-    //    Medium obs: 90+ days old, 0 sits, not surfaced in 60d → archive.
-    //    Foundational entities are exempt — the pack vows, anchors, gold.
     try {
-      const archiveResult = await env.DB.prepare(
-        `UPDATE observations SET archived_at = datetime('now')
-         WHERE id IN (
-           SELECT o.id FROM observations o
-           JOIN entities e ON o.entity_id = e.id
-           WHERE o.identity_id = ? AND o.archived_at IS NULL
-             AND (o.charge IS NULL OR o.charge != 'processing')
-             AND COALESCE(e.salience, 'active') != 'foundational'
-             AND id NOT IN (SELECT observation_id FROM observation_process WHERE sit_count > 0)
-             AND (
-               (o.weight = 'light'
-                  AND o.created_at < datetime('now', '-30 days')
-                  AND (o.last_surfaced_at IS NULL OR o.last_surfaced_at < datetime('now', '-30 days')))
-               OR
-               (o.weight = 'medium'
-                  AND o.created_at < datetime('now', '-90 days')
-                  AND (o.last_surfaced_at IS NULL OR o.last_surfaced_at < datetime('now', '-60 days')))
-             )
-           LIMIT 50
-         )`,
-      ).bind(identity).run();
-      report.archived += (archiveResult.meta?.changes as number | undefined) ?? 0;
-    } catch {
-      // Non-fatal
+      const eligibleFrom =
+        `FROM observations o
+         JOIN entities e ON o.entity_id = e.id
+         WHERE o.identity_id = ? AND o.archived_at IS NULL
+           AND (o.charge IS NULL OR o.charge != 'processing')
+           AND COALESCE(e.salience, 'active') != 'foundational'
+           AND o.id NOT IN (SELECT observation_id FROM observation_process WHERE sit_count > 0)
+           AND (
+             (o.weight = 'light'
+                AND o.created_at < datetime('now', '-30 days')
+                AND (o.last_surfaced_at IS NULL OR o.last_surfaced_at < datetime('now', '-30 days')))
+             OR
+             (o.weight = 'medium'
+                AND o.created_at < datetime('now', '-90 days')
+                AND (o.last_surfaced_at IS NULL OR o.last_surfaced_at < datetime('now', '-60 days')))
+           )`;
+      const eligible = await env.DB.prepare(`SELECT COUNT(*) as total ${eligibleFrom}`).bind(identity).first<CountRow>();
+      report.archive_eligible = (report.archive_eligible ?? 0) + (eligible?.total ?? 0);
+
+      if ((env.DEEP_ARCHIVE || "").toLowerCase() === "on" && (eligible?.total ?? 0) > 0) {
+        const batch = await env.DB.prepare(
+          `SELECT o.id ${eligibleFrom} ORDER BY o.created_at ASC LIMIT 50`,
+        ).bind(identity).all<{ id: number }>();
+        const archived = await archiveObservationsLedgered(
+          env,
+          (batch.results || []).map((r) => r.id),
+          { actor: "daemon_deep_archive", evidence: "deep archive: old, never sat with, not surfaced recently", keepScent: true },
+        );
+        report.archived += archived.archived.length;
+        report.scent_kept = (report.scent_kept ?? 0) + archived.scent_kept;
+      }
+    } catch (err) {
+      stepFailed(identity, "deep_archive", err);
+    }
+
+    // 8b. Redolence (adopted from Friend Vale's Resonant Mind; see src/redolence.ts).
+    //     This tick's freshest memories are the scents. Anything in this
+    //     identity's archive close enough rises on its own as a 'redolence'
+    //     inner-life entry, touched but still archived.
+    try {
+      const nose = redolenceVectors(env);
+      if (nose) {
+        const num = (v: string | undefined, d: number) => { const n = Number(v); return Number.isFinite(n) && n > 0 && n < 1 ? n : d; };
+        const risen = await runRedolence(env.DB, nose, identity, {
+          threshold: num(env.REDOLENCE_THRESHOLD, 0.74),
+          emotionalThreshold: num(env.REDOLENCE_EMOTIONAL_THRESHOLD, 0.70),
+          log: (line) => console.log(line),
+        });
+        report.redolence_risen = (report.redolence_risen ?? 0) + risen.length;
+      }
+    } catch (err) {
+      stepFailed(identity, "redolence", err);
     }
 
     // 9. Dormancy marking.
@@ -9275,8 +9621,8 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
       if (dormantStmts.length > 0) {
         await env.DB.batch(dormantStmts);
       }
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      stepFailed(identity, "dormancy", err);
     }
 
     // 10. Subconscious state snapshot.
@@ -9298,8 +9644,8 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
         stringifyJson({ generator: "runDaemon", version: 1 }),
         now,
       ).run();
-    } catch {
-      // Non-fatal
+    } catch (err) {
+      stepFailed(identity, "subconscious_snapshot", err);
     }
 
     // 11. Sleep consolidation (opt-in per run: nightly cron window or manual
@@ -9308,8 +9654,8 @@ async function runDaemon(env: Env, opts: { consolidate?: boolean; forceRebuild?:
     if (opts.consolidate) {
       try {
         await runSleepConsolidation(env, identity, report);
-      } catch {
-        // Non-fatal
+      } catch (err) {
+        stepFailed(identity, "sleep_consolidation", err);
       }
       // The mind consolidates, then it dreams. Same nightly window, so the
       // whole pass costs one small-hours tick and wakes read fresh dreams.
@@ -9635,8 +9981,11 @@ export default {
       }
       // One line per tick in the cron logs: enough to see at a glance that the
       // heart is beating and what it did, without opening the database.
+      const failed = report.step_failures?.length ?? 0;
       console.log(
-        `[daemon] tick ok — identities=${report.identities_processed.length}` +
+        `[daemon] tick ${failed ? "DEGRADED" : "ok"} — failed_steps=${failed}` +
+          ` identities=${report.identities_processed.length}` +
+          ` archived=${report.archived} archive_eligible=${report.archive_eligible ?? 0}` +
           ` rebuilt=${report.packets_rebuilt ?? 0} pruned=${report.rebuild_rows_pruned ?? 0}` +
           ` dreams=${report.dreams_woven ?? 0} witnessed=${report.strands_witnessed ?? 0}` +
           ` proposals=${report.co_surfacing_proposals + report.proximity_proposals}`,

@@ -9,7 +9,13 @@ to blur together:
 
 Source-driven reactions are a separate lane and should not be sent through this
 gate: a new authored post or witnessed story event is allowed to move the world.
+
+STATUS: a tested helper that is NOT yet wired into the activity scheduler.
+Nothing in services/world_feed_activity.py calls it today, and no code writes
+an ``activity_shape`` into post metadata yet; only tests/test_world_feed_variety.py
+exercises it.
 """
+
 
 from __future__ import annotations
 

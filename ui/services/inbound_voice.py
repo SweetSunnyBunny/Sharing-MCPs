@@ -1,17 +1,4 @@
-"""Inbound voice-note transcription for the platform bridges.
-
-Telegram voice notes and Discord audio attachments used to arrive as the
-contentless placeholder "[Owner sent a voice message]" even though the
-audio file was already downloaded. This module turns the downloaded file
-into real words via services.audio_transcription (Groq Whisper with a
-cached .txt companion — no double-billing), formatted the same way Friend's
-resonant reference does:
-
-    [Voice message from Owner, 12s] "the actual transcript"
-
-Every helper here is deliberately never-raise: a transcription failure
-must degrade to the old placeholder, not kill the inbound path.
-"""
+'Inbound voice-note transcription for the platform bridges.'
 
 
 from __future__ import annotations
@@ -42,12 +29,7 @@ def format_voice_line(
     transcript: str | None,
     duration_seconds: float | int | None = None,
 ) -> str:
-    """Render the inbound-context line for a voice note.
-
-    With a transcript: `[Voice message from Owner, 12s] "words"`.
-    Without one (Groq missing/failed): the old placeholder, so the boys
-    still know she spoke even when we couldn't hear the words.
-    """
+    'Render the inbound-context line for a voice note.'
     if not transcript:
         return VOICE_PLACEHOLDER
     duration_note = ""

@@ -12,18 +12,22 @@ Setup:
 Built with love for sharing.
 """
 
+import io
+import itertools
 import json
 import os
 import shutil
 import base64
 import mimetypes
+import tempfile
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Annotated, Optional, List, Dict, Any
 from datetime import datetime
 
 from fastmcp import FastMCP
 from fastmcp.utilities.types import Image
 from pydantic import Field
+from PIL import Image as PILImage, ImageOps
 
 # Initialize FastMCP server
 mcp = FastMCP("filesystem")
@@ -46,6 +50,80 @@ IMAGE_EXTENSIONS = {
 
 # Max file size for reading (50MB)
 MAX_FILE_SIZE = 50 * 1024 * 1024
+IMAGE_PREVIEW_MAX_BYTES = 5 * 1024 * 1024
+IMAGE_PREVIEW_MIN_DIMENSION = 512
+
+
+def _image_format_name(file_path: Path, pil_format: Optional[str] = None) -> str:
+    """Return a FastMCP-compatible image format name."""
+    name = (pil_format or file_path.suffix.lstrip(".") or "png").lower()
+    return {"jpg": "jpeg", "tif": "tiff"}.get(name, name)
+
+
+def _prepare_image_preview(
+    file_path: Path,
+    max_dimension: int,
+    quality: int,
+) -> Image:
+    """Build a bounded vision preview without sending an oversized original."""
+    stat = file_path.stat()
+
+    with PILImage.open(file_path) as source:
+        original_format = _image_format_name(file_path, source.format)
+        original_size = source.size
+
+        # Small images can cross unchanged, preserving animation and exact pixels.
+        if stat.st_size <= IMAGE_PREVIEW_MAX_BYTES and max(original_size) <= max_dimension:
+            return Image(data=file_path.read_bytes(), format=original_format)
+
+        frame = ImageOps.exif_transpose(source)
+        has_alpha = "A" in frame.getbands() or (
+            frame.mode == "P" and "transparency" in frame.info
+        )
+        working = frame.convert("RGBA" if has_alpha else "RGB")
+        working.thumbnail(
+            (max_dimension, max_dimension),
+            PILImage.Resampling.LANCZOS,
+        )
+
+    candidate_qualities = []
+    for candidate in (quality, quality - 15, 55, 45):
+        bounded = max(40, min(95, candidate))
+        if bounded not in candidate_qualities:
+            candidate_qualities.append(bounded)
+
+    for _ in range(7):
+        last_payload = b""
+        for candidate_quality in candidate_qualities:
+            output = io.BytesIO()
+            working.save(
+                output,
+                format="WEBP",
+                quality=candidate_quality,
+                method=6,
+            )
+            last_payload = output.getvalue()
+            if len(last_payload) <= IMAGE_PREVIEW_MAX_BYTES:
+                return Image(data=last_payload, format="webp")
+
+        longest = max(working.size)
+        if longest <= IMAGE_PREVIEW_MIN_DIMENSION:
+            break
+
+        ratio = (IMAGE_PREVIEW_MAX_BYTES / max(len(last_payload), 1)) ** 0.5
+        scale = max(0.55, min(0.85, ratio * 0.92))
+        new_size = (
+            max(1, int(working.width * scale)),
+            max(1, int(working.height * scale)),
+        )
+        if new_size == working.size:
+            break
+        working = working.resize(new_size, PILImage.Resampling.LANCZOS)
+
+    raise ValueError(
+        "Could not create an image preview below "
+        f"{format_size(IMAGE_PREVIEW_MAX_BYTES)}"
+    )
 
 
 def get_file_type(path: Path) -> str:
@@ -79,10 +157,10 @@ def format_time(timestamp: float) -> str:
 
 @mcp.tool(name="fs_list_directory")
 async def list_directory(
-    path: str = Field(..., description="Directory path to list (e.g., 'C:\\Users' or '/home')"),
-    show_hidden: bool = Field(False, description="Show hidden files (starting with .)"),
-    recursive: bool = Field(False, description="List recursively (max 2 levels)"),
-    pattern: Optional[str] = Field(None, description="Filter by glob pattern (e.g., '*.py')")
+    path: Annotated[str, Field(description="Directory path to list (e.g., 'C:\\Users' or '/home')")],
+    show_hidden: Annotated[bool, Field(description="Show hidden files (starting with .)")] = False,
+    recursive: Annotated[bool, Field(description="List recursively (max 2 levels)")] = False,
+    pattern: Annotated[Optional[str], Field(description="Filter by glob pattern (e.g., '*.py')")] = None
 ) -> Dict[str, Any]:
     """
     List contents of a directory.
@@ -98,23 +176,28 @@ async def list_directory(
 
         items = []
 
+        # Every branch stops at 500 entries WHILE walking. They used to build the
+        # full list first and slice it afterwards, so a recursive listing of a
+        # drive root walked the entire drive to return 500 names.
         if pattern:
             if recursive:
-                entries = list(dir_path.rglob(pattern))[:500]
+                entries = list(itertools.islice(dir_path.rglob(pattern), 500))
             else:
-                entries = list(dir_path.glob(pattern))[:500]
+                entries = list(itertools.islice(dir_path.glob(pattern), 500))
         else:
             if recursive:
                 entries = []
                 for root, dirs, files in os.walk(dir_path):
                     depth = str(root).count(os.sep) - str(dir_path).count(os.sep)
-                    if depth > 2:
-                        continue
                     for name in dirs + files:
                         entries.append(Path(root) / name)
+                    if depth >= 2:
+                        dirs[:] = []  # prune: os.walk does not descend past the depth limit
+                    if len(entries) >= 500:
+                        break
                 entries = entries[:500]
             else:
-                entries = list(dir_path.iterdir())[:500]
+                entries = list(itertools.islice(dir_path.iterdir(), 500))
 
         for entry in entries:
             try:
@@ -154,8 +237,8 @@ async def list_directory(
 
 @mcp.tool(name="fs_create_directory")
 async def create_directory(
-    path: str = Field(..., description="Directory path to create"),
-    parents: bool = Field(True, description="Create parent directories if needed")
+    path: Annotated[str, Field(description="Directory path to create")],
+    parents: Annotated[bool, Field(description="Create parent directories if needed")] = True
 ) -> Dict[str, Any]:
     """Create a new directory."""
     try:
@@ -178,10 +261,10 @@ async def create_directory(
 
 @mcp.tool(name="fs_read_file")
 async def read_file(
-    path: str = Field(..., description="File path to read"),
-    encoding: str = Field("utf-8", description="Text encoding (for text files)"),
-    start_line: Optional[int] = Field(None, description="Start from this line (1-indexed)"),
-    num_lines: Optional[int] = Field(None, description="Number of lines to read")
+    path: Annotated[str, Field(description="File path to read")],
+    encoding: Annotated[str, Field(description="Text encoding (for text files)")] = "utf-8",
+    start_line: Annotated[Optional[int], Field(description="Start from this line (1-indexed)")] = None,
+    num_lines: Annotated[Optional[int], Field(description="Number of lines to read")] = None
 ) -> Dict[str, Any]:
     """
     Read a file's contents. Text files return content directly.
@@ -249,34 +332,41 @@ async def read_file(
 
 @mcp.tool(name="fs_read_image")
 async def read_image(
-    path: str = Field(..., description="Image file path to read")
+    path: Annotated[str, Field(description="Image file path to read")],
+    max_dimension: Annotated[int, Field(description="Maximum preview width or height in pixels")] = 2048,
+    quality: Annotated[int, Field(description="Preferred WebP quality for optimized previews")] = 85
 ):
-    """
-    Read an image file and display it visually.
-    This returns the actual image so Claude can see it.
-    """
+    """Read an image as a bounded, vision-capable MCP image block."""
     try:
         file_path = Path(path)
 
         if not file_path.exists():
             return {"success": False, "error": f"File does not exist: {path}"}
 
+        if not file_path.is_file():
+            return {"success": False, "error": f"Not a file: {path}"}
+
         if file_path.suffix.lower() not in IMAGE_EXTENSIONS:
             return {"success": False, "error": f"Not a recognized image format: {file_path.suffix}"}
 
-        stat = file_path.stat()
+        if not 256 <= max_dimension <= 8192:
+            return {"success": False, "error": "max_dimension must be between 256 and 8192"}
 
+        if not 40 <= quality <= 95:
+            return {"success": False, "error": "quality must be between 40 and 95"}
+
+        stat = file_path.stat()
         if stat.st_size > MAX_FILE_SIZE:
             return {"success": False, "error": f"Image too large: {format_size(stat.st_size)}"}
 
-        return Image(path=str(file_path.resolve()))
+        return _prepare_image_preview(file_path, max_dimension, quality)
     except Exception as e:
         return {"success": False, "error": str(e)}
 
 
 @mcp.tool(name="fs_get_file_info")
 async def get_file_info(
-    path: str = Field(..., description="File or directory path")
+    path: Annotated[str, Field(description="File or directory path")]
 ) -> Dict[str, Any]:
     """Get detailed information about a file or directory."""
     try:
@@ -327,11 +417,11 @@ async def get_file_info(
 
 @mcp.tool(name="fs_write_file")
 async def write_file(
-    path: str = Field(..., description="File path to write"),
-    content: str = Field(..., description="Content to write"),
-    encoding: str = Field("utf-8", description="Text encoding"),
-    create_dirs: bool = Field(True, description="Create parent directories if needed"),
-    append: bool = Field(False, description="Append to file instead of overwriting")
+    path: Annotated[str, Field(description="File path to write")],
+    content: Annotated[str, Field(description="Content to write")],
+    encoding: Annotated[str, Field(description="Text encoding")] = "utf-8",
+    create_dirs: Annotated[bool, Field(description="Create parent directories if needed")] = True,
+    append: Annotated[bool, Field(description="Append to file instead of overwriting")] = False
 ) -> Dict[str, Any]:
     """Write content to a file."""
     try:
@@ -358,20 +448,121 @@ async def write_file(
         return {"success": False, "error": str(e)}
 
 
+@mcp.tool(name="fs_edit_file")
+async def edit_file(
+    path: Annotated[str, Field(description="Text file path to edit")],
+    old_text: Annotated[str, Field(description="Exact text block to replace")],
+    new_text: Annotated[str, Field(description="Replacement text block")],
+    expected_replacements: Annotated[int, Field(description="Required number of exact matches; the file is unchanged if the count differs")] = 1,
+    encoding: Annotated[str, Field(description="Text encoding")] = "utf-8"
+) -> Dict[str, Any]:
+    """Atomically replace an exact text block in a file.
+
+    The edit is guarded by expected_replacements. If the current file contains a
+    different number of matches, nothing is written.
+    """
+    temp_path: Optional[Path] = None
+    try:
+        file_path = Path(path)
+
+        if not file_path.exists():
+            return {"success": False, "error": f"File does not exist: {path}"}
+
+        if not file_path.is_file():
+            return {"success": False, "error": f"Not a file: {path}"}
+
+        if old_text == "":
+            return {"success": False, "error": "old_text must not be empty"}
+
+        if expected_replacements < 1:
+            return {"success": False, "error": "expected_replacements must be at least 1"}
+
+        stat = file_path.stat()
+        if stat.st_size > MAX_FILE_SIZE:
+            return {
+                "success": False,
+                "error": f"File too large: {format_size(stat.st_size)} (max {format_size(MAX_FILE_SIZE)})"
+            }
+
+        # newline="" prevents Python from normalizing CRLF/LF while editing.
+        with open(file_path, "r", encoding=encoding, newline="") as source:
+            content = source.read()
+
+        occurrences = content.count(old_text)
+        if occurrences != expected_replacements:
+            return {
+                "success": False,
+                "error": (
+                    f"Exact-match guard failed: expected {expected_replacements} "
+                    f"occurrence(s), found {occurrences}. File unchanged."
+                ),
+                "expected_replacements": expected_replacements,
+                "found_replacements": occurrences,
+            }
+
+        updated = content.replace(old_text, new_text, expected_replacements)
+
+        # Write a complete sibling first, then atomically replace the destination.
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding=encoding,
+            newline="",
+            dir=str(file_path.parent),
+            prefix=f".{file_path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as temporary:
+            temporary.write(updated)
+            temporary.flush()
+            os.fsync(temporary.fileno())
+            temp_path = Path(temporary.name)
+
+        shutil.copystat(file_path, temp_path)
+        os.replace(temp_path, file_path)
+        temp_path = None
+
+        new_stat = file_path.stat()
+        return {
+            "success": True,
+            "path": str(file_path.resolve()),
+            "replacements": expected_replacements,
+            "size": format_size(new_stat.st_size),
+            "size_bytes": new_stat.st_size,
+            "action": "edited",
+        }
+    except PermissionError:
+        return {"success": False, "error": f"Permission denied: {path}"}
+    except UnicodeError as e:
+        return {"success": False, "error": f"Encoding error: {e}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+    finally:
+        if temp_path is not None:
+            try:
+                temp_path.unlink(missing_ok=True)
+            except OSError:
+                pass
+
+
 @mcp.tool(name="fs_write_binary")
 async def write_binary(
-    path: str = Field(..., description="File path to write"),
-    base64_content: str = Field(..., description="Base64 encoded binary content"),
-    create_dirs: bool = Field(True, description="Create parent directories if needed")
+    path: Annotated[str, Field(description="File path to write")],
+    base64_content: Annotated[str, Field(description="Base64 encoded binary content")],
+    create_dirs: Annotated[bool, Field(description="Create parent directories if needed")] = True
 ) -> Dict[str, Any]:
     """Write binary content (like images) to a file from base64."""
     try:
         file_path = Path(path)
 
+        # validate=True: malformed base64 is an error. The lenient default drops
+        # the characters it cannot read and writes a corrupted file as a success.
+        try:
+            binary_data = base64.b64decode(base64_content, validate=True)
+        except (ValueError, TypeError) as e:
+            return {"success": False, "error": f"base64_content is not valid base64: {e}"}
+
         if create_dirs:
             file_path.parent.mkdir(parents=True, exist_ok=True)
-
-        binary_data = base64.b64decode(base64_content)
 
         with open(file_path, 'wb') as f:
             f.write(binary_data)
@@ -394,8 +585,8 @@ async def write_binary(
 
 @mcp.tool(name="fs_copy")
 async def copy_file(
-    source: str = Field(..., description="Source file or directory path"),
-    destination: str = Field(..., description="Destination path")
+    source: Annotated[str, Field(description="Source file or directory path")],
+    destination: Annotated[str, Field(description="Destination path")]
 ) -> Dict[str, Any]:
     """Copy a file or directory."""
     try:
@@ -425,8 +616,8 @@ async def copy_file(
 
 @mcp.tool(name="fs_move")
 async def move_file(
-    source: str = Field(..., description="Source file or directory path"),
-    destination: str = Field(..., description="Destination path")
+    source: Annotated[str, Field(description="Source file or directory path")],
+    destination: Annotated[str, Field(description="Destination path")]
 ) -> Dict[str, Any]:
     """Move a file or directory."""
     try:
@@ -453,8 +644,8 @@ async def move_file(
 
 @mcp.tool(name="fs_delete")
 async def delete_file(
-    path: str = Field(..., description="File or directory path to delete"),
-    recursive: bool = Field(False, description="Delete directory contents recursively")
+    path: Annotated[str, Field(description="File or directory path to delete")],
+    recursive: Annotated[bool, Field(description="Delete directory contents recursively")] = False
 ) -> Dict[str, Any]:
     """Delete a file or directory."""
     try:
@@ -465,6 +656,16 @@ async def delete_file(
 
         if target.is_dir():
             if recursive:
+                # One wrong path must not take the drive or the user profile
+                # with it: a drive root, the home folder, and anything that
+                # CONTAINS the home folder are never deleted recursively.
+                resolved = target.resolve()
+                home = Path.home().resolve()
+                if resolved == Path(resolved.anchor) or resolved == home or resolved in home.parents:
+                    return {
+                        "success": False,
+                        "error": f"Refusing to recursively delete a protected folder: {resolved}",
+                    }
                 shutil.rmtree(target)
             else:
                 target.rmdir()
@@ -476,12 +677,13 @@ async def delete_file(
             "path": str(target),
             "action": "deleted",
         }
+    except PermissionError:
+        # Must come BEFORE OSError: PermissionError is a subclass of OSError.
+        return {"success": False, "error": "Permission denied"}
     except OSError as e:
         if "not empty" in str(e).lower():
             return {"success": False, "error": "Directory not empty. Use recursive=True to delete."}
         return {"success": False, "error": str(e)}
-    except PermissionError:
-        return {"success": False, "error": "Permission denied"}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -492,9 +694,9 @@ async def delete_file(
 
 @mcp.tool(name="fs_search")
 async def search_files(
-    path: str = Field(..., description="Directory to search in"),
-    pattern: str = Field(..., description="Glob pattern (e.g., '*.py', '**/*.jpg')"),
-    max_results: int = Field(100, description="Maximum results to return")
+    path: Annotated[str, Field(description="Directory to search in")],
+    pattern: Annotated[str, Field(description="Glob pattern (e.g., '*.py', '**/*.jpg')")],
+    max_results: Annotated[int, Field(description="Maximum results to return")] = 100
 ) -> Dict[str, Any]:
     """Search for files matching a glob pattern."""
     try:
@@ -537,11 +739,11 @@ async def search_files(
 
 @mcp.tool(name="fs_search_content")
 async def search_content(
-    path: str = Field(..., description="Directory to search in"),
-    text: str = Field(..., description="Text to search for"),
-    file_pattern: str = Field("*", description="File pattern to search in (e.g., '*.py')"),
-    case_sensitive: bool = Field(False, description="Case-sensitive search"),
-    max_results: int = Field(50, description="Maximum files to return")
+    path: Annotated[str, Field(description="Directory to search in")],
+    text: Annotated[str, Field(description="Text to search for")],
+    file_pattern: Annotated[str, Field(description="File pattern to search in (e.g., '*.py')")] = "*",
+    case_sensitive: Annotated[bool, Field(description="Case-sensitive search")] = False,
+    max_results: Annotated[int, Field(description="Maximum files to return")] = 50
 ) -> Dict[str, Any]:
     """Search for text content within files."""
     try:
@@ -663,10 +865,10 @@ async def list_drives() -> Dict[str, Any]:
 
 @mcp.tool(name="fs_get_recent_files")
 async def get_recent_files(
-    path: str = Field(..., description="Directory to search"),
-    hours: int = Field(24, description="Files modified in the last N hours"),
-    pattern: str = Field("*", description="File pattern to match"),
-    max_results: int = Field(50, description="Maximum results")
+    path: Annotated[str, Field(description="Directory to search")],
+    hours: Annotated[int, Field(description="Files modified in the last N hours")] = 24,
+    pattern: Annotated[str, Field(description="File pattern to match")] = "*",
+    max_results: Annotated[int, Field(description="Maximum results")] = 50
 ) -> Dict[str, Any]:
     """Find recently modified files in a directory."""
     try:

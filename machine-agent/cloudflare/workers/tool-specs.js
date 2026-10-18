@@ -300,23 +300,6 @@ export const SERVERS = {
       ]},
     ],
   },
-  "muse-tts": {
-    displayName: "MUSE TTS Cloud Proxy",
-    defaultPort: 8794,
-    tools: [
-      { name: "muse_speak", doc: "Speak text out loud on the machine agent host.", params: [
-        { name: "text", type: "str" },
-        { name: "voice", type: "str", default: "\"\"" },
-        { name: "clone", type: "str", default: "\"\"" },
-        { name: "ref_audio", type: "str", default: "\"\"" },
-        { name: "speed", type: "float", default: "0" },
-      ]},
-      { name: "muse_list_voices", doc: "List available voices and clones.", params: [
-        { name: "language", type: "str", default: "\"\"" },
-      ]},
-      { name: "muse_check", doc: "Check TTS engine status.", params: [] },
-    ],
-  },
   "books-tools": {
     displayName: "Books Tools Cloud Proxy",
     defaultPort: 8795,

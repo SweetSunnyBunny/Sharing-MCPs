@@ -1,8 +1,16 @@
+"""Resolve public tool names to lazily imported local adapter functions.
+
+Per-module locks prevent duplicate imports without blocking unrelated adapters.
+This module also bridges async results and serializes native content for HTTP."""
+
 from __future__ import annotations
 
+import asyncio
+import concurrent.futures
 import importlib.util
 import inspect
 import json
+import os
 import os
 import subprocess
 import sys
@@ -465,22 +473,41 @@ def _invoke_obsidian_tool(tool_name: str, arguments: dict[str, Any]) -> Any:
     raise RuntimeError(payload.get("error", "Unknown Obsidian adapter error"))
 
 
+class ToolArgumentError(Exception):
+    """The caller's arguments do not fit the tool's signature."""
+
+
+# Longstop for a call on the shared loop, so a wedged adapter releases its HTTP
+# thread eventually. Far above any real command; terminal_execute enforces its
+# own (much shorter) per-command timeout and kills the shell itself.
+SHARED_LOOP_TIMEOUT = int(os.environ.get("MACHINE_AGENT_INVOKE_TIMEOUT", "900"))
+
+# Adapters whose coroutines must all run on ONE long-lived event loop because
+# they keep loop-bound objects between calls (the terminal's shell subprocesses
+# and their locks). Every other adapter's coroutine runs on a private loop in
+# the calling request's own thread: the filesystem tools are `async def` but do
+# blocking disk I/O, and on the shared loop a single whole-disk search stalled
+# terminal, Anam and every other filesystem call behind it.
+_SHARED_LOOP_MODULES = {"terminal_server.py"}
+
+
 class AsyncExecutor:
     def __init__(self) -> None:
-        import asyncio
-
-        self._asyncio = asyncio
         self._loop = asyncio.new_event_loop()
         self._thread = threading.Thread(target=self._run_loop, daemon=True, name="machine-agent-async")
         self._thread.start()
 
     def _run_loop(self) -> None:
-        self._asyncio.set_event_loop(self._loop)
+        asyncio.set_event_loop(self._loop)
         self._loop.run_forever()
 
     def run(self, coro: Any) -> Any:
-        future = self._asyncio.run_coroutine_threadsafe(coro, self._loop)
-        return future.result()
+        future = asyncio.run_coroutine_threadsafe(coro, self._loop)
+        try:
+            return future.result(timeout=SHARED_LOOP_TIMEOUT)
+        except concurrent.futures.TimeoutError:
+            future.cancel()
+            raise TimeoutError(f"Tool call exceeded {SHARED_LOOP_TIMEOUT}s and was cancelled") from None
 
 
 _async_executor = AsyncExecutor()
@@ -505,7 +532,18 @@ def invoke_tool(tool_name: str, arguments: dict[str, Any]) -> Any:
     if not callable(function) and hasattr(function, "fn"):
         function = function.fn
 
+    # Check the arguments against the signature BEFORE calling, so "wrong
+    # arguments" (the caller's mistake) is told apart from a TypeError raised
+    # inside the tool (our bug). Both used to come back as "Bad arguments".
+    try:
+        inspect.signature(function).bind(**arguments)
+    except TypeError as exc:
+        raise ToolArgumentError(str(exc)) from exc
+
     result = function(**arguments)
     if inspect.isawaitable(result):
-        result = _async_executor.run(result)
+        if binding.module_path.name in _SHARED_LOOP_MODULES:
+            result = _async_executor.run(result)
+        else:
+            result = asyncio.run(result)
     return _serialize(result)

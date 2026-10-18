@@ -1,0 +1,23 @@
+# Secrets — never commit
+.env
+*.env
+!*.env.example
+.dev.vars
+
+# Dependencies, build caches, local state
+node_modules/
+__pycache__/
+*.pyc
+.wrangler/
+.pytest_cache/
+
+# Runtime output
+logs/
+
+# Dated safety copies made beside a file before editing it
+*.bak-*
+
+# Runtime data the tools write (private: clipboard contents, screen captures)
+tools/clipboard/clipboard_history.json
+tools/clipboard/clipboard_history.json.*
+tools/desktop-control/screenshots/

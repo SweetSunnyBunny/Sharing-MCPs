@@ -4,10 +4,6 @@ Checks all Google service token.pickle files and reports their status.
 Used by /health endpoint and orientation context to warn about expiring tokens.
 """
 
-# ANAM GUIDE: GOOGLE LOGIN HEALTH CHECK
-# What: Peeks at the saved Google login tokens (YouTube Music, Gmail, Google Drive) and reports whether each is fine, about to expire, or already expired — so you get warned before a Google tool silently stops working.
-# Called by: server.py's /health endpoint and services/identity_context.py (the boys see token warnings in their orientation).
-# Edit here when: You add another Google service to watch, or want to change how early the "expiring soon" warning fires (currently 2 days).
 
 import logging
 import pickle

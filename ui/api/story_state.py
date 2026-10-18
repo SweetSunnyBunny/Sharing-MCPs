@@ -4,10 +4,6 @@ Backs the chat UI's story-state panel. Only character identities (those
 with an entry in STORY_BY_IDENTITY) have a STATE.md and are valid targets.
 """
 
-# ANAM GUIDE: STORY STATE PANEL API
-# What: Lets the browser read and edit a character's STATE.md (where the roleplay stands — era, location, mood, open threads) for character identities like Bakugou and Dean.
-# Called by: static/js/story-state.js (the story-state panel on the chat page).
-# Edit here when: adding a new editable story-state field (add it to StoryStateUpdate here AND to services/story_state.py, which owns the actual file reading/writing).
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse

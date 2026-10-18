@@ -33,6 +33,38 @@ function dmFixture() {
     return f;
 }
 
+test('appearance editing preserves profile metadata and the dedicated reference', async () => {
+    const { feed, context } = fixture();
+    const elements = {};
+    feed.el = new Proxy(elements, { get: (target, id) => target[id] ||= { value: '', checked: false, reset() {} } });
+    context.setTimeout = () => {};
+    feed.updateProfileArtPreview = () => {};
+    feed.openModal = () => {};
+    feed.closeModals = () => {};
+    feed.reloadProfiles = async () => {};
+    feed.setView = async () => {};
+    feed.toast = () => {};
+    const profile = { id: 'mina', display_name: 'Mina', metadata: {
+        history_batch: 'keep-history', visual_reference: {
+            use_avatar: true, description: 'Pink skin', reference_url: '/api/images/file/reference.png',
+        },
+    } };
+    feed.state.profiles = [profile];
+    feed.openProfileModal(profile);
+    assert.equal(feed.el['wf-profile-appearance'].value, 'Pink skin');
+    assert.equal(feed.el['wf-profile-likeness'].value, 'true');
+    feed.el['wf-profile-appearance'].value = 'Pink skin, pale horns';
+    feed.el['wf-profile-likeness'].value = 'auto';
+    let saved;
+    feed.request = async (url, options) => { saved = JSON.parse(options.body); return profile; };
+    await feed.saveProfile({ preventDefault() {} });
+    assert.equal(saved.metadata.history_batch, 'keep-history');
+    assert.deepEqual(saved.metadata.visual_reference, {
+        description: 'Pink skin, pale horns', reference_url: '/api/images/file/reference.png',
+    });
+    assert.equal(profile.metadata.visual_reference.description, 'Pink skin');
+});
+
 test('photo allowance offers and saves twenty without changing participating accounts', async () => {
     const { feed, context } = fixture();
     const content = { innerHTML: '' };
@@ -293,6 +325,61 @@ test('search and bookmarks send explicit scoped filters', async () => {
     pending[1].resolve({ posts: [] }); await bookmarks;
 });
 
+test('photo setting changes save in order and persist OFF and one after a slow ON save', async () => {
+    const { feed, context } = fixture();
+    const toggle = { checked: true }, limit = { value: '20' }, status = {}, button = {};
+    context.document.getElementById = id => id === 'wf-photos-enabled' ? toggle : limit;
+    const form = { querySelector: selector => selector.includes('status') ? status : button,
+        querySelectorAll: () => [{ value: 'npc' }] };
+    const calls = [];
+    feed.request = (url, options) => new Promise((resolve, reject) => calls.push({ payload: JSON.parse(options.body), resolve, reject }));
+    feed.loadPhotos = async () => {};
+    feed.toast = () => {};
+    const first = feed.savePhotoSettings({ preventDefault() {}, target: form });
+    toggle.checked = false;
+    limit.value = '1';
+    const last = feed.savePhotoSettings({ preventDefault() {}, target: form });
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].payload.enabled, true);
+    calls[0].resolve({ id: 'world-a' });
+    await first;
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(calls.length, 2);
+    assert.deepEqual(calls[1].payload, { enabled: false, daily_limit: 1, profile_ids: ['npc'] });
+    calls[1].resolve({ id: 'world-a' });
+    await last;
+    assert.match(status.textContent, /Saved: automatic photos paused/);
+    assert.equal(button.disabled, false);
+    const failure = feed.savePhotoSettings({ preventDefault() {}, target: form });
+    await new Promise(resolve => setImmediate(resolve));
+    calls[2].reject(new Error('Connection lost'));
+    await failure;
+    assert.match(status.textContent, /Not saved: Connection lost/);
+});
+
+test('changing photo controls saves without pressing the submit button', async () => {
+    const { feed, context } = fixture();
+    const handlers = {}, status = {}, button = {};
+    const form = { addEventListener: (name, fn) => { handlers[name] = fn; },
+        querySelector: selector => selector.includes('status') ? status : button,
+        querySelectorAll: () => [{ value: 'npc' }] };
+    context.document.getElementById = id => id === 'wf-photo-settings-form' ? form : {
+        addEventListener() {}, checked: false, value: '1',
+    };
+    feed.el = { 'wf-content': { innerHTML: '' } };
+    feed.state.profiles = [];
+    feed.renderPhotoJobs = () => {};
+    feed.loadPhotos = async () => {};
+    feed.toast = () => {};
+    let saved;
+    feed.request = async (url, options) => { saved = JSON.parse(options.body); return { id: 'world-a' }; };
+    feed.renderPhotos();
+    await handlers.change({ currentTarget: form });
+    assert.deepEqual(saved, { enabled: false, daily_limit: 1, profile_ids: ['npc'] });
+    assert.match(status.textContent, /Saved: automatic photos paused/);
+});
+
 test('message button opens a real private thread from the active account', async () => {
     const { feed } = dmFixture();
     let write, route;
@@ -445,4 +532,18 @@ test('notification counts stay visible and accessible on both navigation surface
     await feed.loadNotifications(false);
     assert.equal(mobile.textContent, '');
     assert.equal(buttons[1]['aria-label'], 'Open notifications');
+});
+
+test('an empty photo allowance is explained inline instead of auto-saved', async () => {
+    const { feed, context } = fixture();
+    const status = {}, button = {};
+    context.document.getElementById = id => id === 'wf-photos-enabled' ? { checked: true } : { value: '' };
+    const form = { querySelector: selector => selector.includes('status') ? status : button,
+        querySelectorAll: () => [{ value: 'npc' }] };
+    let requests = 0;
+    feed.request = async () => { requests += 1; return { id: 'world-a' }; };
+    feed.toast = () => {};
+    await feed.savePhotoSettings({ preventDefault() {}, target: form });
+    assert.equal(requests, 0);
+    assert.match(status.textContent, /Not saved: choose 1–20 automatic photos/);
 });

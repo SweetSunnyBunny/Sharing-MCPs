@@ -1,4 +1,9 @@
-"""Read-only smoke test of local MCP, FileSystem+ machine upstream, and bridge action adapters."""
+"""Smoke test of local MCP, FileSystem+ machine upstream, and bridge action adapters.
+
+Not read-only: the bridge step goes through actions.dispatch, which records a
+durable action receipt, and the report is written to
+data/runtime/gateway-route-parity-check.json.
+"""
 import asyncio
 import json
 from pathlib import Path
@@ -8,7 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from fastmcp import Client
 from scripts import anam_gateway_mcp as adapter
-from services import anam_tool_gateway as gateway, chatgpt_actions as actions
+from services import chatgpt_actions as actions
 
 async def main():
     token='parity-'+uuid.uuid4().hex
@@ -43,7 +48,7 @@ async def main():
     receipt=await actions.dispatch(action,identity='Claude',conversation_id=token,source_message_id='diagnostic-'+token)
     assert receipt['status']=='succeeded' and receipt['result']['text']==parsed['text']
     report.update({'local_mcp':True,'machine_connector_upstream':True,'bridge_adapter':True,'passed':True})
-    path=ROOT/'data/runtime/gateway-parity-check.json'
+    path=ROOT/'data/runtime/gateway-route-parity-check.json'
     path.write_text(json.dumps(report,indent=2),encoding='utf-8')
     print(json.dumps(report),flush=True)
 

@@ -12,7 +12,9 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-_CONFIG_FILE = Path(__file__).resolve().parents[1] / "data" / "room_actions.json"
+from config import DATA_DIR
+
+_CONFIG_FILE = Path(DATA_DIR) / "room_actions.json"  # follows ANAM_DATA_DIR
 _TIMEOUT_SECONDS = 12
 
 

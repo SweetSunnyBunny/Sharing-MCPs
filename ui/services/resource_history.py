@@ -3,6 +3,8 @@
 Counts and memory only: never command lines, prompts, URLs, or tool results.
 Collection and SQLite I/O run off the app's event loop.
 """
+
+
 from __future__ import annotations
 
 import asyncio
@@ -87,7 +89,6 @@ def _commit() -> dict[str, float]:
         "commit_limit_mb": round(info.CommitLimit * info.PageSize / _BYTES_PER_MB, 1),
     }
 
-
 def _is_owned_process(
     row: dict[str, Any],
     processes: dict[int, dict[str, Any]],
@@ -107,10 +108,32 @@ def _is_owned_process(
     return False
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def _private_bytes(row: dict[str, Any]) -> int:
     """Use private memory on Windows, with virtual memory as the fallback."""
     memory = row["memory_info"]
     return getattr(memory, "private", memory.vms)
+
+
+
+
+
 
 
 def sample(codex_processes=()) -> dict[str, Any]:

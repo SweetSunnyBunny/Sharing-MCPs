@@ -1,4 +1,7 @@
 /* Private World Feed messages. Polling preserves the composer and reading position. */
+
+
+
 (() => {
     const feed = WorldFeed;
     const base = Object.fromEntries(['selectWorld', 'setView', 'renderCurrentView', 'pollActivity', 'handleContentAction', 'profileHeaderHtml'].map(key => [key, feed[key]]));

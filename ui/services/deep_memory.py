@@ -2,6 +2,8 @@
 
 No memory-core database or local Qualia files are read. Cache lives in process only.
 """
+
+
 from services.cloud_state import qualia_read, CloudUnavailable
 
 

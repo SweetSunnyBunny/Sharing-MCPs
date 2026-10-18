@@ -1,11 +1,8 @@
 """REST: conversation history for display."""
 
-# ANAM GUIDE: CONVERSATION HISTORY API
-# What: Lets the browser list, read, rename, and delete conversations, plus save emoji reactions and curated memories on messages.
-# Called by: static/js/chat.js, static/js/sidebar.js, and static/js/hub.js (the heavy lifting lives in services/session_manager.py and services/personal_state.py).
-# Edit here when: adding a new emoji to the allowed reactions list (VALID_REACTIONS below) or adding a new conversation-history endpoint.
 
 import json
+import logging
 
 from fastapi import APIRouter, Body, Request
 from fastapi.responses import JSONResponse
@@ -19,6 +16,7 @@ from services.session_manager import (
     update_message_metadata,
 )
 
+log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/messages")
 
 VALID_REACTIONS = {
@@ -91,7 +89,7 @@ class ReactionBody(BaseModel):
 @router.post("/{message_id}/react")
 @limiter.limit("30/minute")
 async def toggle_reaction(request: Request, message_id: str, body: ReactionBody):
-    """Toggle a reaction on a message. Owner or any identity can react."""
+    'Toggle reaction.'
     db = await get_db()
     try:
         rows = await db.execute_fetchall(
@@ -138,7 +136,7 @@ async def toggle_reaction(request: Request, message_id: str, body: ReactionBody)
                 from services.reaction_notices import queue_reaction_notice
                 queue_reaction_notice(conversation_id, msg_identity, body.reaction, preview)
             except Exception:
-                pass
+                log.debug("reaction notice not queued for %s", conversation_id, exc_info=True)
 
         # Bust this conversation's context-hook cache so the identity sees the
         # reaction in its next turn instead of a stale (<=120s) cached copy.
@@ -147,7 +145,7 @@ async def toggle_reaction(request: Request, message_id: str, body: ReactionBody)
                 from services.context_hooks import invalidate_hook_cache_for_conversation
                 invalidate_hook_cache_for_conversation(conversation_id)
             except Exception:
-                pass
+                log.debug("hook cache not invalidated for %s", conversation_id, exc_info=True)
 
         return {"ok": True, "reactions": reactions}
     finally:

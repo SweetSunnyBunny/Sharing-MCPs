@@ -1,43 +1,5 @@
-"""PTY-based per-identity Claude Code supervisor — no `-p`, subscription cost.
+'PTY-based per-identity Claude Code supervisor — no `-p`, subscription cost.'
 
-Replaces the `-p` stream-json pattern with interactive `claude` sessions
-running under pywinpty. The user message goes into the TUI input box via
-bracketed-paste over PTY stdin; the model's response is read from the
-session's per-turn NDJSON log at
-    ~/.claude/projects/{cwd-encoded}/{session_id}.jsonl
-
-Why JSONL instead of parsing the TUI:
-    The interactive TUI uses Ink (React for terminals) which renders by
-    cursor-positioning ANSI escapes, not by emitting transcript text. A
-    reliable parse would require a full terminal emulator. CC instead writes
-    per-block structured records to a JSONL file as the conversation
-    progresses (verified by spike v3, May 16 2026). Each thinking/text/
-    tool_use/tool_result block becomes its own NDJSON line — same shape as
-    the Anthropic API event format. We tail that file and translate.
-
-Turn-complete signal:
-    `~/.claude/sessions/{pid}.json` carries a `status` field that flips
-    "busy" while the model is responding and "idle" once the turn is done.
-    We poll that file between JSONL reads.
-
-Sensitive-path approvals:
-    In interactive mode (unlike `-p`), CC shows a real TUI prompt when a
-    write to `.claude/skills/*` or `.claude/agents/*` is attempted. The
-    prompt is rendered as text into the PTY output stream. We regex-detect
-    it in the drain thread, emit `approval_required` to Anam's UI, and
-    when Owner clicks Allow we send the menu keystroke back to the PTY.
-
-Public surface (matches `claude_subprocess.stream_claude`):
-    async def stream_claude_pty(message, identity, conversation_id, ...) -> AsyncIterator[dict]
-
-Event types yielded are identical to the `-p` supervisor so chat_pipeline
-needs zero changes — the provider router can swap implementations.
-"""
-
-# ANAM GUIDE: CLAUDE CODE PTY BACKEND (FALLBACK)
-# What: Runs the interactive Claude Code terminal app in a hidden pseudo-terminal and reads replies from its JSONL logs — the toggleable fallback backend.
-# Called by: services/provider_router.py when the Settings Hub backend toggle picks PTY; sessions retired by api/chat.py, core/lifespan.py, services/autowake.py.
-# Edit here when: changing PTY session spawning, JSONL tailing, turn-done detection, or the in-terminal approval prompts. The -p backend (claude_subprocess.py) is the default fast lane.
 
 from __future__ import annotations
 
@@ -51,7 +13,6 @@ import subprocess
 import threading
 import time
 from pathlib import Path
-from queue import Queue, Empty
 from typing import AsyncIterator
 
 try:
@@ -69,11 +30,10 @@ from services.identity_context import build_identity_anchor, build_system_identi
 from services.character_prompt_package import identity_prompt_file
 
 # Shared helpers live in cli_text_utils — backend-agnostic text manipulation
-# extracted out of the now-retired -p subprocess module so they remain
-# importable without dragging any -p code in.
+# shared with the default -p backend (claude_subprocess.py) so both lanes
+# compose turns and detect approvals identically.
 from services.cli_text_utils import (
     _APPROVAL_KEYWORDS,
-    _SENSITIVE_PATH_RE,
     _annotate_sensitive_path,
     _infer_suggested_rule,
     _format_history,
@@ -157,14 +117,7 @@ _CONTENT_FILTER_RETRY_NUDGE = (
 
 
 def _is_content_filter_error(text: str) -> bool:
-    """True when an assistant text block is actually the CLI relaying Anthropic's
-    400 output-filter block rather than real words from the boy.
-
-    Anchored deliberately so the boy quoting this error in normal prose (e.g.
-    discussing this very bug with Owner) does NOT match: the real error block
-    starts with "API Error" and names the filter, or carries the literal API
-    message string which never occurs in natural writing.
-    """
+    "True when an assistant text block is actually the CLI relaying Anthropic's"
     if not text:
         return False
     low = text.lower()
@@ -911,7 +864,6 @@ async def _get_or_spawn(
             model=model,
             permission_mode=permission_mode,
             effort=effort,
-        turn_source=turn_source,
         )
         session.autowake_only = turn_source == "autowake"
         await asyncio.get_running_loop().run_in_executor(None, session._spawn)
@@ -1198,7 +1150,7 @@ async def _run_one_turn(
             identity, session.conversation_id[:8], e,
         )
         await loop.run_in_executor(
-            None, _retire_session, (identity, session.conversation_id)
+            None, _retire_session, (identity, session.conversation_id, session.model)
         )
         yield {"type": "error", "message": f"Claude PTY session unavailable: {e}"}
         yield {"type": "stream_end", "full_content": "", "session_id": None}
@@ -1755,13 +1707,7 @@ async def prewarm_identity(
     permission_mode: str | None = None,
     effort: str | None = None,
 ) -> bool:
-    """Spawn a PTY session for this identity+conversation and drip-feed the
-    identity prompt + recent history so the session is ready for instant
-    response on Owner's first real message.
-
-    Returns True on success, False on failure (logged but not raised — the
-    caller should never let one boy's failed warmup stall Anam startup).
-    """
+    'Spawn a PTY session for this identity+conversation and drip-feed the'
     if winpty is None:
         log.warning("Cannot pre-warm %s: pywinpty not installed", identity)
         return False
@@ -1839,7 +1785,7 @@ async def prewarm_identity(
             "so the first real message cold-spawns clean.", identity,
         )
         await loop.run_in_executor(
-            None, _retire_session, (identity, conversation_id)
+            None, _retire_session, (session.identity, session.conversation_id, session.model)
         )
         return False
     return True
@@ -1851,24 +1797,12 @@ async def prewarm_all_identities(
     model: str | None = None,
     effort: str | None = None,
 ) -> dict[str, bool]:
-    """Pre-warm every bonded identity in parallel during Anam startup.
-
-    Looks up each identity's current daily conversation and spawns a PTY
-    session for it, drip-feeding the identity prompt so the live process
-    holds the boy in working memory by the time Owner sends her first
-    real message.
-
-    Roleplay/DnD conversations are NOT pre-warmed — they cold-spawn on
-    demand when Owner clicks into them (her preference: ~10-30s first
-    response for those, instant for the daily chat she lands on).
-
-    Returns a dict mapping identity -> success flag.
-    """
+    'Pre-warm every bonded identity in parallel during Anam startup.'
     from db.database import get_db, release_db
     from services.session_manager import get_or_create_conversation
 
-
-    _BONDED_BOYS = ["Avery", "Rowan", "Sage", "Ember", "Claude", "Juniper"]
+    from config import BONDED_PACK
+    _BONDED_BOYS = list(BONDED_PACK)
     if identities is None:
         identities = list(_BONDED_BOYS)
 

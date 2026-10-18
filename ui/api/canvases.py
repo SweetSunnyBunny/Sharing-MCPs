@@ -1,9 +1,5 @@
 """REST API for the persistent Canvas/artifact system (#32)."""
 
-# ANAM GUIDE: CANVAS LIBRARY ROUTES
-# What: /api/canvases — list, open, delete, share, and unshare the saved <canvas> artifacts the boys make in chat.
-# Called by: static/js/canvas.js (the canvas library UI on the chat page); new canvases are SAVED by services/canvas_store.py, not here.
-# Edit here when: Changing who can see/share a canvas, pagination, or adding library features. For how canvases get created, look in canvas_store.py.
 
 import logging
 
@@ -112,8 +108,7 @@ async def get_canvas(canvas_id: int, identity: str):
 
 @router.delete("/{canvas_id}")
 async def delete_canvas(canvas_id: int, identity: str):
-    """Owner-only. canvas_shares rows cascade-delete via the FK ON DELETE
-    CASCADE (db/database.py sets PRAGMA foreign_keys=ON per connection)."""
+    'Delete canvas.'
     if identity not in IDENTITIES:
         return JSONResponse(status_code=400, content={"error": f"Unknown identity: {identity}"})
 
@@ -136,10 +131,7 @@ async def delete_canvas(canvas_id: int, identity: str):
 
 @router.post("/{canvas_id}/share")
 async def share_canvas(canvas_id: int, request: Request):
-    """Body: {"identity": "<owner>", "share_with": "<other identity>"}.
-    Owner-only -- sharing a canvas someone else shared to you isn't
-    supported (keeps the visibility model to a single flat owner+shares
-    layer, no re-sharing chains to reason about)."""
+    'Share canvas.'
     try:
         payload = await request.json()
     except Exception:
@@ -178,8 +170,7 @@ async def share_canvas(canvas_id: int, request: Request):
 
 @router.delete("/{canvas_id}/share/{shared_identity}")
 async def unshare_canvas(canvas_id: int, shared_identity: str, identity: str):
-    """Owner-only revoke. `identity` (query param) must be the canvas owner;
-    `shared_identity` (path) is whose access is being removed."""
+    'Unshare canvas.'
     if identity not in IDENTITIES:
         return JSONResponse(status_code=400, content={"error": f"Unknown identity: {identity}"})
 

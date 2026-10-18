@@ -1,9 +1,5 @@
 """Claude Agent SDK backend — a structured-message provider that runs on the."""
 
-# ANAM GUIDE: CLAUDE AGENT SDK BACKEND
-# What: A third way to run Claude on the subscription — uses Anthropic's official Agent SDK instead of hand-parsing the CLI's output, so stream-format changes can't break us (see docstring above).
-# Called by: services/provider_router.py only, when the backend toggle in Settings Hub is set to "agent-sdk".
-# Edit here when: The agent-sdk backend misbehaves (events, session resume, MCP servers) — the -p backend is claude_subprocess.py and PTY is claude_pty.py, both separate files.
 
 from __future__ import annotations
 
@@ -66,7 +62,7 @@ async def stream_agent_sdk(
     from claude_agent_sdk import (
         query, ClaudeAgentOptions,
         AssistantMessage, UserMessage, SystemMessage, ResultMessage, StreamEvent,
-        TextBlock, ThinkingBlock, ToolUseBlock,
+        TextBlock, ToolUseBlock,
     )
 
     effective_model = model or CLAUDE_MODEL
@@ -103,7 +99,8 @@ async def stream_agent_sdk(
                 limit=history_limit,
                 per_message_chars=history_chars,
             )
-        except Exception:
+        except Exception as exc:
+            log.warning("SDK turn for %s runs without history (load failed): %s", identity, exc)
             history_block = ""
 
     composed = _build_first_message(

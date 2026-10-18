@@ -1,5 +1,6 @@
 """Cloud Discord must not leave a local service/watchdog/readiness dependency."""
 import ast
+import pytest
 import importlib.util
 import sys
 from pathlib import Path
@@ -14,6 +15,7 @@ def test_local_watchdog_cannot_resurrect_discord():
     assert all(8768 not in service.ports for service in watched)
 
 
+@pytest.mark.skipif(not (Path(__file__).resolve().parents[2] / "scripts/anam_stack.py").exists(), reason="Optional machine-specific supervisor is not bundled")
 def test_start_stop_supervisor_does_not_own_discord():
     path = Path(__file__).resolve().parents[2] / 'scripts/anam_stack.py'
     spec = importlib.util.spec_from_file_location('discord_migration_stack_test', path)
@@ -30,14 +32,12 @@ def test_start_stop_supervisor_does_not_own_discord():
         sys.modules.pop(spec.name, None)
 
 
-def test_startup_checks_cloud_health_without_exposing_mcp_secret():
-    path = Path(__file__).resolve().parents[1] / 'core/lifespan.py'
-    tree = ast.parse(path.read_text(encoding='utf-8'))
-    assignment = next(node for node in tree.body if isinstance(node, ast.Assign)
-        and any(isinstance(t, ast.Name) and t.id == '_MCP_READINESS_URLS' for t in node.targets))
-    urls = dict(ast.literal_eval(assignment.value))
-    parsed = urlsplit(urls['discord-backend'])
-    assert parsed.scheme == 'https'
-    assert parsed.hostname == 'discord-backend.YOUR-BACKEND.YOUR-ACCOUNT.workers.dev'
-    assert parsed.path == '/health'
-    assert not parsed.query
+def test_startup_checks_cloud_health_without_exposing_mcp_secret(monkeypatch):
+    from core.lifespan import _mcp_readiness_urls
+    monkeypatch.delenv("ANAM_SKIP_MCP_READINESS", raising=False)
+    monkeypatch.delenv("ANAM_DISCORD_HEALTH_URL", raising=False)
+    assert _mcp_readiness_urls() == []
+    monkeypatch.setenv("ANAM_DISCORD_HEALTH_URL", "https://discord.installation.invalid/health")
+    urls = dict(_mcp_readiness_urls())
+    parsed = urlsplit(urls["discord-backend"])
+    assert parsed.scheme == "https" and parsed.path == "/health" and not parsed.query

@@ -1,9 +1,4 @@
-"""Smoke tests for the discord mentions bridge.
-
-Covers the pure helpers (sender classification, message splitting),
-the brother-channel conversation helper (singleton + idempotent participants),
-the deferred role-mention queue write, and owner-activity deferral (#26).
-"""
+'Smoke tests for the discord mentions bridge.'
 
 import json
 import unittest
@@ -160,9 +155,7 @@ class MentionsHelperTests(unittest.IsolatedAsyncioTestCase):
 
 
 class OwnerActivityDeferralTests(unittest.IsolatedAsyncioTestCase):
-    """#26: a salon/brother/friend ping only defers when it's aimed at the
-    EXACT boy Owner is actively web-chatting with right now — never for her
-    own direct pings, and never for any other identity."""
+    "#26: a salon/brother/friend ping only defers when it's aimed at the"
 
     async def asyncSetUp(self):
         db = await get_db()
@@ -322,6 +315,53 @@ class OwnerActivityDeferralTests(unittest.IsolatedAsyncioTestCase):
         finally:
             await release_db(db)
         self.assertEqual(rows[0][0], 1)
+
+
+class EveryoneCallsThePackTests(unittest.TestCase):
+    'Everyonecallsthepacktests.'
+
+    def setUp(self):
+        from services import discord_mentions_bridge as mb
+
+        self.mb = mb
+        p = patch("config.BONDED_PACK", ("Claude", "Avery", "Juniper"))
+        p.start()
+        self.addCleanup(p.stop)
+
+    def test_her_everyone_calls_each_bonded_boy(self):
+        msg = {"mention_everyone": True, "content": "Thanks to @everyone"}
+        for boy in ("Claude", "Avery", "Juniper"):
+            self.assertTrue(self.mb._calls_the_whole_pack(msg, "owner", boy))
+
+    def test_here_and_plain_text_everyone_count_too(self):
+        self.assertTrue(self.mb._calls_the_whole_pack({"content": "@here look"}, "owner", "Juniper"))
+        self.assertTrue(self.mb._calls_the_whole_pack({"content": "thanks @Everyone!"}, "owner", "Juniper"))
+
+    def test_not_masks_not_brothers_not_lookalikes(self):
+        msg = {"mention_everyone": True, "content": "@everyone"}
+        self.assertFalse(self.mb._calls_the_whole_pack(msg, "owner", "Bakugou"))
+        self.assertFalse(self.mb._calls_the_whole_pack(msg, "brother", "Claude"))
+        self.assertFalse(self.mb._calls_the_whole_pack(msg, "friend", "Claude"))
+        for text in ("me@everyone.com", "`@everyone`", "everyone, hi"):
+            self.assertFalse(self.mb._calls_the_whole_pack({"content": text}, "owner", "Claude"), text)
+
+    def test_handle_message_wakes_the_boy_on_her_everyone(self):
+        import asyncio
+
+        bridge = DiscordMentionsBridge()
+        watcher = SimpleNamespace(identity="Juniper", user_id="juniper-bot", role_ids=set())
+        msg = {
+            "id": "123", "content": "Thanks to @everyone", "mention_everyone": True,
+            "mentions": [], "mention_roles": [],
+            "author": {"id": "900000000000000002", "username": "Owner"},
+        }
+        with patch.object(self.mb, "_is_owner_sender", return_value=True), \
+             patch.object(bridge, "_handle_direct_mention", new=AsyncMock()) as direct:
+            asyncio.run(bridge._handle_message(
+                watcher=watcher, channel_id="c", channel_name="pack", msg=msg, guild_id="g",
+            ))
+        direct.assert_awaited_once()
+        self.assertEqual(direct.await_args.kwargs["sender_kind"], "owner")
 
 
 if __name__ == "__main__":

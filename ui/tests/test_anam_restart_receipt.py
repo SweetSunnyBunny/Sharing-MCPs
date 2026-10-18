@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import pytest
 from pathlib import Path
 import sys
 
@@ -19,6 +20,7 @@ def _load(name: str, path: Path):
     return module
 
 
+@pytest.mark.skipif(not STACK.is_file(), reason="Optional machine-specific supervisor is not bundled")
 def test_supervisor_writes_verified_receipt_after_pid_change(tmp_path, monkeypatch):
     stack = _load("anam_stack_receipt_test", STACK)
     monkeypatch.setattr(stack, "RUNTIME_ROOT", tmp_path)
@@ -49,6 +51,7 @@ def test_supervisor_writes_verified_receipt_after_pid_change(tmp_path, monkeypat
     assert receipt["health"] == "ready"
 
 
+@pytest.mark.skipif(not STACK.is_file(), reason="Optional machine-specific supervisor is not bundled")
 def test_supervisor_marks_receipt_failed_without_a_pid_change(tmp_path, monkeypatch):
     stack = _load("anam_stack_failed_receipt_test", STACK)
     monkeypatch.setattr(stack, "RUNTIME_ROOT", tmp_path)

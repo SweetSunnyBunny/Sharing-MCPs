@@ -22,8 +22,12 @@ class HubChangedBroadcastTests(unittest.IsolatedAsyncioTestCase):
         mock_broadcast.assert_called_once_with({"type": "hub_update"})
 
     async def test_broadcast_scheduling_failure_never_raises(self):
+        def fail_to_schedule(coroutine, **_kwargs):
+            coroutine.close()
+            raise RuntimeError("boom")
+
         with patch("services.connection_registry.broadcast", AsyncMock()), \
-             patch("services.task_manager.spawn", side_effect=RuntimeError("boom")):
+             patch("services.task_manager.spawn", side_effect=fail_to_schedule):
             hub._hub_changed()  # must not raise
 
 

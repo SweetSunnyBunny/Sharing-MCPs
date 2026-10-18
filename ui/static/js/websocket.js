@@ -1,8 +1,5 @@
 /* WebSocket manager with auto-reconnect + heartbeat keepalive */
-/* ANAM GUIDE: LIVE CONNECTION KEEPER
-   What: keeps the live line to the server open — auto-reconnects when the phone sleeps or wifi blips, queues messages sent while offline, and falls back to plain HTTP if the line won't stay up.
-   Loaded by: index.html (the main chat page); chat.js and app.js send/receive everything through the WS object it creates.
-   Edit here when: chat stops updating after the phone was locked, reconnects feel too slow/eager, or offline messages get lost — timing knobs are the _ms values at the top. */
+
 
 class WebSocketManager {
     constructor() {

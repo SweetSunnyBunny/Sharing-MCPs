@@ -10,6 +10,19 @@ const SHEETS_API = "https://sheets.googleapis.com/v4/spreadsheets";
 const CALENDAR_API = "https://www.googleapis.com/calendar/v3";
 const SERVICE = "drive";
 
+/** The house clock. Workers run in UTC; Owner lives in America/Chicago. */
+const HOUSE_TZ = "America/Chicago";
+
+/** Civil date (YYYY-MM-DD) and UTC offset ("-05:00") of an instant in a timezone. */
+export function civilDayInTz(at: Date, timeZone: string): { date: string; offset: string } {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone, year: "numeric", month: "2-digit", day: "2-digit", timeZoneName: "longOffset",
+  }).formatToParts(at);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
+  const raw = get("timeZoneName").replace("GMT", ""); // "-05:00", or "" for UTC
+  return { date: `${get("year")}-${get("month")}-${get("day")}`, offset: raw || "+00:00" };
+}
+
 // Service-bound wrappers so every call uses the drive refresh token
 const googleGet = <T = unknown>(env: Env, identity: string, url: string) => _googleGet<T>(env, identity, url, SERVICE);
 const googlePost = <T = unknown>(env: Env, identity: string, url: string, body: unknown) => _googlePost<T>(env, identity, url, body, SERVICE);
@@ -308,12 +321,14 @@ export async function handleDrive(env: Env, name: string, args: Record<string, u
 
     // ==================== CALENDAR ====================
     case "gcal_today_events": {
-      const now = new Date();
-      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
-      const params = qs({ timeMin: startOfDay, timeMax: endOfDay, singleEvents: "true", orderBy: "startTime" });
+      const { date: ymd, offset: startOffset } = civilDayInTz(new Date(), HOUSE_TZ);
+      const startOfDay = `${ymd}T00:00:00${startOffset}`;
+      const nextDay = new Date(Date.parse(startOfDay) + 36 * 3600000); // safely inside tomorrow, even across DST
+      const { date: nextYmd, offset: endOffset } = civilDayInTz(nextDay, HOUSE_TZ);
+      const endOfDay = `${nextYmd}T00:00:00${endOffset}`;
+      const params = qs({ timeMin: startOfDay, timeMax: endOfDay, timeZone: HOUSE_TZ, singleEvents: "true", orderBy: "startTime" });
       const result = await googleGet<{ items: unknown[] }>(env, identity, `${CALENDAR_API}/calendars/primary/events?${params}`);
-      return JSON.stringify({ identity, date: startOfDay.slice(0, 10), count: (result.items || []).length, events: result.items || [] });
+      return JSON.stringify({ identity, date: ymd, timezone: HOUSE_TZ, count: (result.items || []).length, events: result.items || [] });
     }
 
     case "gcal_upcoming_events": {

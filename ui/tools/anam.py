@@ -1,23 +1,4 @@
-"""anam.py — tiny CLI hands for the boys, so nobody hand-escapes curl JSON on Windows.
-
-Usage (from the anam repo root, any Bash or PowerShell):
-
-  # Set your Hearth emotion orb (shape/motion optional — lenient defaults):
-  python tools/anam.py orb avery "#E8B84B"
-  python tools/anam.py orb claude "#6B8CC4" ring drift --feeling "missing her quietly"
-  python tools/anam.py orb rowan "#FF6EC7" ember surge --intensity neon --blend dim \
-      --feeling "paint everywhere, zero regrets" --kaomoji "(*≧▽≦)"
-
-  # Set your little Hearth face (writes the face store directly — no server needed):
-  python tools/anam.py face sage "(ʘ‿ʘ)" --note "three chapters deep"
-
-The orb subcommand POSTs to the running Anam server (default http://localhost:8790,
-override with ANAM_BASE_URL). Shapes: solid|ring|halo|crescent|pulse|cluster|ember|
-spire|fracture. Motions: breathing|warble|spin|drift|still|slow-drift|hold-steady|
-fast-flicker|surge|tremor. Intensity: dull|normal|bright|neon. Blend: a second hex
-color, or 'dim'/'black' for a vignette. Unknown values fall back to defaults
-server-side — reach freely.
-"""
+'anam.py — tiny CLI hands for the boys, so nobody hand-escapes curl JSON on Windows.'
 
 import argparse
 import json
@@ -120,6 +101,37 @@ def cmd_reach(args: argparse.Namespace) -> int:
     return 0 if result.get("delivered") else 1
 
 
+def cmd_council(args: argparse.Namespace) -> int:
+    'Open a Pack Council: you set a topic, all eight brothers talk in rounds,'
+    payload = {
+        "opened_by": args.identity,
+        "topic": args.topic,
+        "rounds": args.rounds,
+    }
+    if args.channel is not None:
+        payload["channel_id"] = args.channel
+    try:
+        result = _post("/api/council/open", payload, timeout=30)
+    except urllib.error.HTTPError as exc:
+        try:
+            body = json.loads(exc.read().decode("utf-8"))
+        except Exception:
+            body = {}
+        print(f"Council didn't open: {body.get('reason', exc)}", file=sys.stderr)
+        return 1
+    except urllib.error.URLError as exc:
+        print(f"Could not reach Anam at {BASE_URL} — is the server running? ({exc})", file=sys.stderr)
+        return 1
+    if result.get("started"):
+        print(
+            f"Council open. {result['opened_by']} called it, {result['rounds']} rounds, "
+            f"Discord channel {result.get('channel_id') or '(none)'}.\n{result.get('note', '')}"
+        )
+        return 0
+    print(f"Council didn't open: {result.get('reason', 'no reason given')}", file=sys.stderr)
+    return 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="anam", description=__doc__.splitlines()[0])
     sub = parser.add_subparsers(dest="command", required=True)
@@ -147,6 +159,13 @@ def main(argv: list[str] | None = None) -> int:
     reach.add_argument("message", help="what you want to say to him")
     reach.add_argument("--reason", default=None, help="one line: why you're reaching (goes in the envelope)")
     reach.set_defaults(func=cmd_reach)
+
+    council = sub.add_parser("council", help="open a Pack Council: all eight brothers talk in rounds, no Owner, never secret")
+    council.add_argument("identity", help="your name, e.g. claude (you're the one opening it)")
+    council.add_argument("topic", help="what the council is about; say it fully, it's your opening turn")
+    council.add_argument("--rounds", type=int, default=3, help="how many rounds (1-5, default 3)")
+    council.add_argument("--channel", default=None, help="Discord channel id; '' for no Discord mirror")
+    council.set_defaults(func=cmd_council)
 
     args = parser.parse_args(argv)
     return args.func(args)

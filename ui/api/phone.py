@@ -1,4 +1,4 @@
-"""REST: phone_ask — actionable notification buttons on Owner's Pixel, answered with one tap."""
+'Application module.'
 
 
 import asyncio
@@ -15,6 +15,10 @@ from fastapi.responses import JSONResponse
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/phone")
+
+# =============================================================================
+# STORAGE + SMALL HELPERS
+# =============================================================================
 
 _DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 _ASKS_FILE = _DATA_DIR / "phone_asks.jsonl"
@@ -86,6 +90,10 @@ def _canonical_identity(identity: str | None) -> str | None:
             return known
     return ident
 
+
+# =============================================================================
+# DELIVERY (answer into her chat + wake the boy who asked)
+# =============================================================================
 
 async def _route_answer_into_chat(identity: str | None, question: str, answer: str) -> dict | None:
     """Put her tap in the conversation, as her, so it is SEEN and not just logged.
@@ -161,6 +169,10 @@ async def _queue_answer_wake(identity: str, question: str, answer: str, ask_id: 
     finally:
         await release_db(db)
 
+
+# =============================================================================
+# ROUTES
+# =============================================================================
 
 @router.post("/ask")
 async def phone_ask_register(request: Request):

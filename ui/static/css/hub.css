@@ -2,10 +2,7 @@
    Home Hub — Dashboard Styles
    Cottagecore: pastel pink, gingham, flowers, bows, soft rounded everything
    ============================================================================= */
-/* ANAM GUIDE: HUB PAGE STYLES
-   What: every look on the Home Hub dashboard — tabs, meds/rituals/wellness cards, the Hearth (pack presence, emotion orb, Princess Protocol button), the Constellation starfield, and Memory Lab.
-   Used by: hub.html only.
-   Edit here when: anything on the Hub looks wrong or you want to restyle a Hub section — each section has a big banner comment, scroll to its name. Aesthetic law: cottagecore pink, never Stark-blue. */
+
 
 body.hub-page {
     overflow: auto;

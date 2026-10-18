@@ -1,9 +1,5 @@
 """Game room API — dominoes (and future games)."""
 
-# ANAM GUIDE: GAME ROOM ROUTES
-# What: /api/games — start a dominoes game, play/draw/pass turns, and let the AI opponents take theirs. Games save as JSON files in data/games/.
-# Called by: static/js/gameroom.js (the gameroom.html page); all the actual dominoes rules live in services/dominoes.py.
-# Edit here when: Adding a new game's endpoints or changing how games are saved/loaded. For rule changes (scoring, valid moves), edit services/dominoes.py.
 
 from __future__ import annotations
 
@@ -16,7 +12,6 @@ from pydantic import BaseModel
 from config import DATA_DIR, IDENTITIES
 from services.dominoes import (
     GameState,
-    ai_choose_move,
     can_play,
     draw_from_boneyard,
     execute_ai_turns,
@@ -167,7 +162,7 @@ async def get_game_state(game_id: str):
 
 @router.get("/{game_id}/valid-moves")
 async def get_valid_moves_endpoint(game_id: str):
-    """Return Owner's valid moves."""
+    'Get valid moves endpoint.'
     state = _load(game_id)
 
     owner_idx = None
@@ -185,7 +180,7 @@ async def get_valid_moves_endpoint(game_id: str):
 
 @router.post("/{game_id}/play")
 async def play_tile_endpoint(game_id: str, body: PlayTileBody):
-    """Owner plays a tile."""
+    'Play tile endpoint.'
     state = _load(game_id)
     owner_idx = next((i for i, p in enumerate(state.players) if p.is_human), None)
     if owner_idx is None:
@@ -226,7 +221,7 @@ async def play_tile_endpoint(game_id: str, body: PlayTileBody):
 
 @router.post("/{game_id}/draw")
 async def draw_tile_endpoint(game_id: str):
-    """Owner draws from the boneyard."""
+    'Draw tile endpoint.'
     state = _load(game_id)
     owner_idx = next((i for i, p in enumerate(state.players) if p.is_human), None)
     if owner_idx is None:
@@ -253,7 +248,7 @@ async def draw_tile_endpoint(game_id: str):
 
 @router.post("/{game_id}/pass")
 async def pass_turn_endpoint(game_id: str):
-    """Owner passes."""
+    'Pass turn endpoint.'
     state = _load(game_id)
     owner_idx = next((i for i, p in enumerate(state.players) if p.is_human), None)
     if owner_idx is None:

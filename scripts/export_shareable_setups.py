@@ -252,7 +252,7 @@ def should_include(project: str, relative: Path) -> bool:
         if posix.parts[0] == "scripts":
             return relative.name in {
                 "README.md", "retrieval_benchmark.py",
-                "retrieval_eval_set.example.json", "text_normalize.py", "anam-reader.test.mjs", "cognition.test.mjs", "sketchbook.test.mjs",
+                "retrieval_eval_set.example.json", "text_normalize.py", "anam-reader.test.mjs", "cognition.test.mjs", "sketchbook.test.mjs", "redolence.test.mjs",
             }
         return False
 

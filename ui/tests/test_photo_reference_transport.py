@@ -32,7 +32,7 @@ class PhotoReferenceTransportTests(unittest.TestCase):
             with patch.object(service, '_openai_key', return_value='fake'), \
                     patch.object(service, 'CHAT_DIR', Path(folder)), \
                     patch.object(service.urllib.request, 'urlopen', return_value=response) as send:
-                result = service.photo_generate('School group', subject='new', reference_paths=[str(path)])
+                result = service.photo_generate('School group', subject='new', reference_paths=[str(path)], road='api')
                 self.assertTrue(result.startswith('Saved ('))
                 request = send.call_args.args[0]
                 self.assertEqual(request.full_url, service.EDIT_API_URL)
@@ -45,7 +45,7 @@ class PhotoReferenceTransportTests(unittest.TestCase):
                 else:
                     self.assertNotIn('input_fidelity', payload)
                 self.assertEqual(path.read_bytes(), original)
-                result = service.photo_generate('Shoes', subject='plain')
+                result = service.photo_generate('Shoes', subject='plain', road='api')
                 self.assertTrue(result.startswith('Saved ('))
                 request = send.call_args.args[0]
                 self.assertEqual(request.full_url, service.API_URL)

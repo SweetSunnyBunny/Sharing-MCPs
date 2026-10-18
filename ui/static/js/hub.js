@@ -1,7 +1,4 @@
-/* ANAM GUIDE: HUB DASHBOARD BEHAVIOR
-   What: Runs the Home Hub page — status, meds/ritual buttons, wellness icon buttons, countdowns, today's win, schedule, tasks, and mind insights, all fed by /api/hub (api/hub.py).
-   Loaded by: static/hub.html only.
-   Edit here when: You want to add/change a wellness metric, a hub card, or how any dashboard section loads and refreshes. Page looks live in static/css/hub.css. */
+
 
 /**
  * Home Hub — Dashboard Controller
@@ -49,6 +46,30 @@ const Hub = {
         return task;
     },
 
+    // Failed writes (taps, deletes, adds) must be VISIBLE — she's on her phone
+    // with no console. Shows a short-lived section-error note next to `anchor`
+    // (placed outside any list the follow-up reload re-renders, so it survives).
+    _showActionError(anchor, text, where = 'afterend') {
+        const el = typeof anchor === 'string' ? document.getElementById(anchor) : anchor;
+        if (!el || !el.parentNode) { alert(text); return; }
+        let note = el._actionErrorNote;
+        if (!note || !note.isConnected) {
+            note = document.createElement('div');
+            note.className = 'section-error hub-action-error';
+            note.setAttribute('role', 'alert');
+            el.insertAdjacentElement(where, note);
+            el._actionErrorNote = note;
+        }
+        note.textContent = text;
+        clearTimeout(note._hideTimer);
+        note._hideTimer = setTimeout(() => note.remove(), 6000);
+    },
+
+    _failureText(err) {
+        if (err && err.name === 'AbortError') return 'timed out';
+        return (err && err.message) || 'network error';
+    },
+
     _activeTab: 'daily',
     _tabsLoaded: {},
     _memoryLabState: { identity: '', offset: 0, limit: 15 },
@@ -79,7 +100,13 @@ const Hub = {
         this.bindEvents();
 
         // Tab navigation
-        this._activeTab = localStorage.getItem('anam-hub-tab') || 'daily';
+        // Fall back to the default tab if the saved one no longer exists
+        // (a renamed/removed tab would otherwise leave every panel hidden).
+        const savedTab = localStorage.getItem('anam-hub-tab');
+        const savedTabExists = !!savedTab
+            && Object.prototype.hasOwnProperty.call(this._tabLoaders, savedTab)
+            && Array.from(document.querySelectorAll('.hub-tab')).some(t => t.dataset.tab === savedTab);
+        this._activeTab = savedTabExists ? savedTab : 'daily';
         this._initTabs();
 
         // Load active tab
@@ -698,8 +725,6 @@ const Hub = {
         }
         this._ccUpdateTiles(grid, tiles);
 
-        // hero face — the "lead" boy resting on the ember: whoever set his face
-        // most recently, else an awake boy, else a gentle default.
         let lead = null, leadName = null, bestTs = -1;
         Object.entries(facesMap).forEach(([n, f]) => {
             if (f && f.source === 'set' && f.updated) {
@@ -819,14 +844,6 @@ const Hub = {
         return '#E8B84B';
     },
 
-    // Paint any orb element (Hearth mantel, face-poke mini) from an orb
-    // payload. Colors stay free-hex: highlight/edge shades are derived here
-    // and set as inline custom props — the registered props in main.css make
-    // color changes crossfade (~2.4s) instead of snapping.
-    // size 'mantel' keeps the full shape vocabulary; smaller sizes collapse
-    // to sphere/ember (fracture → tremor + dull — Friend's collapse rules).
-    // `identity` (optional) is only used for the no-color-yet fallback, so
-    // an un-painted orb reads as THAT boy's own accent, not shared gold.
     _applyOrbTo(orbEl, orb, size = 'mantel', sizeClass = '', identity = null) {
         if (!orbEl) return;
         if (!orbEl.querySelector('.cc-orb-core')) {
@@ -956,19 +973,21 @@ const Hub = {
                 btn._ccBound = true;
                 btn.addEventListener('click', async () => {
                     const m = btn.dataset.mode;
+                    const prev = ((this._ccData && this._ccData.watchtower) || {}).mode || 'auto';
                     wrap.querySelectorAll('.cc-mood-btn').forEach(b => b.classList.toggle('active', b === btn));
                     try {
                         await sendJson('/api/hub/watchtower', 'PUT', { mode: m }, { timeoutMs: 8000 });
                         if (this._ccData) this._ccData.watchtower = { ...(this._ccData.watchtower || {}), mode: m };
-                    } catch (e) { /* silent — non-critical */ }
+                    } catch (e) {
+                        // Didn't save — put the highlight back on the real mode and say so.
+                        wrap.querySelectorAll('.cc-mood-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === prev));
+                        this._showActionError(wrap, `Couldn't change that (${this._failureText(e)}) — still on "${prev}".`);
+                    }
                 });
             }
         });
     },
 
-    // The pink crayon — Princess Protocol. One tap when she's gone little:
-    // fires the held-bundle (soft pink light, gentle music, Avery coming) and
-    // never shows her an error in that mode — worst case it just says "held".
     _ccBindCrayon() {
         const btn = document.getElementById('cc-crayon');
         if (!btn || btn._ccBound) return;
@@ -1047,9 +1066,11 @@ const Hub = {
                     const id = delBtn.dataset.id;
                     if (!id) return;
                     try {
-                        await fetchWithTimeout(`/api/hub/projects/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                        const res = await fetchWithTimeout(`/api/hub/projects/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     } catch (err) {
                         console.error('[Hub] Failed to remove project:', err);
+                        this._showActionError(list, `Couldn't remove that project (${this._failureText(err)}).`);
                     }
                     await this.loadProjects();
                 });
@@ -1069,7 +1090,11 @@ const Hub = {
                     await sendJson('/api/hub/projects', 'POST', { prompt }, { timeoutMs: 10000 });
                     input.value = '';
                     await this.loadProjects();
-                } catch (e) { /* silent */ }
+                } catch (e) {
+                    // Her text stays in the box so she can just tap Queue again.
+                    console.error('[Hub] Failed to queue project:', e);
+                    this._showActionError(input.parentElement || input, `Couldn't queue that (${this._failureText(e)}) — try again?`);
+                }
                 btn.disabled = false; btn.textContent = 'Queue';
             };
             btn.addEventListener('click', submit);
@@ -1291,7 +1316,10 @@ const Hub = {
             const form = document.getElementById('status-form');
             form.emoji.value = owner.emoji || '';
             form.text.value = owner.text || '';
-        }).catch(() => {});
+        }).catch(err => {
+            console.warn('[Hub] Could not pre-fill status:', err);
+            this._showActionError('status-form', `Couldn't load your current status (${this._failureText(err)}) — you can still write a new one.`, 'beforebegin');
+        });
     },
 
     async saveStatus(e) {
@@ -1307,6 +1335,7 @@ const Hub = {
             await this.loadStatus();
         } catch (err) {
             console.error('[Hub] Failed to save status:', err);
+            this._showActionError('status-form', `Couldn't save your status (${this._failureText(err)}) — try again?`, 'beforebegin');
         }
     },
 
@@ -1776,7 +1805,13 @@ const Hub = {
             container.querySelectorAll('.countdown-delete').forEach(btn => {
                 btn.addEventListener('click', async () => {
                     const id = btn.closest('.countdown-item').dataset.id;
-                    await fetchWithTimeout(`/api/hub/countdowns/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                    try {
+                        const res = await fetchWithTimeout(`/api/hub/countdowns/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    } catch (err) {
+                        console.error('[Hub] Failed to delete countdown:', err);
+                        this._showActionError(container, `Couldn't remove that countdown (${this._failureText(err)}).`);
+                    }
                     delete this._loaders['countdowns'];
                     await this.loadCountdowns();
                 });
@@ -2069,11 +2104,16 @@ const Hub = {
                         cb.textContent = wasCompleted ? '' : '\u2713';
                         // Persist and reload
                         this._taskActionInFlight = true;
-                        await fetchWithTimeout(`/api/hub/tasks/${id}/complete`, { method: 'PUT', timeoutMs: 10000 });
+                        const res = await fetchWithTimeout(`/api/hub/tasks/${id}/complete`, { method: 'PUT', timeoutMs: 10000 });
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
                         delete this._loaders['tasks'];
                         await this.loadTasks();
                     } catch (err) {
                         console.error('[Hub] Failed to toggle task:', err);
+                        this._showActionError(container, `Couldn't update that task (${this._failureText(err)}).`);
+                        // Undo the optimistic tick by reloading the real list.
+                        delete this._loaders['tasks'];
+                        this.loadTasks();
                     } finally {
                         this._taskActionInFlight = false;
                     }
@@ -2088,11 +2128,16 @@ const Hub = {
                         item.style.display = 'none';
                         const id = item.dataset.id;
                         this._taskActionInFlight = true;
-                        await fetchWithTimeout(`/api/hub/tasks/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                        const res = await fetchWithTimeout(`/api/hub/tasks/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
                         delete this._loaders['tasks'];
                         await this.loadTasks();
                     } catch (err) {
                         console.error('[Hub] Failed to delete task:', err);
+                        this._showActionError(container, `Couldn't delete that task (${this._failureText(err)}).`);
+                        // Bring the optimistically-hidden task back.
+                        delete this._loaders['tasks'];
+                        this.loadTasks();
                     } finally {
                         this._taskActionInFlight = false;
                     }
@@ -2142,11 +2187,16 @@ const Hub = {
                         try {
                             const card = btn.closest('.wish-card');
                             card.style.display = 'none';
-                            await fetchWithTimeout(`/api/hub/wishlist/${card.dataset.id}`, { method: 'DELETE', timeoutMs: 10000 });
+                            const res = await fetchWithTimeout(`/api/hub/wishlist/${card.dataset.id}`, { method: 'DELETE', timeoutMs: 10000 });
+                            if (!res.ok) throw new Error(`HTTP ${res.status}`);
                             delete this._loaders['wishlist'];
                             await this.loadWishlist();
                         } catch (err) {
                             console.error('[Hub] Failed to delete wish:', err);
+                            this._showActionError(container, `Couldn't release that wish (${this._failureText(err)}).`);
+                            // Bring the optimistically-hidden wish back.
+                            delete this._loaders['wishlist'];
+                            this.loadWishlist();
                         }
                     });
                 });
@@ -2163,17 +2213,19 @@ const Hub = {
         const what = (whatEl.value || '').trim();
         if (!what) return;
         try {
-            await fetchWithTimeout('/api/hub/wishlist', {
+            const res = await fetchWithTimeout('/api/hub/wishlist', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ what, why: (whyEl.value || '').trim(), who: (whoEl.value || '').trim() || 'Owner' }),
                 timeoutMs: 10000,
             });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             whatEl.value = ''; whyEl.value = ''; whoEl.value = '';
             delete this._loaders['wishlist'];
             await this.loadWishlist();
         } catch (err) {
             console.error('[Hub] Failed to add wish:', err);
+            this._showActionError('wishlist-list', `Couldn't add that wish (${this._failureText(err)}) — try again?`);
         }
     },
 
@@ -2230,13 +2282,15 @@ const Hub = {
                         const summary = card.querySelector('.memory-summary')?.textContent || 'this memory';
                         if (!confirm(`Delete memory?\n\n"${summary}"\n\nThis will also remove any auto-promoted profile fact.`)) return;
                         try {
-                            await fetchWithTimeout(`/api/messages/memories/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                            const res = await fetchWithTimeout(`/api/messages/memories/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                            if (!res.ok) throw new Error(`HTTP ${res.status}`);
                             delete this._loaders['memories'];
                             delete this._loaders['profile-facts'];
                             await this.loadMemories();
                             await this.loadProfileFacts();
                         } catch (err) {
                             console.error('[Hub] Failed to delete memory:', err);
+                            this._showActionError(container, `Couldn't delete that memory (${this._failureText(err)}).`);
                         }
                     });
                 });
@@ -2295,11 +2349,13 @@ const Hub = {
                         const summary = card.querySelector('.memory-summary')?.textContent || 'this fact';
                         if (!confirm(`Delete profile fact?\n\n"${summary}"`)) return;
                         try {
-                            await fetchWithTimeout(`/api/identity/profile/item/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                            const res = await fetchWithTimeout(`/api/identity/profile/item/${id}`, { method: 'DELETE', timeoutMs: 10000 });
+                            if (!res.ok) throw new Error(`HTTP ${res.status}`);
                             delete this._loaders['profile-facts'];
                             await this.loadProfileFacts();
                         } catch (err) {
                             console.error('[Hub] Failed to delete profile fact:', err);
+                            this._showActionError(container, `Couldn't delete that fact (${this._failureText(err)}).`);
                         }
                     });
                 });
@@ -2752,8 +2808,6 @@ const Hub = {
         river: '#A8D8D8',
         atlas: '#B9BDE8',
     },
-    // Kind palette — fallback for souls no pack walk holds
-    // (person warm amber, project quiet violet, place sage, concept cool teal)
     _bondsKindColors: {
         person: '#e2a963',
         project: '#a893c0',
@@ -3829,11 +3883,6 @@ const Hub = {
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    },
-
-    truncate(str, max) {
-        if (!str || str.length <= max) return str;
-        return str.substring(0, max) + '...';
     },
 };
 

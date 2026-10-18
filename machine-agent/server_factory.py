@@ -1,3 +1,8 @@
+"""Build typed MCP callables from the maintained compatibility tool catalog.
+
+Explicit generated signatures keep the public argument schemas stable. Results
+from the machine HTTP bridge are rehydrated into native MCP content here."""
+
 from __future__ import annotations
 
 import base64

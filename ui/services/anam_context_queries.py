@@ -1,9 +1,5 @@
 """Read-only conversation-history queries shared by the Anam context MCP."""
 
-# ANAM GUIDE: CONTEXT MCP HISTORY QUERIES
-# What: Read-only lookups into the chat database (search past messages, pull a conversation window) for the anam-context MCP tools the boys use to remember.
-# Called by: scripts/anam_context_mcp.py (the standalone anam-context MCP server that runs as its own little process).
-# Edit here when: changing what the boys' history-recall tools return — search behavior, message windows, truncation limits. It only reads the database, never writes.
 
 from __future__ import annotations
 

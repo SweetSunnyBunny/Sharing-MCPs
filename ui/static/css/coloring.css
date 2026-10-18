@@ -1,0 +1,99 @@
+
+:root {
+  --pp-ink: #5B3A45; --pp-rose: #C8728A; --pp-blush: #F6D5DE; --pp-bg: #FBE7EE;
+  --pp-cream: #FFF8F3; --pp-shadow: rgba(122, 63, 82, .18);
+}
+html, body { margin: 0; padding: 0; background: var(--pp-bg); color: var(--pp-ink);
+  font-family: Georgia, 'Times New Roman', serif; -webkit-tap-highlight-color: transparent; }
+body { min-height: 100vh; box-sizing: border-box;
+  padding: calc(env(safe-area-inset-top) + 10px) 12px calc(env(safe-area-inset-bottom) + 18px); }
+
+.pp-top { max-width: 760px; margin: 0 auto 12px; }
+.pp-tabs { display: flex; gap: 8px; background: var(--pp-blush); border-radius: 999px; padding: 5px; }
+.pp-tab { flex: 1; min-height: 48px; border: 0; border-radius: 999px; background: transparent;
+  font: inherit; font-size: 1.1rem; color: var(--pp-rose); cursor: pointer; }
+.pp-tab.is-on { background: var(--pp-cream); color: var(--pp-ink); box-shadow: 0 2px 8px var(--pp-shadow); }
+.pp-room { display: none; max-width: 760px; margin: 0 auto; }
+.pp-room.is-on { display: block; }
+.pp-home { display: block; text-align: center; margin-top: 18px; color: var(--pp-rose);
+  font-size: 1rem; text-decoration: none; padding: 12px; }
+
+/* ── the drawer ── */
+.cd-head { text-align: center; margin: 4px 0 14px; }
+.cd-title { font-size: 1.5rem; margin: 0; }
+.cd-sub { opacity: .75; margin-top: 4px; font-size: .98rem; }
+.cd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.cd-card { background: var(--pp-cream); border: 0; border-radius: 18px; padding: 10px; text-align: left;
+  font: inherit; color: inherit; box-shadow: 0 3px 12px var(--pp-shadow); cursor: pointer; }
+.cd-thumb { position: relative; width: 100%; aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden;
+  background: #fff; }
+.cd-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.cd-name { margin-top: 8px; font-size: 1rem; line-height: 1.25; }
+.cd-from { font-size: .85rem; opacity: .7; margin-top: 2px; }
+.cd-quiet { text-align: center; padding: 30px 12px; opacity: .8; font-size: 1.05rem; }
+
+/* ── the board (full screen while colouring) ── */
+.cb { position: fixed; inset: 0; z-index: 50; background: #F3E3E8; display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+.cb-bar { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--pp-blush); }
+.cb-btn { min-width: 48px; min-height: 48px; border: 0; border-radius: 14px; background: var(--pp-cream);
+  font: inherit; font-size: 1.05rem; color: var(--pp-ink); box-shadow: 0 1px 4px var(--pp-shadow); cursor: pointer;
+  padding: 0 10px; }
+.cb-btn:disabled { opacity: .4; }
+.cb-btn.is-on { background: var(--pp-rose); color: #fff; }
+.cb-spacer { flex: 1; text-align: center; font-size: .95rem; opacity: .75; overflow: hidden;
+  white-space: nowrap; text-overflow: ellipsis; }
+.cb-stage { position: relative; flex: 1; overflow: hidden; touch-action: none; }
+.cb-board { position: absolute; left: 0; top: 0; transform-origin: 0 0; background: #fff;
+  box-shadow: 0 4px 24px var(--pp-shadow); }
+.cb-board canvas, .cb-board img { position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+  pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.cb-tray { background: var(--pp-blush); padding: 6px 8px 8px; }
+.cb-swatches { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 6px; scrollbar-width: none; }
+.cb-swatches::-webkit-scrollbar { display: none; }
+.cb-family { display: flex; flex-direction: column; gap: 6px; }
+.cb-sw { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 4px var(--pp-shadow);
+  cursor: pointer; padding: 0; }
+.cb-sw.is-on { outline: 3px solid var(--pp-ink); outline-offset: 1px; }
+.cb-tools { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
+.cb-size { display: flex; align-items: center; justify-content: center; }
+.cb-size i { display: block; border-radius: 50%; background: var(--pp-ink); }
+/* the blender: a fuzzy white crayon */
+.cb-blend { display: flex; align-items: center; gap: 6px; }
+.cb-blend i { display: block; width: 12px; height: 26px; border-radius: 6px 6px 3px 3px; background: #fff;
+  box-shadow: 0 0 0 1px #eadde2, 0 0 4px 2px rgba(255,255,255,.95), 0 0 9px 3px rgba(228,214,219,.8);
+  transform: rotate(-18deg); }
+.cb-blend.is-on i { box-shadow: 0 0 0 1px #fff, 0 0 5px 3px rgba(255,255,255,.95), 0 0 10px 4px rgba(255,255,255,.6); }
+.cb-now { width: 34px; height: 34px; border-radius: 50%; border: 3px solid #fff; margin-left: auto;
+  box-shadow: 0 1px 4px var(--pp-shadow); }
+.cb-saved { font-size: .8rem; opacity: .7; min-width: 64px; text-align: right; }
+
+/* ── hang it up ── */
+.cb-sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--pp-cream); border-radius: 22px 22px 0 0;
+  padding: 18px 16px calc(env(safe-area-inset-bottom) + 18px); box-shadow: 0 -4px 24px var(--pp-shadow); z-index: 5; }
+.cb-sheet h3 { margin: 0 0 6px; font-size: 1.2rem; }
+.cb-sheet p { margin: 0 0 12px; opacity: .8; }
+.cb-sheet .cb-btn { width: 100%; margin-top: 8px; text-align: left; padding: 10px 14px; }
+
+
+.cs-head { text-align: center; margin: 28px 0 12px; }
+.cs-title { font-size: 1.3rem; margin: 0; }
+.cs-sub { opacity: .7; margin-top: 4px; font-size: .92rem; font-style: italic; }
+.cs-shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px 14px;
+  padding: 16px 12px 10px; border-radius: 18px;
+  background: linear-gradient(180deg, transparent 0 calc(100% - 14px), #E9C9D3 calc(100% - 14px) 100%); }
+.cs-print { background: #fff; border: 0; border-radius: 6px; padding: 8px 8px 10px; font: inherit; color: inherit;
+  text-align: center; box-shadow: 0 4px 12px var(--pp-shadow); cursor: pointer; }
+.cs-print .cd-thumb { border-radius: 3px; }
+.cs-name { margin-top: 8px; font-size: .98rem; line-height: 1.25; }
+.cs-colophon { font-size: .76rem; font-style: italic; opacity: .72; margin-top: 4px; line-height: 1.3; }
+
+/* ── the timelapse: her own hands, colouring it again ── */
+.ct { position: fixed; inset: 0; z-index: 60; background: #F3E3E8; display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+.ct-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 12px; min-height: 0; }
+.ct-board { position: relative; background: #fff; box-shadow: 0 4px 24px var(--pp-shadow); }
+.ct-board canvas, .ct-board img { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.ct-colophon { text-align: center; font-style: italic; font-size: .9rem; opacity: .8; padding: 0 16px 8px; }
+.ct-bar { display: flex; gap: 8px; padding: 8px 10px 10px; background: var(--pp-blush); }
+.ct-bar .cb-btn { flex: 1; }

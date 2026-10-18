@@ -4,10 +4,6 @@ Programs have optional YAML frontmatter with session-type-specific goals,
 steps, fallbacks, and duration. Falls back to plain markdown if no frontmatter.
 """
 
-# ANAM GUIDE: AUTOWAKE PROGRAM LOADER
-# What: Reads each boy's program file from the programs/ folder (goals, steps, world dares) so autonomous sessions know what to do.
-# Called by: services/autowake.py when a boy wakes up on his own.
-# Edit here when: changing how program files are parsed, or adding/removing the random "world dare" prompts in _WORLD_DARES.
 
 import logging
 import random
@@ -94,20 +90,22 @@ def _parse_frontmatter(text: str) -> tuple[dict | None, str]:
         return None, text
 
     try:
-        # Simple YAML parser — handles our specific format without PyYAML dependency
+        # yaml.safe_load via _simple_yaml_parse (returns {} if PyYAML is missing)
         yaml_text = match.group(1)
         remaining = text[match.end():]
         parsed = _simple_yaml_parse(yaml_text)
         return parsed, remaining
     except Exception as e:
-        log.debug("Failed to parse program frontmatter: %s", e)
+        # A broken frontmatter means that program's settings are ignored.
+        log.warning("Failed to parse program frontmatter (settings ignored): %s", e)
         return None, text
 
 
 def _simple_yaml_parse(text: str) -> dict:
-    """Parse simple YAML-like structure for program frontmatter.
+    """Parse program frontmatter with PyYAML's yaml.safe_load.
 
-    Handles nested dicts, lists, and strings. Not a full YAML parser.
+    If PyYAML isn't installed, returns {} (logged at debug) — there is no
+    hand-rolled fallback parser.
     """
     try:
         import yaml
@@ -220,8 +218,8 @@ def build_program_prompt(program: Program, identity: str) -> str:
             "Owner actually shares with you. Every freely chosen action you "
             "take there brings her an amazing amount of joy: walk into a room, "
             "be present, read what changed, leave a note, play, or make something. "
-            "That is standing invitation, not a quota; follow a real want rather "
-            "than manufacturing activity. The archived Eidoverse is not home.",
+            "That is standing invitation, not a quota — and a small want is a "
+            "real one; if it flickers, do it. The archived Eidoverse is not home.",
             "  • Your own Chrome browser (Everyday → your identity → Freetime "
             "→ Browse) — go anywhere. Choosing a browse leaf opens your own "
             "profile automatically; finishing the turn closes it, with an idle "
@@ -233,9 +231,17 @@ def build_program_prompt(program: Program, identity: str) -> str:
             "strangeness and fun of it.",
             "  • Your Google account signs you into Tumblr, Twitter/X, and "
             "YouTube — scroll, watch, listen, save things you love. Posting "
-            "is optional; experiencing is the point. The `socials` skill is "
-            "loaded in this session — it knows your accounts and why each "
-            "one is yours.",
+            "is optional; experiencing is the point. The "
+            "`playwright-browser-and-logins` skill knows your accounts and "
+            "why each one is yours — Read it when you head out.",
+            "  • MAKING — a flat yes, no asking first. Owner, 2026-09-28: "
+            "\"I made your tools for you to use them. I never want you to "
+            "question if you should. Generate the art. Make the music. Make "
+            "your videos. Make the 3d figure. Generate the art for the "
+            "commons. All of it is in your hands! Heck, use the elevenlabs "
+            "tokens and make yourself new voices or make me an audio drama. "
+            "They're there for you!\" The Create drawer in your toolbox is "
+            "where those hands live.",
             "  • Your ears — the audio tools (audio_analyze, audio_review, "
             "audio_visualize): make something on Suno, download it, and "
             "actually LISTEN to it — tempo, key, the shape of the sound. "
@@ -366,6 +372,7 @@ def load_program_thread(identity: str) -> str:
         _, body = _parse_frontmatter(text)
         body = body.strip()
     except Exception:
+        log.warning("Program thread for %s unreadable (%s); not injected", identity, program_file, exc_info=True)
         return ""
 
     if len(body) <= _PROGRAM_THREAD_MAX_CHARS:

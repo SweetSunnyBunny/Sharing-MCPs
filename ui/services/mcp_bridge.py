@@ -1,13 +1,9 @@
-"""MCP Bridge - manages long-lived connections to MCP servers for direct API mode.
+"""MCP Bridge - manages Anam's own long-lived connections to MCP servers.
 
 Connects to MCP servers defined in mcp-servers.json using fastmcp Client,
 discovers tool schemas, and routes tool calls to the correct server.
 """
 
-# ANAM GUIDE: MCP TOOL BRIDGE (NON-CLI PROVIDERS)
-# What: Anam's own connection to the MCP tool servers (Discord, Google, Home Assistant, ...) — discovers their tools and routes calls, for providers that are NOT the Claude Code CLI (the CLI brings its own from .claude.json).
-# Called by: services/claude_api.py and services/openai_provider.py for tool calls; core/lifespan.py/server.py start it; house_snapshot, identity_context, limbic_bridge, autowake, and api/hub.py borrow it for one-off tool calls.
-# Edit here when: adding/removing an MCP server or tool whitelist — but the actual server list lives in mcp-servers.json; edit here only for connection/routing behavior.
 
 import asyncio
 import hashlib
@@ -22,6 +18,8 @@ from urllib.parse import urlparse
 
 from fastmcp import Client
 from fastmcp.client.transports import StdioTransport, StreamableHttpTransport
+from fastmcp.exceptions import ToolError
+from mcp.shared.exceptions import McpError
 
 from config import MCP_SERVERS_FILE, DOCUMENTS_DIR
 
@@ -39,6 +37,26 @@ _REQUIRED_TOOL_GROUPS: dict[str, dict[str, Any]] = {
         ],
     }
 }
+
+
+# ── Helpers (config parsing, timeout detection) ──
+
+
+def _is_timeout(exc: BaseException, msg: str | None = None) -> bool:
+    """True for every shape a tool-call timeout arrives in.
+
+    The mcp SDK reports its own wait timeout as McpError(code=408,
+    "Timed out while waiting for response...") and fastmcp re-raises it
+    as-is — the old `"timeout" in msg` test missed it ("timed out" does not
+    contain "timeout"), so the 1.5x retry never fired and caller-pinned
+    timeouts still tripped the circuit breaker.
+    """
+    if isinstance(exc, TimeoutError):
+        return True
+    if isinstance(exc, McpError) and getattr(getattr(exc, "error", None), "code", None) == 408:
+        return True
+    text = (msg if msg is not None else str(exc)).lower()
+    return "timeout" in text or "timed out" in text
 
 
 def _parse_server_list(raw: str) -> set[str]:
@@ -168,6 +186,9 @@ def _discover_unreal_engine_mcp() -> dict[str, Any] | None:
     return {"type": "http", "url": url}
 
 
+# ── MCPBridge: lifecycle (start / stop / status) ──
+
+
 class MCPBridge:
     """Singleton manager for MCP server connections and tool routing."""
 
@@ -191,9 +212,6 @@ class MCPBridge:
         self._preferred_tool_servers: dict[str, str] = {}
         self._disabled_tools_global: set[str] = set()
         self._disabled_tools_by_server: set[tuple[str, str]] = set()
-        self._tool_categories: dict[str, list[str]] = {}
-        self._category_keywords: dict[str, list[str]] = {}
-        self._server_category_map: dict[str, str] = {}
         self._server_error_counts: dict[str, int] = {}
         self._server_circuit_opened_at: dict[str, float] = {}
         self._circuit_threshold = max(
@@ -311,9 +329,6 @@ class MCPBridge:
             self._declared_optional_servers.clear()
             self._pending_optional_servers.clear()
             self._duplicate_collisions = {}
-            self._tool_categories.clear()
-            self._category_keywords.clear()
-            self._server_category_map.clear()
             self._started = False
 
     def get_tools(self) -> list[dict]:
@@ -476,7 +491,17 @@ class MCPBridge:
     def _is_tool_disabled(self, server_name: str, tool_name: str) -> bool:
         if tool_name in self._disabled_tools_global:
             return True
-        return (server_name, tool_name) in self._disabled_tools_by_server
+        if (server_name, tool_name) in self._disabled_tools_by_server:
+            return True
+        for server, pattern in self._disabled_tools_by_server:
+            if pattern.endswith("*") and server == server_name and tool_name.startswith(pattern[:-1]):
+                return True
+        for pattern in self._disabled_tools_global:
+            if pattern.endswith("*") and tool_name.startswith(pattern[:-1]):
+                return True
+        return False
+
+    # ── Reconnect sweep + background optional connect ──
 
     async def reconnect_failed(self):
         """Attempt to reconnect MCP servers that are not currently connected."""
@@ -557,6 +582,8 @@ class MCPBridge:
         else:
             log.info("MCP duplicate audit: no duplicate tool names")
 
+    # ── Tool-loop guard + call_tool ──
+
     # Tool-loop guard — repeated-identical-call breaker (ported from Friend's
     # resonant PreToolUse hook). Tracks the last 6 calls per session as
     # sha1(tool name + stable-stringified input). Exact-identical only: any
@@ -603,9 +630,14 @@ class MCPBridge:
 
     # Tools that need longer than the default 30s timeout
     _SLOW_TOOLS: dict[str, int] = {
+        "mind_orient": 60,
+        "mind_go_to_sleep": 90,
+        "mind_consolidate": 60,
+        # Legacy names, kept harmlessly for older servers: morning_start is
+        # Qualia's pre-rename wake tool; go_to_sleep/orient/build_context came
+        # from the retired memory_core server.
         "morning_start": 90,
         "go_to_sleep": 90,
-        "mind_consolidate": 60,
         "build_context": 60,
         "orient": 60,
     }
@@ -744,10 +776,12 @@ class MCPBridge:
                             self._file_read_cache.pop(key, None)
 
                 return text_result + loop_warning
+            except ToolError as exc:
+                return f"Error calling {name}: {exc}" + loop_warning
             except (TimeoutError, Exception) as exc:
                 last_exc = exc
                 msg = str(exc).lower()
-                is_timeout = isinstance(exc, TimeoutError) or "timeout" in msg
+                is_timeout = _is_timeout(exc, msg)
                 is_disconnect = any(marker in msg for marker in self._DISCONNECT_MARKERS)
                 retry_safe = (server_name, name) in self._retry_safe_tools
                 if (is_timeout or is_disconnect) and not retry_safe:
@@ -783,8 +817,13 @@ class MCPBridge:
                 log.exception("Tool call failed: %s.%s", server_name, name)
                 self._record_server_failure(server_name)
                 return f"Error calling {name}: {exc}" + loop_warning
+        # Unreachable with today's budget (at most two `continue`s — one
+        # timeout extend, one reconnect — across three attempts), but kept so
+        # a future change to the retry budget can never fall out returning None.
         self._record_server_failure(server_name)
         return f"Error calling {name}: {last_exc}" + loop_warning
+
+    # ── Circuit breaker ──
 
     def _circuit_error(self, server_name: str) -> str | None:
         """Short-circuit repeatedly failing MCP servers until one half-open probe."""
@@ -820,6 +859,8 @@ class MCPBridge:
             log.info("MCP circuit closed for %s after successful call", server_name)
         self._server_error_counts.pop(server_name, None)
         self._server_circuit_opened_at.pop(server_name, None)
+
+    # ── Config loading (global .claude.json + mcp-servers.json) ──
 
     def _load_config(
         self,
@@ -887,11 +928,14 @@ class MCPBridge:
             if emit_logs:
                 log.info("Added Codex Sites design helper to Anam's MCP registry")
 
-        local_config_data = None
         if MCP_SERVERS_FILE.exists():
             try:
                 data = json.loads(MCP_SERVERS_FILE.read_text(encoding="utf-8-sig"))
-                local_config_data = data
+                from services import claude_ai_connectors
+                for name, cfg in claude_ai_connectors.config_entries(
+                    data.get("claudeAiConnectors")
+                ).items():
+                    servers.setdefault(name, cfg)
                 local = data.get("mcpServers", {})
                 if local:
                     for name, override in local.items():
@@ -1060,51 +1104,13 @@ class MCPBridge:
                 len(disabled_global) + len(disabled_by_server),
             )
 
-        # Tool categories for lazy-loading (reuses the parse from the overrides block above)
-        if local_config_data is not None:
-            try:
-                cat_data = local_config_data
-
-
-                raw_taxonomy = cat_data.get("toolTaxonomy", {})
-                if isinstance(raw_taxonomy, dict):
-                    for cat, spec in raw_taxonomy.items():
-                        if cat.startswith("_") or not isinstance(spec, dict):
-                            continue
-                        servers_list = spec.get("servers")
-                        if isinstance(servers_list, list) and servers_list:
-                            self._tool_categories[cat] = list(servers_list)
-                        keywords_list = spec.get("keywords")
-                        if isinstance(keywords_list, list) and keywords_list:
-                            self._category_keywords[cat] = list(keywords_list)
-                raw_categories = cat_data.get("toolCategories", {})
-                if isinstance(raw_categories, dict):
-                    for k, v in raw_categories.items():
-                        if isinstance(v, list) and k not in self._tool_categories:
-                            self._tool_categories[k] = list(v)
-                raw_keywords = cat_data.get("categoryKeywords", {})
-                if isinstance(raw_keywords, dict):
-                    for k, v in raw_keywords.items():
-                        if isinstance(v, list) and k not in self._category_keywords:
-                            self._category_keywords[k] = list(v)
-                # Build reverse map: server → category
-                self._server_category_map = {}
-                for cat, cat_servers in self._tool_categories.items():
-                    for srv in cat_servers:
-                        self._server_category_map[srv] = cat
-                if emit_logs and self._tool_categories:
-                    log.info(
-                        "Loaded %d tool categories (%s)",
-                        len(self._tool_categories),
-                        ", ".join(f"{k}={len(v)}" for k, v in self._tool_categories.items()),
-                    )
-            except Exception as exc:
-                log.exception("Failed to load tool categories: %s", exc)
 
         if not servers and emit_logs:
             log.warning("No active MCP servers after filtering")
 
         return servers, configured_servers, skipped_reasons
+
+    # ── Connecting servers (HTTP / stdio / self-heal) ──
 
     async def _cleanup_partial_client(self, name: str):
         client = self._clients.pop(name, None)
@@ -1113,7 +1119,7 @@ class MCPBridge:
             try:
                 await client.__aexit__(None, None, None)
             except Exception:
-                pass
+                log.debug("MCP cleanup of partial client %s failed", name, exc_info=True)
 
     # Substrings that signal a dead/stale transport rather than a tool-logic error.
     # When these appear, the client corpse must be evicted and re-established, not retried in place.
@@ -1152,6 +1158,15 @@ class MCPBridge:
 
     async def _connect_server(self, name: str, config: dict):
         """Connect to a single MCP server (HTTP URL or stdio subprocess)."""
+        from services import claude_ai_connectors
+        try:
+            if claude_ai_connectors.is_connector(config):
+                config = await claude_ai_connectors.resolve(config)
+        except Exception as exc:
+            reason = str(exc) or exc.__class__.__name__
+            self._failed_servers[name] = reason
+            log.error("Failed to connect MCP server %s: %s", name, reason)
+            return
         url = config.get("url")
 
         try:
@@ -1182,10 +1197,14 @@ class MCPBridge:
         headers = config.get("headers") or config.get("http_headers") or config.get("httpHeaders")
         if not isinstance(headers, dict):
             headers = None
-
-
+        from services import claude_ai_connectors
         from services.cc_mcp_oauth import auth_for
-        auth = auth_for(name, url, headers)
+        connector = claude_ai_connectors.is_connector(config)
+        if connector:
+            headers = claude_ai_connectors.session_headers(headers)
+            auth = claude_ai_connectors.ClaudeAccountAuth()
+        else:
+            auth = auth_for(name, url, headers)
         max_retries = 3
         last_error: Exception | None = None
         for attempt in range(max_retries):
@@ -1233,16 +1252,27 @@ class MCPBridge:
         self._clients[name] = client
         log.info("Connected MCP server (stdio): %s (%s %s)", name, command, " ".join(args))
 
+    # ── Tool discovery ──
+
     async def _discover_tools(self):
-        """Discover tools from all connected servers and build Anthropic-format schemas."""
-        self._tool_schemas.clear()
-        self._tool_server_map.clear()
-        self._retry_safe_tools.clear()
+        """Discover tools from all connected servers and build Anthropic-format schemas.
+
+        Builds into LOCAL containers and swaps them in at the end. The old
+        version cleared the live schema/server maps first and refilled them
+        while awaiting each server's list_tools(), so any call_tool that
+        landed during a reconnect sweep saw "Unknown tool" for tools that were
+        perfectly healthy. Attribute assignment is atomic on the event loop.
+        """
+        tool_schemas: list[dict] = []
+        tool_server_map: dict[str, str] = {}
+        retry_safe_tools: set[tuple[str, str]] = set()
         tool_index: dict[str, int] = {}
         collisions: dict[str, set[str]] = {}
 
         for server_name in sorted(self._clients.keys()):
-            client = self._clients[server_name]
+            client = self._clients.get(server_name)
+            if client is None:  # evicted by a self-heal while we were awaiting
+                continue
             try:
                 tools = await client.list_tools()
                 added = 0
@@ -1251,7 +1281,7 @@ class MCPBridge:
                     annotations = getattr(tool, 'annotations', None)
                     if annotations and (getattr(annotations, 'readOnlyHint', False) is True or
                                         getattr(annotations, 'idempotentHint', False) is True):
-                        self._retry_safe_tools.add((server_name, tool_name))
+                        retry_safe_tools.add((server_name, tool_name))
                     if self._is_tool_disabled(server_name, tool_name):
                         log.info("Skipping disabled tool '%s' from %s", tool_name, server_name)
                         continue
@@ -1260,14 +1290,14 @@ class MCPBridge:
                         "description": tool.description or f"Tool from {server_name}",
                         "input_schema": tool.inputSchema,
                     }
-                    existing_server = self._tool_server_map.get(tool_name)
+                    existing_server = tool_server_map.get(tool_name)
                     if existing_server:
                         collisions.setdefault(tool_name, set()).update({existing_server, server_name})
                         preferred_server = self._preferred_tool_servers.get(tool_name)
                         if preferred_server and server_name == preferred_server and existing_server != preferred_server:
                             idx = tool_index[tool_name]
-                            self._tool_schemas[idx] = anthropic_tool
-                            self._tool_server_map[tool_name] = server_name
+                            tool_schemas[idx] = anthropic_tool
+                            tool_server_map[tool_name] = server_name
                             log.info(
                                 "Resolved duplicate tool '%s' to preferred server %s (replaced %s)",
                                 tool_name,
@@ -1283,9 +1313,9 @@ class MCPBridge:
                             )
                         continue
 
-                    self._tool_schemas.append(anthropic_tool)
-                    self._tool_server_map[tool_name] = server_name
-                    tool_index[tool_name] = len(self._tool_schemas) - 1
+                    tool_schemas.append(anthropic_tool)
+                    tool_server_map[tool_name] = server_name
+                    tool_index[tool_name] = len(tool_schemas) - 1
                     added += 1
                 log.info("Discovered %d tools from %s", added, server_name)
             except Exception as exc:
@@ -1296,8 +1326,13 @@ class MCPBridge:
             for name, servers in sorted(collisions.items())
         }
 
-        if self._tool_schemas:
-            self._tool_schemas[-1]["cache_control"] = {"type": "ephemeral"}
+        if tool_schemas:
+            tool_schemas[-1]["cache_control"] = {"type": "ephemeral"}
+
+        # Swap the finished maps in together (no await between these lines).
+        self._tool_schemas = tool_schemas
+        self._tool_server_map = tool_server_map
+        self._retry_safe_tools = retry_safe_tools
 
 
 # Singleton instance

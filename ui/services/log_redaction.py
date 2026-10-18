@@ -1,9 +1,5 @@
 """Central log-output redaction for credentials and authenticated URLs."""
 
-# ANAM GUIDE: SECRET SCRUBBER FOR LOGS
-# What: safety filter that blanks out API keys, passwords, tokens, and secret-looking URLs before anything is written to the server logs.
-# Called by: server.py installs it on the logging system at startup — after that it runs on every log line automatically.
-# Edit here when: a new kind of secret is showing up in logs and needs a pattern added (the _*_RE regexes at the top).
 
 from __future__ import annotations
 

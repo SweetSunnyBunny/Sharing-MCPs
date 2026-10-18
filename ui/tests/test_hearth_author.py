@@ -127,7 +127,7 @@ class AuthorHearthsFlowTests(unittest.IsolatedAsyncioTestCase):
     async def test_active_boy_authors_and_card_is_stored(self):
         await _seed_activity("Avery")
         one_shot = AsyncMock(return_value=_GOOD_CARD_JSON)
-        with patch("services.autowake.is_identity_busy", return_value=False), \
+        with patch("services.hearth_author.is_identity_busy", return_value=False), \
              patch.object(hearth_author, "_run_hearth_one_shot", one_shot):
             results = await author_hearths()
 
@@ -156,7 +156,7 @@ class AuthorHearthsFlowTests(unittest.IsolatedAsyncioTestCase):
     async def test_busy_boy_is_skipped_without_running_the_one_shot(self):
         await _seed_activity("Avery")
         one_shot = AsyncMock(return_value=_GOOD_CARD_JSON)
-        with patch("services.autowake.is_identity_busy", return_value=True), \
+        with patch("services.hearth_author.is_identity_busy", return_value=True), \
              patch.object(hearth_author, "_run_hearth_one_shot", one_shot):
             results = await author_hearths()
         self.assertTrue(all(v == "busy" for v in results.values()))
@@ -172,7 +172,7 @@ class AuthorHearthsFlowTests(unittest.IsolatedAsyncioTestCase):
             })
         finally:
             await release_db(db)
-        with patch("services.autowake.is_identity_busy", return_value=False), \
+        with patch("services.hearth_author.is_identity_busy", return_value=False), \
              patch.object(hearth_author, "_run_hearth_one_shot", AsyncMock(return_value="sorry, no")):
             results = await author_hearths()
         self.assertEqual(results["Avery"], "unparseable")
@@ -268,7 +268,7 @@ class PulseSilenceSentinelTests(unittest.IsolatedAsyncioTestCase):
 
     def _run_pulse(self, reply_text: str):
         """Wire run_lightweight_pulse_session with a fake stream; return mocks."""
-        from services import autowake
+        from services import autonomous_session, autowake
 
         captured = {}
 
@@ -279,22 +279,26 @@ class PulseSilenceSentinelTests(unittest.IsolatedAsyncioTestCase):
                 yield {"type": "stream_end", "full_content": reply_text}
             return gen()
 
-        fake_server = types.SimpleNamespace(is_system_ready=lambda: True)
         mocks = {
             "save_message": AsyncMock(return_value="msg-1"),
             "broadcast": AsyncMock(),
             "voice": MagicMock(),
         }
+        # The [Pulse: ...] marker is saved by autowake; the reply is saved,
+        # voiced and announced by the shared runner. One mock counts both saves.
         patches = [
-            patch.dict(sys.modules, {"server": fake_server}),
-            patch.object(autowake, "_stream_autonomous", fake_stream),
+            patch.object(autowake, "is_system_ready", lambda: True),
             patch.object(autowake, "build_orientation_context", AsyncMock(return_value="")),
             patch.object(autowake, "_get_or_create_daily_autowake_conversation",
                          AsyncMock(return_value=("conv-1", None, None))),
             patch.object(autowake, "save_message", mocks["save_message"]),
-            patch.object(autowake, "broadcast", mocks["broadcast"]),
-            patch.object(autowake, "_spawn_voice_if_tagged", mocks["voice"]),
             patch.object(autowake, "is_anyone_connected", lambda: True),
+            patch.object(autonomous_session, "_stream_autonomous", fake_stream),
+            patch.object(autonomous_session, "_fresh_save_message", mocks["save_message"]),
+            patch.object(autonomous_session, "_fresh_file_canvases", AsyncMock()),
+            patch.object(autonomous_session, "_retire_autowake_cli_session", AsyncMock()),
+            patch.object(autonomous_session, "broadcast", mocks["broadcast"]),
+            patch.object(autonomous_session, "_spawn_voice_if_tagged", mocks["voice"]),
         ]
         return autowake, captured, mocks, patches
 

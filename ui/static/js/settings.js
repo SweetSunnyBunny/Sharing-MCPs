@@ -19,9 +19,6 @@ const Settings = {
         return task;
     },
 
-    // ANAM GUIDE: ADD A SETTING - STEP 2, WIRE AND LOAD IT
-    // Attach the new control's event here (or in its focused loader), then add
-    // that loader to the Promise.all block so the saved value appears at boot.
     async init() {
         // Night mode
         if (localStorage.getItem('anam-night') === 'true') {
@@ -222,9 +219,20 @@ const Settings = {
     },
 
     async toggleSchedule(id) {
-        await fetchWithTimeout(`/api/autowake/schedules/${id}/toggle`, { method: 'POST', timeoutMs: 10000 });
+        let failure = null;
+        try {
+            const res = await fetchWithTimeout(`/api/autowake/schedules/${id}/toggle`, { method: 'POST', timeoutMs: 10000 });
+            if (!res.ok) failure = `HTTP ${res.status}`;
+        } catch (err) {
+            failure = err?.name === 'AbortError' ? 'timed out' : (err?.message || 'network error');
+        }
+        // Re-render first so a failed toggle snaps back to the server's real state.
         await this.loadSchedules();
         await this.loadSchedulerStatus();
+        if (failure) {
+            console.error('Toggle schedule failed:', failure);
+            alert(`Couldn't change that schedule (${failure}). It's unchanged.`);
+        }
     },
 
     async deleteSchedule(id) {
@@ -511,6 +519,7 @@ const Settings = {
                 try {
                     const res = await fetchJson('/api/settings/model', {
                         method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             interactive_model: chatSel.value,
                             autowake_model: autowakeSel.value,
@@ -557,6 +566,7 @@ const Settings = {
                 try {
                     const res = await fetchJson('/api/settings/effort', {
                         method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ effort: sel.value }),
                     });
                     status.textContent = res.ok ? `Switched to ${sel.value}` : (res.error || 'Failed');
@@ -582,6 +592,7 @@ const Settings = {
                     try {
                         const res = await fetchJson('/api/settings/fable-effort', {
                             method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ effort: sel.value }),
                         });
                         status.textContent = res.ok ? `Fable switched to ${sel.value}` : (res.error || 'Failed');
@@ -617,6 +628,7 @@ const Settings = {
                 try {
                     const res = await fetchJson('/api/settings/voice-engine', {
                         method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ engine: sel.value }),
                     });
                     if (res.ok) {
@@ -753,6 +765,7 @@ const Settings = {
             try {
                 const res = await fetchJson('/api/settings/theme', {
                     method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ preset: currentPreset, font: currentFont, icon_base: currentIconBase }),
                 });
                 if (res.ok) {
@@ -858,6 +871,7 @@ const Settings = {
             try {
                 const res = await fetchJson('/api/settings/theme/bubbles', {
                     method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ identity: key, ...entry }),
                 });
                 if (res.ok) {
@@ -979,6 +993,7 @@ const Settings = {
         try {
             const result = await fetchJson('/api/settings/scribe', {
                 method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     provider: document.getElementById('scribe-provider').value,
                     model,
@@ -996,10 +1011,6 @@ const Settings = {
         }
     },
 
-    // ANAM GUIDE: PROVIDER SETTINGS SCREEN
-    // Add provider-specific form fields here; validation/defaults also belong
-    // in api/settings.py and actual routing belongs in provider_router.py.
-    // ── LLM Provider ──
 
     _providerConfig: {},
     _codexModels: [],

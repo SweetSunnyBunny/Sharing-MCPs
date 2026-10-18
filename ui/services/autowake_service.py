@@ -1,9 +1,5 @@
 """Shared business logic for autowake schedules and timers."""
 
-# ANAM GUIDE: AUTOWAKE SCHEDULE AND TIMER RULES
-# What: Creates, updates, lists, and deletes autowake schedules and one-shot timers in the database, with all the input checking (valid hours, future fire times, 5-120 minute durations).
-# Called by: api/autowake.py (the schedule/timer web routes), api/hub.py, api/chat.py, and services/autowake.py itself.
-# Edit here when: You want to change what counts as a valid schedule or timer (allowed times, durations, identities) or what fields they store — not when changing what a wake session DOES (that's autowake.py).
 
 from datetime import datetime, timezone
 

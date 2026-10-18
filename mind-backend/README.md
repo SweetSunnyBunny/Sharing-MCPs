@@ -150,7 +150,7 @@ Add a **remote HTTP / Streamable HTTP MCP server** in your client's server
 settings. Use this address, replacing both placeholders:
 
 ```text
-https://YOUR-WORKER.workers.dev/mcp/YOUR-MIND_API_KEY
+https://YOUR-WORKER.workers.dev/mcp/YOUR-SECRET
 ```
 
 Use the Worker URL and password from the successful test above. If the client
@@ -160,7 +160,7 @@ the client's tool list after adding it. Client configuration screens vary;
 this package does not install or log in to a chat application for you.
 
 If your client can send custom headers, you can instead use `/mcp` and
-`Authorization: Bearer YOUR-MIND_API_KEY`.
+`Authorization: Bearer YOUR-TOKEN`.
 
 ## Optional integrations and development
 
@@ -216,7 +216,3 @@ for the deeper memory and evaluation workflow.
 
 Only generic examples belong in a shared copy. Keep your populated secret
 files, account tokens, generated data, and `.wrangler` directory private.
-
-## Reading the code
-
-Start with [src/index.ts](src/index.ts), then [src/query-signals.ts](src/query-signals.ts), then [migrations/](migrations/). The installation steps above describe the runtime configuration.

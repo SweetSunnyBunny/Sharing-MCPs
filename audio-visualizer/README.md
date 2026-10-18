@@ -201,3 +201,7 @@ Any format supported by librosa/ffmpeg:
 
 Start with [audio_mcp_server.py](audio_mcp_server.py), then [sound_to_image.py](sound_to_image.py). The installation steps above describe the runtime configuration.
 Behavioral regression checks live in [tests/](tests/).
+
+## Current media handling
+
+TikTok downloads now try codec alternatives when a returned file has no audio. If all variants are silent, the frames remain available and the receipt explains that the file has no sound track. Optional `AUDIO_SPECTROGRAM_SHELF` copies rendered music pictures to a folder you choose; it is disabled by default.

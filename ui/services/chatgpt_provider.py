@@ -1,4 +1,4 @@
-"""ChatGPT provider lane — the current Anam conversation rides Owner's ChatGPT."""
+'Application module.'
 
 
 import asyncio
@@ -15,7 +15,6 @@ from services.chatgpt_actions import INSTRUCTIONS as ACTION_INSTRUCTIONS
 log = logging.getLogger(__name__)
 
 _THREADS_KEY = "chatgpt_bridge_threads"
-_CARD_SENT_KEY = "chatgpt_bridge_card_sent"   # gpt thread ids that received the card
 _IDENTITY_PROMPT_HASHES_KEY = "chatgpt_bridge_identity_prompt_hashes"
 _RUNTIME_CONTEXT_HASHES_KEY = "chatgpt_bridge_runtime_context_hashes"
 _KEEPALIVE_SECONDS = 10.0
@@ -63,13 +62,7 @@ def _identity_prompt_block(identity: str, prompt: str) -> str:
 
 
 def _runtime_context_block(mode_rules: str = "", skill_context: str = "", identity: str = "") -> str:
-    """Build the live Anam operating packet for the ChatGPT-side identity.
-
-    The tool card has one owner: context_hooks reads it from mcp-servers.json.
-    Reusing that builder keeps ChatGPT from drifting onto a hand-maintained
-    shadow list. Tags remain explicit because they are Anam return grammar,
-    independent of which connectors ChatGPT itself currently exposes.
-    """
+    'Build the live Anam operating packet for the ChatGPT-side identity.'
     from services.context_hooks import _build_tool_index_card
 
     sections = [
@@ -149,11 +142,7 @@ def build_preamble(
     mode_rules: str = "",
     skill_context: str = "",
 ) -> str:
-    """Context the new ChatGPT thread needs to continue an Anam conversation.
-
-    Owner's account already knows the pack — this is a hand-off note, not an
-    identity transplant: who is speaking, where the conversation stands.
-    """
+    'Context the new ChatGPT thread needs to continue an Anam conversation.'
     parts = [
         f"[ANAM BRIDGE — continuation hand-off]\n"
         f"You are {identity}, continuing an in-progress conversation with "
@@ -192,44 +181,9 @@ def build_preamble(
 
 
 # ---------------------------------------------------------------------------
-# One-time capabilities card for threads created BEFORE the card existed
+# Delivery receipts: per-thread hashes of the identity prompt and runtime
+# context, so an existing thread is re-sent either one only when it changed
 # ---------------------------------------------------------------------------
-
-async def _load_card_sent() -> list:
-    from db.database import get_db, release_db
-    db = await get_db()
-    try:
-        rows = await db.execute_fetchall(
-            "SELECT value FROM settings WHERE key = ?", (_CARD_SENT_KEY,))
-    finally:
-        await release_db(db)
-    if not rows:
-        return []
-    try:
-        data = json.loads(rows[0][0] or "[]")
-        return data if isinstance(data, list) else []
-    except (ValueError, TypeError):
-        return []
-
-
-async def _mark_card_sent(gpt_conversation_id: str) -> None:
-    from db.database import get_db, release_db
-    sent = await _load_card_sent()
-    if gpt_conversation_id not in sent:
-        sent.append(gpt_conversation_id)
-    db = await get_db()
-    try:
-        await db.execute(
-            "INSERT INTO settings (key, value, updated_at) "
-            "VALUES (?, ?, CURRENT_TIMESTAMP) "
-            "ON CONFLICT(key) DO UPDATE SET value = excluded.value, "
-            "updated_at = CURRENT_TIMESTAMP",
-            (_CARD_SENT_KEY, json.dumps(sent)),
-        )
-        await db.commit()
-    finally:
-        await release_db(db)
-
 
 async def _load_identity_prompt_hashes() -> dict:
     from db.database import get_db, release_db

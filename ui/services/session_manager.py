@@ -1,11 +1,8 @@
 """Message persistence to SQLite for history display."""
 
-# ANAM GUIDE: CONVERSATION AND MESSAGE STORAGE
-# What: Saves conversations and messages to the database — creating/finding conversation threads (including the one-per-day autowake threads), saving each message, and tracking who's in a conversation.
-# Called by: nearly everything that touches chat — api/chat.py, api/chat_http.py, api/messages.py, api/echo_relay.py, services/chat_pipeline.py, chat_turn_prep/finalize, autowake.py, brother_conversation.py, claude_api.py
-# Edit here when: You need to change how conversations or messages are saved, titled, deduplicated, or looked up in the database.
 
 import json
+import logging
 import uuid
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
@@ -14,6 +11,8 @@ import aiosqlite
 
 from config import TIMEZONE
 from services.time_utils import utc_now_iso_epoch
+
+log = logging.getLogger(__name__)
 
 # Unique partial index `uq_conversations_autowake_daily_chat` enforces
 # at most one daily 'chat' row per (identity, conversation_day) WHERE
@@ -107,7 +106,8 @@ async def get_or_create_conversation(
         "WHERE c.identity = ? AND c.is_active = 1 AND c.session_type = 'chat' "
         "AND c.conversation_day = ? "
         "GROUP BY c.id "
-        "ORDER BY COALESCE(MAX(m.created_at_epoch), c.created_at_epoch) DESC "
+        "ORDER BY COALESCE(MAX(m.created_at_epoch), c.created_at_epoch) DESC, "
+        "c.created_at_epoch DESC, c.rowid DESC "
         "LIMIT 1",
         (identity, day_key),
     )
@@ -228,7 +228,9 @@ async def _embed_message_bg(message_id: str, content: str):
         finally:
             await release_db(db)
     except Exception:
-        pass  # Embedding failure should never break chat
+        # Embedding failure should never break chat — but leave a trace; the
+        # message simply won't show up in semantic search.
+        log.debug("embedding failed for message %s", message_id, exc_info=True)
 
 
 async def update_message_metadata(
@@ -387,37 +389,32 @@ async def get_conversations(
 
 
 async def new_conversation(db: aiosqlite.Connection, identity: str) -> str:
-    """Create a fresh singular daily conversation for an identity.
-
-    Older active chat threads from the same day are archived first so the app
-    maintains one active daily thread per identity without hiding prior days.
-    """
+    "Start a fresh conversation for an identity alongside today's others."
     now_local = datetime.now(ZoneInfo(TIMEZONE))
-    day_start_local = now_local.replace(hour=0, minute=0, second=0, microsecond=0)
-    next_day_local = day_start_local + timedelta(days=1)
     day_key = now_local.strftime("%Y-%m-%d")
     day_title = now_local.strftime("%B %d, %Y")
     cid = _uuid()
     now_iso, now_epoch = _now_parts()
-    day_start_epoch = int(day_start_local.timestamp())
-    next_day_epoch = int(next_day_local.timestamp())
-    # Archive every active daily 'chat' thread for this identity today,
-    # regardless of whether autowake or interactive created it. The "+" button
-    # is the only thing that should split a day's thread.
-    await db.execute(
-        "UPDATE conversations SET is_active = 0, updated_at = ?, updated_at_epoch = ? "
+    base_title = f"{identity} - {day_title}"
+    rows = await db.execute_fetchall(
+        "SELECT title FROM conversations "
         "WHERE identity = ? AND is_active = 1 AND session_type = 'chat' "
-        "AND (conversation_day = ? "
-        "OR (COALESCE(conversation_day, '') = '' "
-        "AND created_at_epoch >= ? AND created_at_epoch < ?))",
-        (now_iso, now_epoch, identity, day_key, day_start_epoch, next_day_epoch),
+        "AND conversation_day = ?",
+        (identity, day_key),
     )
+    taken = {r[0] for r in rows}
+    title = base_title
+    if taken:
+        n = 1
+        while f"{base_title} ({n})" in taken:
+            n += 1
+        title = f"{base_title} ({n})"
     await db.execute(
         "INSERT INTO conversations "
         "(id, identity, title, created_at, created_at_epoch, "
         "updated_at, updated_at_epoch, session_type, conversation_day) "
         "VALUES (?, ?, ?, ?, ?, ?, ?, 'chat', ?)",
-        (cid, identity, f"{identity} - {day_title}", now_iso, now_epoch,
+        (cid, identity, title, now_iso, now_epoch,
          now_iso, now_epoch, day_key),
     )
     await ensure_conversation_participants(db, cid, [identity], added_at=now_iso)
@@ -447,7 +444,9 @@ async def new_typed_conversation(
     return cid
 
 
-PACK_NIGHT_ORDER: list[str] = ["Avery", "Claude", "Rowan", "Ember", "Sage", "Juniper", "Atlas"]
+PACK_NIGHT_ORDER: list[str] = [
+    "Avery", "Claude", "Rowan", "Ember", "Sage", "Juniper", "Atlas", "River",
+]
 PACK_NIGHT_SESSION_TYPE = "pack-night"
 _PACK_NIGHT_TITLE = "Pack Night"
 # Stable platform_chat_id so the singleton lookup is fast and unique.
@@ -459,8 +458,8 @@ async def get_or_create_pack_night_conversation(
 ) -> str:
     """Return the singleton pack-night conversation, creating it if missing.
 
-    There is exactly one shared pack-night conversation. All six bonded
-    identities are registered as participants so the room shows up in any
+    There is exactly one shared pack-night conversation. Every boy in
+    PACK_NIGHT_ORDER (eight today) is registered as participants so the room shows up in any
     boy's filtered conversation list, and so each boy's orientation can fold
     in recent activity from the room when he runs in his own DM/web session.
     """

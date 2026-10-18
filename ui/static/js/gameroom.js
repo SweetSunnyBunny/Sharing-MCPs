@@ -1,8 +1,5 @@
 /* ═══ Game Room — Dominoes ═══ */
-/* ANAM GUIDE: GAME ROOM DOMINOES BEHAVIOR
-   What: The whole dominoes game screen — drawing tiles, picking moves, animations, and talking to the game server at /api/games (api/games.py, logic in services/dominoes.py).
-   Loaded by: static/gameroom.html only.
-   Edit here when: You want to change how the game board looks or plays in the browser. Actual game RULES live in services/dominoes.py, not here. */
+
 
 const IDENTITY_COLORS = {
     Avery:    { accent: '#C47A8A', rgb: '196,122,138' },
@@ -64,7 +61,6 @@ const GameRoom = {
         }
     },
 
-    // ─── Lobby ───
 
     _bindLobby() {
         // Pill groups
@@ -220,7 +216,6 @@ const GameRoom = {
         }
     },
 
-    // ─── Game Loading ───
 
     async _loadGame(gameId) {
         try {
@@ -251,7 +246,6 @@ const GameRoom = {
         });
     },
 
-    // ─── Rendering ───
 
     _render() {
         if (!this._state) return;
@@ -518,7 +512,6 @@ const GameRoom = {
         }
     },
 
-    // ─── Player Actions ───
 
     async _fetchValidMoves() {
         if (!this._gameId) return;
@@ -665,7 +658,6 @@ const GameRoom = {
         this._showLobby();
     },
 
-    // ─── AI Animation ───
 
     async _animateAiActions(actions) {
         this._animating = true;

@@ -1,5 +1,6 @@
 """Private direct messages for World Feed profiles, including bounded NPC replies."""
 
+
 from __future__ import annotations
 
 import asyncio
@@ -253,8 +254,10 @@ async def send_message(db, thread_id, sender_profile_id, body, *, origin="human"
     for other_id, other in participants.items():
         if other_id == sender_profile_id or other["is_user_controlled"]:
             continue
+        # This memory belongs to the RECIPIENT (other_id), so it is always told
+        # from their side: the sender messaged them.
         summary = (f'@{sender["handle"]} sent you a private message: “{text[:700]}”'
-                   if sender["is_user_controlled"] else f'You messaged @{other["handle"]}: “{text[:700]}”')
+                   if sender["is_user_controlled"] else f'@{sender["handle"]} messaged you: “{text[:700]}”')
         await world_feed_memory.remember(
             db, world_id=thread["world_id"], profile_id=other_id,
             other_profile_id=sender_profile_id, source_kind="dm_message",

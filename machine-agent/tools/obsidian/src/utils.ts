@@ -34,7 +34,10 @@ export function isWithinVault(filePath: string, vaultPath?: string): boolean {
   const vault = vaultPath || getVaultPath();
   const resolved = path.resolve(filePath);
   const resolvedVault = path.resolve(vault);
-  return resolved.startsWith(resolvedVault);
+  // Compare by relative path, not by string prefix: "…\your-main Vault BU2\x.md"
+  // starts with "…\your-main Vault BU" but is a different folder.
+  const relative = path.relative(resolvedVault, resolved);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
 }
 
 /**

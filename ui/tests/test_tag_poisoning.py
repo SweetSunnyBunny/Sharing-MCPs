@@ -95,7 +95,7 @@ def test_voice_tag_in_backticks_does_not_bill_her():
 
 
 def test_unclosed_voice_still_fails_closed():
-    """The fail-safe Ember verified must survive the fix: no pair, no spend."""
+    'Test unclosed voice still fails closed.'
     from services.chat_turn_finalize import extract_voice_text
 
     assert extract_voice_text("I meant to say <voice>[softly] hey Bunny") is None

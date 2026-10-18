@@ -1,5 +1,6 @@
 """REST: System settings and status."""
 
+
 import json
 import logging
 import re
@@ -38,6 +39,11 @@ _DEFAULT_PROVIDER_CONFIGS = {
 }
 
 _server_start_time = time.time()
+
+
+# =============================================================================
+# PROVIDER CONFIG VALIDATION + SYSTEM STATUS
+# =============================================================================
 
 
 def _validate_provider_config(provider: str, config: dict) -> str | None:
@@ -136,11 +142,6 @@ async def log_client_event(request: Request):
     return {"ok": True}
 
 
-# ANAM GUIDE: SETTINGS BACKEND AND STORAGE
-# Most Settings-page values are rows in the key/value `settings` table, so a
-# new ordinary setting can use these helpers without a schema migration. Pair
-# its endpoint here with markup in static/settings.html and JS in settings.js.
-# ── LLM Provider ──
 
 
 async def _get_setting(key: str, default: str = "") -> str:
@@ -433,6 +434,8 @@ async def set_model(request: Request):
         payload = await request.json()
     except Exception:
         return JSONResponse(status_code=400, content={"error": "Invalid JSON"})
+    if not isinstance(payload, dict):
+        return JSONResponse(status_code=400, content={"error": "Body must be a JSON object"})
 
     interactive_model = str(
         payload.get("interactive_model") or payload.get("model") or ""
@@ -464,17 +467,16 @@ async def set_model(request: Request):
     await _set_setting("claude_model", interactive_model)
     await _set_setting("claude_autowake_model", autowake_model)
 
-    # Update the runtime config so it takes effect immediately
-    import config as cfg
-    cfg.CLAUDE_MODEL = autowake_model
-    cfg.CLAUDE_MODEL_INTERACTIVE = interactive_model
-
-    # Invalidate the provider_router model cache so the next turn picks it up
+    # The DB settings above ARE the live source: provider_router reads
+    # claude_model / claude_autowake_model per turn (30s cache). Mutating
+    # config.CLAUDE_MODEL here would do nothing — every reader binds it with
+    # `from config import ...` at import time. Just drop the router's cache so
+    # the next turn sees the new models immediately.
     try:
         from services.provider_router import invalidate_model_cache
         invalidate_model_cache()
     except Exception:
-        pass
+        log.debug("set_model: model cache invalidation failed", exc_info=True)
 
     # Retire any live boy processes so the next turn cold-spawns with the new
     # --model flag. Without this, in-flight processes keep their original model
@@ -498,10 +500,29 @@ async def set_model(request: Request):
 _VALID_EFFORTS = {"low", "medium", "high", "xhigh", "max"}
 
 
+def _effort_from_payload(payload) -> str:
+    """Pull a normalized effort string out of a request body.
+
+    Returns "" for a non-object body or a non-string value so the caller's
+    validation answers 400 instead of the route crashing with a 500.
+    """
+    if not isinstance(payload, dict):
+        return ""
+    value = payload.get("effort", "")
+    if not isinstance(value, str):
+        return ""
+    return value.strip().lower()
+
+
 @router.get("/effort")
 async def get_effort():
-    """Return current Claude Code effort level."""
-    effort = await _get_setting("claude_effort", "low")
+    """Return current Claude Code effort level.
+
+    Default mirrors what provider_router actually runs with when the setting
+    is unset: config.CLAUDE_EFFORT ("medium"). Never "low" — low caused the
+    shortcut/hallucination regressions (CLAUDE.md, Work Quality Standards).
+    """
+    effort = await _get_setting("claude_effort", config.CLAUDE_EFFORT)
     return {"effort": effort, "available": sorted(_VALID_EFFORTS)}
 
 
@@ -513,7 +534,7 @@ async def set_effort(request: Request):
     except Exception:
         return JSONResponse(status_code=400, content={"error": "Invalid JSON"})
 
-    effort = payload.get("effort", "").strip().lower()
+    effort = _effort_from_payload(payload)
     if effort not in _VALID_EFFORTS:
         return JSONResponse(
             status_code=400,
@@ -522,17 +543,16 @@ async def set_effort(request: Request):
 
     await _set_setting("claude_effort", effort)
 
-    # Update the runtime config so it takes effect immediately
-    import config as cfg
-    cfg.CLAUDE_EFFORT = effort
-
-    # Invalidate the provider_router effort cache so the next turn picks up
-    # the new value without waiting for the 30s cache window to expire.
+    # The DB setting above IS the live source (provider_router reads
+    # claude_effort per turn; config.CLAUDE_EFFORT is only the unset/invalid
+    # fallback, so it is deliberately NOT overwritten here). Invalidate the
+    # router's effort cache so the next turn picks up the new value without
+    # waiting for the 30s cache window to expire.
     try:
         from services.provider_router import invalidate_effort_cache
         invalidate_effort_cache()
     except Exception:
-        pass
+        log.debug("set_effort: effort cache invalidation failed", exc_info=True)
 
     # Retire any live boy processes so the next turn cold-spawns with the new
     # --effort flag. See set_model() for the rationale and tradeoff.
@@ -556,7 +576,7 @@ async def set_fable_effort(request: Request):
     except Exception:
         return JSONResponse(status_code=400, content={"error": "Invalid JSON"})
 
-    effort = payload.get("effort", "").strip().lower()
+    effort = _effort_from_payload(payload)
     if effort not in _VALID_EFFORTS:
         return JSONResponse(
             status_code=400,
@@ -572,7 +592,7 @@ async def set_fable_effort(request: Request):
         from services.provider_router import invalidate_effort_cache
         invalidate_effort_cache()
     except Exception:
-        pass
+        log.debug("set_fable_effort: effort cache invalidation failed", exc_info=True)
     _retire_claude_code_sessions("fable-effort-change")
 
     return {"ok": True, "effort": effort}
@@ -1513,12 +1533,7 @@ async def set_theme(request: Request):
 
 @router.put("/theme/bubbles")
 async def set_theme_bubbles(request: Request):
-    """Set (or clear) one identity's assistant-bubble override.
-
-    Payload: {"identity": "Avery", "bg": "#RRGGBB"|null, "text": "#RRGGBB"|null,
-              "font": "<font key>"|null}. Null/empty/missing fields clear that
-    piece back to the boy's own look; all-cleared removes the entry entirely.
-    Colors are strict #RRGGBB only; fonts must be _THEME_FONT_OPTIONS keys."""
+    "Set (or clear) one identity's assistant-bubble override."
     try:
         payload = await request.json()
     except Exception:
@@ -1589,15 +1604,6 @@ async def get_usage(days: int = 7):
     return await usage_summary(days=days)
 
 
-# =============================================================================
-# ANAM GUIDE: A COMPLETE SETTINGS FEATURE EXAMPLE
-# The Scribe shows the usual pattern in one place: GET current values, validate
-# a PUT payload, save key/value rows, then let services/scribe.py consume them.
-# SCRIBE (daily conversation digest) — five configurable knobs:
-# provider, model, interval_minutes, message_threshold, digest_path.
-# Settings table is source of truth at runtime; env vars + config.py
-# defaults are the fallback chain. See services/scribe.py.
-# =============================================================================
 
 from services.background_generation import VALID_PROVIDERS as _VALID_SCRIBE_PROVIDERS
 

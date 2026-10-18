@@ -5,6 +5,7 @@ remote ref and reads files from that ref with ``git show``.  It never merges,
 checks out, or overwrites the working tree.
 """
 
+
 from __future__ import annotations
 
 import asyncio
@@ -181,6 +182,9 @@ def read_github_handoff(
     return GithubHandoff(path=ref.path, markdown=markdown.strip(), blob_oid=ref.blob_oid)
 
 
+# Test-only helpers: load_latest_github_handoffs() and render_github_handoffs()
+# are exercised only by tests/test_github_handoff_loader.py. The live autowake
+# path uses build_github_handoff_context() (receipt-aware) further below.
 def load_latest_github_handoffs(
     identity: str,
     *,
@@ -217,7 +221,10 @@ def load_latest_github_handoffs(
 
 
 def render_github_handoffs(handoffs: list[GithubHandoff]) -> str:
-    """Render remote notes with their source paths visible to the waking identity."""
+    """Render remote notes with their source paths visible to the waking identity.
+
+    Test-only (see note above load_latest_github_handoffs).
+    """
     parts = []
     for handoff in handoffs:
         parts.append(f"[GitHub source: {handoff.path}]\n{handoff.markdown}")

@@ -8,21 +8,14 @@ or lightweight autowake sessions.
 Schema: pulses table (migration 013)
 """
 
-# ANAM GUIDE: PULSE DEFINITIONS STORAGE
-# What: Saves, lists, updates, and deletes pulse definitions (name, how often, what action) in the pulses database table.
-# Called by: api/pulses.py (the Hub's pulse editor) and services/pulse_evaluator.py (which fires them).
-# Edit here when: adding a new field to a pulse or changing how due-ness is calculated.
 
 import json
 import logging
-import time
 from datetime import datetime, timezone
 
 import aiosqlite
 
-from config import TIMEZONE
 from services.time_utils import utc_now_iso_epoch
-from zoneinfo import ZoneInfo
 
 log = logging.getLogger(__name__)
 

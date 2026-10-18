@@ -27,8 +27,7 @@ class FileBridgeBuilderTests(unittest.TestCase):
         self.assertIn(str(path), bridge)
 
     def test_bridge_instructs_read_from_top(self):
-        """The boy must Read from the top so default Read sees Owner's
-        message regardless of how large the supplementary context grows."""
+        'Test bridge instructs read from top.'
         path = Path("/tmp/anam_test_payload.md")
         bridge = _build_file_bridge_instruction(path, user_message="ping")
         lowered = bridge.lower()

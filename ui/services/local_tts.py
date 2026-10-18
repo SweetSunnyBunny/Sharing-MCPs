@@ -1,9 +1,5 @@
 """Local TTS via Kokoro."""
 
-# ANAM GUIDE: FREE LOCAL VOICES (KOKORO)
-# What: the free, on-this-computer text-to-speech fallback — maps each boy to a Kokoro voice and makes the audio when ElevenLabs isn't used.
-# Called by: api/voice.py when a voice message needs generating, and core/lifespan.py health checks at startup.
-# Edit here when: you want to change which Kokoro voice a boy speaks with (IDENTITY_VOICES near the top) or the shared default voice.
 
 import io
 import json

@@ -18,8 +18,13 @@ from dotenv import load_dotenv
 load_dotenv(Path(__file__).parent.parent / ".env")
 load_dotenv(Path(__file__).parent.parent / ".env.local", override=True)
 
+_ROOT = str(Path(__file__).resolve().parents[1])
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+# The app's own DB path, so ANAM_DB_PATH / ANAM_DATA_DIR overrides are honored.
+from config import DB_PATH  # noqa: E402
+
 DISCORD_API = "https://discord.com/api/v10"
-DB_PATH = Path(__file__).parent.parent / "data" / "anam.db"
 SERVER_MAP_JSON = Path(
     os.environ.get(
         "ANAM_DISCORD_SERVER_MAP_PATH",

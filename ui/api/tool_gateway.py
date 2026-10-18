@@ -1,4 +1,5 @@
 """Authenticated machine-connector entry point; never a public MCP backdoor."""
+
 import hmac
 import asyncio
 import os
@@ -94,8 +95,10 @@ async def runtime_report():
     from services import codex_sessions, runtime_metrics
     from services.context_ledger import get_context_ledgers
     from services.resource_history import report as resource_report
+    from services.context_hooks import hook_timing_report
     history = await asyncio.to_thread(resource_report)
     return {'codex_processes':codex_sessions.status(), 'timings':runtime_metrics.report(),
+            'hooks':hook_timing_report(),
             'context':get_context_ledgers(), 'resources':history}
 
 

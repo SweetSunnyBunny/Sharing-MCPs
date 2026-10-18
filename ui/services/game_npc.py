@@ -3,6 +3,8 @@
 This is intentionally separate from bonded chat preparation: no identity
 prompt, Qualia orientation, pack history, tool gateway or session reuse.
 """
+
+
 import asyncio
 import json
 import os

@@ -1,8 +1,5 @@
 /* Settings — Orchestrator, System, MCP panels */
-/* ANAM GUIDE: SETTINGS HUB STYLES
-   What: the looks for the Settings Hub — tabs, panels, schedule cards, toggles, modals, the usage meter, and the appearance vibe-preset swatches.
-   Used by: settings.html, and diagnostics.html borrows it as its base styling too.
-   Edit here when: restyling anything on the Settings page — sections are labeled with ── banner comments (Tabs, Toggle switch, Modal, Mobile, Usage panel, Appearance presets). */
+
 
 /* Override body overflow:hidden from main.css — settings page needs to scroll */
 body.settings-page {

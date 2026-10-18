@@ -7,7 +7,7 @@
     "deploy": "wrangler deploy",
     "tail": "wrangler tail",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test src/image-archive.test.ts src/image-content.test.ts",
+    "test": "node --import tsx --test src/image-archive.test.ts src/image-content.test.ts src/messaging.test.ts",
     "register:vibe": "tsx src/register-commands.ts"
   },
   "devDependencies": {

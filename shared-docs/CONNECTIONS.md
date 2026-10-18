@@ -82,3 +82,14 @@ packaged here. For example, the Commons connector does not supply the world
 engine, and UI phone/watch routes do not supply every device adapter. Those are
 source-code gaps, separate from personal data. Read [COVERAGE.md](COVERAGE.md)
 before trying to reproduce those features.
+
+## Added local adapters
+
+home-assistant-mcp connects to your own Home Assistant server. watch-mcp,
+anam-touch-mcp and crosstalk-mcp connect to Anam with ANAM_URL, ANAM_ROOT and
+ANAM_API_KEY. Each includes a client example and first steps. They use stdio
+by default and require no original combined tools host.
+
+hearth-commons follows the current OAuth Worker contract: OAUTH_KV,
+COMMONS_BASE_URL and PUBLIC_URL, plus a compatible game backend.
+Its older shared household keyring configuration no longer applies.

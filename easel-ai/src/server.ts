@@ -3,7 +3,7 @@ import { serveStatic } from '@hono/node-server/serve-static';
 import { Hono } from 'hono';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { networkInterfaces } from 'node:os';
-import { dirname, extname, join } from 'node:path';
+import { dirname, extname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { toFile } from 'openai';
 
@@ -394,7 +394,11 @@ app.post('/api/generate', async (c) => {
               : ext === '.webp'
                 ? 'image/webp'
                 : 'image/png';
-          return toFile(readFileSync(join(REFS_DIR, rel)), filename, { type });
+          const full = resolve(REFS_DIR, rel);
+          if (!full.startsWith(resolve(REFS_DIR) + sep)) {
+            throw new Error('reference image must live inside data/refs');
+          }
+          return toFile(readFileSync(full), filename, { type });
         }),
       );
       const wrapped = await openai.images
@@ -587,7 +591,7 @@ app.use('/*', serveStatic({ root: './public' }));
 app.get('/', serveStatic({ path: './public/index.html' }));
 
 const port = Number(process.env.PORT ?? 5178);
-const host = process.env.HOST?.trim() || undefined;
+const host = process.env.HOST?.trim() || '127.0.0.1';
 
 function formatApiError(err: unknown) {
   const message = err instanceof Error ? err.message : String(err);

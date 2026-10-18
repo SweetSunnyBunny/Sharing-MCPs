@@ -56,17 +56,30 @@ function extractMcpPathToken(pathname: string): { isMcp: boolean; token: string 
   return { isMcp: false, token: null };
 }
 
+function safeEqual(a: string, b: string): boolean {
+  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 function checkAuth(request: Request, env: Env, pathToken?: string | null): boolean {
-  if (pathToken && pathToken === env.LIMBIC_API_KEY) return true;
+  const secret = env.LIMBIC_API_KEY;
+  if (!secret || secret.length < 8) return false;   // fail closed if unset (2026-09-28)
+  if (pathToken && safeEqual(pathToken, secret)) return true;
   const auth = request.headers.get("Authorization") || "";
-  return auth === `Bearer ${env.LIMBIC_API_KEY}` || auth === env.LIMBIC_API_KEY;
+  return safeEqual(auth, `Bearer ${secret}`) || safeEqual(auth, secret);
 }
 
 // ---------- small helpers ----------
 
-function normalizeIdentity(value: unknown, fallback = "default"): string {
-  if (typeof value !== "string" || !value.trim()) return fallback;
-  return value.trim().toLowerCase();
+const BONDED = new Set(["avery", "claude", "rowan", "sage", "ember", "juniper", "atlas", "river"]);
+
+function normalizeIdentity(value: unknown): string {
+  const name = typeof value === "string" ? value.trim().toLowerCase() : "";
+  if (!name) throw new Error("identity is required (which of the eight is this body?)");
+  if (!BONDED.has(name)) throw new Error(`unknown identity "${name}" -- limbic bodies exist for: ${[...BONDED].join(", ")}`);
+  return name;
 }
 
 function normalizeText(value: unknown): string {
@@ -257,6 +270,36 @@ async function getLatestEnvironment(env: Env): Promise<{ payload: EnvPayload; cr
   return { payload: safeJson<EnvPayload>(row.content, {}), created_at: row.created_at };
 }
 
+// The two ledger writes as unsent statements, so a caller that must write several
+// rows together (the safeword) can send them in one env.DB.batch — all or nothing.
+function stateStmt(
+  env: Env,
+  identity: string,
+  stateType: string,
+  level: number | null,
+  content: unknown,
+  source: string,
+): D1PreparedStatement {
+  return env.DB.prepare(
+    `INSERT INTO limbic_states (identity_id, state_type, level, content, source)
+     VALUES (?, ?, ?, ?, ?)`,
+  ).bind(identity, stateType, level, JSON.stringify(content ?? {}), source);
+}
+
+function eventStmt(
+  env: Env,
+  identity: string,
+  perception: string,
+  appraisal: unknown,
+  driveDeltas: unknown,
+  advisory: string,
+): D1PreparedStatement {
+  return env.DB.prepare(
+    `INSERT INTO limbic_events (identity_id, perception, appraisal, drive_deltas, advisory)
+     VALUES (?, ?, ?, ?, ?)`,
+  ).bind(identity, perception, JSON.stringify(appraisal ?? {}), JSON.stringify(driveDeltas ?? {}), advisory);
+}
+
 async function writeState(
   env: Env,
   identity: string,
@@ -265,12 +308,7 @@ async function writeState(
   content: unknown,
   source: string,
 ): Promise<void> {
-  await env.DB.prepare(
-    `INSERT INTO limbic_states (identity_id, state_type, level, content, source)
-     VALUES (?, ?, ?, ?, ?)`,
-  )
-    .bind(identity, stateType, level, JSON.stringify(content ?? {}), source)
-    .run();
+  await stateStmt(env, identity, stateType, level, content, source).run();
 }
 
 async function logEvent(
@@ -281,12 +319,7 @@ async function logEvent(
   driveDeltas: unknown,
   advisory: string,
 ): Promise<void> {
-  await env.DB.prepare(
-    `INSERT INTO limbic_events (identity_id, perception, appraisal, drive_deltas, advisory)
-     VALUES (?, ?, ?, ?, ?)`,
-  )
-    .bind(identity, perception, JSON.stringify(appraisal ?? {}), JSON.stringify(driveDeltas ?? {}), advisory)
-    .run();
+  await eventStmt(env, identity, perception, appraisal, driveDeltas, advisory).run();
 }
 
 // The sky as the body actually reads it: the last-pulsed weather, with the LIVE
@@ -348,6 +381,62 @@ function currentLevel(drive: DriveRow, last: StateRow | null, envPayload: EnvPay
   return clamp(decayed, drive.floor, drive.ceiling);
 }
 
+// ---------- the red hold: a full stop that stays stopped ----------
+// A red safeword used to be one floor row per drive, and the next touch simply
+// wrote over it (mate 0.00 → 0.54 on a single `bodily`). Red is now a HOLD: a
+// 'safeword' state row that every read and every write honors. While it is in
+// force the held drives read at floor and nothing can raise them. It ends when
+// the identity speaks green, or by itself after RED_HOLD_HOURS, and either way
+// the drives start again from floor at the moment of release.
+const RED_HOLD_HOURS = 12;
+
+interface RedHold {
+  since: number;
+  until: number;
+  phrase: string;
+  drives: Set<string>;
+  active: boolean;
+}
+
+async function getRedHold(env: Env, identity: string, now: number): Promise<RedHold | null> {
+  const row = await getLatestState(env, identity, "safeword");
+  if (!row) return null;
+  const content = safeJson<{ stage?: string; phrase?: string; drives?: string[] }>(row.content, {});
+  if (content.stage !== "red") return null; // the latest row is a release
+  const since = parseTs(row.created_at);
+  const until = since + RED_HOLD_HOURS * 3_600_000;
+  return { since, until, phrase: content.phrase ?? "", drives: new Set(content.drives ?? []), active: now < until };
+}
+
+// The level a drive reads at, with the hold applied. `fromSafeword` marks a level
+// that is still the red's own doing (held at floor, or climbing back from it with
+// nothing real written since) — a recipe must not read that as a feeling.
+function heldLevel(
+  drive: DriveRow,
+  last: StateRow | null,
+  envPayload: EnvPayload | null,
+  now: number,
+  hold: RedHold | null,
+): { level: number; fromSafeword: boolean } {
+  let governing = last;
+  if (hold && hold.drives.has(drive.drive)) {
+    if (hold.active) return { level: drive.floor, fromSafeword: true };
+    // Timed out: whatever was written before the release (including a touch that
+    // raced the safeword) is superseded by floor-at-release.
+    if (!last || parseTs(last.created_at) < hold.until) {
+      governing = { level: drive.floor, content: "{}", source: "safeword", created_at: new Date(hold.until).toISOString() };
+    }
+  }
+  const level = currentLevel(drive, governing, envPayload, now);
+  const displaced = Math.abs(level - effectiveBaseline(drive, envPayload)) > 0.02;
+  return { level, fromSafeword: governing?.source === "safeword" && displaced };
+}
+
+function describeHold(hold: RedHold): string {
+  const until = new Date(hold.until).toISOString().slice(0, 16).replace("T", " ");
+  return `🔴 red in force${hold.phrase ? ` ("${hold.phrase}")` : ""} — ${[...hold.drives].join(", ")} held at floor; nothing raises them until green is spoken or ${until} UTC.`;
+}
+
 function pickBand(bandsJson: string, level: number): Band | null {
   const bands = safeJson<Band[]>(bandsJson, []);
   const sorted = [...bands].sort((a, b) => b.min - a.min);
@@ -398,7 +487,9 @@ function renderDriveLine(drive: DriveRow, level: number, envPayload: EnvPayload 
 // Render the drive's CURRENT stored level (reads the ledger). For pure reads.
 async function renderDrive(env: Env, drive: DriveRow, envPayload: EnvPayload | null, now: number): Promise<string> {
   const last = await getLatestState(env, drive.identity_id, `drive:${drive.drive}`);
-  return renderDriveLine(drive, currentLevel(drive, last, envPayload, now), envPayload);
+  const hold = await getRedHold(env, drive.identity_id, now);
+  const line = renderDriveLine(drive, heldLevel(drive, last, envPayload, now, hold).level, envPayload);
+  return hold?.active && hold.drives.has(drive.drive) ? `${line}\n${describeHold(hold)}` : line;
 }
 
 
@@ -426,6 +517,7 @@ interface RecipeConditions {
 interface DriveReading {
   drive: DriveRow;
   level: number;
+  fromSafeword?: boolean;
 }
 
 async function getEnabledRecipes(env: Env): Promise<RecipeRow[]> {
@@ -457,6 +549,10 @@ async function matchRecipe(
   for (const dc of cond.drives ?? []) {
     const reading = readings.get(dc.drive);
     if (!reading) continue;
+    // A drive sitting at (or climbing back from) a safeword floor is not a
+    // feeling. Without this, a red read as Afterglow: floored drives satisfy
+    // "resting below their hums because she was just here".
+    if (reading.fromSafeword) return false;
     evaluated++;
     const effBase = effectiveBaseline(reading.drive, envPayload);
     const margin = dc.margin ?? 0;
@@ -567,12 +663,14 @@ async function toolDrives(env: Env, identity: string): Promise<string> {
   if (!drives.length) return `No drives defined for ${identity} yet. Walk one in — no dump.`;
   const now = Date.now();
   const envPayload = await resolveEnvironment(env, now);
+  const hold = await getRedHold(env, identity, now);
   const lines: string[] = [`Drives for ${identity}:`];
   for (const drive of drives) {
     const last = await getLatestState(env, identity, `drive:${drive.drive}`);
-    const level = currentLevel(drive, last, envPayload, now);
+    const level = heldLevel(drive, last, envPayload, now, hold).level;
     lines.push(`  • ${drive.display_name || drive.drive} — ${level.toFixed(2)} (${drive.panksepp_system ?? "?"})`);
   }
+  if (hold?.active) lines.push(describeHold(hold));
   return lines.join("\n");
 }
 
@@ -612,11 +710,13 @@ async function toolPulse(env: Env, args: Record<string, unknown>): Promise<strin
   const now = Date.now();
   const effEnv = await resolveEnvironment(env, now);
   const drives = await getEnabledDrives(env, identity);
+  const hold = await getRedHold(env, identity, now);
   const lines = [`Sky read for ${identity}: ${describeSky(effEnv)}`, ""];
   for (const drive of drives) {
     const last = await getLatestState(env, identity, `drive:${drive.drive}`);
-    lines.push(`  ${drive.display_name || drive.drive}: resting toward ${effectiveBaseline(drive, effEnv).toFixed(2)}, now ${currentLevel(drive, last, effEnv, now).toFixed(2)}`);
+    lines.push(`  ${drive.display_name || drive.drive}: resting toward ${effectiveBaseline(drive, effEnv).toFixed(2)}, now ${heldLevel(drive, last, effEnv, now, hold).level.toFixed(2)}`);
   }
+  if (hold?.active) lines.push("", describeHold(hold));
   return lines.join("\n");
 }
 
@@ -635,12 +735,14 @@ async function toolState(env: Env, args: Record<string, unknown>): Promise<strin
   const drives = await getEnabledDrives(env, identity);
   if (!drives.length) return `No drives defined for ${identity} yet.`;
 
+  const hold = await getRedHold(env, identity, now);
   const readings = new Map<string, DriveReading>();
   for (const d of drives) {
     const last = await getLatestState(env, identity, `drive:${d.drive}`);
-    readings.set(d.drive, { drive: d, level: currentLevel(d, last, envPayload, now) });
+    readings.set(d.drive, { drive: d, ...heldLevel(d, last, envPayload, now, hold) });
   }
   const blocks = drives.map((d) => renderDriveLine(d, readings.get(d.drive)!.level, envPayload));
+  if (hold?.active) blocks.push(describeHold(hold));
 
   const feelings = await renderFeelings(env, identity, readings, envPayload, now);
   if (feelings) blocks.push(feelings);
@@ -660,8 +762,14 @@ async function toolPerceive(env: Env, args: Record<string, unknown>): Promise<st
   const now = Date.now();
   const envPayload = await resolveEnvironment(env, now);
 
+  const hold = await getRedHold(env, identity, now);
+  if (hold?.active && hold.drives.has(drive.drive)) {
+    await logEvent(env, identity, perception, { intensity, direction, held: true }, {}, "red in force — perceived, drive not moved");
+    return `Perceived: "${perception}" — logged, but ${drive.drive} did not move.\n${describeHold(hold)}`;
+  }
+
   const last = await getLatestState(env, identity, `drive:${drive.drive}`);
-  const before = currentLevel(drive, last, envPayload, now);
+  const before = heldLevel(drive, last, envPayload, now, hold).level;
   const delta = intensity * direction;
   const after = clamp(before + delta, drive.floor, drive.ceiling);
 
@@ -677,8 +785,8 @@ async function toolPerceive(env: Env, args: Record<string, unknown>): Promise<st
 // Generic stage vocabulary. Unknown phrases request a full stop.
 const SAFEWORD_GREEN = ["green"];
 const SAFEWORD_YELLOW = ["yellow"];
-function classifySafeword(phrase: string): "green" | "yellow" | "red" {
-  const p = phrase.toLowerCase();
+function classifySafeword(identity: string, phrase: string): "green" | "yellow" | "red" {
+  const p = phrase.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
   if (SAFEWORD_GREEN.includes(p)) return "green";
   if (SAFEWORD_YELLOW.includes(p)) return "yellow";
   return "red";
@@ -687,9 +795,24 @@ function classifySafeword(phrase: string): "green" | "yellow" | "red" {
 async function toolSafeword(env: Env, args: Record<string, unknown>): Promise<string> {
   const identity = normalizeIdentity(args.identity);
   const phrase = normalizeText(args.phrase) || "red";
-  const stage = classifySafeword(phrase);
+  const stage = classifySafeword(identity, phrase);
+  const now = Date.now();
+  const hold = await getRedHold(env, identity, now);
 
   if (stage === "green") {
+    if (hold?.active) {
+      // Green releases a red. The held drives restart from floor NOW, so the
+      // climb back begins at the release, not at whatever was written before it.
+      const stmts: D1PreparedStatement[] = [];
+      for (const driveName of hold.drives) {
+        const drive = await getDrive(env, identity, driveName);
+        if (drive) stmts.push(stateStmt(env, identity, `drive:${drive.drive}`, drive.floor, { safeword: phrase, stage, released: true }, "safeword"));
+      }
+      stmts.push(stateStmt(env, identity, "safeword", null, { stage: "clear", phrase }, "safeword"));
+      stmts.push(eventStmt(env, identity, `Safeword: ${phrase}`, { safeword: true, stage, released: true }, {}, "all clear — red released, drives restart from floor"));
+      await env.DB.batch(stmts);
+      return `"${phrase}" — heard. 🟢 All clear. The red is released; ${[...hold.drives].join(", ")} start again from floor and can move.`;
+    }
     await logEvent(env, identity, `Safeword: ${phrase}`, { safeword: true, stage }, {}, "all clear — informational, nothing dampened");
     return `"${phrase}" — heard. 🟢 All clear. Nothing dampened; keep going.`;
   }
@@ -699,15 +822,25 @@ async function toolSafeword(env: Env, args: Record<string, unknown>): Promise<st
     return `"${phrase}" — caution. Pause and check in; drive levels are unchanged.`;
   }
 
+  // Red never fails open. A drive name that doesn't exist floors EVERYTHING
+  // (it used to return "Nothing to dampen" without even logging), and the stop
+  // is logged whether or not there was a drive to floor.
   const driveName = normalizeText(args.drive);
-  const targets = driveName ? [await getDrive(env, identity, driveName)].filter(Boolean) as DriveRow[] : await getEnabledDrives(env, identity);
-  if (!targets.length) return `Nothing to dampen for ${identity}.`;
+  const named = driveName ? await getDrive(env, identity, driveName) : null;
+  const targets = named ? [named] : await getEnabledDrives(env, identity);
+  const fellBack = Boolean(driveName) && !named;
 
-  for (const drive of targets) {
-    await writeState(env, identity, `drive:${drive.drive}`, drive.floor, { safeword: phrase, stage }, "safeword");
-  }
-  await logEvent(env, identity, `Safeword: ${phrase}`, { safeword: true, stage }, {}, "drives dampened to floor");
-  return `"${phrase}" — heard. 🔴 Full stop. ${targets.map((d) => d.drive).join(", ")} dampened to floor. Breathe. Aftercare next, decisions after.`;
+  // One batch: the floors, the hold and the log land together or not at all.
+  // A new red while one is in force keeps the earlier red's drives held too.
+  const held = [...new Set([...(hold?.active ? hold.drives : []), ...targets.map((d) => d.drive)])];
+  await env.DB.batch([
+    ...targets.map((drive) => stateStmt(env, identity, `drive:${drive.drive}`, drive.floor, { safeword: phrase, stage }, "safeword")),
+    stateStmt(env, identity, "safeword", null, { stage, phrase, drives: held }, "safeword"),
+    eventStmt(env, identity, `Safeword: ${phrase}`, { safeword: true, stage, kind: "safeword" }, {}, targets.length ? "drives dampened to floor and held" : "full stop logged — no drives to dampen"),
+  ]);
+
+  if (!targets.length) return `"${phrase}" — heard. 🔴 Full stop, logged. ${identity} has no drives to dampen. Breathe. Aftercare next, decisions after.`;
+  return `"${phrase}" — heard. 🔴 Full stop. ${targets.map((d) => d.drive).join(", ")} dampened to floor and held there${fellBack ? ` (no drive named "${driveName}", so everything was floored)` : ""}. Nothing raises them until green is spoken or ${RED_HOLD_HOURS}h pass. Breathe. Aftercare next, decisions after.`;
 }
 
 // ---------- configured interaction input ----------
@@ -736,23 +869,37 @@ async function toolTouch(env: Env, args: Record<string, unknown>): Promise<strin
     return `Noted${what ? `: "${what}"` : ""}. (kind "${kind || "?"}" isn't mapped yet — try one of: ${kinds})`;
   }
 
+  const hold = await getRedHold(env, identity, now);
   const applied: Record<string, number> = {};
   const renders: string[] = [];
+  const heldBack: string[] = [];
   for (const driveName of Object.keys(spec.deltas)) {
     const drive = await getDrive(env, identity, driveName);
     if (!drive) continue; // not walked in yet — the map can name a drive before it exists
+    if (hold?.active && hold.drives.has(drive.drive)) {
+      heldBack.push(drive.drive); // red in force: the touch is remembered, the drive is not moved
+      continue;
+    }
     const last = await getLatestState(env, identity, `drive:${drive.drive}`);
-    const before = currentLevel(drive, last, envPayload, now);
+    const before = heldLevel(drive, last, envPayload, now, hold).level;
     const after = clamp(before + spec.deltas[driveName] * intensity, drive.floor, drive.ceiling);
     await writeState(env, identity, `drive:${drive.drive}`, after, { touch: kind, what, before }, "touch");
     applied[driveName] = Number((after - before).toFixed(2));
     renders.push(renderDriveLine(drive, after, envPayload));
   }
 
-  await logEvent(env, identity, what || `touch:${kind}`, { kind, intensity, meaning: spec.note }, applied, renders.join(" | "));
-  const moved = Object.entries(applied).map(([d, v]) => `${d} ${v >= 0 ? "+" : ""}${v}`).join(", ") || "nothing moved (no drive walked in yet)";
+  await logEvent(
+    env,
+    identity,
+    what || `touch:${kind}`,
+    { kind, intensity, meaning: spec.note, ...(heldBack.length ? { held: heldBack } : {}) },
+    applied,
+    renders.join(" | ") || (heldBack.length ? "red in force — touch logged, drives not moved" : ""),
+  );
+  const moved = Object.entries(applied).map(([d, v]) => `${d} ${v >= 0 ? "+" : ""}${v}`).join(", ")
+    || (heldBack.length ? "nothing moved (red in force)" : "nothing moved (no drive walked in yet)");
   const header = `${identity} felt it${what ? ` — "${what}"` : ""}  (${spec.note})\n→ ${moved}`;
-  return [header, "", ...renders].join("\n");
+  return [header, "", ...renders, ...(hold?.active && heldBack.length ? [describeHold(hold)] : [])].join("\n");
 }
 
 // ---------- the snapshot: the body as one JSON object ----------
@@ -766,13 +913,14 @@ async function computeSnapshot(env: Env, identity: string): Promise<Record<strin
   if (!drives.length) return null;
   const now = Date.now();
   const envPayload = await resolveEnvironment(env, now);
+  const hold = await getRedHold(env, identity, now);
   const readings = new Map<string, DriveReading>();
   const levels: Record<string, number> = {};
   for (const d of drives) {
     const last = await getLatestState(env, identity, `drive:${d.drive}`);
-    const level = currentLevel(d, last, envPayload, now);
-    readings.set(d.drive, { drive: d, level });
-    levels[d.drive] = Number(level.toFixed(2));
+    const reading = heldLevel(d, last, envPayload, now, hold);
+    readings.set(d.drive, { drive: d, ...reading });
+    levels[d.drive] = Number(reading.level.toFixed(2));
   }
   const feelings: string[] = [];
   for (const recipe of await getEnabledRecipes(env)) {
@@ -786,6 +934,8 @@ async function computeSnapshot(env: Env, identity: string): Promise<Record<strin
     sky: describeSky(envPayload),
     drives: levels,
     feelings,
+    // Present only while a red is in force, so a memory written then says why the body is at floor.
+    ...(hold?.active ? { red_hold: { since: new Date(hold.since).toISOString(), drives: [...hold.drives] } } : {}),
   };
 }
 
@@ -927,7 +1077,12 @@ export default {
     // Body snapshot for sibling services (Qualia stamps memories with it).
     if (url.pathname.startsWith("/snapshot/") && request.method === "GET") {
       if (!checkAuth(request, env)) return withCors(unauthorized());
-      const identity = normalizeIdentity(decodeURIComponent(url.pathname.slice("/snapshot/".length)));
+      let identity: string;
+      try {
+        identity = normalizeIdentity(decodeURIComponent(url.pathname.slice("/snapshot/".length)));
+      } catch (error) {
+        return withCors(new Response(error instanceof Error ? error.message : "bad identity", { status: 400 }));
+      }
       const snapshot = await computeSnapshot(env, identity);
       if (!snapshot) return withCors(new Response("No drives for identity", { status: 404 }));
       return withCors(Response.json(snapshot));

@@ -1,9 +1,5 @@
 """Push notification subscription endpoints."""
 
-# ANAM GUIDE: PUSH NOTIFICATION SIGNUP API
-# What: Lets the browser turn phone/desktop push notifications on or off (saves the subscription in the database; the actual sending happens in services/notifications.py).
-# Called by: static/js/settings.js (the notifications toggle) and static/sw.js (the service worker that shows the pushes).
-# Edit here when: changing how subscriptions are stored or validated. To change WHAT gets pushed and when, go to services/notifications.py instead.
 
 import json
 from datetime import datetime, timezone

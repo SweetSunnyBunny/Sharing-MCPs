@@ -21,7 +21,6 @@ from services.session_lifecycle import (
 )
 from services.session_manager import (
     auto_title_conversation,
-    get_messages,
     save_message,
 )
 from services.skill_runtime import build_skill_catalog_hint, build_skill_injection
@@ -51,6 +50,42 @@ def build_image_content_block(image_path: Path) -> dict | None:
     }
 
 
+def build_cli_image_notes(images_info: list[dict]) -> list[str]:
+    """CLI lanes read images off disk with their own Read tool: one note each."""
+    notes: list[str] = []
+    for img in images_info or []:
+        safe_img_name = Path(img.get("filename", "")).name
+        if not safe_img_name:
+            continue
+        img_path = IMAGES_DIR / safe_img_name
+        if img_path.suffix.lower() in IMAGE_ALLOWED_EXTENSIONS:
+            notes.append(
+                f"[Owner shared an image: {img_path}\n"
+                f"Use the Read tool to view it.]"
+            )
+    return notes
+
+
+def compose_attachment_prompt(
+    text: str,
+    image_notes: list[str],
+    documents_info: list[dict],
+    audio_info: list[dict],
+) -> str:
+    'Compose attachment prompt.'
+    prompt = text
+    if image_notes:
+        image_block = "\n\n".join(image_notes)
+        prompt = f"{image_block}\n\n{prompt}" if prompt else image_block
+    if documents_info:
+        docs_block = "\n\n".join(build_document_note(doc) for doc in documents_info)
+        prompt = f"{docs_block}\n\n{prompt}" if prompt else docs_block
+    if audio_info:
+        audio_block = "\n\n".join(build_audio_note(clip) for clip in audio_info)
+        prompt = f"{audio_block}\n\n{prompt}" if prompt else audio_block
+    return prompt
+
+
 from services.runtime_metrics import measure as _measure_runtime
 
 
@@ -67,9 +102,16 @@ async def prepare_chat_turn(
     log: logging.Logger,
     skip_user_save: bool = False,
     audio_info: list[dict] | None = None,
+    on_user_saved=None,
 ) -> PreparedChatTurn:
-    """Persist the user turn and build all inputs needed for streaming."""
+    """Persist the user turn and build all inputs needed for streaming.
+
+    ``on_user_saved(message_id, delivered_at)`` (optional, async) fires the
+    moment her message is in the DB, before the slower context build, so the
+    browser's "Delivered" receipt is prompt (services/read_receipts.py).
+    """
     from services.provider_router import resolve_provider_for_identity
+    from services.read_receipts import now_iso
 
     audio_info = audio_info or []
 
@@ -77,7 +119,9 @@ async def prepare_chat_turn(
     if not skip_user_save:
         user_metadata = build_user_message_metadata(
             images_info, documents_info, audio_info,
-        )
+        ) or {}
+        delivered_at = now_iso()
+        user_metadata["receipt"] = {"delivered_at": delivered_at}
 
         user_message_id = await save_message(
             db,
@@ -87,6 +131,12 @@ async def prepare_chat_turn(
             identity=identity,
             metadata=user_metadata,
         )
+
+        if on_user_saved is not None and user_message_id:
+            try:
+                await on_user_saved(user_message_id, delivered_at)
+            except Exception as exc:  # a receipt must never cost her the turn
+                log.debug("Delivered receipt skipped: %s", exc)
 
         if text:
             await auto_title_conversation(db, conversation_id, text)
@@ -112,35 +162,22 @@ async def prepare_chat_turn(
         "anthropic", "openai", "openrouter", "lmstudio", "ollama"
     )
 
+    image_notes: list[str] = []
     if images_info:
-        image_notes = []
-        for img in images_info:
-            safe_img_name = Path(img.get("filename", "")).name
-            img_path = IMAGES_DIR / safe_img_name
-            if api_routed:
-                block = build_image_content_block(img_path)
+        if api_routed:
+            for img in images_info:
+                safe_img_name = Path(img.get("filename", "")).name
+                block = build_image_content_block(IMAGES_DIR / safe_img_name)
                 if block:
                     image_content_blocks.append(block)
-            elif img_path.suffix.lower() in IMAGE_ALLOWED_EXTENSIONS:
-                image_notes.append(
-                    f"[Owner shared an image: {img_path}\n"
-                    f"Use the Read tool to view it.]"
-                )
-        if image_notes:
-            image_block = "\n\n".join(image_notes)
-            prompt = f"{image_block}\n\n{text}" if text else image_block
+        else:
+            image_notes = build_cli_image_notes(images_info)
 
-    if documents_info:
-        doc_notes = await asyncio.to_thread(
-            lambda: [build_document_note(doc) for doc in documents_info]
+    if image_notes or documents_info or audio_info:
+        prompt = await asyncio.to_thread(
+            compose_attachment_prompt,
+            text, image_notes, documents_info, audio_info,
         )
-        docs_block = "\n\n".join(doc_notes)
-        prompt = f"{docs_block}\n\n{prompt}" if prompt else docs_block
-
-    if audio_info:
-        audio_notes = [build_audio_note(clip) for clip in audio_info]
-        audio_block = "\n\n".join(audio_notes)
-        prompt = f"{audio_block}\n\n{prompt}" if prompt else audio_block
 
 
     from services.reaction_notices import (

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hmac
 import json
 import os
 import time
@@ -87,9 +88,7 @@ def _strip_chat_tags(text: str) -> str:
 
 
 async def _recent_context(identity: str) -> str:
-    """Last messages from this identity's most recent conversation with Owner,
-    formatted for the call system prompt. Returns '' on any failure — a call
-    with no context still beats a dropped call."""
+    'Recent context.'
     now = time.time()
     cached = _ctx_cache.get(identity)
     if cached and now - cached[0] < _CTX_TTL_S:
@@ -223,7 +222,8 @@ async def call_chat_completions(
     if not secret:
         raise HTTPException(503, "Call endpoint disabled: ANAM_CALL_LLM_KEY not set")
     token = (authorization or "").removeprefix("Bearer ").strip()
-    if token != secret:
+    # Constant-time compare so the key can't be recovered byte-by-byte via timing.
+    if not hmac.compare_digest(token.encode("utf-8"), secret.encode("utf-8")):
         raise HTTPException(401, "Invalid call key")
 
     body = await request.json()
@@ -245,7 +245,7 @@ async def call_chat_completions(
     # (small but always available on the OAuth lane). A 429 on the preferred
     # model mid-window falls through instead of dropping the call.
     preferred = claude_api._resolve_model(os.environ.get("ANAM_CALL_MODEL") or None)
-    fallback = os.environ.get("ANAM_CALL_MODEL_FALLBACK", "claude-haiku-4-5")
+    fallback = os.environ.get("ANAM_CALL_MODEL_FALLBACK", "claude-haiku-5-5")
     model_ladder = [preferred] if preferred == fallback else [preferred, fallback]
     max_tokens = min(
         int(body.get("max_tokens") or _CALL_MAX_TOKENS), _CALL_MAX_TOKENS

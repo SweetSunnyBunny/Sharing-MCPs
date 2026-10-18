@@ -102,7 +102,7 @@ class PhotosTests(unittest.TestCase):
 
     def test_reference_uploads_have_generic_filenames(self):
         ref = self.reference("custom-local-filename.png")
-        with self.configured(), patch.object(photos, "_request_image", return_value=png_bytes()) as request:
+        with self.configured(), patch.dict(os.environ, {"OPENAI_IMAGE_MODEL": "gpt-image-1"}), patch.object(photos, "_request_image", return_value=png_bytes()) as request:
             result = photos.photo_generate("new scene", reference_paths=[str(ref)])
         self.assertTrue(result.startswith("Saved"))
         payload, references = request.call_args.args[1:]

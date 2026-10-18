@@ -4,13 +4,6 @@ All fire-and-forget asyncio.create_task calls should go through
 `spawn()` so we get error logging and prevent GC of task objects.
 """
 
-# ANAM GUIDE: BACKGROUND TASK SPAWNER
-# What: Tiny safety net for "fire and forget" background jobs — starts them, keeps a
-#       reference so Python doesn't lose them, and writes any crash to the log.
-# Called by: Almost everything that kicks off background work — chat pipeline, autowake,
-#            hub, echo relay, connection registry, and more (they all call spawn()).
-# Edit here when: You want to change how background-job crashes are logged. You will
-#                 almost never need to touch this file — it's 30 lines of plumbing.
 
 import asyncio
 import logging

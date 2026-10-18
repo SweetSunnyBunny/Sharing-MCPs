@@ -1,12 +1,5 @@
 """Per-turn token usage recording (Settings Hub -> System -> Usage)."""
 
-# ANAM GUIDE: TOKEN USAGE METER
-# What: Records how many tokens (and estimated dollars) each chat turn used, into the
-#       usage_log table, so the Settings Hub can show the day's burn per boy and model.
-# Called by: services/claude_subprocess.py writes a row after each turn;
-#            api/settings.py reads the summaries for Settings Hub -> System -> Usage.
-# Edit here when: You want to track more per-turn numbers or change how the usage
-#                 summary is grouped. It never raises — a broken meter must not break chat.
 
 from __future__ import annotations
 

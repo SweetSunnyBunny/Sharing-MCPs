@@ -1,10 +1,4 @@
-"""Native voice call — rest-phrase detection (services/voice_call.py).
-
-The rest phrase ends a live call, so false positives literally hang up on
-Owner mid-sentence. These pin the conservative contract: bare stop-words
-or name+stop-word in a short utterance end the call; ordinary sentences
-that merely contain "rest"/"night" never do.
-"""
+'Native voice call — rest-phrase detection (services/voice_call.py).'
 
 import sys
 from pathlib import Path

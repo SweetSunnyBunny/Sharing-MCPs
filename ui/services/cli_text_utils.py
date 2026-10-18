@@ -1,10 +1,25 @@
-"""Backend-agnostic helpers for Claude Code CLI integration."""
+"""Backend-agnostic helpers for Claude Code CLI integration.
 
-# ANAM GUIDE: SHARED CLI MESSAGE COMPOSER
-# What: Pure text helpers shared by all CLI-flavored backends — builds the per-turn message (identity + history + who-it's-from banner), formats DB history, and detects approval prompts and image/document paths in tool output.
-# Called by: services/claude_subprocess.py, services/claude_pty.py, services/claude_agent_sdk_provider.py, services/provider_router.py.
-# Edit here when: changing what a turn's text looks like before it reaches Claude Code — history format, sender banner, first-message shape — so BOTH backends change together.
-# Note: the docstring above is stale — claude_subprocess.py came back as the default backend and imports from here too.
+Pure text manipulation + filesystem extraction utilities shared by every
+CLI-flavored Claude backend — they don't spawn any subprocesses themselves.
+Importers: the `-p` subprocess backend (`services/claude_subprocess.py`, the
+DEFAULT Claude Code lane), the PTY fallback (`services/claude_pty.py`), the
+Agent SDK provider (`services/claude_agent_sdk_provider.py`), and
+`services/provider_router.py` (image-block text for non-vision lanes).
+Keeping these in one place keeps `-p` and PTY turns byte-for-byte in lockstep.
+
+What this module contains:
+    - Approval/permission heuristics (_APPROVAL_KEYWORDS, regexes, helpers)
+    - Image/document path extraction from tool-result text
+    - Per-turn message composition (identity + history + dynamic context)
+    - DB history → CLI-text formatting
+
+What this module does NOT contain:
+    - Process spawning
+    - Session lifecycle (kill/spawn/retire)
+    - Any `-p`, `--print`, or subprocess.Popen call
+"""
+
 
 from __future__ import annotations
 
@@ -19,6 +34,7 @@ from config import (
     IMAGE_ALLOWED_EXTENSIONS,
     IMAGES_DIR,
 )
+from services.excerpt import head_tail
 from services.identity_context import build_identity_anchor
 
 log = logging.getLogger(__name__)
@@ -39,6 +55,8 @@ _RULE_PATH_RE = re.compile(
 )
 
 # CC hardcodes `.claude/skills/*` and `.claude/agents/*` as sensitive paths.
+# Detection routes the UI to a `file-scribe` bypass instead of an infinite
+# Allow & Retry loop.
 _SENSITIVE_PATH_RE = re.compile(
     r"((?:[A-Za-z]:[\\/]|[/~])[^\s\"'`,;)]*\.claude[\\/](?:skills|agents)[\\/][^\s\"'`,;)]*)",
     re.IGNORECASE,
@@ -250,7 +268,8 @@ def _format_history(
             continue
         speaker = "Owner" if role == "user" else (msg.get("identity") or identity or "Assistant").strip()
         if per_message_chars > 0 and len(content) > per_message_chars:
-            content = content[:per_message_chars] + "\n[...truncated...]"
+            # Head AND tail: the result and the question live at the end.
+            content = head_tail(content, per_message_chars, "\n[...truncated...]\n")
         lines.append(f"{speaker}: {content}")
     if not lines:
         return ""

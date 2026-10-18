@@ -1,9 +1,5 @@
 """Async SQLite connection manager with simple connection pool."""
 
-# ANAM GUIDE: DATABASE CONNECTION POOL
-# What: Hands out connections to the one SQLite database file (data/anam.db) and recycles them in a small pool.
-# Called by: Almost everything — nearly every api/ route and services/ module does get_db()/release_db() through here.
-# Edit here when: You need to tune how SQLite behaves (timeouts, caching, pool size). Table shapes live in db/schema.py, not here.
 
 import asyncio
 

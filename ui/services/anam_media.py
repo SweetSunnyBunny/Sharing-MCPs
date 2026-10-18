@@ -1,4 +1,6 @@
 """Bounded private image previews shared by native tools and bridge attachments."""
+
+
 from __future__ import annotations
 
 import base64

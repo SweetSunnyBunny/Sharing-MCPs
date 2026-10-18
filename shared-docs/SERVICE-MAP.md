@@ -28,3 +28,8 @@ require your own accounts or deployments.
 
 No package requires the original developer's deployment or personal data.
 Optional integrations are described in the corresponding package README.
+
+- home-assistant-mcp: Home Assistant state and service calls.
+- watch-mcp: Wrist replies, vitals and gated messages.
+- anam-touch-mcp: Timers, orbs, audio, daily wins and configured SMS.
+- crosstalk-mcp: Companion communication through Anam.

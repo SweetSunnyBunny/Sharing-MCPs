@@ -92,3 +92,73 @@ def test_startup_catchup_handles_a_restart_across_midnight(monkeypatch):
     )
 
     assert queued == [70]
+
+
+def _wake_log_db(rows):
+    """A real in-memory autowake_log, so the UPDATE statements actually run."""
+    import aiosqlite
+
+    async def build():
+        db = await aiosqlite.connect(":memory:")
+        await db.execute(
+            "CREATE TABLE autowake_log (id INTEGER PRIMARY KEY, schedule_id INTEGER, "
+            "started_at_epoch INTEGER, completed_at TEXT, completed_at_epoch INTEGER, status TEXT)"
+        )
+        await db.executemany(
+            "INSERT INTO autowake_log (id, schedule_id, started_at_epoch, status) VALUES (?, ?, ?, ?)",
+            rows,
+        )
+        await db.commit()
+        return db
+
+    return build
+
+
+def test_restart_marks_running_wakes_interrupted_so_catchup_retries_them(monkeypatch):
+    now = datetime(2026, 9, 6, 22, 15, 7, tzinfo=ZoneInfo("America/Chicago"))
+    crossed = int(now.replace(second=0).timestamp())  # schedule 62 fired at 22:15
+
+    async def scenario():
+        db = await _wake_log_db([
+            (1, 62, crossed, "running"),      # killed mid-wake by the restart
+            (2, 61, crossed - 900, "completed"),
+        ])()
+
+        class _Schedules:
+            async def execute_fetchall(self, sql, params=()):
+                if "FROM autowake_schedule" in sql:
+                    return [(61, 22, 0), (62, 22, 15)]
+                return await db.execute_fetchall(sql, params)
+
+            def __getattr__(self, name):
+                return getattr(db, name)
+
+        fake_scheduler = _FakeScheduler()
+        _install_fakes(monkeypatch, _Schedules(), fake_scheduler)
+
+        before = await autowake._queue_recent_startup_catchups(now=now, delay_seconds=20)
+        marked = await autowake._recover_interrupted_wakes()
+        after = await autowake._queue_recent_startup_catchups(now=now, delay_seconds=20)
+        statuses = dict(await db.execute_fetchall("SELECT id, status FROM autowake_log"))
+        await db.close()
+        return before, marked, after, statuses
+
+    before, marked, after, statuses = asyncio.run(scenario())
+    assert before == []            # a 'running' row used to hide the wake forever
+    assert marked == 1
+    assert after == [62]
+    assert statuses == {1: "interrupted", 2: "completed"}
+
+
+def test_close_wake_log_only_touches_a_row_still_running(monkeypatch):
+    async def scenario():
+        db = await _wake_log_db([(1, 62, 100, "running"), (2, 62, 200, "completed")])()
+        _install_fakes(monkeypatch, db, _FakeScheduler())
+        await autowake._close_wake_log(1, "failed")
+        await autowake._close_wake_log(2, "failed")
+        await autowake._close_wake_log(None, "failed")
+        rows = await db.execute_fetchall("SELECT id, status, completed_at IS NOT NULL FROM autowake_log ORDER BY id")
+        await db.close()
+        return rows
+
+    assert asyncio.run(scenario()) == [(1, "failed", 1), (2, "completed", 0)]

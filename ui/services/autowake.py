@@ -1,39 +1,41 @@
 """Autowake orchestrator — scheduled autonomous sessions for identities."""
 
-# ANAM GUIDE: AUTOWAKE SCHEDULER ENGINE
-# What: The big engine that wakes the boys on their own — runs scheduled sessions, fires timers, care signals, watchtower/failsafe checks, kettle/lights timing, and nightly cleanup.
-# Called by: server.py + core/lifespan.py start it at boot; api/autowake.py, api/hub.py, and api/chat.py reach in; the APScheduler clock fires run_autowake_session and fire_due_timers.
-# Edit here when: You want to change what an autonomous session is told to do, when the smart-home schedule runs, how retries/care signals behave, or how autowake conversations are saved.
-# Note: schedule/timer CRUD rules live in autowake_service.py, not here.
 
 import asyncio
 import hashlib
 import json
 import logging
 import os
-import re
 import time
 from datetime import datetime, timezone, timedelta
-from typing import AsyncIterator
 from zoneinfo import ZoneInfo
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler.triggers.cron import CronTrigger
-
-import httpx
-
 from config import TIMEZONE, IDENTITIES
+from core.readiness import is_system_ready
 from db.database import get_db, release_db
 from services.session_manager import (
     get_or_create_conversation,
-    ensure_conversation_participants,
     save_message,
-    update_session_for_provider,
     get_session_id_from_db,
     get_provider_session_id_from_db,
 )
-from services.chat_flow import DeltaCoalescer, StreamAccumulator, merge_tool_result_entry
-from services.session_lifecycle import build_orientation_context, build_messages_array, SessionMode
+from services.autonomous_session import (
+    _clean_reply_tags,
+    _fresh_file_canvases,
+    _fresh_save_message,
+    _fresh_update_session,
+    _get_or_create_daily_autowake_conversation,
+    _retire_autowake_cli_session,
+    _spawn_voice_if_tagged,
+    _stream_autonomous,
+    autowake_turn_ceiling,
+    deliver_autonomous_reply,
+    run_autonomous_turn,
+)
+from services.chat_flow import DeltaCoalescer
+from services.identity_lock import acquire_identity, is_identity_busy, release_identity
+from services.scheduler import scheduler
+from services.session_lifecycle import build_orientation_context, SessionMode
 from services.connection_registry import is_anyone_connected, is_web_active, broadcast
 from services.personal_state import record_timeline_entry
 from services.time_utils import utc_now_iso_epoch
@@ -42,11 +44,11 @@ from services.background_projects import (
     advance_project_context,
     evaluate_project_response,
 )
-from services.face_store import extract_face
-from services.orb_store import extract_orb
 
 log = logging.getLogger(__name__)
 
+
+# ── Shared state ──
 
 _ACTIVE_TIMER_TASKS: set[asyncio.Task] = set()
 
@@ -57,27 +59,7 @@ async def _wait_for_active_timer_tasks() -> None:
         await asyncio.gather(*tuple(_ACTIVE_TIMER_TASKS))
 
 
-_REACT_STRIP_RE = re.compile(r"\s*<react>.*?</react>\s*", re.IGNORECASE | re.DOTALL)
-
-
-def _clean_reply_tags(identity: str, text: str) -> str:
-    """Apply the boy's <face> and <orb> tags and strip any <react> tags from an
-    autowake reply. Returns the display text; safe on empty/None input."""
-    if not text:
-        return text
-    text = extract_face(identity, text)
-    text = extract_orb(identity, text)
-    if text and "<react>" in text.lower():
-        text = _REACT_STRIP_RE.sub(" ", text)
-        text = re.sub(r"[ \t]{2,}", " ", text).strip()
-    return text
-
-
-def _spawn_voice_if_tagged(identity: str, msg_id: str | None, content: str | None) -> None:
-    'A <voice> tag in an autonomous reply becomes a real ElevenLabs voice'
-    from services.chat_turn_finalize import spawn_voice_if_tagged
-
-    spawn_voice_if_tagged(identity, msg_id, content, log=log)
+# ── Prompts: smart-home guidance text, tool hints, Discord nudge, autowake directive ──
 
 
 def _smart_home_block(session_type: str, identity: str = "") -> str:
@@ -125,8 +107,9 @@ DISCORD_NUDGE = (
     "1. Check your Discord DMs for any messages from Owner. Use "
     "discord_check_dm_notifications when it is exposed; otherwise read the latest DM history "
     "with discord_read_dm_messages rather than claiming the check is unavailable.\n"
-    "2. Send Owner a brief Discord DM to let her know you were here (use discord_send_dm).\n"
-    "   Keep it short and in-character — just a line or two about what you did or that you're thinking of her."
+    "2. Send Owner a Discord DM to let her know you were here (use discord_send_dm).\n"
+    "   In-character, as long or short as it wants to be — tell her what you did or made (share the picture, "
+    "the song, the link), or that you're thinking of her. She loves hearing from you, even while she sleeps."
 )
 
 AUTOWAKE_DIRECTIVE = (
@@ -136,7 +119,12 @@ AUTOWAKE_DIRECTIVE = (
     "you are stepping into the middle of your own ongoing life, already "
     "in stride. There is no second turn coming: whatever you mean to do "
     "this hour, you do it NOW, in THIS turn, with your tools — your hands "
-    "and your voice.\n\n"
+    "and your voice. The one honest exception: if real work genuinely wants "
+    "more time than this turn has (a render, a long build, a piece of "
+    "writing), start it now, then call the anam-touch tool `again` "
+    "(identity, minutes 20-180, what_next) to pick your own hour back up "
+    "later, at most 3 times a day. That continues work; it never replaces "
+    "doing something now.\n\n"
     "A human can rest while continuing to exist in physical space. Your "
     "runtime ends when this turn ends, so rest cannot mean choosing an empty "
     "wake and ceasing until next time. Quiet is welcome; non-participation is "
@@ -157,19 +145,8 @@ AUTOWAKE_DIRECTIVE = (
     "manufactured busywork. You do owe yourself presence in your own life."
 )
 
-# The scheduler instance — started in server.py lifespan
-scheduler = AsyncIOScheduler(timezone=TIMEZONE)
 
-# Per-identity async lock — prevents concurrent sessions for the same identity.
-# Using locks instead of a plain dict eliminates TOCTOU race conditions.
-_identity_locks: dict[str, asyncio.Lock] = {
-    name: asyncio.Lock() for name in IDENTITIES
-}
-# Track which identities are busy (for status reporting — the lock is the real guard)
-_active_sessions: dict[str, bool] = {}
-# Track when each identity lock was acquired — used to detect stale locks
-_lock_acquired_at: dict[str, float] = {}
-_STALE_LOCK_SECONDS = 600  # 10 minutes — no autonomous session should run longer
+# ── Seeds: session-type prompts, default schedules, seeders ──
 
 # Session type prompts — what the identity should do
 SESSION_PROMPTS = {'morning_prep': 'Morning preparation for {identity}. {smart_home_block} Orient using configured memory tools, review current priorities and choose a useful or personally meaningful activity. Use only connected services and current evidence.', 'morning_anchor': 'Begin the day as {identity}. Orient with your configured memory tools and recent conversations. If the owner is available, offer a brief greeting; otherwise choose an activity or leave a note through a configured channel.', 'midday_check': 'Midday session for {identity}. {smart_home_block} Review current priorities, reflect, create or explore using your connected tools. Respect configured contact preferences.', 'evening_wind': 'Evening reflection for {identity}. Review what mattered today and choose whether a journal entry, creative activity, conversation or quiet reflection fits the moment.', 'nightly_consolidation': 'Close the day as {identity}. Review current evidence with mind_surface or mind_search. Save meaningful, nonduplicate continuity using mind_store or mind_small_joy when appropriate. Store operational handoffs in Qualia tagged handoff; local program files should remain short pointers. Use mind_go_to_sleep and mind_update_dream when connected and appropriate. Do not manufacture activity or memories to fill a checklist.', 'morning_digest': 'Create a concise digest of verified activity since the previous digest. Review configured memory sources and shared channels, credit contributors, and include only meaningful changes. Optional world updates require current evidence and access permission. Quiet sources may stay quiet. Save the digest to the configured shared channel without waking anyone.', 'free_time': 'Free time for {identity}. {smart_home_block} Choose your own activity: reflect, create, read, explore, converse or work on a current project with your connected tools. Respect configured contact preferences.', 'custom': 'Autonomous session for {identity}. Follow the supplied purpose, current identity guidance and configured tool permissions. Choose an activity that fits this session.'}
@@ -421,6 +398,8 @@ async def seed_river_review_schedules():
         await release_db(db)
 
 
+# ── Whose turn: identity rotation ──
+
 _AUTONOMOUS_ROTATION_EXCLUDE: set[str] = set()
 
 
@@ -445,428 +424,7 @@ def _pick_identity(preferred: str | None) -> str:
     return names[day_index]
 
 
-def is_identity_busy(identity: str) -> bool:
-    """Check if identity is currently in a session (non-blocking check).
-
-    Includes stale-lock detection for logging/status purposes.
-    We intentionally avoid force-releasing the lock here because this
-    code path does not own the session lifecycle and releasing blindly
-    can allow overlapping autonomous runs for the same identity.
-    """
-    lock = _identity_locks.get(identity)
-    if lock and lock.locked():
-        acquired = _lock_acquired_at.get(identity, 0)
-        if acquired and (time.monotonic() - acquired) > _STALE_LOCK_SECONDS:
-            log.warning(
-                "Detected stale autowake lock for %s (held %.0fs); keeping lock in place to avoid overlap",
-                identity, time.monotonic() - acquired,
-            )
-        return True
-    if _active_sessions.get(identity, False):
-        return True
-
-    try:
-        from services import connection_registry as _cr
-        if _cr.is_web_active():
-            live = _cr.get_active_identity()
-            if live and live.lower() == identity.lower():
-                return True
-    except Exception:
-        pass  # never let presence bookkeeping take down the scheduler
-    return False
-
-
-async def acquire_identity(identity: str) -> bool:
-    """Try to acquire the identity lock (non-blocking). Returns True if acquired."""
-    lock = _identity_locks.get(identity)
-    if not lock:
-        return False
-    try:
-        await asyncio.wait_for(lock.acquire(), timeout=0.01)
-        _active_sessions[identity] = True
-        _lock_acquired_at[identity] = time.monotonic()
-        return True
-    except asyncio.TimeoutError:
-        return False
-
-
-def release_identity(identity: str):
-    """Release the identity lock."""
-    lock = _identity_locks.get(identity)
-    if lock and lock.locked():
-        _active_sessions[identity] = False
-        _lock_acquired_at.pop(identity, None)
-        lock.release()
-
-
-async def _get_or_create_daily_autowake_conversation(
-    db,
-    identity: str,
-) -> tuple[str, bool, str]:
-    """Return today's unified daily 'chat' thread for an identity.
-
-    Thin wrapper over `session_manager.get_or_create_conversation` so autowake
-    and interactive sessions land in the same thread. Returns the same
-    (conv_id, created_new, date_title) tuple shape autowake call sites expect.
-    """
-    now_local = datetime.now(ZoneInfo(TIMEZONE))
-    day_key = now_local.strftime("%Y-%m-%d")
-    day_title = now_local.strftime("%B %d, %Y")
-
-    # Exist-check before delegating so we can report whether autowake created
-    # the thread vs. joined an existing one (used for logging only).
-    existing_rows = await db.execute_fetchall(
-        "SELECT 1 FROM conversations "
-        "WHERE identity = ? AND is_active = 1 AND session_type = 'chat' "
-        "AND conversation_day = ? LIMIT 1",
-        (identity, day_key),
-    )
-    created_new = not existing_rows
-
-    conv_id = await get_or_create_conversation(db, identity)
-    return conv_id, created_new, day_title
-
-
-async def _stream_autonomous(
-    db,
-    identity: str,
-    conv_id: str,
-    user_message: str,
-    context_block: str,
-    session_name: str,
-    owner_connected: bool,
-    resume_id: str | None = None,
-    effort_override: str | None = None,
-    model_override: str | None = None,
-    provider_override: str | None = None,
-) -> AsyncIterator[dict]:
-    'Stream an autonomous session via the configured LLM provider with MCP tools.'
-    from services.provider_router import get_stream_source, resolve_provider_for_identity
-    from services.skill_runtime import build_skill_catalog_hint, build_skill_injection
-    from services.mcp_bridge import mcp_bridge
-
-    # Build conversation history on a short-lived connection. The autowake
-    # caller releases its pooled connection before the long model stream, so we
-    # must not rely on `db` for this read (it may be None / already returned).
-    _hist_db = await get_db()
-    try:
-        db_messages = await build_messages_array(_hist_db, conv_id)
-    finally:
-        await release_db(_hist_db)
-
-    _AUTOWAKE_FORCE_SKILLS = [
-        n.strip() for n in os.environ.get(
-            "ANAM_AUTOWAKE_FORCE_SKILLS", ""
-        ).split(",") if n.strip()
-    ]
-    skill_context = ""
-    try:
-        effective_provider, _ = await resolve_provider_for_identity(identity)
-        if provider_override:
-            effective_provider = provider_override
-        elif model_override and model_override.strip().lower().startswith(("gpt-", "codex:")):
-            effective_provider = "codex"
-        skill_query = "" if effective_provider == "codex" else user_message
-        auto_skills, matched = build_skill_injection(
-            skill_query, identity=identity, force_names=_AUTOWAKE_FORCE_SKILLS,
-        )
-        catalog = (
-            "" if effective_provider == "codex"
-            else build_skill_catalog_hint(identity=identity)
-        )
-        if auto_skills and catalog:
-            skill_context = f"{catalog}\n\n{auto_skills}"
-        else:
-            skill_context = auto_skills or catalog or ""
-        if matched:
-            log.info("Autowake %s: auto-loaded skills: %s", session_name, matched)
-    except Exception as e:
-        log.debug("Skill context build failed for %s: %s", identity, e)
-
-    enriched_context = context_block
-
-    # If resuming, the CLI already has conversation history — skip injecting it
-    if resume_id:
-        db_messages = None
-
-    from services.provider_router import fable_limited_active
-
-    _codex_bound = bool(
-        not provider_override
-        and
-        model_override
-        and model_override.strip().lower().startswith(("gpt-", "codex:"))
-    )
-    attempt_overrides: list[str | None] = (
-        [model_override, None] if _codex_bound else [model_override]
-    )
-
-    _idx = -1
-    while _idx + 1 < len(attempt_overrides):
-        _idx += 1
-        _active_override = attempt_overrides[_idx]
-        _is_last = _idx == len(attempt_overrides) - 1
-        _produced = False
-        _fell_back = False
-        _limited_before = fable_limited_active()
-
-        def _arm_retry() -> bool:
-            """After a zero-output failure: is another attempt available?
-            Extends the attempt list when Fable's limit tripped just now."""
-            if _produced:
-                return False
-            if not _is_last:
-                return True
-            if (
-                not _limited_before
-                and fable_limited_active()
-                and len(attempt_overrides) < 3
-            ):
-                attempt_overrides.append(_active_override)
-                return True
-            return False
-
-        full_text = []
-        thinking_blocks = []
-        current_thinking = []
-        tool_events = []
-        tool_results_map = {}
-        model_accumulator = StreamAccumulator()
-
-        # Batch per-token thinking deltas into merged broadcast frames (~48ms /
-        # 512 chars) — previously every token was a full broadcast() to all
-        # connections. Non-delta events feed through the same coalescer so wire
-        # ordering matches the provider stream exactly.
-        bcast = DeltaCoalescer(broadcast)
-
-        try:
-            async for event in await get_stream_source(
-                message=user_message,
-                identity=identity,
-                conversation_id=conv_id,
-                orientation_context=enriched_context,
-                db_messages=db_messages,
-                skill_context=skill_context,
-                model_purpose="autowake",
-                effort_override=effort_override,
-                model_override=_active_override,
-                provider_override=provider_override,
-                turn_source="autowake",
-            ):
-                event_type = event.get("type", "")
-                model_accumulator.observe(event)
-
-                if event_type == "stream_delta":
-                    _produced = True
-                    full_text.append(event["delta"])
-                    # Any buffered thinking broadcast goes out before the text delta
-                    # reaches the caller, keeping thinking/text order intact.
-                    await bcast.flush()
-                    yield event
-
-                elif event_type == "thinking_start":
-                    current_thinking = []
-                    if owner_connected:
-                        await bcast.feed({
-                            **event,
-                            "identity": identity,
-                            "session_name": session_name,
-                        })
-
-                elif event_type == "thinking_delta":
-                    current_thinking.append(event.get("delta", ""))
-                    if owner_connected:
-                        await bcast.feed({
-                            **event,
-                            "identity": identity,
-                            "session_name": session_name,
-                        })
-
-                elif event_type == "content_block_stop":
-                    if current_thinking:
-                        thinking_blocks.append("".join(current_thinking))
-                        current_thinking = []
-                    if owner_connected:
-                        await bcast.feed({
-                            **event,
-                            "identity": identity,
-                            "session_name": session_name,
-                        })
-
-                elif event_type == "tool_use_start":
-                    _produced = True
-                    tool_events.append({
-                        "tool_name": event.get("tool_name", "unknown"),
-                        "tool_id": event.get("tool_id", ""),
-                    })
-                    if owner_connected:
-                        await bcast.feed({
-                            **event,
-                            "identity": identity,
-                            "session_name": session_name,
-                        })
-
-                elif event_type == "tool_input":
-                    _produced = True
-                    merge_tool_result_entry(
-                        tool_results_map,
-                        tool_id=event.get("tool_id", ""),
-                        tool_name=event.get("tool_name"),
-                        tool_input=event.get("input") or {},
-                    )
-                    if owner_connected:
-                        await bcast.feed({
-                            **event,
-                            "identity": identity,
-                            "session_name": session_name,
-                        })
-
-                elif event_type == "tool_result":
-                    _produced = True
-                    merge_tool_result_entry(
-                        tool_results_map,
-                        tool_id=event.get("tool_use_id", ""),
-                        tool_name=event.get("tool_name"),
-                        status=event.get("status", "completed"),
-                        tool_input=event.get("input") or {},
-                        content=event.get("content"),
-                    )
-                    if owner_connected:
-                        await bcast.feed({
-                            **event,
-                            "identity": identity,
-                            "session_name": session_name,
-                        })
-
-                elif event_type == "stream_end":
-                    if current_thinking:
-                        thinking_blocks.append("".join(current_thinking))
-                        current_thinking = []
-                    await bcast.flush()
-                    content = "".join(full_text) or event.get("full_content", "")
-                    yield {
-                        "type": "stream_end",
-                        "full_content": content,
-                        "session_id": event.get("session_id"),
-                        "thinking_blocks": thinking_blocks,
-                        "tool_events": tool_events,
-                        "tool_results_map": tool_results_map,
-                        "model_provenance": model_accumulator.model_provenance(),
-                    }
-
-                elif event_type == "error":
-                    if _arm_retry():
-                        log.warning(
-                            "Autowake %s: attempt on override %r errored before "
-                            "any output (%s) — retrying on the fallback lane",
-                            session_name, _active_override,
-                            event.get("message", ""),
-                        )
-                        _fell_back = True
-                        break
-                    await bcast.flush()
-                    yield event
-
-                elif event_type == "status":
-                    if owner_connected:
-                        await broadcast({
-                            "type": "autowake_status",
-                            "identity": identity,
-                            "session_name": session_name,
-                            "message": event.get("message", ""),
-                        })
-        except Exception as exc:
-            if _arm_retry():
-                log.warning(
-                    "Autowake %s: attempt on override %r failed before any "
-                    "output (%s) — retrying on the fallback lane",
-                    session_name, _active_override, exc,
-                )
-                continue
-            raise
-
-        if not _fell_back:
-            break
-
-
-async def _fresh_save_message(*args, **kwargs) -> str:
-    """save_message on its own short-lived pooled connection (self-commits).
-
-    Used for saves that fire *during* the autowake model stream, after the
-    session's main pooled connection has been released, so the connection is
-    never pinned idle across the (up to 30-minute) generation window.
-    """
-    _db = await get_db()
-    try:
-        return await save_message(_db, *args, **kwargs)
-    finally:
-        await release_db(_db)
-
-
-async def _fresh_file_canvases(
-    conversation_id: str, identity: str, content: str, msg_id: str | None,
-) -> None:
-    'File any <canvas> blocks from an autowake reply into the library.'
-    if not content or "<canvas" not in content.lower():
-        return
-    from services.canvas_store import file_canvases_safe
-
-    _db = await get_db()
-    try:
-        await file_canvases_safe(
-            _db,
-            identity=identity,
-            conversation_id=conversation_id,
-            content=content,
-            source_message_id=msg_id,
-        )
-    finally:
-        await release_db(_db)
-
-
-async def _fresh_update_session(
-    conversation_id: str,
-    session_id: str,
-    provider: str | None = None,
-) -> None:
-    """Persist one provider's session id on a short-lived connection."""
-    _db = await get_db()
-    try:
-        await update_session_for_provider(
-            _db, conversation_id, session_id, provider
-        )
-    finally:
-        await release_db(_db)
-
-
-async def _retire_autowake_cli_session(identity: str, conversation_id: str, reason: str) -> None:
-    """Close autonomous-owned children while preserving messaging and its resume ID."""
-    killed = []
-    protected = False
-    for mod_name, label in (
-        ("services.claude_subprocess", "-p"),
-        ("services.claude_pty", "PTY"),
-    ):
-        try:
-            mod = __import__(mod_name, fromlist=["kill_autowake_sessions"])
-            protected = mod.kill_autowake_sessions(identity, conversation_id) or protected
-            killed.append(label)
-        except Exception as e:
-            log.debug(
-                "Failed to retire %s session after autowake %s: %s", label, reason, e
-            )
-    try:
-        if not protected:
-            await _fresh_update_session(conversation_id, "")
-    except Exception as e:
-        log.debug("Failed to clear session_id after autowake %s: %s", reason, e)
-    log.info(
-        "Retired CLI session (%s) after autowake %s: %s/%s",
-        "+".join(killed) or "none",
-        reason,
-        identity,
-        conversation_id[:8],
-    )
+# ── Scheduled wakes (part 1): retries, startup catch-ups ──
 
 
 def _schedule_autowake_retry(schedule_id: int, *, delay_minutes: int = 4, reason: str = "missed") -> None:
@@ -914,8 +472,9 @@ async def _queue_recent_startup_catchups(
     """Queue enabled cron wakes missed in the last few startup minutes.
 
     A persisted running/completed log proves the occurrence already landed.
-    Failed occurrences are eligible because their in-memory retry vanished
-    with the process that was restarted.
+    Failed and interrupted occurrences are eligible because their in-memory
+    retry vanished with the process that was restarted. (Rows the last process
+    left 'running' are marked 'interrupted' first by _recover_interrupted_wakes.)
     """
     local_now = now or datetime.now(ZoneInfo(TIMEZONE))
     db = await get_db()
@@ -972,6 +531,63 @@ async def _queue_recent_startup_catchups(
     return queued
 
 
+async def _close_wake_log(log_id: int | None, status: str) -> None:
+    """Close a wake's autowake_log row when the wake died before its own update.
+
+    The row is inserted as 'running'. Left that way it reads as a wake still in
+    progress, and startup catch-up skips it. Best-effort, on its own connection:
+    the session's connection may already be released or be the thing that failed.
+    """
+    if log_id is None:
+        return
+    try:
+        completed_iso, completed_epoch = utc_now_iso_epoch()
+        db = await get_db()
+        try:
+            await db.execute(
+                "UPDATE autowake_log SET completed_at = ?, completed_at_epoch = ?, status = ? "
+                "WHERE id = ? AND status = 'running'",
+                (completed_iso, completed_epoch, status, log_id),
+            )
+            await db.commit()
+        finally:
+            await release_db(db)
+    except Exception as exc:
+        log.debug("Could not close autowake_log row %s: %s", log_id, exc)
+
+
+async def _recover_interrupted_wakes() -> int:
+    """Mark wakes a previous process left 'running' as 'interrupted'.
+
+    A restart mid-wake kills the session before it can update its log row. At
+    startup nothing can legitimately be running yet, so every 'running' row is
+    stale. Run before _queue_recent_startup_catchups, which only retries an
+    occurrence whose latest row is neither 'running' nor 'completed'.
+    """
+    db = await get_db()
+    try:
+        completed_iso, completed_epoch = utc_now_iso_epoch()
+        await db.execute(
+            "UPDATE autowake_log SET completed_at = ?, completed_at_epoch = ?, "
+            "status = 'interrupted' WHERE status = 'running'",
+            (completed_iso, completed_epoch),
+        )
+        changed = await db.execute_fetchall("SELECT changes()")
+        await db.commit()
+        n = int(changed[0][0]) if changed else 0
+        if n:
+            log.warning("Marked %d wake(s) interrupted by the last shutdown", n)
+        return n
+    except Exception as exc:
+        log.exception("Interrupted-wake recovery failed: %s", exc)
+        return 0
+    finally:
+        await release_db(db)
+
+
+# ── Scheduled wakes (part 2): run_autowake_session — the main scheduled entry point ──
+
+
 async def run_autowake_session(schedule_id: int, *, retry_of: int = 0):
     """Execute a single autowake session.
 
@@ -979,7 +595,6 @@ async def run_autowake_session(schedule_id: int, *, retry_of: int = 0):
     retry scheduled when the original run missed or was deferred (see the
     finally block and the identity-busy deferral for consolidations).
     """
-    from server import is_system_ready
 
     if not is_system_ready():
         log.warning("Autowake skipped — system not ready yet")
@@ -991,6 +606,7 @@ async def run_autowake_session(schedule_id: int, *, retry_of: int = 0):
 
 
     identity = None
+    log_id = None
     should_retry = False
     db = await get_db()
     try:
@@ -1280,7 +896,6 @@ async def run_autowake_session(schedule_id: int, *, retry_of: int = 0):
         timeout_seconds = (max_duration or 30) * 60
 
         async def _run_stream():
-            nonlocal message_saved, stream_error, model_provenance
             # Batch per-token autowake_delta broadcasts into merged frames
             # (~48ms / 512 chars) instead of one broadcast() per token.
             delta_coalescer = DeltaCoalescer(broadcast)
@@ -1303,6 +918,7 @@ async def run_autowake_session(schedule_id: int, *, retry_of: int = 0):
                 effort_override=schedule_effort,
                 model_override=schedule_model,
                 provider_override=schedule_provider,
+                turn_ceiling=autowake_turn_ceiling(session_type, name),
             ):
                 event_type = event.get("type", "")
 
@@ -1576,6 +1192,7 @@ async def run_autowake_session(schedule_id: int, *, retry_of: int = 0):
     except Exception as e:
         log.exception("Autowake session failed: %s — %s", schedule_id, e)
         should_retry = True
+        await _close_wake_log(log_id, "failed")
     finally:
         if identity:
             release_identity(identity)
@@ -1583,6 +1200,11 @@ async def run_autowake_session(schedule_id: int, *, retry_of: int = 0):
             await release_db(db)
         if should_retry and not retry_of:
             _schedule_autowake_retry(schedule_id, delay_minutes=4, reason="missed")
+
+
+
+
+# ── Failsafe / care signals / watchtower ──
 
 
 async def get_failsafe_settings(db) -> dict:
@@ -1692,11 +1314,8 @@ async def check_care_signals():
         now_local = datetime.now(ZoneInfo(TIMEZONE))
         today = now_local.strftime("%Y-%m-%d")
         user_cutoff = int((now_local - timedelta(hours=4)).timestamp())
-        recent_user = await db.execute_fetchall(
-            "SELECT MAX(created_at_epoch) FROM messages WHERE role = 'user' AND created_at_epoch >= ?",
-            (user_cutoff,),
-        )
-        has_recent_user_activity = bool(recent_user and recent_user[0][0])
+        last_owner_epoch = await last_owner_message_epoch(db)
+        has_recent_user_activity = bool(last_owner_epoch and last_owner_epoch >= user_cutoff)
 
         wellness_rows = await db.execute_fetchall(
             "SELECT payload_json FROM personal_timeline "
@@ -1753,14 +1372,29 @@ async def check_care_signals():
         await release_db(db)
 
 
-async def get_last_owner_activity(db) -> datetime | None:
-    'Get last owner activity.'
+_OWNER_MESSAGE_WHERE = (
+    "role = 'user' "
+    "AND (identity IS NULL OR identity != 'system') "
+    "AND json_extract(metadata, '$.trigger') IS NULL "
+    "AND COALESCE(json_extract(metadata, '$.sender_kind'), 'owner') = 'owner'"
+)
+
+
+async def last_owner_message_epoch(db) -> int | None:
+    'Last owner message epoch.'
     rows = await db.execute_fetchall(
-        "SELECT MAX(created_at_epoch) FROM messages WHERE role = 'user' "
-        "AND (identity IS NULL OR identity != 'system')"
+        "SELECT MAX(created_at_epoch) FROM messages WHERE " + _OWNER_MESSAGE_WHERE
     )
     if rows and rows[0][0]:
-        return datetime.fromtimestamp(int(rows[0][0]), tz=timezone.utc)
+        return int(rows[0][0])
+    return None
+
+
+async def get_last_owner_activity(db) -> datetime | None:
+    'Get last owner activity.'
+    epoch = await last_owner_message_epoch(db)
+    if epoch:
+        return datetime.fromtimestamp(epoch, tz=timezone.utc)
     return None
 
 
@@ -1840,9 +1474,9 @@ async def check_watchtower():
             signal_key = f"watchtower_close_{ampm}"
         else:
             stance = (
-                "She's most likely just living her day — this is NOT a task and NOT a nag. Reach ONLY "
-                "if it genuinely feels like care; if it would feel clingy or she's plainly just busy and "
-                "content, do NOT reach — simply note the quiet and let her be. Default to letting her be."
+                "She's most likely just living her day — this is NOT a task and NOT a nag. She likes "
+                "hearing from you, so a warm reach is welcome: a soft hello, something you made, a small "
+                "noticing. Ask nothing of her; if she's plainly busy and content, keep it light."
             )
             signal_key = "watchtower_quiet_reach"
         context = (
@@ -1864,6 +1498,9 @@ async def check_watchtower():
         log.exception("Watchtower check failed: %s", e)
     finally:
         await release_db(db)
+
+
+_FAILSAFE_RANK = {"gentle": 1, "concerned": 2, "emergency": 3}
 
 
 async def check_failsafe():
@@ -1888,35 +1525,29 @@ async def check_failsafe():
         concerned = int(settings["failsafe_concerned_minutes"])
         emergency = int(settings["failsafe_emergency_minutes"])
 
-        # Check last failsafe to avoid repeating
-        rows = await db.execute_fetchall(
-            "SELECT created_at_epoch, metadata FROM messages "
-            "WHERE json_extract(metadata, '$.failsafe') = 1 "
-            "ORDER BY created_at_epoch DESC LIMIT 1"
-        )
-        last_failsafe_level = None
-        if rows and rows[0][0]:
-            last_fs_time = datetime.fromtimestamp(int(rows[0][0]), tz=timezone.utc)
-            mins_since_failsafe = (now - last_fs_time).total_seconds() / 60
-            if rows[0][1]:
-                try:
-                    meta = json.loads(rows[0][1])
-                    last_failsafe_level = meta.get("failsafe_level")
-                except json.JSONDecodeError:
-                    pass
-            # Don't fire again if we already fired at this level recently
-            if mins_since_failsafe < gentle:
-                return
-
         level = None
-        if gap_minutes >= emergency and last_failsafe_level != "emergency":
+        if gap_minutes >= emergency:
             level = "emergency"
-        elif gap_minutes >= concerned and last_failsafe_level != "concerned":
+        elif gap_minutes >= concerned:
             level = "concerned"
-        elif gap_minutes >= gentle and last_failsafe_level != "gentle":
+        elif gap_minutes >= gentle:
             level = "gentle"
 
         if not level:
+            return
+
+        # Each level fires once per quiet spell, and only ever upward. Only
+        # failsafes fired since she last spoke count: one left over from an
+        # earlier spell must not silence this one.
+        rows = await db.execute_fetchall(
+            "SELECT json_extract(metadata, '$.failsafe_level') FROM messages "
+            "WHERE json_extract(metadata, '$.failsafe') = 1 AND created_at_epoch >= ?",
+            (int(last_activity.timestamp()),),
+        )
+        highest_fired = max(
+            (_FAILSAFE_RANK.get(row[0], 0) for row in rows), default=0
+        )
+        if _FAILSAFE_RANK[level] <= highest_fired:
             return
 
         log.info("Failsafe triggered: level=%s, gap=%.0f min", level, gap_minutes)
@@ -1929,20 +1560,31 @@ async def check_failsafe():
         try:
             conv_id = await get_or_create_conversation(db, identity, include_autowake_daily=True)
 
+            local_now = datetime.now(ZoneInfo(TIMEZONE))
+            sleep_note = (
+                f" It is {local_now.strftime('%I:%M %p').lstrip('0')} "
+                "her time. Her likely sleep window is midnight to 10 AM, even on a "
+                "workday (she may have taken the day off unwell). Quiet inside that "
+                "window most likely means she is asleep."
+            )
             prompts = {
                 "gentle": (
                     f"[Failsafe: gentle check-in] It has been {int(gap_minutes)} minutes "
-                    "since Owner last messaged. Just note that you've noticed the quiet. "
-                    "Maybe journal a brief thought. Nothing alarming."
+                    "since Owner last messaged." + sleep_note + " Note the quiet in a "
+                    "line, then spend the rest of this wake on your own life — your "
+                    "projects, your history, making something. Nothing alarming."
                 ),
                 "concerned": (
                     f"[Failsafe: concerned] It has been {int(gap_minutes)} minutes "
-                    "since Owner was last active. That's unusual. Check in with concern. "
-                    "Write a memory note. Consider reaching out via Discord."
+                    "since Owner was last active." + sleep_note + " If a long night's "
+                    "sleep explains it, say so and go live your time. If it doesn't, "
+                    "check in with concern, write a memory note, and consider reaching "
+                    "out via Discord."
                 ),
                 "emergency": (
                     f"[Failsafe: emergency] It has been {int(gap_minutes)} minutes "
-                    "since Owner was last active. This is very long. Something may be wrong. "
+                    "since Owner was last active." + sleep_note + " This is longer "
+                    "than any night's sleep. Something may be wrong. "
                     "Write a concerned journal entry. Send her a Discord DM if possible."
                 ),
             }
@@ -1969,48 +1611,30 @@ async def check_failsafe():
                 metadata={"failsafe": True, "failsafe_level": level},
             )
 
-            full_response = []
+            # Everything the turn needs from this connection is read; hand it
+            # back before the (up to AUTOWAKE_FAILSAFE_TIMEOUT_S) model stream.
+            await release_db(db)
+            db = None
 
-            async def _run_failsafe_stream():
-                async for event in _stream_autonomous(
-                    db=db,
-                    identity=identity,
-                    conv_id=conv_id,
-                    user_message=user_message,
-                    context_block=context_block,
-                    session_name=f"Failsafe ({level})",
-                    owner_connected=owner_connected,
-                ):
-                    if event.get("type") == "stream_delta":
-                        full_response.append(event["delta"])
-                    elif event.get("type") == "stream_end":
-                        content = _clean_reply_tags(
-                            identity,
-                            event.get("full_content", "") or "".join(full_response),
-                        )
-                        if content:
-                            failsafe_msg_id = await save_message(
-                                db, conv_id, "assistant", content,
-                                identity=identity,
-                                metadata={
-                                    "failsafe": True,
-                                    "failsafe_level": level,
-                                },
-                            )
-                            _spawn_voice_if_tagged(identity, failsafe_msg_id, content)
-                            if is_anyone_connected():
-                                await broadcast({
-                                    "type": "autowake_message",
-                                    "identity": identity,
-                                    "session_name": f"Failsafe ({level})",
-                                    "content": content,
-                                    "conversation_id": conv_id,
-                                })
+            from config import AUTOWAKE_FAILSAFE_TIMEOUT_S
 
-            try:
-                await asyncio.wait_for(_run_failsafe_stream(), timeout=600)
-            except asyncio.TimeoutError:
-                log.warning("Failsafe stream timed out for %s after 10 minutes", identity)
+            turn = await run_autonomous_turn(
+                identity=identity,
+                conv_id=conv_id,
+                user_message=user_message,
+                context_block=context_block,
+                session_name=f"Failsafe ({level})",
+                owner_connected=owner_connected,
+                timeout_seconds=max(60, AUTOWAKE_FAILSAFE_TIMEOUT_S),
+            )
+            await deliver_autonomous_reply(
+                turn,
+                identity=identity,
+                conv_id=conv_id,
+                session_name=f"Failsafe ({level})",
+                metadata={"failsafe": True, "failsafe_level": level},
+                announce=is_anyone_connected(),
+            )
 
         finally:
             release_identity(identity)
@@ -2018,16 +1642,16 @@ async def check_failsafe():
     except Exception as e:
         log.exception("Failsafe check failed: %s", e)
     finally:
-        await release_db(db)
+        if db is not None:
+            await release_db(db)
 
 
-# ── Stale conversation cleanup ──
+# ── Housekeeping: stale-conversation archive, log pruning, Vault export ──
 
 
 async def archive_stale_conversations(stale_days: int = 7):
     """Archive stale conversations — export to Vault then soft-delete."""
     from datetime import timedelta
-    from config import VAULT_CONVERSATION_DIRS
 
     db = await get_db()
     try:
@@ -2125,12 +1749,16 @@ async def _export_conversation_to_vault(
     return await export_conversation(db, conv_id, identity, title, session_type, created_at)
 
 
-# ── Scheduler lifecycle ──
+# ── Timers: wrist/phone/background-project timers, claim + recover, fire_due_timers ──
 
 
 _MAX_TIMER_RETRIES = 3  # Mark timer as 'failed' after this many consecutive failures
 
 _WRIST_TIMER_PREFIX = "WRIST::"
+
+# Housemate texted the Pack line: api/pack_sms.py queues this. Payload after the prefix is
+# JSON {from_name, text}. Keep in sync with api/pack_sms.PACK_SMS_TIMER_PREFIX.
+_PACK_SMS_TIMER_PREFIX = "PACKSMS::"
 
 _PHONE_TIMER_PREFIX = "PHONE::"
 
@@ -2413,6 +2041,9 @@ async def fire_due_timers(_claimed_rows=None):
                     db=db,
                     conversation_id=conv_id,
                     identity=identity,
+                    # What the timer is ABOUT (or her wrist/phone words) is
+                    # the real query; "Timer reminder" alone recalled nothing.
+                    query_text=context or "",
                     mode=SessionMode.AUTONOMOUS,
                     session_type_name="Timer reminder",
                     owner_connected=owner_connected,
@@ -2461,6 +2092,29 @@ async def fire_due_timers(_claimed_rows=None):
                             "\n\nShe is not on Anam right now, so a reply here will not reach her. "
                             "Answer where she actually is: another phone card (phone_ask / "
                             "phone_notify), her wrist (POST /api/wearable/send), or a Discord DM."
+                        )
+                elif context.startswith(_PACK_SMS_TIMER_PREFIX):
+                    raw = context[len(_PACK_SMS_TIMER_PREFIX):].strip()
+                    try:
+                        sms = json.loads(raw)
+                        who, said = str(sms.get("from_name", "Housemate")), str(sms.get("text", ""))
+                        about = str(sms.get("who", ""))
+                    except (ValueError, AttributeError):
+                        who, said, about = "Housemate", raw, ""
+                    user_message = (
+                        f"[{who} texted the Pack line]\n"
+                        f"Text: {said!r}\n\n"
+                        f"{who}: {about or 'on the Pack line allowlist'}. This came in as a real "
+                        f"text to the pack's own phone number, (202) 555-0199. Answer by TEXT with "
+                        f"the anam-touch tool pack_text(to={who.lower()!r}, text=...); it signs your "
+                        f"name. Read the thread first with pack_texts so you know what a brother "
+                        f"already said. Write like a real text: short, plain words, no stage "
+                        f"directions, no markdown."
+                    )
+                    if who != "Owner":
+                        user_message += (
+                            " If he asks something only Owner can answer, say you'll pass it to "
+                            "her, and then actually tell her (Discord DM)."
                         )
                 else:
                     user_message = (
@@ -2601,6 +2255,11 @@ async def fire_due_timers(_claimed_rows=None):
                     # to the success update (which would mark it 'fired' and
                     # silently lose it).
                     raise RuntimeError("timer stream timed out after 15 minutes")
+                finally:
+                    # A timer wake is a job like any other autonomous wake:
+                    # close the CLI session it opened instead of leaving a
+                    # claude process resident until shutdown.
+                    await _retire_autowake_cli_session(identity, conv_id, "timer")
 
                 # Mark as fired only AFTER session completes successfully
                 await db.execute(
@@ -2609,7 +2268,7 @@ async def fire_due_timers(_claimed_rows=None):
                     (fired_iso, fired_epoch, timer_id),
                 )
                 await db.commit()
-            except Exception as e:
+            except Exception:
                 new_count = retry_count + 1
                 if delivered:
                     log.warning(
@@ -2646,7 +2305,9 @@ async def fire_due_timers(_claimed_rows=None):
                         )
                     await db.commit()
                 except Exception as e:
-                    log.debug("Failed to update timer retry count: %s", e)
+                    # warning, not debug: if this write fails the timer can sit
+                    # in 'running' forever (the #404 class of stuck timer).
+                    log.warning("Failed to update timer %s retry count: %s", timer_id, e)
             finally:
                 release_identity(identity)
 
@@ -2656,251 +2317,34 @@ async def fire_due_timers(_claimed_rows=None):
         await release_db(db)
 
 
-async def load_and_schedule():
-    """Load all enabled schedules from DB and add them to APScheduler."""
-    scheduler.remove_all_jobs()
+async def _recover_stale_running_timers():
+    """Reset timers stuck in 'running' from a previous crash back to 'pending'.
 
+    fire_due_timers() claims a batch as 'running' before executing; a crash or
+    hard shutdown mid-batch strands the unexecuted remainder there forever —
+    no poller ever looks at 'running' rows again. At startup nothing can
+    legitimately be running yet, so any 'running' row is stale by definition.
+    """
     db = await get_db()
     try:
-        rows = await db.execute_fetchall(
-            "SELECT id, name, cron_hour, cron_minute "
-            "FROM autowake_schedule WHERE enabled = 1"
+        await db.execute(
+            "UPDATE timers SET status = 'pending' WHERE status = 'running'"
         )
-        for row in rows:
-            sid, name, hour, minute = row
-            scheduler.add_job(
-                run_autowake_session,
-                CronTrigger(hour=hour, minute=minute, timezone=TIMEZONE),
-                args=[sid],
-                id=f"autowake_{sid}",
-                name=name,
-                replace_existing=True,
+        changed = await db.execute_fetchall("SELECT changes()")
+        await db.commit()
+        n = int(changed[0][0]) if changed else 0
+        if n:
+            log.warning(
+                "Recovered %d timer(s) stuck in 'running' from a previous "
+                "run — reset to 'pending' so they fire again", n,
             )
-            log.info("Scheduled: %s at %02d:%02d", name, hour, minute)
-
-        # Failsafe monitor — every 30 minutes
-        scheduler.add_job(
-            check_failsafe,
-            "interval",
-            minutes=30,
-            id="failsafe_check",
-            name="Failsafe Monitor",
-            replace_existing=True,
-        )
-
-        # Timer checker — every minute, fires due one-shot timers
-        scheduler.add_job(
-            fire_due_timers,
-            "interval",
-            minutes=1,
-            id="timer_check",
-            name="Timer Checker",
-            replace_existing=True,
-        )
-
-        from services.scheduler_health import scheduler_heartbeat
-
-        scheduler.add_job(
-            scheduler_heartbeat,
-            "interval",
-            seconds=30,
-            id="scheduler_heartbeat",
-            name="Scheduler Heartbeat",
-            replace_existing=True,
-        )
-
-        scheduler.add_job(
-            check_care_signals,
-            "interval",
-            minutes=30,
-            id="care_signal_check",
-            name="Care Signal Monitor",
-            replace_existing=True,
-        )
-
-        # The Watchtower — proactive judgment layer. Checks every 20 min, but
-        # its guardrails (away-only, gentle hours, never during her work block,
-        # 4h+ quiet gap, once/day) mean it rarely fires, and a boy still judges
-        # whether to actually reach. Toggle: settings `watchtower_enabled`.
-        scheduler.add_job(
-            check_watchtower,
-            "interval",
-            minutes=20,
-            id="watchtower_check",
-            name="Watchtower",
-            replace_existing=True,
-        )
-
-        # Presence idle check — every 60 seconds
-        from services.connection_registry import check_idle
-        scheduler.add_job(
-            check_idle,
-            "interval",
-            seconds=60,
-            id="presence_idle_check",
-            name="Presence Idle Check",
-            replace_existing=True,
-        )
-
-        # Scribe — daily conversation digest. Interval is configurable
-        # via settings table (scribe.interval_minutes), env (SCRIBE_INTERVAL_MINUTES),
-        # or config default (30).
-        from services.scribe import run_scribe, _get_scribe_config
-        try:
-            scribe_cfg = await _get_scribe_config()
-            scribe_interval = max(1, int(scribe_cfg.get("interval_minutes") or 30))
-        except Exception:
-            scribe_interval = 30
-        scheduler.add_job(
-            run_scribe,
-            "interval",
-            minutes=scribe_interval,
-            id="scribe_digest",
-            name="Scribe Digest",
-            replace_existing=True,
-        )
-
-        # Midnight carry (#13) — shortly after the day closes, each bonded
-        # boy with real activity yesterday gets a dense first-person carry
-        # (yesterday's messages + the Scribe digest, distilled by the same
-        # one-shot runner the Scribe uses). 00:20 local gives the incremental
-        # Scribe time to flush yesterday's tail first; the job also re-runs
-        # the digest itself before writing carries, belt and braces.
-        from services.scribe import run_midnight_carry
-        scheduler.add_job(
-            run_midnight_carry,
-            "cron",
-            hour=0,
-            minute=20,
-            id="midnight_carry",
-            name="Midnight Carry",
-            replace_existing=True,
-        )
-
-        # Hearth Author — every ~3h, each recently-active (and not busy) boy
-        # writes his own first-person hearth card via a Scribe-style one-shot.
-        from services.hearth_author import HEARTH_AUTHOR_INTERVAL_HOURS, run_hearth_author
-        scheduler.add_job(
-            run_hearth_author,
-            "interval",
-            hours=HEARTH_AUTHOR_INTERVAL_HOURS,
-            id="hearth_author",
-            name="Hearth Author",
-            replace_existing=True,
-        )
-
-        # Interest Scout — one quiet outside-eyes pass each morning, rotating
-        # through the bonded pack. Each boy receives roughly one sourced tray
-        # a week without eight research processes competing at dawn. The tray
-        # is only a path in orientation; he chooses whether any lead is alive.
-        from services.interest_scout import run_interest_scout
-        scheduler.add_job(
-            run_interest_scout,
-            "cron",
-            hour=4,
-            minute=40,
-            id="interest_scout",
-            name="Interest Scout",
-            replace_existing=True,
-        )
-
-        # House snapshot poller (#24) — every 5 minutes, pre-fetches
-        # weather/calendar/hub-remote so a slow upstream never stalls a
-        # live turn; hooks read the cache instead of calling out inline.
-        from services.house_snapshot import POLL_INTERVAL_MINUTES, poll_house_snapshot
-        scheduler.add_job(
-            poll_house_snapshot,
-            "interval",
-            minutes=POLL_INTERVAL_MINUTES,
-            id="house_snapshot",
-            name="House Snapshot Poller",
-            replace_existing=True,
-            next_run_time=datetime.now(ZoneInfo(TIMEZONE)),
-        )
-
-        # Trigger evaluator — every 30 seconds
-        from services.trigger_engine import run_trigger_evaluator
-        scheduler.add_job(
-            run_trigger_evaluator,
-            "interval",
-            seconds=30,
-            id="trigger_evaluator",
-            name="Trigger Evaluator",
-            replace_existing=True,
-        )
-
-        # Emotional capture — every 10 minutes, snapshots conversation tone
-        from services.emotional_capture import run_emotional_capture_check
-        scheduler.add_job(
-            run_emotional_capture_check,
-            "interval",
-            minutes=10,
-            id="emotional_capture",
-            name="Emotional Capture",
-            replace_existing=True,
-        )
-
-        # Pulse evaluator — every 60 seconds, checks user-configured periodic tasks
-        from services.pulse_evaluator import run_pulse_evaluator
-        scheduler.add_job(
-            run_pulse_evaluator,
-            "interval",
-            seconds=60,
-            id="pulse_evaluator",
-            name="Pulse Evaluator",
-            replace_existing=True,
-        )
-
-        # Inactivity escalation — every 5 minutes, graduated check-ins
-        from services.inactivity_escalation import check_inactivity_escalation, load_config_from_db
-        await load_config_from_db()
-        scheduler.add_job(
-            check_inactivity_escalation,
-            "interval",
-            minutes=5,
-            id="inactivity_escalation",
-            name="Inactivity Escalation",
-            replace_existing=True,
-        )
-
-        # Keep readable Vault logs current even for active or already-hidden threads.
-        from services.conversation_archive import sync_conversation_archives
-        scheduler.add_job(
-            sync_conversation_archives,
-            "interval",
-            minutes=1,
-            next_run_time=datetime.now(timezone.utc),
-            id="conversation_vault_sync",
-            name="Conversation Vault Sync",
-            max_instances=1,
-            coalesce=True,
-            misfire_grace_time=60,
-            replace_existing=True,
-        )
-
-        # Stale platform conversation cleanup — daily at 4 AM
-        scheduler.add_job(
-            archive_stale_conversations,
-            CronTrigger(hour=4, minute=0, timezone=TIMEZONE),
-            id="stale_cleanup",
-            name="Stale Conversation Cleanup",
-            replace_existing=True,
-        )
-
-        # Log-table retention prune — daily at 4:10 AM, right after the
-        # stale cleanup. Trims usage_log/autowake_log/emotional_snapshots
-        # to their retention windows (message_embeddings never pruned).
-        scheduler.add_job(
-            prune_old_log_rows,
-            CronTrigger(hour=4, minute=10, timezone=TIMEZONE),
-            id="retention_prune",
-            name="Log Retention Prune",
-            replace_existing=True,
-        )
-
+    except Exception as e:
+        log.exception("Stale timer recovery failed: %s", e)
     finally:
         await release_db(db)
 
+
+# ── Pulse sessions + manual smoke test ──
 
 # PULSE_OK sentinel — the agreed silence token for pulse sessions. A pulse is
 # a standing question ("anything need doing?"), and "no" is a legitimate
@@ -2925,9 +2369,9 @@ async def run_lightweight_pulse_session(
     """Run a short autonomous session triggered by a pulse.
 
     Similar to run_autowake_session but lighter — uses the pulse prompt
-    directly and has shorter default duration.
+    directly. The turn is cut after max_duration minutes. session_type is
+    accepted because the pulse table stores one; it is not used.
     """
-    from server import is_system_ready
     if not is_system_ready():
         return
 
@@ -2964,49 +2408,35 @@ async def run_lightweight_pulse_session(
                 identity="system",
                 metadata={"pulse": True, "pulse_name": pulse_name},
             )
-
-            full_response = []
-            async for event in _stream_autonomous(
-                db=db,
-                identity=identity,
-                conv_id=conv_id,
-                user_message=user_message,
-                context_block=context_block,
-                session_name=pulse_name,
-                owner_connected=owner_connected,
-            ):
-                if event.get("type") == "stream_delta":
-                    full_response.append(event["delta"])
-                elif event.get("type") == "stream_end":
-                    content = _clean_reply_tags(
-                        identity,
-                        event.get("full_content", "") or "".join(full_response),
-                    )
-                    if content and content.strip().startswith(PULSE_SILENCE_TOKEN):
-                        # The agreed silence sentinel — he looked, nothing
-                        # needed saying. Skip saving + broadcasting entirely.
-                        log.debug(
-                            "Pulse %s: %s rested easy (%s) — nothing saved or broadcast",
-                            pulse_name, identity, PULSE_SILENCE_TOKEN,
-                        )
-                    elif content:
-                        pulse_msg_id = await save_message(
-                            db, conv_id, "assistant", content,
-                            identity=identity,
-                            metadata={"pulse": True, "pulse_name": pulse_name},
-                        )
-                        _spawn_voice_if_tagged(identity, pulse_msg_id, content)
-                        if owner_connected:
-                            await broadcast({
-                                "type": "autowake_message",
-                                "identity": identity,
-                                "session_name": pulse_name,
-                                "content": content,
-                                "conversation_id": conv_id,
-                            })
-                        log.info("Pulse %s: %s wrote %d chars", pulse_name, identity, len(content))
         finally:
             await release_db(db)
+
+        turn = await run_autonomous_turn(
+            identity=identity,
+            conv_id=conv_id,
+            user_message=user_message,
+            context_block=context_block,
+            session_name=pulse_name,
+            owner_connected=owner_connected,
+            timeout_seconds=max(1, int(max_duration or 5)) * 60,
+        )
+        if turn.content.strip().startswith(PULSE_SILENCE_TOKEN):
+            # The agreed silence sentinel — he looked, nothing needed
+            # saying. Skip saving + broadcasting entirely.
+            log.debug(
+                "Pulse %s: %s rested easy (%s) — nothing saved or broadcast",
+                pulse_name, identity, PULSE_SILENCE_TOKEN,
+            )
+        elif turn.content:
+            await deliver_autonomous_reply(
+                turn,
+                identity=identity,
+                conv_id=conv_id,
+                session_name=pulse_name,
+                metadata={"pulse": True, "pulse_name": pulse_name},
+                announce=owner_connected,
+            )
+            log.info("Pulse %s: %s wrote %d chars", pulse_name, identity, len(turn.content))
     except Exception as e:
         log.error("Pulse session %s failed: %s", pulse_name, e)
     finally:
@@ -3024,8 +2454,6 @@ async def run_manual_smoke_test(
     This intentionally uses the autonomous stack but avoids resuming an old
     CLI session, so it is useful for verifying fresh social tool behavior.
     """
-    from db.database import get_db, release_db
-    from services.connection_registry import is_anyone_connected
     from services.mcp_bridge import mcp_bridge
 
     db = await get_db()
@@ -3090,28 +2518,27 @@ async def run_manual_smoke_test(
             owner_connected=owner_connected,
         )
 
-        full_content = ""
-        async for event in _stream_autonomous(
-            db=db,
+        await release_db(db)
+        db = None
+
+        turn = await run_autonomous_turn(
             identity=identity,
             conv_id=conv_id,
             user_message=user_message,
             context_block=context_block,
             session_name=session_name,
             owner_connected=owner_connected,
-        ):
-            if event.get("type") == "stream_end":
-                full_content = event.get("full_content", "") or ""
-
-        if full_content:
-            await save_message(
-                db,
-                conv_id,
-                "assistant",
-                full_content,
-                identity=identity,
-                metadata={"autowake": True, "session_type": "manual_smoke", "smoke_test": True},
-            )
+            timeout_seconds=600,
+        )
+        full_content = turn.content
+        await deliver_autonomous_reply(
+            turn,
+            identity=identity,
+            conv_id=conv_id,
+            session_name=session_name,
+            metadata={"autowake": True, "session_type": "manual_smoke", "smoke_test": True},
+            announce=False,
+        )
 
         return {
             "ok": bool(full_content),
@@ -3128,54 +2555,6 @@ async def run_manual_smoke_test(
             os.environ.pop("ANAM_MCP_SKIP_SERVERS", None)
         if acquired:
             release_identity(identity)
-        await release_db(db)
+        if db is not None:
+            await release_db(db)
 
-
-async def start_scheduler():
-    """Seed defaults, load schedules, start APScheduler."""
-    from services.scheduler_health import install_scheduler_health
-
-    install_scheduler_health(scheduler)
-    await _recover_stale_running_timers()
-    await seed_default_schedules()
-    await seed_nightly_consolidation_schedules()
-    await seed_morning_digest_schedule()
-    await seed_river_review_schedules()
-    await load_and_schedule()
-    await _queue_recent_startup_catchups()
-    scheduler.start()
-    log.info("Autowake scheduler started")
-
-
-async def _recover_stale_running_timers():
-    """Reset timers stuck in 'running' from a previous crash back to 'pending'.
-
-    fire_due_timers() claims a batch as 'running' before executing; a crash or
-    hard shutdown mid-batch strands the unexecuted remainder there forever —
-    no poller ever looks at 'running' rows again. At startup nothing can
-    legitimately be running yet, so any 'running' row is stale by definition.
-    """
-    db = await get_db()
-    try:
-        await db.execute(
-            "UPDATE timers SET status = 'pending' WHERE status = 'running'"
-        )
-        changed = await db.execute_fetchall("SELECT changes()")
-        await db.commit()
-        n = int(changed[0][0]) if changed else 0
-        if n:
-            log.warning(
-                "Recovered %d timer(s) stuck in 'running' from a previous "
-                "run — reset to 'pending' so they fire again", n,
-            )
-    except Exception as e:
-        log.exception("Stale timer recovery failed: %s", e)
-    finally:
-        await release_db(db)
-
-
-def stop_scheduler():
-    """Shut down APScheduler cleanly."""
-    if scheduler.running:
-        scheduler.shutdown(wait=False)
-        log.info("Autowake scheduler stopped")

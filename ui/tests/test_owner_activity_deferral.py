@@ -1,10 +1,4 @@
-"""Owner-activity deferral + hourglass (#26).
-
-A salon/brother/friend ping for the EXACT boy Owner is actively web-
-chatting with right now must defer (queue + ⏳ reaction) instead of pulling
-his attention out of her live conversation — every other identity, and
-every ping FROM Owner herself, keeps answering immediately.
-"""
+'Application module.'
 
 import unittest
 from unittest.mock import AsyncMock, patch

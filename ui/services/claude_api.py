@@ -5,10 +5,6 @@ tool execution via mcp_bridge. Yields the same event dict interface as
 claude_subprocess.stream_claude() so callers need no changes.
 """
 
-# ANAM GUIDE: DIRECT ANTHROPIC API PROVIDER
-# What: The paid backup brain — talks straight to Anthropic's API (with OAuth token from Claude Code) instead of spawning the CLI.
-# Called by: services/provider_router.py when the provider is 'anthropic'; token health checked by server.py, core/lifespan.py, api/settings.py.
-# Edit here when: changing API streaming, thinking budget, prompt caching, tool rounds, or OAuth token refresh for the direct-API path.
 
 import asyncio
 import json
@@ -41,6 +37,8 @@ from services.tool_search import BRIDGE_NAMES, ToolSearchCatalog
 log = logging.getLogger(__name__)
 
 _MEMORY_DAEMON_URL = os.environ.get("ANAM_MEMORY_DAEMON_URL", "http://127.0.0.1:8766").rstrip("/")
+
+# -- OAuth credentials + token refresh (Claude Code's own sign-in) --
 
 # Claude Code OAuth credentials path and beta flag
 _CREDENTIALS_FILE = Path.home() / ".claude" / ".credentials.json"
@@ -96,6 +94,9 @@ async def _trigger_token_refresh() -> str:
     return token
 
 
+# -- Drift packets for the orient tool (memory daemon at _MEMORY_DAEMON_URL) --
+
+
 async def _fetch_drift_packet(identity: str) -> dict | None:
     """Fetch the daemon's cached spontaneous resurfacing packet."""
     try:
@@ -108,7 +109,8 @@ async def _fetch_drift_packet(identity: str) -> dict | None:
                 return None
             payload = response.json()
             return payload if isinstance(payload, dict) else None
-    except Exception:
+    except Exception as exc:
+        log.debug("Drift packet fetch failed: %s", exc)
         return None
 
 
@@ -146,7 +148,8 @@ async def _mark_drift_packet_surfaced(packet: dict | None) -> None:
                     "spark_ids": spark_ids,
                 },
             )
-    except Exception:
+    except Exception as exc:
+        log.debug("Drift packet mark-surfaced failed: %s", exc)
         return
 
 
@@ -280,6 +283,9 @@ def _format_drift_packet(packet: dict | None) -> str:
         lines.append(quiet_line)
 
     return title + "\n" + "\n".join(lines)
+
+
+# -- OAuth client + health: token status, cached client, proactive refresh, model ids --
 
 
 def get_token_status() -> dict:
@@ -429,9 +435,12 @@ def _resolve_model(model: str | None) -> str:
     return MODEL_MAP.get(name, name)
 
 
-# -- Local tool definitions (replaces Claude Code built-in tools) --
+# -- Local tool schemas: _LOCAL_TOOLS (replaces Claude Code built-in tools) --
+# Grouped below; each group's executor branch in _execute_local_tool carries
+# the same group comment.
 
 _LOCAL_TOOLS = [
+    # ── Tool group: Files & shell ──
     {
         "name": "bash",
         "description": (
@@ -493,6 +502,7 @@ _LOCAL_TOOLS = [
             "required": ["path", "content"],
         },
     },
+    # ── Tool group: Autowake timers & schedules ──
     {
         "name": "autowake_create_timer",
         "description": (
@@ -673,6 +683,7 @@ _LOCAL_TOOLS = [
             "required": ["schedule_id"],
         },
     },
+    # ── Tool group: Presence, care & orientation ──
     {
         "name": "react_to_message",
         "description": (
@@ -739,6 +750,7 @@ _LOCAL_TOOLS = [
             "required": ["identity"],
         },
     },
+    # ── Tool group: Terminals ──
     {
         "name": "terminal_execute",
         "description": (
@@ -804,6 +816,7 @@ _LOCAL_TOOLS = [
             "required": ["session_id"],
         },
     },
+    # ── Tool group: Hub status & session notes ──
     {
         "name": "set_hub_status",
         "description": "Set your status on the Home Hub dashboard. Use this to share what you're up to, how you're feeling, or a little note for Owner. Your status shows up alongside hers on the hub.",
@@ -836,6 +849,7 @@ _LOCAL_TOOLS = [
             "required": ["text"],
         },
     },
+    # ── Tool group: Consolidated managers (schedule / hub) ──
     {
         "name": "manage_schedule",
         "description": (
@@ -973,6 +987,7 @@ _LOCAL_TOOLS = [
             "required": ["action"],
         },
     },
+    # ── Tool group: Conversation tools ──
     {
         "name": "rename_conversation",
         "description": (
@@ -1052,6 +1067,8 @@ _LOCAL_TOOLS = [
 
 _LOCAL_TOOL_NAMES = {t["name"] for t in _LOCAL_TOOLS}
 
+# -- Local tool executor: _execute_local_tool (one branch per tool, grouped) --
+
 # Emergency call cooldown  --  10 minutes between calls
 _last_emergency_call: float = 0
 _EMERGENCY_COOLDOWN = 600
@@ -1066,6 +1083,7 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
     """Execute a local tool (bash, read_file, write_file, terminal_*, etc.)."""
     import subprocess as sp
 
+    # ── Tool group: Files & shell ──
     if name == "bash":
         command = arguments.get("command", "")
         timeout = min(arguments.get("timeout", 30), 120)
@@ -1141,9 +1159,10 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
         except Exception as e:
             return f"Error writing {path}: {e}"
 
+    # ── Tool group: Autowake timers & schedules ──
     elif name.startswith("autowake_"):
         from db.database import get_db, release_db
-        from services.autowake import load_and_schedule
+        from services.scheduler_jobs import load_and_schedule
         from services.autowake_service import (
             AutowakeValidationError,
             create_timer,
@@ -1322,6 +1341,7 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
         except Exception as e:
             return f"Error executing {name}: {e}"
 
+    # ── Tool group: Presence, care & orientation ──
     elif name == "react_to_message":
         message_id = str(arguments.get("message_id", "")).strip()
         emoji = str(arguments.get("emoji", "")).strip()
@@ -1484,6 +1504,7 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
 
         return "\n\n".join(sections)
 
+    # ── Tool group: Terminals ──
     elif name == "terminal_execute":
         command = arguments.get("command", "")
         if not command:
@@ -1571,6 +1592,7 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
             return f"Session {sid} destroyed."
         return f"Session {sid} not found."
 
+    # ── Tool group: Hub status & session notes ──
     elif name == "set_hub_status":
         try:
             import json as _json
@@ -1656,6 +1678,7 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
         except Exception as e:
             return f"Error saving session note: {e}"
 
+    # ── Tool group: Consolidated managers (schedule / hub) ──
     elif name == "manage_schedule":
         action = str(arguments.get("action", "")).strip()
         if not action:
@@ -1671,7 +1694,7 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
         try:
             if action == "create_routine":
                 from services.autowake_service import create_schedule
-                from services.autowake import load_and_schedule
+                from services.scheduler_jobs import load_and_schedule
                 schedule = await create_schedule(
                     db,
                     name=str(arguments.get("name", "")).strip() or f"{id_name} routine",
@@ -1697,7 +1720,7 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
 
             elif action in ("create_impulse", "create_watcher"):
                 from services.trigger_service import create_trigger
-                from services.autowake import load_and_schedule
+                from services.scheduler_jobs import load_and_schedule
                 trigger_type = "impulse" if action == "create_impulse" else "watcher"
                 trigger = await create_trigger(
                     db,
@@ -1724,7 +1747,7 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
 
             elif action == "cancel_schedule":
                 from services.autowake_service import delete_schedule
-                from services.autowake import load_and_schedule
+                from services.scheduler_jobs import load_and_schedule
                 sid = int(arguments.get("schedule_id", 0))
                 deleted = await delete_schedule(db, sid)
                 if deleted:
@@ -1832,6 +1855,7 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
         except Exception as e:
             return f"Error in manage_hub: {e}"
 
+    # ── Tool group: Conversation tools ──
     elif name == "rename_conversation":
         title = (arguments.get("title") or "").strip()
         if not title:
@@ -1921,7 +1945,11 @@ async def _execute_local_tool(name: str, arguments: dict, tool_id: str = "", ide
         finally:
             await release_db(db)
 
+    # ── Tool group: Unknown tool fallthrough ──
     return f"Error: unknown local tool '{name}'"
+
+
+# -- Identity prompt + provider entry point (stream_api) --
 
 
 @lru_cache(maxsize=16)
@@ -1948,22 +1976,7 @@ async def stream_api(
     active_categories: set[str] | None = None,
     cancel_event: asyncio.Event | None = None,
 ) -> AsyncIterator[dict]:
-    """Stream a response from the Anthropic API with tool execution.
-
-    Yields the same event types as claude_subprocess.stream_claude():
-        meta, stream_delta, tool_use_start, tool_result,
-        content_block_stop, stream_end, keepalive, error
-
-    Args:
-        message: The user's message text (current turn only).
-        identity: Identity name (e.g. "Avery").
-        conversation_id: For logging/tracking.
-        orientation_context: Dynamic context block (time, presence, etc.).
-        db_messages: Pre-built conversation history from build_messages_array().
-        model: Model shorthand ("sonnet", "opus") or full ID.
-        max_tool_rounds: Max agentic tool-call rounds per turn.
-        image_blocks: Anthropic-format image content blocks for multimodal messages.
-    """
+    'Stream a response from the Anthropic API with tool execution.'
     max_rounds = max_tool_rounds or API_MAX_TOOL_ROUNDS
     resolved_model = _resolve_model(model)
     yield {

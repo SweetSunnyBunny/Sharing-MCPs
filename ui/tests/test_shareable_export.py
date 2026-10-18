@@ -59,3 +59,17 @@ def test_starter_has_prompts_and_no_account_voice_defaults():
 def test_missing_optional_visual_reference_is_safe():
     from services.world_feed_visuals import reference
     assert reference({'id': 'starter-world', 'story_branch': ''}) is None
+
+
+def test_changed_source_cannot_be_silently_hidden_by_reviewed_overlay(tmp_path):
+    import hashlib
+    src, stage, overlay = tmp_path / "source", tmp_path / "stage", tmp_path / "overlay"
+    (src / "services").mkdir(parents=True); (overlay / "services").mkdir(parents=True)
+    maintained = src / "services/example.py"
+    maintained.write_text("value = 1")
+    (overlay / "services/example.py").write_text("value = 2")
+    cfg = profile(); cfg["overlay_dir"] = str(overlay)
+    cfg["overlay_source_hashes"] = {"services/example.py": hashlib.sha256(maintained.read_bytes()).hexdigest()}
+    maintained.write_text("value = 3")
+    with pytest.raises(ValueError, match="overlay is stale"):
+        EXPORT.build(src, stage, cfg)

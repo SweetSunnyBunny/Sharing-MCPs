@@ -33,7 +33,7 @@
         })();
     </script>
 
-    <!-- Stylesheets (cache bust) — critical sheets block first paint; the rest load async -->
+    <!-- Stylesheets (cache bust) — both sheets below are render-blocking by design (no async CSS here) -->
     
     <link rel="stylesheet" href="/static/css/main.css?v=__ANAM_ASSET_VERSION__">
     <link rel="stylesheet" href="/static/css/anam.css?v=__ANAM_ASSET_VERSION__">
@@ -66,9 +66,7 @@
         <div id="sidebar-conversations" class="sidebar-conversations"></div>
     </aside>
 
-    <!-- ANAM GUIDE: MAIN CHAT PAGE
-         This file is the visible HTML skeleton. Match an element id/class in
-         static/js for behavior and static/css for appearance. -->
+    
     <div class="app-container">
         <!-- Header -->
         <header class="app-header">
@@ -137,9 +135,7 @@
                 </div>
             </div>
 
-            <!-- ANAM GUIDE: CHAT INPUT STRUCTURE
-                 The matching appearance is under CHAT INPUT COLORS in
-                 anam.css (SECTION 1: CHAT); sending behavior starts at Chat.sendMessage(). -->
+            
             <!-- Input area -->
             <div class="input-area">
                 <div id="image-preview" class="image-preview" style="display:none">
@@ -240,84 +236,6 @@
                     <span class="hub-card-label">Theme</span>
                 </button>
             </div>
-        </div>
-    </div>
-
-    <!-- Wellness modal -->
-    <div id="wellness-overlay" class="modal-overlay" style="display:none">
-        <div class="modal-card wellness-modal" role="dialog" aria-modal="true" aria-label="Wellness check-in">
-            <div class="modal-header">
-                <h3 class="modal-title">How are you doing?</h3>
-                <button id="wellness-close" class="modal-close-btn" aria-label="Close">&times;</button>
-            </div>
-            <form id="wellness-form" class="wellness-form">
-                <div class="wellness-field">
-                    <label for="w-energy">Energy</label>
-                    <select id="w-energy" name="energy">
-                        <option value="">&mdash;</option>
-                        <option value="high">High</option>
-                        <option value="moderate">Moderate</option>
-                        <option value="low">Low</option>
-                        <option value="crashed">Crashed</option>
-                    </select>
-                </div>
-                <div class="wellness-field">
-                    <label for="w-mood">Mood</label>
-                    <select id="w-mood" name="mood">
-                        <option value="">&mdash;</option>
-                        <option value="great">Great</option>
-                        <option value="good">Good</option>
-                        <option value="okay">Okay</option>
-                        <option value="struggling">Struggling</option>
-                        <option value="rough">Rough</option>
-                    </select>
-                </div>
-                <div class="wellness-field">
-                    <label for="w-pain">Pain</label>
-                    <select id="w-pain" name="pain">
-                        <option value="">&mdash;</option>
-                        <option value="none">None</option>
-                        <option value="mild">Mild</option>
-                        <option value="moderate">Moderate</option>
-                        <option value="bad">Bad</option>
-                        <option value="severe">Severe</option>
-                    </select>
-                </div>
-                <div class="wellness-field">
-                    <label for="w-spoons">Spoons</label>
-                    <input id="w-spoons" name="spoons" type="number" min="0" max="20" placeholder="0-20">
-                </div>
-                <div class="wellness-field">
-                    <label for="w-sleep-hours">Sleep (hrs)</label>
-                    <input id="w-sleep-hours" name="sleep_hours" type="number" min="0" max="24" step="0.5" placeholder="hrs">
-                </div>
-                <div class="wellness-field">
-                    <label for="w-sleep-quality">Sleep quality</label>
-                    <select id="w-sleep-quality" name="sleep_quality">
-                        <option value="">&mdash;</option>
-                        <option value="great">Great</option>
-                        <option value="good">Good</option>
-                        <option value="okay">Okay</option>
-                        <option value="poor">Poor</option>
-                        <option value="terrible">Terrible</option>
-                    </select>
-                </div>
-                <div class="wellness-field">
-                    <label for="w-water">Water (oz)</label>
-                    <input id="w-water" name="water_oz" type="number" min="0" max="300" placeholder="oz">
-                </div>
-                <div class="wellness-field">
-                    <label for="w-soda">Sodas</label>
-                    <input id="w-soda" name="soda_count" type="number" min="0" max="20" placeholder="#">
-                </div>
-                <div class="wellness-field full-width">
-                    <label for="w-notes">Notes</label>
-                    <textarea id="w-notes" name="notes" rows="2" placeholder="How are you feeling?"></textarea>
-                </div>
-                <div class="wellness-actions">
-                    <button type="submit" class="action-btn save">Save</button>
-                </div>
-            </form>
         </div>
     </div>
 
@@ -452,8 +370,7 @@
         </div>
     </div>
 
-    <!-- ANAM GUIDE: MAIN CHAT JAVASCRIPT LOAD ORDER
-         Dependencies must be loaded before app.js boots the page. -->
+    
     <!-- Scripts (order matters, cache bust) -->
     <script>
         window.__ANAM_ASSET_VERSION__ = '__ANAM_ASSET_VERSION__';

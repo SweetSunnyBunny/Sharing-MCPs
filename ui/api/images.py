@@ -1,9 +1,5 @@
 """REST: Image endpoints - upload, serve, register external images."""
 
-# ANAM GUIDE: IMAGE UPLOAD AND SERVING API
-# What: Receives image uploads from the chat page, checks they are real images, shrinks big ones, and serves them back at /api/images/file/... (public, so Anthropic can fetch them too).
-# Called by: static/js/chat.js and static/js/utils.js in the browser; services/chat_turn_prep.py, session_lifecycle.py, platform_bridge.py build image links with these routes.
-# Edit here when: changing allowed image types, the max upload size, how images get compressed, or which folders count as safe sources for registering an existing image.
 
 import json
 import asyncio

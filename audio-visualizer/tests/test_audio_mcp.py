@@ -21,6 +21,9 @@ class AudioTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
         self.addCleanup(self.temp.cleanup)
+        probe = patch.object(audio, "_audio_stream_count", return_value=None)
+        probe.start()
+        self.addCleanup(probe.stop)
         for target, value in [("OUTPUT_ROOT", self.root / "output"), ("URL_CACHE", self.root / "cache")]:
             p = patch.object(audio, target, value)
             p.start()
@@ -98,6 +101,23 @@ class AudioTests(unittest.TestCase):
         with patch.dict(os.environ, {"AUDIO_CHROME_PROFILES_FILE": str(mapping)}):
             with self.assertRaises(ValueError):
                 audio._profile_for("research")
+
+    def test_silent_tiktok_format_is_replaced_by_audible_variant(self):
+        with patch.object(audio, "_ytdlp", return_value=["yt-dlp"]), patch.object(audio.subprocess, "run", side_effect=self.download) as download, patch.object(audio, "_audio_stream_count", side_effect=[0, 1]):
+            result, note = audio._fetch_url("https://www.tiktok.com/example/video/1")
+            self.assertTrue(result.is_file())
+            self.assertEqual(download.call_count, 2)
+            self.assertNotIn("NO sound track", note)
+
+    def test_all_silent_variants_keep_frames_and_report_missing_audio(self):
+        with patch.object(audio, "_ytdlp", return_value=["yt-dlp"]), patch.object(audio.subprocess, "run", side_effect=self.download), patch.object(audio, "_audio_stream_count", return_value=0):
+            result, note = audio._fetch_url("https://www.tiktok.com/example/video/2")
+            self.assertTrue(result.is_file())
+            self.assertIn("NO sound track", note)
+
+    def test_spectrogram_shelf_is_opt_in(self):
+        with patch.object(audio, "SPECTROGRAM_SHELF", ""):
+            self.assertIsNone(audio._shelve_picture(self.root / "missing.png"))
 
     def test_url_download_no_cookies_and_ignores_user_config(self):
         with patch.object(audio, "_ytdlp", return_value=["yt-dlp"]), patch.object(audio.subprocess, "run", side_effect=self.download) as run:

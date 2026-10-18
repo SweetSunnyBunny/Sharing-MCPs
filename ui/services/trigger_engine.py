@@ -4,15 +4,6 @@ Runs as an APScheduler job every 30 seconds. Evaluates all enabled triggers
 against current state, fires matching ones via autowake session machinery.
 """
 
-# ANAM GUIDE: TRIGGER CONDITION CHECKER
-# What: The "if this, then wake a boy" brain — every 30 seconds it checks each enabled
-#       trigger's condition (time window, her presence, inactivity, calendar, etc.)
-#       and fires the ones that match via an autowake session.
-# Called by: the APScheduler loop in services/autowake.py; services/pulse_evaluator.py
-#            also reuses its condition-checking.
-# Edit here when: You want to add a NEW kind of condition (add an _eval_* function and
-#                 its branch in evaluate_condition), or change how firing/cooldowns work.
-#                 Creating/editing the triggers themselves lives in trigger_service.py.
 
 import asyncio
 import json
@@ -22,6 +13,12 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from config import TIMEZONE
+from services.autonomous_session import (
+    _get_or_create_daily_autowake_conversation,
+    deliver_autonomous_reply,
+    run_autonomous_turn,
+)
+from services.identity_lock import acquire_identity, is_identity_busy, release_identity
 
 log = logging.getLogger(__name__)
 
@@ -113,12 +110,7 @@ def _eval_presence_transition(condition: dict) -> bool:
 
 
 def _eval_active_identity(condition: dict) -> bool:
-    """Check which identity Owner is currently chatting with.
-
-    Supports operator: 'eq' (default) / 'ne' — case-insensitive match.
-    A None active_identity compares as the empty string (so 'ne Avery' is True
-    when no one is selected, which is usually what a gate wants).
-    """
+    'Eval active identity.'
     from services.connection_registry import get_active_identity
 
     current = (get_active_identity() or "").lower()
@@ -156,7 +148,7 @@ def _eval_time_window(condition: dict) -> bool:
 
 
 def _eval_inactivity(condition: dict) -> bool:
-    """Check if Owner has been inactive for N minutes."""
+    'Eval inactivity.'
     from services.connection_registry import _last_web_message_time
 
     required_minutes = condition.get("minutes", 120)
@@ -169,17 +161,19 @@ def _eval_inactivity(condition: dict) -> bool:
 
 
 def _eval_pack_audio_stale(condition: dict) -> bool:
-    """True if no boy has queued a pack-audio voice note in N days.
-
-    "The drawer" = pack-audio-queued voice notes (filenames begin with
-    "queued-" in VOICE_DIR). Returns True when the newest such file is older
-    than `days` days, or when no queued notes exist at all. Used to nudge
-    whoever's active to consider leaving Owner a voice message.
-    """
+    'True if no boy has queued a pack-audio voice note in N days.'
     from config import VOICE_DIR
 
     days = condition.get("days", 5)
     threshold_seconds = days * 86400
+
+    max_unheard = condition.get("max_unheard", 3)
+    try:
+        waiting = json.loads((VOICE_DIR.parent / "voice_queue.json").read_text(encoding="utf-8"))
+    except Exception:
+        waiting = []
+    if isinstance(waiting, list) and len(waiting) >= max_unheard:
+        return False
 
     try:
         candidates = list(VOICE_DIR.glob("queued-*.mp3"))
@@ -259,7 +253,7 @@ async def _eval_calendar_within(condition: dict) -> bool:
 
 
 def _eval_wellness_state(condition: dict) -> bool:
-    """Check Owner's wellness metrics."""
+    'Eval wellness state.'
     try:
         wellness = _load_today_wellness()
         if not wellness:
@@ -302,12 +296,21 @@ def _load_today_wellness() -> dict | None:
 
     try:
         lines = wellness_file.read_text(encoding="utf-8").strip().splitlines()
-        for line in reversed(lines):
-            entry = json.loads(line.strip())
-            if entry.get("date") == today:
-                return entry
     except Exception:
-        pass
+        log.debug("trigger wellness: could not read %s", wellness_file, exc_info=True)
+        return None
+    # One bad line is skipped on its own — it used to blank the whole day.
+    for line in reversed(lines):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            entry = json.loads(line)
+        except (ValueError, TypeError):
+            log.debug("trigger wellness: skipping unparseable line in %s: %.80s", wellness_file, line)
+            continue
+        if isinstance(entry, dict) and entry.get("date") == today:
+            return entry
     return None
 
 
@@ -354,7 +357,6 @@ async def run_trigger_evaluator():
     from services.trigger_service import (
         list_triggers, mark_fired, set_waiting, clear_waiting,
     )
-    from services.autowake import is_identity_busy
 
     db = await get_db()
     try:
@@ -463,13 +465,6 @@ async def _fire_autowake(db, trigger: dict) -> bool:
     session was attempted — even if the stream errored, the moment is consumed
     (same semantics as before, when mark_fired ran unconditionally).
     """
-    from services.autowake import (
-        acquire_identity, release_identity,
-        _clean_reply_tags,
-        _get_or_create_daily_autowake_conversation,
-        _spawn_voice_if_tagged,
-        _stream_autonomous,
-    )
     from services.session_lifecycle import build_orientation_context, SessionMode
     from services.connection_registry import is_anyone_connected, broadcast
     from services.notifications import send_notification
@@ -493,7 +488,7 @@ async def _fire_autowake(db, trigger: dict) -> bool:
         from services.session_manager import save_message
         await save_message(
             db, conv_id, "user", user_msg,
-            metadata=json.dumps({
+            metadata=({  # dict: save_message encodes it (was double-encoded before 2026-09-28)
                 "trigger": True,
                 "trigger_id": trigger["id"],
                 "trigger_name": trigger["name"],
@@ -509,30 +504,31 @@ async def _fire_autowake(db, trigger: dict) -> bool:
             owner_connected=owner_connected,
         )
 
-        # Stream response
-        full_content = ""
-        async for event in _stream_autonomous(
-            db, identity, conv_id, user_msg, context_block,
+        # Run the turn, bounded by the trigger's own max_duration_minutes, and
+        # save its reply with the same tag handling as any autonomous reply.
+        turn = await run_autonomous_turn(
+            identity=identity,
+            conv_id=conv_id,
+            user_message=user_msg,
+            context_block=context_block,
             session_name=f"trigger:{trigger['name']}",
             owner_connected=owner_connected,
-        ):
-            if event.get("type") == "stream_end":
-                full_content = event.get("full_content", "")
-
-        # Save response — same tag handling as any autowake reply:
-        # <face> applied, <react> stripped, <voice> becomes real audio.
-        full_content = _clean_reply_tags(identity, full_content)
+            timeout_seconds=max(1, int(trigger.get("max_duration_minutes") or 15)) * 60,
+        )
+        full_content = turn.content
         if full_content:
-            trigger_msg_id = await save_message(
-                db, conv_id, "assistant", full_content,
+            await deliver_autonomous_reply(
+                turn,
                 identity=identity,
-                metadata=json.dumps({
+                conv_id=conv_id,
+                session_name=f"trigger:{trigger['name']}",
+                metadata={
                     "trigger": True,
                     "trigger_id": trigger["id"],
                     "trigger_name": trigger["name"],
-                }),
+                },
+                announce=False,
             )
-            _spawn_voice_if_tagged(identity, trigger_msg_id, full_content)
 
 
             if not owner_connected:

@@ -7,6 +7,7 @@ Messaging retains one app-server process per identity. Autowakes use separate
 disposable processes; persistent thread IDs remain owned by their conversation.
 """
 
+
 from __future__ import annotations
 
 import asyncio
@@ -37,11 +38,16 @@ from services import codex_sessions, runtime_metrics, codex_approvals
 
 log = logging.getLogger(__name__)
 
+# ── Timeouts ──
+
 _TURN_TIMEOUT = 900.0
 _STALL_TIMEOUT = 300.0
 _KEEPALIVE_INTERVAL = 10.0
 _THREAD_OPEN_TIMEOUT = 90.0
 _TURN_START_TIMEOUT = 90.0
+
+
+# ── Data types + JSON-RPC client (CodexAppServerClient: process, requests, notifications) ──
 
 
 @dataclass(frozen=True)
@@ -248,6 +254,9 @@ class CodexAppServerClient:
             pass
 
 
+# ── Process cleanup ──
+
+
 def _tree_kill(proc: subprocess.Popen) -> None:
     if close_owned_process(proc):
         return
@@ -271,6 +280,10 @@ def _tree_kill(proc: subprocess.Popen) -> None:
         proc.wait(timeout=5)
     except Exception:
         pass
+
+
+# ── Instructions + turn input: identity-prompt diet, base/developer bundle,
+#    per-turn context, bootstrap history ──
 
 
 def _read_text(path: Path) -> str:
@@ -399,7 +412,7 @@ def _format_turn_input(
     turn_context: str = "",
     bootstrap_history: str = "",
 ) -> str:
-    """Keep app context and history distinct from Owner's current words."""
+    'Format turn input.'
     sections: list[str] = []
     if bootstrap_history.strip():
         sections.append(
@@ -442,6 +455,9 @@ def _bootstrap_history(db_messages: list[dict] | None) -> str:
         speaker = "Owner" if role == "user" else "You"
         lines.append(f"{speaker}: {content}")
     return "\n\n".join(lines)
+
+
+# ── Thread continuity: saved thread id, auth-failure and resume-vs-fresh decisions ──
 
 
 async def _saved_thread_id(conversation_id: str) -> str | None:
@@ -501,6 +517,9 @@ def _resume_error_allows_fresh_thread(exc: Exception) -> bool:
             detail,
         )
     )
+
+
+# ── Event translation (tool items) + server-request / approval answers ──
 
 
 def _tool_shape(item: dict) -> tuple[str, dict, str, str]:
@@ -565,6 +584,9 @@ def _answer_server_request(client: CodexAppServerClient, request: dict, bypass: 
         "message": "Codex requested permission for an action. Enable bypass approvals to allow it.",
         "bypass_approvals": False,
     }
+
+
+# ── Provider entry point: stream_codex_app_server ──
 
 
 async def stream_codex_app_server(

@@ -1,9 +1,5 @@
 """Runtime loader for local Claude skills from the filesystem."""
 
-# ANAM GUIDE: SKILL FILE LOADER AND MATCHER
-# What: Reads the skill files from disk (.claude/skills folders), builds the "menu" of available skills, and picks which ones match the current message so they get injected into a turn.
-# Called by: services/chat_turn_prep.py (every turn), services/autowake.py, services/discord_mentions_bridge.py, services/platform_bridge.py, services/pack_night.py
-# Edit here when: You want to change how skills are discovered, how many get injected, size limits, or the keyword hints that trigger specific skills.
 
 from __future__ import annotations
 
@@ -191,6 +187,16 @@ class SkillRegistry:
             ):
                 parsed = parsed[1:-1]
             meta[key.strip().lower()] = parsed
+
+        if "triggers" in meta and not meta["triggers"]:
+            try:
+                import yaml
+                loaded = yaml.safe_load(frontmatter)
+                triggers = loaded.get("triggers") if isinstance(loaded, dict) else None
+                if isinstance(triggers, list):
+                    meta["triggers"] = [str(t) for t in triggers if str(t).strip()]
+            except Exception as exc:
+                log.debug("Skill frontmatter YAML read failed (triggers list skipped): %s", exc)
 
         return meta, body
 

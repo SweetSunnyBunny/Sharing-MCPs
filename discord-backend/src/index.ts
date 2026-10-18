@@ -1,12 +1,13 @@
 // Cloud Discord — Cloudflare Worker providing Discord REST API as MCP tools
 // Secret-path authenticated: /mcp/<MCP_SECRET_PATH>
 
-import { getActiveDiscordTools, handleDiscordTool, parseAllowedTools } from './tools';
+import { getActiveDiscordTools, handleDiscordTool, parseAllowedTools, toolAnnotations } from './tools';
 import { discordFetch, discordFetchMultipart, formatMessage } from './discord';
 import { getIdentityConfig } from './identities';
 import Anthropic from '@anthropic-ai/sdk';
 import nacl from 'tweetnacl';
 import { asToolResult } from './image-content';
+import type { AiBinding } from './pulse';
 
 interface Env {
   DISCORD_BOT_TOKEN: string;
@@ -57,10 +58,21 @@ const SERVER_CAPABILITIES = {
   tools: {},
 };
 
+const SUPPORTED_PROTOCOL_VERSIONS = ['2025-06-18', '2025-03-26', '2024-11-05'];
+
+const SERVER_INSTRUCTIONS = `Discord tools for the your-main pack. Every call needs identity (your own name, lowercase: claude, avery, rowan, sage, ember, juniper, atlas, river, or the mask you are wearing): you always speak as your own bot.
+- Every ID (guild, channel, message, user, role) is a numeric string. Find them with discord_list_servers, then discord_list_channels, then discord_read_messages; message lines include message_id.
+- Returning after time away? discord_catch_up shows everything new across a server since a time, and marks what mentions or replies to you with "→ you". discord_search_messages searches the whole server.
+- Long letters are fine: discord_send_message and discord_send_dm split anything over 2000 characters at paragraph breaks.
+- discord_send_voice_note sends a real voice bubble in your own voice.
+- @everyone, @here and role mentions don't ping unless allow_mass_mentions is true.
+- Threads and forum posts are channels: pass a thread ID as channel_id.
+- Delete, ban, kick and bulk-delete cannot be undone.`;
+
 function resolveBotToken(env: Env, requestedIdentity: unknown): string {
   const identity = typeof requestedIdentity === 'string' ? requestedIdentity.trim().toLowerCase() : '';
   if (!identity) {
-    return env.DISCORD_BOT_TOKEN;
+    throw new Error('identity is required: which bot is speaking?');
   }
 
   const config = getIdentityConfig(identity);
@@ -68,7 +80,7 @@ function resolveBotToken(env: Env, requestedIdentity: unknown): string {
     throw new Error(`Unknown identity: ${identity}`);
   }
 
-  const token = env[config.token_env] || env.DISCORD_BOT_TOKEN;
+  const token = env[config.token_env];
   if (!token) {
     throw new Error(`No Discord bot token configured for identity: ${identity}`);
   }
@@ -212,7 +224,9 @@ export default {
       return Response.json({ status: 'ok', tools: getActiveDiscordTools(allowed).length });
     }
 
-    // Secret path check — all MCP endpoints require /mcp/<SECRET>
+    if (!env.MCP_SECRET_PATH || env.MCP_SECRET_PATH.length < 8) {
+      return new Response('Service misconfigured', { status: 503 });
+    }
     const expectedPrefix = `/mcp/${env.MCP_SECRET_PATH}`;
     if (!path.startsWith(expectedPrefix)) {
       return new Response('Not found', { status: 404 });
@@ -237,6 +251,12 @@ export default {
         const userId = formData.get('user_id') as string | null;
         const message = formData.get('message') as string | null;
         const file = formData.get('file') as File | null;
+        let uploadToken: string;
+        try {
+          uploadToken = resolveBotToken(env, formData.get('identity'));
+        } catch (err) {
+          return Response.json({ error: err instanceof Error ? err.message : String(err) }, { status: 400 });
+        }
 
         if (!file) {
           return Response.json({ error: 'Missing "file" field' }, { status: 400 });
@@ -248,7 +268,7 @@ export default {
         // Resolve target channel (DM if user_id, otherwise channel_id)
         let targetChannelId = channelId;
         if (!targetChannelId && userId) {
-          const dmRes = await discordFetch(env.DISCORD_BOT_TOKEN, 'POST', '/users/@me/channels', { recipient_id: userId });
+          const dmRes = await discordFetch(uploadToken, 'POST', '/users/@me/channels', { recipient_id: userId });
           if (!dmRes.ok) {
             return Response.json({ error: `Failed to open DM: ${JSON.stringify(dmRes.data)}` }, { status: 500 });
           }
@@ -266,7 +286,7 @@ export default {
         if (message) payload.content = message;
 
         const res = await discordFetchMultipart(
-          env.DISCORD_BOT_TOKEN, 'POST',
+          uploadToken, 'POST',
           `/channels/${targetChannelId}/messages`,
           payload, fileData, fileName, contentType,
         );
@@ -347,12 +367,21 @@ export default {
       let result: unknown;
 
       switch (body.method) {
-        case 'initialize':
+        case 'initialize': {
+          const requested = (body.params as { protocolVersion?: string } | undefined)?.protocolVersion;
           result = {
-            protocolVersion: '2024-11-05',
+            protocolVersion: requested && SUPPORTED_PROTOCOL_VERSIONS.includes(requested)
+              ? requested
+              : SUPPORTED_PROTOCOL_VERSIONS[0],
             serverInfo: SERVER_INFO,
             capabilities: SERVER_CAPABILITIES,
+            instructions: SERVER_INSTRUCTIONS,
           };
+          break;
+        }
+
+        case 'ping':
+          result = {};
           break;
 
         case 'notifications/initialized':
@@ -365,6 +394,7 @@ export default {
               name: t.name,
               description: t.description,
               inputSchema: t.inputSchema,
+              annotations: toolAnnotations(t.name),
             })),
           };
           break;
@@ -391,6 +421,10 @@ export default {
                 machineAgentUrl: env.MACHINE_AGENT_URL,
                 machineAgentApiKey: env.MACHINE_AGENT_API_KEY,
                 imageArchiveDir: env.IMAGE_ARCHIVE_DIR,
+                // Env is typed as all strings, but AI is a Workers AI binding object
+                ai: (env as unknown as { AI?: AiBinding }).AI,
+                pulseModel: env.PULSE_MODEL,
+                pulseExcludeChannels: env.PULSE_EXCLUDE_CHANNELS,
               },
             );
             result = asToolResult(toolResult);

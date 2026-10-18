@@ -1,16 +1,17 @@
-"""Shared STATE.md read/parse/write for character-identity story tabs.
+"""Shared story-state read/parse/write for character-identity story tabs.
 
 Used by both the context_hooks story_state hook and the /api/story-state
 endpoints, so the parsing logic and field schema stay in one place.
+
+Which file: an identity with a `prompt_package` in config.IDENTITIES (e.g.
+Bakugou) uses <package>/CURRENT_STATE.md via
+services/character_prompt_package.package_dir; every other mapped character
+uses stories/<folder>/STATE.md from STORY_BY_IDENTITY (or its `story_branch`).
 
 Field model is deliberately simple — the markdown template owns the layout,
 this module just reads/writes the variable parts.
 """
 
-# ANAM GUIDE: STORY STATE FILE HANDLER
-# What: Reads and writes each roleplay story's STATE.md (era, location, in-fic day, threads) so the character bots and the story-state screen share one source of truth.
-# Called by: api/story_state.py (the /api/story-state routes, used by static/js/story-state.js) and services/context_hooks.py (injects story state into character turns)
-# Edit here when: You add a new character/story to the mapping, or change which fields STATE.md tracks.
 
 from __future__ import annotations
 
@@ -39,7 +40,11 @@ def story_key_for(identity: str) -> str | None:
 
 
 def state_file_for(identity: str) -> Path | None:
-    """Absolute path to the STATE.md file for an identity, if it's a character."""
+    """Absolute path to the state file for an identity, if it's a character.
+
+    Prompt-package identities (config `prompt_package`, e.g. Bakugou) use the
+    package's CURRENT_STATE.md; everyone else uses stories/<folder>/STATE.md.
+    """
     from services.character_prompt_package import package_dir
     selected = package_dir(identity)
     if selected is not None:
@@ -186,13 +191,15 @@ def write_state(identity: str, fields: dict[str, Any]) -> dict[str, Any]:
         value = (fields.get(key) or "").strip()
         # Use placeholder italic if empty — keeps template readable
         if not value:
-            value = f"_(empty — fill me in)_"
+            value = "_(empty — fill me in)_"
         # Use a non-newline char class so we never accidentally consume \n
         # and lose blank-line spacing in the template.
         pat = re.compile(rf"^(\*\*{re.escape(label)}:\*\*)[ \t]*[^\n]*$", re.MULTILINE)
-        replacement = rf"\1 {value}"
+        # Function replacement, never a template string: her text can hold
+        # backslashes (a Windows path) or start with digits ("1. she laughed"),
+        # which a template misreads as escapes/group refs -> re.error -> 500.
         if pat.search(text):
-            text = pat.sub(replacement, text, count=1)
+            text = pat.sub(lambda m, v=value: f"{m.group(1)} {v}", text, count=1)
         else:
             log.warning("Inline field %s (%s) not found in STATE.md", key, label)
 
@@ -208,10 +215,10 @@ def write_state(identity: str, fields: dict[str, Any]) -> dict[str, Any]:
             rf"(^##\s+{re.escape(title)}\s*\n)(.+?)(?=^##\s+|^---\s*$)",
             re.MULTILINE | re.DOTALL,
         )
-        # Trailing newline so divider stays on its own line
-        replacement = rf"\1{new_body}\n\n"
+        # Trailing newline so divider stays on its own line. Function
+        # replacement for the same reason as the inline fields above.
         if pat.search(text):
-            text = pat.sub(replacement, text, count=1)
+            text = pat.sub(lambda m, b=new_body: f"{m.group(1)}{b}\n\n", text, count=1)
         else:
             log.warning("Section field %s (%s) not found in STATE.md", key, title)
 

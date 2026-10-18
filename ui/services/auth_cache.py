@@ -1,9 +1,5 @@
 """In-memory auth session cache shared across request handlers."""
 
-# ANAM GUIDE: LOGIN TOKEN QUICK CACHE
-# What: Remembers recently-checked login tokens for 5 minutes so every page load doesn't hit the database.
-# Called by: api/auth.py (login/logout) and core/middleware.py (the gate that checks every request).
-# Edit here when: You want logins to be re-checked more or less often (the 300-second TTL), or logout isn't taking effect fast enough.
 
 import time
 from datetime import datetime, timezone

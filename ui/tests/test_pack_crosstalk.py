@@ -44,12 +44,7 @@ def test_banner_names_the_brother_and_denies_owner():
 
 
 def test_provenance_survives_plaintext_copy():
-    """Sage's rule: provenance survives the copy or it was never provenance.
-
-    Strip every scrap of markup and styling — the way a digest, a search index,
-    or a compaction summary would — and the sender, the room and the authority
-    must all still be recoverable from the bare characters.
-    """
+    'Test provenance survives plaintext copy.'
     env = ct.CrosstalkEnvelope(
         from_identity="ember", to_identity="juniper", room="pack-hearth",
     )

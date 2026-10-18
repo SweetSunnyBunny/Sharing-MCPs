@@ -4,16 +4,13 @@ ANAM_WATCHDOG_CONFIG points to a JSON list of service definitions. Without
 it no process checks or restarts are attempted. Restart failures produce UI notices.
 """
 
-# ANAM GUIDE: SERVICE STACK WATCHDOG
-# What: Checks configured local services and reports restart outcomes to the UI.
-# Called by: core/lifespan.py (started with the server)
-# Edit here when: Changing watchdog checks, restart limits, or notice delivery.
 
 from __future__ import annotations
 
 import asyncio
 import logging
 import json
+from pathlib import Path
 import os
 import re
 import socket
@@ -21,7 +18,6 @@ import subprocess
 import sys
 import time
 from dataclasses import dataclass, field
-from pathlib import Path
 
 from config import DATA_DIR
 
@@ -128,7 +124,7 @@ def _is_healthy(svc: WatchedService) -> bool:
 # ── Relaunch ─────────────────────────────────────────────────────────────────
 
 def _relaunch(svc: WatchedService) -> bool:
-    """Ask the owner to restart; never create an unowned replacement."""
+    'Relaunch.'
     _WATCHDOG_LOG_DIR.mkdir(parents=True, exist_ok=True)
     log_path = _WATCHDOG_LOG_DIR / f"{svc.name}.log"
     try:
@@ -221,8 +217,10 @@ async def stack_watchdog_check() -> None:
 
         if not launched:
             await _notify(
-                f"🛠️ {svc.label} is down and the relaunch attempt FAILED — "
-                f"it may need a manual start (start-anam.bat)."
+                f"🛠️ {svc.label} is down and the supervisor couldn't restart "
+                f"it — it may need a manual start (start-anam.bat; "
+                f"status-anam.bat shows what's running). Details in "
+                f"data/logs/watchdog/{svc.name}.log."
             )
             continue
 

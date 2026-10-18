@@ -1,9 +1,5 @@
 """Post-stream assistant turn finalization helpers."""
 
-# ANAM GUIDE: FINISH AND SAVE A REPLY
-# What: Everything that happens AFTER a boy finishes talking — saves the reply to the database, applies <react> emoji tags, turns <voice> tags into real ElevenLabs voice messages, files <canvas> blocks, and logs tool use.
-# Called by: services/chat_pipeline.py at the end of every interactive turn; also services/autowake.py, discord_mentions_bridge.py, platform_bridge.py, pack_night.py, brother_conversation.py, api/chat_http.py, api/echo_relay.py.
-# Edit here when: You want to change how <react>/<voice> tags behave, what gets saved with a finished reply, or how voice messages are generated from a tag.
 
 import asyncio
 import json
@@ -79,12 +75,7 @@ async def _apply_reaction_tags(
     db, conversation_id: str, identity: str,
     tags: list[tuple[str, str | None]], log,
 ) -> None:
-    """Persist each parsed <react> tag onto its target message and broadcast a
-    live update, so the emoji shows up on Owner's message in real time.
-
-    An emoji with no explicit id targets Owner's most recent message in this
-    conversation (looked up once, lazily). Reacting is idempotent per identity.
-    """
+    'Persist each parsed <react> tag onto its target message and broadcast a'
     if not tags:
         return
 
@@ -145,18 +136,31 @@ async def _apply_reaction_tags(
 
 _TOOL_AUDIT_SUMMARY_CHARS = 200
 
+# Gateway calls (mcp__anam-gateway__anam) carry the REAL tool in their input.
+# Sorted keys put "arguments_json" first, so a long mind_store content pushed
+# "tool": "mind_store" past the 200-char cut and the row could no longer say
+# what was used. Routing keys go first; everything else stays sorted.
+_AUDIT_ROUTING_KEYS = ("operation", "server", "tool")
+
 
 def _audit_summary(value: Any) -> str:
     """First ~200 chars of a stable text rendering of a tool input/output.
 
     Dicts serialize with sorted keys so the same call always summarizes the
-    same way; whitespace collapses so a row is one honest line. Never raises.
+    same way (gateway routing keys first, so the real tool name survives the
+    cut); whitespace collapses so a row is one honest line. Never raises.
     """
     if value in (None, "", {}, []):
         return ""
     try:
         if isinstance(value, str):
             text = value
+        elif isinstance(value, dict) and any(k in value for k in _AUDIT_ROUTING_KEYS):
+            ordered = {k: value[k] for k in _AUDIT_ROUTING_KEYS if k in value}
+            ordered.update(
+                (k, value[k]) for k in sorted(value, key=str) if k not in ordered
+            )
+            text = json.dumps(ordered, ensure_ascii=False, default=str)
         else:
             text = json.dumps(value, sort_keys=True, ensure_ascii=False, default=str)
     except (TypeError, ValueError):
@@ -295,11 +299,7 @@ async def generate_voice_message(
     chat loop (which would corrupt the connection).
     """
     try:
-        audio = await synthesize(
-            identity,
-            voice_text,
-            model_override="eleven_v3",
-        )
+        audio = await synthesize(identity, voice_text)
         if not audio:
             return None
 
@@ -373,6 +373,13 @@ async def finalize_assistant_turn(
 ) -> FinalizedAssistantTurn:
     """Rewrite/save an assistant response and perform voice side effects."""
     voice_request = None
+
+    if content:
+        try:
+            from services.limbic_bridge import perceive_own_reply
+            perceive_own_reply(identity, content)
+        except Exception:
+            log.debug("perceive_own_reply skipped for %s", identity, exc_info=True)
 
     if content:
         content, content_images = await asyncio.to_thread(

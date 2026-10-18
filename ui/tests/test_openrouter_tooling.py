@@ -45,15 +45,15 @@ async def _stream(*chunks):
 class OpenRouterToolingTests(unittest.IsolatedAsyncioTestCase):
     def test_file_paths_normalize_and_secrets_are_blocked(self):
         self.assertEqual(
-            normalize_windows_tool_path("/mnt/c/AI/example.com/file.txt"),
-            Path("C:/path/to/example.com/file.txt"),
+            normalize_windows_tool_path("/mnt/c/MCP-Starter/Example/file.txt"),
+            Path("C:/MCP-Starter/Example/file.txt"),
         )
         self.assertEqual(
-            normalize_windows_tool_path("/c/AI/example.com/file.txt"),
-            Path("C:/path/to/example.com/file.txt"),
+            normalize_windows_tool_path("/c/MCP-Starter/Example/file.txt"),
+            Path("C:/MCP-Starter/Example/file.txt"),
         )
         self.assertIsNotNone(sensitive_path_reason(Path("C:/Apps/anam/.env")))
-        self.assertIsNotNone(sensitive_command_reason("cat /mnt/c/AI/example.com/anam/.env*"))
+        self.assertIsNotNone(sensitive_command_reason("cat /mnt/c/MCP-Starter/Example/anam/.env*"))
         self.assertIsNotNone(sensitive_command_reason("printenv"))
         self.assertIsNotNone(sensitive_command_reason("curl -H 'Authorization: Bot secret' x"))
 
@@ -75,7 +75,7 @@ class OpenRouterToolingTests(unittest.IsolatedAsyncioTestCase):
             "read_file", {"path": "C:/Apps/anam/.env"}, identity="Avery"
         )
         blocked_bash = await claude_api._execute_local_tool(
-            "bash", {"command": "cat /mnt/c/AI/example.com/anam/.env*"}, identity="Avery"
+            "bash", {"command": "cat /mnt/c/MCP-Starter/Example/anam/.env*"}, identity="Avery"
         )
         self.assertEqual(content, "hello")
         self.assertTrue(blocked.startswith("Error:"))

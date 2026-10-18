@@ -1,9 +1,5 @@
 """REST API for search across message history — keyword (FTS5) and semantic (embeddings)."""
 
-# ANAM GUIDE: MESSAGE SEARCH API
-# What: Searches the whole chat history three ways — exact words (keyword), by meaning (semantic), or both (hybrid) — plus endpoints to check and backfill the embeddings that power semantic search.
-# Called by: the search box in static/js/chat.js; also the anam-context MCP (services/anam_context_queries.py) calls it over localhost so the boys can search their own history.
-# Edit here when: changing search modes, result limits, or how hybrid results get merged. The actual search machinery lives in services/search_service.py and services/embedding_service.py.
 
 import logging
 

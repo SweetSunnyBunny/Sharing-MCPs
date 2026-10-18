@@ -14,7 +14,7 @@ packaging a clean distribution.
 py -3.11 scripts\verify_setups.py
 ```
 
-Success prints a verified file count and 32 setup folders. A changed file, added
+Success prints a verified file count and 36 setup folders. A changed file, added
 `.env`, cache or database makes it fail deliberately. Do not delete configuration
 from a working installation to satisfy this distribution check.
 
@@ -83,3 +83,12 @@ keeps the UI separate from the cloud setups.
 After a reviewed refresh, regenerate the snapshot manifest from the reviewed
 files and retain a record of the checks performed. A successful hash check from
 an older snapshot does not certify newly generated content.
+
+## Preventing stale UI replacements
+
+A private UI profile can include overlay_source_hashes: relative paths mapped
+to SHA-256 hashes of maintained source at review time. If that source changes,
+the exporter refuses to overlay the older file. Reconcile current code and
+public adaptations, test, then update the baseline. Private profiles stay outside
+this distribution. Run "python scripts/test_local_adapters.py" for offline
+adapter contracts; these checks send no app or device requests.

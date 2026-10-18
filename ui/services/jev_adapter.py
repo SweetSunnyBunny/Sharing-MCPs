@@ -1,5 +1,6 @@
 """Jev (TypeSafe System One) adapter — typed judgment questions, privacy-gated."""
 
+
 from __future__ import annotations
 
 import logging

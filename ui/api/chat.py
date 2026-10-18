@@ -1,5 +1,6 @@
 """WebSocket handler -- bridges the browser UI to Claude Code or direct API."""
 
+
 import asyncio
 import json
 import logging
@@ -7,23 +8,25 @@ import re
 import shutil
 import time
 from collections import deque
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from services.chat_pipeline import process_chat_message, _DISCONNECTED
+from services.chat_pipeline import process_chat_message
 
 from config import (
     IMAGES_DIR, IMAGE_ALLOWED_EXTENSIONS,
     DOCUMENTS_DIR, DOCUMENT_ALLOWED_EXTENSIONS,
+    RITUALS_DIR, TIMEZONE,
 )
 from db.database import get_db, release_db
 from services.session_auth import hash_session_token
+from services.autowake_service import create_timer
 from services import claude_pty  # PTY-specific ops (approval keystrokes are TUI-only)
 from services import provider_router  # backend-aware session clear + -p pre-warm
-from services.connection_registry import register, unregister, set_active_identity, set_active_conversation
-from services.session_manager import (
-    get_or_create_conversation, save_message,
+from services.connection_registry import (
+    register, unregister, set_active_identity, set_active_conversation, send_json_locked,
 )
 from services.chat_session_ops import (
     create_conversation,
@@ -36,6 +39,11 @@ from services.chat_session_ops import (
 
 log = logging.getLogger(__name__)
 router = APIRouter()
+
+
+# =============================================================================
+# CONTENT REGISTRATION (reply-linked images/documents -> served files)
+# =============================================================================
 
 def _register_content_images(content: str, identity: str | None = None) -> tuple[str, list[dict]]:
     """Scan markdown ![alt](path) in response text, copy files to IMAGES_DIR, rewrite URLs."""
@@ -129,6 +137,10 @@ def _register_content_documents(content: str, identity: str | None = None) -> tu
     return rewritten, documents
 
 
+# =============================================================================
+# SLASH COMMANDS + WEBSOCKET RATE LIMIT
+# =============================================================================
+
 # Simple in-memory rate limiter for WebSocket connections. Mobile Chrome may
 # legitimately replace several stale sockets while waking; keep protection
 # against a runaway client without colliding with the browser's retry budget.
@@ -139,16 +151,8 @@ _WS_RATE_WINDOW = 60  # seconds
 
 async def _handle_slash_command(command: str, args: str, identity: str) -> str:
     """Handle server-side slash commands."""
-    from zoneinfo import ZoneInfo
-
     if command == "timer":
         # Parse: /timer 2h check in  OR  /timer 30m reminder
-        import re
-        from datetime import datetime, timedelta, timezone
-        from config import TIMEZONE
-        from db.database import get_db, release_db
-        from services.autowake_service import create_timer
-
         match = re.match(r'(\d+)\s*(m|min|h|hr|hour)s?\s*(.*)', args, re.IGNORECASE)
         if not match:
             return "Usage: /timer 30m reminder text"
@@ -167,20 +171,18 @@ async def _handle_slash_command(command: str, args: str, identity: str) -> str:
 
         db = await get_db()
         try:
-            timer = await create_timer(db, identity=identity, fire_at=fire_at, context=context)
+            await create_timer(db, identity=identity, fire_at=fire_at, context=context)
             return f"Timer set for {amount}{'h' if unit.startswith('h') else 'm'}: {context}"
         finally:
             await release_db(db)
 
     elif command == "status":
         # Parse: /status 🌸 feeling good
-        from db.database import get_db, release_db
         parts = args.strip()
         if not parts:
             return "Usage: /status emoji text"
 
         # First char or emoji is the status emoji
-        import re
         emoji_match = re.match(r'(\S+)\s*(.*)', parts)
         if emoji_match:
             emoji = emoji_match.group(1)
@@ -190,20 +192,18 @@ async def _handle_slash_command(command: str, args: str, identity: str) -> str:
             text = parts
 
         try:
-            import json as _json
-            from config import RITUALS_DIR
             status_file = RITUALS_DIR / "status.json"
             status_file.parent.mkdir(parents=True, exist_ok=True)
             data = {}
             if status_file.exists():
                 try:
-                    data = _json.loads(status_file.read_text(encoding="utf-8"))
-                except (_json.JSONDecodeError, OSError):
+                    data = json.loads(status_file.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, OSError):
                     data = {}
             data["emoji"] = emoji
             data["text"] = text
             data["updated_at"] = datetime.now(ZoneInfo(TIMEZONE)).isoformat()
-            status_file.write_text(_json.dumps(data, indent=2), encoding="utf-8")
+            status_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
             return f"Status updated: {emoji} {text}"
         except Exception as e:
             return f"Error updating status: {e}"
@@ -225,16 +225,17 @@ def _ws_rate_limited(client_ip: str) -> bool:
     return False
 
 
+# =============================================================================
+# PRE-WARM (spawn the next boy's process before the first message)
+# =============================================================================
+
 # Background pre-warm tasks, kept referenced so the event loop doesn't GC them
 # mid-flight (a bare create_task can be collected before it runs).
 _PREWARM_TASKS: set = set()
 
 
 def _fire_prewarm(identity: str, conversation_id: str | None) -> None:
-    """Spawn the -p session for (identity, conv) in the background so Owner's
-    first message lands on an already-booted process. No-op for PTY/other
-    providers (maybe_prewarm guards that). Fire-and-forget — never blocks the
-    WS response or raises into the handler."""
+    'Fire prewarm.'
     if not conversation_id:
         return
     task = asyncio.create_task(provider_router.maybe_prewarm(identity, conversation_id))
@@ -242,9 +243,42 @@ def _fire_prewarm(identity: str, conversation_id: str | None) -> None:
     task.add_done_callback(_PREWARM_TASKS.discard)
 
 
-# ANAM GUIDE: CHAT SERVER ENTRY
-# Browser WebSocket messages arrive here. Connection/session commands stay in
-# this boundary; ordinary message turns are handed to chat_pipeline.py.
+# =============================================================================
+# ONE REPLY PER BOY (turn tasks that run while the socket keeps listening)
+# =============================================================================
+
+_WS_CLOSED = object()  # the reader's "socket is gone" marker in the inbox
+
+# Running reply tasks, kept referenced so the event loop can't GC one
+# mid-reply (they outlive their socket if she disconnects mid-turn).
+_TURN_TASKS: set = set()
+
+
+class _BoyTurn:
+    """One boy's reply in flight on this socket, plus what waits on it."""
+
+    def __init__(self, identity: str, conversation: str | None, session_type: str):
+        self.identity = identity
+        self.conversation = conversation
+        self.session_type = session_type
+        self.task: asyncio.Task | None = None
+        self.bridge = None  # StreamWebSocketBridge, handed over by the pipeline
+        self.deferred: list[dict] = []  # frames that must wait for this reply
+        self.after: list = []  # callables to run once the reply has finished
+
+    def attach(self, bridge) -> None:
+        self.bridge = bridge
+
+    def live_conversation(self) -> str | None:
+        """The chat this reply is really in (a first message creates one)."""
+        stamp = getattr(self.bridge, "stamp", None) or {}
+        return stamp.get("conversation_id") or self.conversation
+
+
+# =============================================================================
+# WEBSOCKET ENTRY
+# =============================================================================
+
 @router.websocket("/ws/chat")
 async def chat_ws(ws: WebSocket):
     # Auth check -- must accept() first so the close code reaches the client
@@ -294,25 +328,113 @@ async def chat_ws(ws: WebSocket):
     current_conversation = None
     current_session_type = "chat"
     active_categories: set[str] = {"core"}
-    pending_messages: deque[dict] = deque()
+
+    inbox: asyncio.Queue = asyncio.Queue()
+    turns: dict[str, _BoyTurn] = {}
+
+    async def _send(data: dict) -> None:
+        await send_json_locked(ws, data)
+
+    async def _read_frames() -> None:
+        try:
+            while True:
+                await inbox.put(await ws.receive_text())
+        except WebSocketDisconnect:
+            log.info("WebSocket disconnected")
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            log.info("WebSocket read ended: %s", exc)
+        finally:
+            inbox.put_nowait(_WS_CLOSED)
+
+    def _start_turn(msg: dict, identity: str, conversation: str | None, session_type: str) -> None:
+        handle = _BoyTurn(identity, conversation, session_type)
+        turns[identity.lower()] = handle
+        handle.task = asyncio.create_task(_run_turn(handle, msg))
+        _TURN_TASKS.add(handle.task)
+        handle.task.add_done_callback(_TURN_TASKS.discard)
+
+    async def _run_turn(handle: "_BoyTurn", msg: dict) -> None:
+        nonlocal current_conversation
+        leftovers: deque[dict] = deque()
+        try:
+            _ident, new_conv, _status = await process_chat_message(
+                ws=ws,
+                msg=msg,
+                current_identity=handle.identity,
+                current_conversation=handle.conversation,
+                current_session_type=handle.session_type,
+                active_categories=active_categories,
+                pending_messages=leftovers,
+                _register_content_images=_register_content_images,
+                _register_content_documents=_register_content_documents,
+                attach_bridge=handle.attach,
+            )
+            # Her first message made him a brand-new chat: if she is still
+            # on this boy with no chat chosen, that chat is hers now.
+            if (
+                new_conv and handle.conversation is None
+                and current_conversation is None
+                and current_identity.lower() == handle.identity.lower()
+            ):
+                current_conversation = new_conv
+        except Exception as e:
+            log.exception("Error processing chat message: %s", e)
+            await _send({
+                "type": "error",
+                "identity": handle.identity,
+                "message": f"Error processing message: {e}",
+            })
+        finally:
+            if turns.get(handle.identity.lower()) is handle:
+                del turns[handle.identity.lower()]
+            for after in handle.after:
+                try:
+                    after()
+                except Exception:
+                    log.exception("Post-turn step failed for %s", handle.identity)
+            # Whatever waited on this reply goes back through the front door,
+            # still addressed to the boy and chat it was written to.
+            for waiting in [*leftovers, *handle.deferred]:
+                if waiting.get("type") == "message" and "_target" not in waiting:
+                    waiting["_target"] = (handle.identity, handle.conversation, handle.session_type)
+                inbox.put_nowait(waiting)
+
+    reader_task = asyncio.create_task(_read_frames())
 
     try:
         while True:
-            if pending_messages:
-                msg = pending_messages.popleft()
+            item = await inbox.get()
+            if item is _WS_CLOSED:
+                break
+            if isinstance(item, dict):
+                msg = item  # re-entered after the reply it waited on
             else:
-                raw = await ws.receive_text()
                 try:
-                    msg = json.loads(raw)
+                    msg = json.loads(item)
                 except json.JSONDecodeError:
-                    await ws.send_json({"type": "error", "message": "Invalid JSON"})
+                    await _send({"type": "error", "message": "Invalid JSON"})
+                    continue
+                if not isinstance(msg, dict):
                     continue
 
             msg_type = msg.get("type", "")
 
             # Heartbeat -- keep connection alive through tunnel
             if msg_type == "ping":
-                await ws.send_json({"type": "pong"})
+                await _send({"type": "pong"})
+                continue
+
+            # Stop button: stops the reply on HER screen's boy (or the only
+            # reply running, if that boy isn't the one talking).
+            if msg_type == "stop_streaming":
+                target = turns.get(current_identity.lower())
+                if target is None and len(turns) == 1:
+                    target = next(iter(turns.values()))
+                if target is not None and target.bridge is not None:
+                    log.info("Stop streaming requested by user (%s)", target.identity)
+                    target.bridge.cancel_event.set()
                 continue
 
             # Identity switch
@@ -326,7 +448,7 @@ async def chat_ws(ws: WebSocket):
                 # talk to and in which conversation — her first message lands
                 # on an already-booted process instead of a cold spawn.
                 _fire_prewarm(current_identity, current_conversation)
-                await ws.send_json({
+                await _send({
                     "type": "identity_switched",
                     "identity": current_identity,
                     "conversation_id": current_conversation,
@@ -338,14 +460,24 @@ async def chat_ws(ws: WebSocket):
                 identity = msg.get("identity", current_identity)
                 session_type = msg.get("session_type", "chat")
                 # Backend-aware clear (was hardcoded to PTY; -p revival made
-                # that route the wrong backend).
-                provider_router.clear_claude_code_session(identity, current_conversation or "")
+                # that route the wrong backend). If he's mid-reply, the clear
+                # waits for that reply to finish so it can't kill his work;
+                # her new chat opens now either way.
+                old_conversation = current_conversation or ""
+                running = turns.get(identity.lower())
+                if running is not None:
+                    running.after.append(
+                        lambda i=identity, c=old_conversation:
+                        provider_router.clear_claude_code_session(i, c)
+                    )
+                else:
+                    provider_router.clear_claude_code_session(identity, old_conversation)
                 current_conversation, current_session_type = await create_conversation(
                     identity, session_type
                 )
                 # Pre-warm the fresh conversation's -p session.
                 _fire_prewarm(identity, current_conversation)
-                await ws.send_json({
+                await _send({
                     "type": "new_conversation",
                     "conversation_id": current_conversation,
                     "identity": identity,
@@ -360,7 +492,7 @@ async def chat_ws(ws: WebSocket):
                 decision = msg.get("decision", "allow_once")
                 session = claude_pty.get_session_for(target_identity, target_conv)
                 if session is None:
-                    await ws.send_json({
+                    await _send({
                         "type": "approval_decision_result",
                         "ok": False,
                         "reason": (
@@ -374,7 +506,7 @@ async def chat_ws(ws: WebSocket):
                         await asyncio.get_running_loop().run_in_executor(
                             None, session.send_approval_response, decision,
                         )
-                        await ws.send_json({
+                        await _send({
                             "type": "approval_decision_result",
                             "ok": True,
                             "decision": decision,
@@ -386,7 +518,7 @@ async def chat_ws(ws: WebSocket):
                             (target_conv or "")[:8],
                             exc,
                         )
-                        await ws.send_json({
+                        await _send({
                             "type": "approval_decision_result",
                             "ok": False,
                             "reason": f"keystroke send failed: {exc}",
@@ -399,37 +531,44 @@ async def chat_ws(ws: WebSocket):
                 args = msg.get("args", "")
                 try:
                     result = await _handle_slash_command(command, args, current_identity)
-                    await ws.send_json({"type": "slash_result", "command": command, "result": result})
+                    await _send({"type": "slash_result", "command": command, "result": result})
                 except Exception as e:
-                    await ws.send_json({"type": "slash_result", "command": command, "result": f"Error: {e}"})
+                    await _send({"type": "slash_result", "command": command, "result": f"Error: {e}"})
                 continue
 
-            # Chat message
+            # Chat message — addressed to the boy and chat on her screen when
+            # it arrived (or, if it waited on a reply, the ones it was
+            # written to: "_target").
             if msg_type == "message":
-                try:
-                    current_identity, current_conversation, status = await process_chat_message(
-                        ws=ws,
-                        msg=msg,
-                        current_identity=current_identity,
-                        current_conversation=current_conversation,
-                        current_session_type=current_session_type,
-                        active_categories=active_categories,
-                        pending_messages=pending_messages,
-                        _register_content_images=_register_content_images,
-                        _register_content_documents=_register_content_documents,
+                target = msg.pop("_target", None)
+                if target:
+                    t_identity, t_conversation, t_session_type = target
+                else:
+                    t_identity, t_conversation, t_session_type = (
+                        current_identity, current_conversation, current_session_type,
                     )
-
-                    if status is _DISCONNECTED:
-                        break
-                except Exception as e:
-                    log.exception("Error processing chat message: %s", e)
+                running = turns.get(t_identity.lower())
+                if running is None:
+                    _start_turn(msg, t_identity, t_conversation, t_session_type)
+                    continue
+                # He's mid-reply. Same chat: slip it into the turn he's
+                # running, like typing into the terminal while he works.
+                # Anything that can't slip in waits for his reply to end.
+                bridge = running.bridge
+                running_conv = running.live_conversation()
+                same_chat = (
+                    t_conversation is None or running_conv is None
+                    or t_conversation == running_conv
+                )
+                injected = False
+                if bridge is not None and bridge.inject_hook is not None and same_chat:
                     try:
-                        await ws.send_json({
-                            "type": "error",
-                            "message": f"Error processing message: {e}",
-                        })
+                        injected = await bridge.inject_hook(msg)
                     except Exception:
-                        pass
+                        log.exception("Live injection raised; queueing the message instead")
+                if not injected:
+                    msg["_target"] = (t_identity, t_conversation, t_session_type)
+                    running.deferred.append(msg)
                 continue
 
             # Load conversation history (paginated — last 50 messages)
@@ -449,7 +588,7 @@ async def chat_ws(ws: WebSocket):
                     # session is booted (tools/files ready) before her first
                     # message, not cold-spawned on it. Covers masks too.
                     _fire_prewarm(current_identity, current_conversation)
-                await ws.send_json(payload)
+                await _send(payload)
                 continue
 
             # Load older messages (pagination)
@@ -457,18 +596,26 @@ async def chat_ws(ws: WebSocket):
                 offset = msg.get("offset", 50)
                 limit = msg.get("limit", 50)
                 if current_conversation:
-                    await ws.send_json(
+                    await _send(
                         await load_more_payload(current_conversation, offset, limit)
                     )
                 continue
 
             # Regenerate last assistant message
             if msg_type == "regenerate":
-                if not current_conversation:
+                waited_already = "_conversation" in msg
+                regen_conversation = msg.pop("_conversation", None) or current_conversation
+                if not regen_conversation:
                     continue
-                last_user_text = await prepare_regeneration(current_conversation)
+                running = turns.get(current_identity.lower())
+                if running is not None and not waited_already:
+                    # Never rewrite a chat while he's still writing in it.
+                    msg["_conversation"] = regen_conversation
+                    running.deferred.append(msg)
+                    continue
+                last_user_text = await prepare_regeneration(regen_conversation)
                 # Tell the browser UI what user text to re-send.
-                await ws.send_json({
+                await _send({
                     "type": "regenerate_ready",
                     "user_text": last_user_text,
                 })
@@ -479,7 +626,7 @@ async def chat_ws(ws: WebSocket):
                 conv_id = msg.get("conversation_id")
                 pinned = msg.get("pinned", True)
                 if conv_id:
-                    await ws.send_json(await update_conversation_pin(conv_id, pinned))
+                    await _send(await update_conversation_pin(conv_id, pinned))
                 continue
 
     except WebSocketDisconnect:
@@ -487,6 +634,12 @@ async def chat_ws(ws: WebSocket):
     except Exception as e:
         log.exception("WebSocket error: %s", e)
     finally:
+        reader_task.cancel()
+        # Replies still running finish on their own and save to his chat,
+        # exactly as before; they just stop trying to talk to a closed socket.
+        for running in turns.values():
+            if running.bridge is not None:
+                running.bridge.ws_alive = False
         await unregister(ws)
 
 

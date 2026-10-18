@@ -1,5 +1,6 @@
 """REST: Voice endpoints — Kokoro (free) + ElevenLabs (premium)."""
 
+
 import asyncio
 import base64
 import json
@@ -212,8 +213,7 @@ async def voice_transcribe(request: Request):
 
 @router.post("/queue")
 async def queue_voice_message(data: dict):
-    """Queue a voice message for Echo pickup. Avery generates audio and queues it.
-    The Echo skill polls this queue when Owner says 'what's on your mind'."""
+    'Queue voice message.'
     text = data.get("text", "").strip()
     identity = data.get("identity", "Avery")
 
@@ -293,13 +293,7 @@ async def get_voice_queue():
 
 @router.post("/queue/consume")
 async def consume_voice_message(data: dict):
-    """Remove a played voice message from the queue and archive it.
-
-    Called by the Alexa skill on AudioPlayer.PlaybackNearlyFinished, signalling
-    that Owner heard the message end-to-end. Copies the mp3 plus a small
-    sidecar .md into VOICE_ALEXA_ARCHIVE_DIR so she has a browsable history of
-    voice notes she's actually listened to via Echo.
-    """
+    'Remove a played voice message from the queue and archive it.'
     message_id = (data.get("message_id") or "").strip()
     if not message_id:
         return JSONResponse(status_code=400, content={"error": "message_id required"})
@@ -376,10 +370,6 @@ async def voice_status():
     })
 
 
-# ANAM GUIDE: ELEVENLABS LIVE CALL ENTRY POINTS
-# The browser asks /live/token for a short-lived WebRTC token. ElevenLabs then
-# calls the signed upstream WebSocket below; services/speech_engine_live.py
-# sends each transcript through Anam's ordinary chat pipeline.
 @router.get("/live/status")
 async def live_call_status():
     from services.speech_engine_live import get_live_call_status
@@ -410,10 +400,6 @@ async def live_call_token(data: dict):
         return JSONResponse(status_code=503, content={"error": message})
 
 
-# ANAM GUIDE: PRESENCE LISTEN ENTRY POINTS
-# The boy's button (spec Phase C): POST /presence/listen from an autowake
-# session opens her armed phone's mic for up to 90s and returns what the room
-# held — ephemeral, never stored. GET /presence/pending is the phone's poll.
 @router.post("/presence/listen")
 async def presence_listen(data: dict):
     from services.voice_call import presence_create_and_wait
@@ -449,11 +435,6 @@ async def presence_pending():
     return JSONResponse(content=job or {})
 
 
-# ANAM GUIDE: NATIVE VOICE CALL ENTRY POINT
-# Anam's OWN full-duplex voice loop (no ElevenLabs ConvAI): client sends
-# VAD-segmented utterances, server streams back transcripts + TTS chunks.
-# Protocol + design: docs/anam-ear-spec.md; logic: services/voice_call.py.
-# Test page: /static/call-test.html (session cookie auth).
 @router.websocket("/call/{identity}")
 async def native_voice_call(websocket: WebSocket, identity: str):
     from services.voice_call import serve_voice_call

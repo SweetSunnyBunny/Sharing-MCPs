@@ -5,6 +5,7 @@ scoped to a world, every generated artifact has provenance, and user-controlled
 characters can never be authored by an AI-origin write.
 """
 
+
 from __future__ import annotations
 
 import json
@@ -35,6 +36,8 @@ POST_TYPES = {"post", "reply", "quote", "repost"}
 POST_ORIGINS = {"human", "ai", "system"}
 
 
+# ── Errors ─────────────────────────────────────────────────────────────────
+
 class WorldFeedError(ValueError):
     """Expected validation or state error returned to the private UI."""
 
@@ -46,6 +49,8 @@ class WorldFeedNotFound(WorldFeedError):
 class WorldFeedConflict(WorldFeedError):
     """A unique story-social object already exists."""
 
+
+# ── Helpers: ids, JSON, handles, hashtags, mentions ───────────────────────
 
 def _now() -> tuple[str, int]:
     dt = datetime.now(timezone.utc)
@@ -103,6 +108,8 @@ def extract_mentions(body: str) -> list[str]:
     return list(found.values())
 
 
+# ── Row mappers (DB row -> API dict) ──────────────────────────────────────
+
 def _world(row: aiosqlite.Row) -> dict[str, Any]:
     return {
         "id": row["id"],
@@ -146,6 +153,8 @@ def _profile(row: aiosqlite.Row, prefix: str = "") -> dict[str, Any]:
         "updated_at": row[key("updated_at")],
     }
 
+
+# ── Worlds ────────────────────────────────────────────────────────────────
 
 async def ensure_default_world(db: aiosqlite.Connection) -> dict[str, Any]:
     row = await db.execute_fetchall("SELECT * FROM story_worlds WHERE id = ?", (DEFAULT_WORLD_ID,))
@@ -270,6 +279,8 @@ async def update_world(db: aiosqlite.Connection, world_id: str, data: dict[str, 
     return await get_world(db, world_id)
 
 
+# ── Profiles ──────────────────────────────────────────────────────────────
+
 async def get_profile(db: aiosqlite.Connection, profile_id: str) -> dict[str, Any]:
     rows = await db.execute_fetchall("SELECT * FROM story_feed_profiles WHERE id = ?", (profile_id,))
     if not rows:
@@ -388,6 +399,8 @@ async def update_profile(db: aiosqlite.Connection, profile_id: str, data: dict[s
     return await get_profile(db, profile_id)
 
 
+# ── Relationships (authored story truth between two profiles) ─────────────
+
 async def upsert_relationship(db: aiosqlite.Connection, world_id: str, data: dict[str, Any]) -> dict[str, Any]:
     from_id = str(data.get("from_profile_id") or "")
     to_id = str(data.get("to_profile_id") or "")
@@ -462,6 +475,8 @@ async def list_relationships(db: aiosqlite.Connection, world_id: str) -> list[di
         if row["from_profile_id"] in profiles and row["to_profile_id"] in profiles
     ]
 
+
+# ── Post creation + interaction notifications ────────────────────────────
 
 async def _validate_linked_post(db: aiosqlite.Connection, world_id: str, post_id: str | None, label: str) -> None:
     if not post_id:
@@ -666,6 +681,8 @@ async def _notify(
     )
 
 
+# ── Feed reads (post query, decoration, timeline) ─────────────────────────
+
 _POST_SELECT = """
 SELECT p.*,
        a.id a_id, a.world_id a_world_id, a.handle a_handle, a.display_name a_display_name,
@@ -867,6 +884,8 @@ async def list_feed(
     return await _decorate_posts(db, rows, viewer_profile_id=viewer_profile_id)
 
 
+# ── Likes + canon review ──────────────────────────────────────────────────
+
 async def toggle_like(db: aiosqlite.Connection, post_id: str, profile_id: str, *, desired: bool | None = None) -> dict[str, Any]:
     owned = not db.in_transaction
     if owned:
@@ -966,6 +985,8 @@ async def set_post_canon(
     return await get_post(db, post_id)
 
 
+# ── Trends + notifications ────────────────────────────────────────────────
+
 async def list_trends(db: aiosqlite.Connection, world_id: str, *, limit: int = 10) -> list[dict[str, Any]]:
     rows = await db.execute_fetchall(
         "SELECT h.tag, MAX(h.display_tag) display_tag, COUNT(*) post_count, MAX(h.created_at_epoch) last_used "
@@ -1025,7 +1046,36 @@ async def mark_notifications_read(db: aiosqlite.Connection, world_id: str, profi
     return cursor.rowcount
 
 
+# ── Follows, profile detail, connections, threads ─────────────────────────
+
 async def toggle_follow(
+    db: aiosqlite.Connection,
+    world_id: str,
+    follower_profile_id: str,
+    followed_profile_id: str,
+    *,
+    desired: bool | None = None,
+) -> dict[str, Any]:
+    """Follow/unfollow one direction. Serialized so two identical taps can't collide."""
+    # The history importer calls this inside its own transaction; only commit
+    # (or roll back) a transaction this call started.
+    owned = not db.in_transaction
+    if owned:
+        await db.execute("BEGIN IMMEDIATE")
+    try:
+        result = await _toggle_follow(
+            db, world_id, follower_profile_id, followed_profile_id, desired=desired,
+        )
+        if owned:
+            await db.commit()
+        return result
+    except BaseException:
+        if owned:
+            await db.rollback()
+        raise
+
+
+async def _toggle_follow(
     db: aiosqlite.Connection,
     world_id: str,
     follower_profile_id: str,
@@ -1048,11 +1098,15 @@ async def toggle_follow(
         return {"active": active}
     if active:
         iso, epoch = _now()
-        await db.execute(
-            "INSERT INTO story_feed_follows (world_id, follower_profile_id, followed_profile_id, created_at, created_at_epoch) "
+        cursor = await db.execute(
+            "INSERT OR IGNORE INTO story_feed_follows (world_id, follower_profile_id, followed_profile_id, created_at, created_at_epoch) "
             "VALUES (?, ?, ?, ?, ?)",
             (world_id, follower_profile_id, followed_profile_id, iso, epoch),
         )
+        if cursor.rowcount == 0:
+            # Defensive: a concurrent writer already inserted this follow (and
+            # recorded its notification/memories), so this call is a no-op.
+            return {"active": True}
         await _notify(db, world_id, followed_profile_id, follower_profile_id, "follow", None, iso, epoch)
         from services.world_feed_memory import remember
         source_id = f"{follower_profile_id}:{followed_profile_id}"
@@ -1077,11 +1131,11 @@ async def toggle_follow(
             "DELETE FROM story_feed_follows WHERE world_id = ? AND follower_profile_id = ? AND followed_profile_id = ?",
             (world_id, follower_profile_id, followed_profile_id),
         )
-    await db.commit()
     return {"active": active}
 
 
 async def profile_detail(db: aiosqlite.Connection, profile_id: str, *, viewer_profile_id: str | None = None) -> dict[str, Any]:
+    """A profile plus follower/following/post counts and follow state relative to the viewer."""
     profile = await get_profile(db, profile_id)
     if viewer_profile_id and (await get_profile(db, viewer_profile_id))["world_id"] != profile["world_id"]:
         raise WorldFeedError("Viewer belongs to a different world")
@@ -1097,6 +1151,7 @@ async def profile_detail(db: aiosqlite.Connection, profile_id: str, *, viewer_pr
 
 
 async def list_connections(db: aiosqlite.Connection, profile_id: str, *, direction: str = "followers", after_id: str = "", limit: int = 50) -> list[dict[str, Any]]:
+    """Page through a profile's followers or followed accounts, keyset-ordered by profile id."""
     await get_profile(db, profile_id)
     if direction not in {"followers", "following"}:
         raise WorldFeedError("Unknown connection direction")
@@ -1110,6 +1165,7 @@ async def list_connections(db: aiosqlite.Connection, profile_id: str, *, directi
 
 
 async def get_thread(db: aiosqlite.Connection, post_id: str, *, viewer_profile_id: str | None = None, limit: int = 40, before_epoch: int | None = None, before_id: str | None = None) -> dict[str, Any]:
+    """One published post plus a page of its direct replies (newest first) and the next cursor."""
     post = await get_post(db, post_id, viewer_profile_id=viewer_profile_id)
     if post["canon_status"] != "approved":
         raise WorldFeedNotFound("Published post not found")
@@ -1119,7 +1175,10 @@ async def get_thread(db: aiosqlite.Connection, post_id: str, *, viewer_profile_i
     return {"post": post, "posts": replies, "next_cursor": {"before_epoch": replies[-1]["timeline_order"], "before_id": replies[-1]["id"]} if len(replies) == limit else None}
 
 
+# ── Bookmarks, reposts, notification counts, world settings ───────────────
+
 async def set_bookmark(db, post_id, profile_id, active):
+    """Privately save (or unsave) a published post for one profile in its world."""
     post = await get_post(db, post_id)
     profile = await get_profile(db, profile_id)
     if profile["world_id"] != post["world_id"] or post["canon_status"] != "approved":
@@ -1133,7 +1192,14 @@ async def set_bookmark(db, post_id, profile_id, active):
 
 
 async def set_repost(db, post_id, profile_id, active):
-    await db.execute("BEGIN IMMEDIATE")
+    """Repost or un-repost an original post as ``profile_id``.
+
+    A repost is a ``post_type='repost'`` row quoting the original; undoing it
+    flips that row to rejected (and redoing re-approves it) instead of deleting.
+    """
+    owned = not db.in_transaction
+    if owned:
+        await db.execute("BEGIN IMMEDIATE")
     try:
         original = await get_post(db, post_id)
         profile = await get_profile(db, profile_id)
@@ -1147,14 +1213,17 @@ async def set_repost(db, post_id, profile_id, active):
             await db.execute("UPDATE story_feed_posts SET canon_status=?,updated_at=?,updated_at_epoch=? WHERE id=?", ("approved" if active else "rejected", iso, epoch, rows[0]["id"]))
         elif active:
             await create_post(db, original["world_id"], {"author_profile_id": profile_id, "quote_post_id": post_id, "post_type": "repost"})
-        await db.commit()
+        if owned:
+            await db.commit()
         return {"active": active}
     except BaseException:
-        await db.rollback()
+        if owned:
+            await db.rollback()
         raise
 
 
 async def notification_summary(db, world_id, profile_id):
+    """Count one profile's unread notifications (ignoring withdrawn posts)."""
     profile = await get_profile(db, profile_id)
     if profile["world_id"] != world_id:
         raise WorldFeedError("Profile does not belong to this world")
@@ -1166,7 +1235,8 @@ async def notification_summary(db, world_id, profile_id):
 
 
 async def mark_seen_notifications(db, world_id, profile_id, ids):
-    await notification_summary(db, world_id, profile_id)
+    """Mark only the notifications the viewer actually saw (by id) as read."""
+    await notification_summary(db, world_id, profile_id)  # validates profile/world
     if not ids:
         return 0
     marks = ','.join('?' for _ in ids)
@@ -1176,21 +1246,39 @@ async def mark_seen_notifications(db, world_id, profile_id, ids):
 
 
 async def update_world_settings(db, world_id, data):
-    """Save the clock and activity policy in one transaction, retaining photo settings."""
-    await db.execute("BEGIN IMMEDIATE")
+    """Save the clock and activity policy in one transaction, retaining photo settings.
+
+    Client ``metadata`` is merged over the *stored* metadata, never used as a
+    replacement. ``photos`` and ``activity`` are server-owned keys: photo
+    settings change only through world_feed_photos.configure, activity only
+    through the ``activity_*`` fields, so a stale browser copy can't clobber them.
+    """
+    owned = not db.in_transaction
+    if owned:
+        await db.execute("BEGIN IMMEDIATE")
     try:
         world = await get_world(db, world_id)
         data = dict(data)
-        activity = dict(world["metadata"].get("activity") or {})
+        stored = world["metadata"]
+        activity = dict(stored.get("activity") or {})
+        activity_changed = False
         for key in ("daily_limit", "auto_publish", "scene_reactions"):
             value = data.pop("activity_" + key, None)
             if value is not None:
                 activity[key] = value
-        if activity:
-            data["metadata"] = {**world["metadata"], **(data.get("metadata") or {}), "activity": activity}
+                activity_changed = True
+        if "metadata" in data or activity_changed:
+            client = {k: v for k, v in (data.get("metadata") or {}).items()
+                      if k not in {"photos", "activity"}}
+            merged = {**stored, **client}
+            if activity:
+                merged["activity"] = activity
+            data["metadata"] = merged
         result = await update_world(db, world_id, data)
-        await db.commit()
+        if owned:
+            await db.commit()
         return result
     except BaseException:
-        await db.rollback()
+        if owned:
+            await db.rollback()
         raise

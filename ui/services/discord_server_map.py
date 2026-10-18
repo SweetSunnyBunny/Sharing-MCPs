@@ -7,16 +7,13 @@ already configured in config.py. Stores results in:
   3. JSON export at C:/Apps/mcp\services\discord\config\server_map.json — instant awareness
 """
 
-# ANAM GUIDE: DISCORD SERVER MAP SNAPSHOT
-# What: Every so often, takes a full snapshot of the Discord servers, channels, and members each boy's bot can see, and saves it to the database plus a JSON file the boys read for instant awareness.
-# Called by: core/lifespan.py schedules the periodic refresh; scripts/refresh_server_map.py runs it by hand.
-# Edit here when: You want to change what gets recorded about servers/channels/members, how often the map refreshes, or where the JSON export lands.
 
 from __future__ import annotations
 
 import asyncio
 import json
 import logging
+from pathlib import Path
 from datetime import datetime, timezone
 
 import httpx
@@ -415,8 +412,8 @@ async def refresh_server_map() -> dict:
         await release_db(db)
 
     # Prune stale data
+    db2 = await get_db()
     try:
-        db2 = await get_db()
         active = list(DISCORD_BOT_TOKENS.keys())
         if active:
             placeholders = ",".join("?" * len(active))
@@ -430,9 +427,11 @@ async def refresh_server_map() -> dict:
             "(SELECT DISTINCT guild_id FROM discord_server_map)"
         )
         await db2.commit()
-        await release_db(db2)
-    except Exception:
-        pass
+    except Exception as exc:
+        log.warning("Discord server map prune failed: %s", exc)
+        summary["errors"].append(f"prune: {exc}")
+    finally:
+        await release_db(db2)  # always return the connection, even on error
 
     # Write JSON export
     try:
@@ -444,5 +443,58 @@ async def refresh_server_map() -> dict:
         log.error("Failed to write server map JSON: %s", exc)
         summary["errors"].append(f"json_export: {exc}")
 
+    try:
+        LIVE_MAP_MD.parent.mkdir(parents=True, exist_ok=True)
+        LIVE_MAP_MD.write_text(render_live_map(full_map), encoding="utf-8")
+    except Exception as exc:
+        log.warning("Failed to write readable Discord map: %s", exc)
+        summary["errors"].append(f"live_map: {exc}")
+
     summary["refreshed_at"] = now
     return summary
+
+
+# Lives beside the discord skill so a boy who opens the skill finds it.
+LIVE_MAP_MD = Path.home() / ".claude" / "skills" / "discord" / "references" / "live-map.md"
+
+
+def render_live_map(full_map: dict) -> str:
+    """Turn the server-map JSON into one page a boy can read: per identity,
+    each server, each category, each channel with its id. Pure; tested."""
+    refreshed = full_map.get("_refreshed_at") or "unknown"
+    out: list[str] = [
+        "# Discord: where each of us actually is",
+        "",
+        f"Written by code from the live bot tokens. Refreshed: {refreshed}.",
+        "This is ground truth for channel ids. Never copy an id from memory; look here.",
+        "If it looks stale, scripts/refresh_server_map.py rebuilds it.",
+        "",
+    ]
+    for identity, data in full_map.items():
+        if identity.startswith("_") or not isinstance(data, dict):
+            continue
+        servers = data.get("servers") or []
+        out.append(f"## {identity}")
+        if not servers:
+            out.append("_No servers visible to this bot._")
+            out.append("")
+            continue
+        for srv in servers:
+            out.append(f"### {srv.get('name', '?')} (guild {srv.get('id', '?')})")
+            for cat in srv.get("categories") or []:
+                chans = cat.get("channels") or []
+                if not chans:
+                    continue
+                out.append(f"- **{cat.get('category') or 'No category'}**")
+                for ch in chans:
+                    kind = ch.get("type", "text")
+                    tag = "" if kind == "text" else f" [{kind}]"
+                    topic = (ch.get("topic") or "").strip().replace("\n", " ")
+                    if len(topic) > 90:
+                        topic = topic[:90].rsplit(" ", 1)[0] + "…"
+                    line = f"  - {ch.get('name', '?')}{tag}: `{ch.get('id', '?')}`"
+                    if topic:
+                        line += f" — {topic}"
+                    out.append(line)
+        out.append("")
+    return "\n".join(out)

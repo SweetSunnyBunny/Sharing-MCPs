@@ -22,7 +22,11 @@ function fixture(t) {
     all: async () => ({ results: db.prepare(sql).all(...args) }),
     run: async () => { const result = db.prepare(sql).run(...args); return { meta: { changes: result.changes, last_row_id: Number(result.lastInsertRowid) } }; },
   });
-  const env = { DB: { prepare }, LIMBIC_API_KEY: 'test-key' };
+  const env = { DB: { prepare, batch: async statements => {
+    db.exec("BEGIN");
+    try { const rows = []; for (const s of statements) rows.push(await s.run()); db.exec("COMMIT"); return rows; }
+    catch (error) { db.exec("ROLLBACK"); throw error; }
+  } }, LIMBIC_API_KEY: 'test-key' };
   const call = async (name, args = {}) => {
     const response = await worker.fetch(new Request('https://example.com/mcp', {
       method: 'POST', headers: { Authorization: 'Bearer test-key', 'Content-Type': 'application/json' },
@@ -78,5 +82,5 @@ test('yellow preserves levels and unknown stop phrases dampen to floor', async t
   assert.equal(f.db.prepare('SELECT count(*) AS n FROM limbic_states').get().n, count);
   await f.call('limbic_safeword', { phrase: 'unrecognized-stop' });
   assert.equal(f.db.prepare("SELECT count(*) AS n FROM limbic_states WHERE source='safeword' AND level<>0").get().n, 0);
-  assert.equal(f.db.prepare("SELECT count(*) AS n FROM limbic_states WHERE source='safeword'").get().n, 6);
+  assert.equal(f.db.prepare("SELECT count(*) AS n FROM limbic_states WHERE source='safeword' AND state_type LIKE 'drive:%'").get().n, 6);
 });

@@ -123,6 +123,10 @@ def build(src: Path, stage: Path, profile: dict) -> dict:
                 raise ValueError(f'Unsafe overlay path: {rel}')
             if not is_text(path) and not matches(rel, profile.get('binary_allowlist', [])):
                 raise ValueError(f'Unreviewed overlay binary: {rel}')
+            baseline = profile.get('overlay_source_hashes', {}).get(rel.as_posix())
+            maintained = src / rel
+            if baseline and (not maintained.is_file() or hashlib.sha256(maintained.read_bytes()).hexdigest() != baseline):
+                raise ValueError(f'Reviewed overlay is stale for {rel}; reconcile current source before exporting')
             target = stage / rel
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(path, target)

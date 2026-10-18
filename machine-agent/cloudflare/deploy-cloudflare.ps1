@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet("clipboard", "desktop-control", "terminal", "filesystem", "krita", "muse-tts", "books-tools", "obsidian")]
+    [ValidateSet("clipboard", "desktop-control", "terminal", "filesystem", "krita", "books-tools", "obsidian")]
     [string]$Server,
 
     [Parameter(Mandatory = $true)]

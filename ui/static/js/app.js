@@ -33,9 +33,6 @@ const App = {
 
     normalizeUiText() {
         document.title = 'Anam - Soul of Heaven';
-        document.querySelectorAll('#wellness-form select option[value=""]').forEach((option) => {
-            option.textContent = '\u2014';
-        });
     },
 
     _showBackOnlineBanner() {
@@ -128,9 +125,6 @@ const App = {
         });
     },
 
-    // ANAM GUIDE: MAIN CHAT APP BOOT
-    // The browser loads identities, restores the conversation, registers all
-    // WebSocket event handlers, applies themes, and starts the UI from here.
     async init() {
                                                                             
                                                                              
@@ -225,7 +219,6 @@ const App = {
             detail: { identity: this.currentIdentity }
         }));
 
-        // Init WebSocket
         this.ws = new WebSocketManager();
         this.ws.on('connected', () => this.onConnected());
         this.ws.on('disconnected', () => this.onDisconnected());
@@ -284,19 +277,7 @@ const App = {
         document.getElementById('hub-overlay').addEventListener('click', (e) => {
             if (e.target.id === 'hub-overlay') this.closeHub();
         });
-        // Hub cards are now simple links (Pack Mail, Pack Pages, Home Hub)
 
-        // Wellness modal
-        document.getElementById('wellness-close').addEventListener('click', () => this.closeWellnessModal());
-        document.getElementById('wellness-overlay').addEventListener('click', (e) => {
-            if (e.target.id === 'wellness-overlay') this.closeWellnessModal();
-        });
-        document.getElementById('wellness-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.saveWellness();
-        });
-
-        // Global keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             // Skip when typing in input fields
             const tag = e.target.tagName;
@@ -324,13 +305,7 @@ const App = {
                     Chat.closeSearch();
                     return;
                 }
-                // Close in priority order: wellness modal, hub overlay, sanctuary expanded, sidebar
-                const wellness = document.getElementById('wellness-overlay');
-                if (wellness && wellness.style.display !== 'none') {
-                    e.preventDefault();
-                    this.closeWellnessModal();
-                    return;
-                }
+                // Close in priority order: memory modal, hub overlay, sanctuary expanded, sidebar
                 const memory = document.getElementById('memory-overlay');
                 if (memory && memory.style.display !== 'none') {
                     e.preventDefault();
@@ -600,6 +575,10 @@ const App = {
         // Save draft for current conversation before switching
         Chat.saveDraft(this.conversationId);
         Chat.parkAttachmentPreview();
+        // A reply still streaming from the boy she's leaving finishes on the
+        // server and saves to HIS chat; the screen stops listening to it so
+        // it can't block or hijack the chat she's switching to.
+        Chat.detachActiveStream(this.conversationId);
 
         this.currentIdentity = name;
         this.conversationId = null; // will be set by identity_switched response
@@ -650,9 +629,6 @@ const App = {
         });
     },
 
-    // ANAM GUIDE: APPLY ONE IDENTITY'S COLORS
-    // config.py supplies these defaults through /api/identity/list. This turns
-    // them (plus any saved bubble override) into the CSS variables anam.css uses.
     applyIdentityTheme(name) {
         const info = this.identities[name];
         if (!info) return;
@@ -801,18 +777,6 @@ const App = {
         } catch (_err) { /* corrupt cache — ignore, fall through to defaults */ }
     },
 
-    // ── Appearance theme preset (#31 runtime theme editor) ──
-    // Identity-NEUTRAL tokens only (--bg-page, --text-primary, --user-bubble-*,
-    // ...) -- a completely different set from applyIdentityTheme's --identity-*
-    // tokens above. Applied earlier in init() so per-boy accent theming always
-    // wins if a token name ever collided. Presets come from the server
-    // allowlist (api/settings.py _THEME_PRESETS) -- this never receives or
-    // sets an arbitrary color, only whatever that allowlist already curated,
-    // which is how the cottagecore-pink law holds regardless of what this
-    // code does.
-    // ANAM GUIDE: APPLY THE WHOLE APP'S COLORS
-    // api/settings.py builds these shared house tokens. This applies them to
-    // the chat page; theme-boot.js performs the same job on the other pages.
     applyThemeTokens(tokens, preset) {
         if (!tokens) return;
         const root = document.documentElement;
@@ -847,14 +811,6 @@ const App = {
         this._applyAppButtonIcons(this.themePreset);
     },
 
-    // ── Per-theme app buttons (send / attach / home / pictures) ──
-    // ANAM GUIDE: OWNER'S CUTE BUTTON ART LIVES HERE.
-    // The four chrome buttons default to her pink pastel PNGs. A vibe preset
-    // listed in THEME_APP_ICONS swaps them for themed art; any preset NOT
-    // listed keeps the pink defaults. To give a theme its own buttons, drop
-    // image files in static/assets/icons/themes/<preset>/ named
-    // send / attach / home / pictures (.png or .svg — whatever the map says)
-    // and add or edit the entry below. That's the whole system.
     THEME_APP_ICONS: {
         'halloween': {
             send:     '/static/assets/icons/themes/halloween/send.svg',
@@ -1243,66 +1199,6 @@ const App = {
         document.body.appendChild(toast);
         // toastSlideIn animation plays automatically via CSS
         fadeTimer = setTimeout(() => dismiss(), 4000);
-    },
-
-    // ── Wellness modal ──
-
-    async openWellnessModal() {
-        const overlay = document.getElementById('wellness-overlay');
-        overlay.style.display = 'flex';
-
-        // Trap focus inside the modal
-        const modalCard = overlay.querySelector('.modal-card');
-        if (modalCard) FocusTrap.trapFocus(modalCard);
-
-        try {
-            const res = await apiFetch('/api/rituals/wellness/today');
-            const data = await res.json();
-            const form = document.getElementById('wellness-form');
-            form.energy.value = data.energy || '';
-            form.mood.value = data.mood || '';
-            form.pain.value = data.pain || '';
-            form.spoons.value = data.spoons || '';
-            form.sleep_hours.value = data.sleep_hours || '';
-            form.sleep_quality.value = data.sleep_quality || '';
-            form.water_oz.value = data.water_oz || '';
-            form.soda_count.value = data.soda_count || '';
-            form.notes.value = data.notes || '';
-        } catch (err) {
-            console.error('[Wellness] Failed to load:', err);
-        }
-    },
-
-    closeWellnessModal() {
-        FocusTrap.releaseFocus();
-        document.getElementById('wellness-overlay').style.display = 'none';
-    },
-
-    async saveWellness() {
-        const form = document.getElementById('wellness-form');
-        const body = {};
-        for (const field of form.elements) {
-            if (field.name) body[field.name] = field.value;
-        }
-
-        try {
-            const res = await apiFetch('/api/rituals/wellness/today', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
-            });
-            if (res.ok) {
-                this.closeWellnessModal();
-                // Brief flash on the submit button to confirm save when present.
-                const btn = document.querySelector('#wellness-form button[type="submit"]');
-                if (btn) {
-                    btn.classList.add('saved');
-                    setTimeout(() => btn.classList.remove('saved'), 1200);
-                }
-            }
-        } catch (err) {
-            console.error('[Wellness] Failed to save:', err);
-        }
     },
 
     // ── Hub (home menu) ──

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "home-assistant": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/home-assistant-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/home-assistant-mcp/server.py"
+      ],
+      "env": {
+        "HA_URL": "http://127.0.0.1:8123",
+        "HA_TOKEN": "YOUR-HOME-ASSISTANT-TOKEN"
+      }
+    }
+  }
+}

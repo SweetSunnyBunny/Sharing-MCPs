@@ -1,15 +1,4 @@
-"""Runtime theme editor (#31): vibe preset buttons + independent font picker.
-
-Owner tried the slider version and asked for the original bubble-button
-UX back, but with real range instead of three near-identical pinks:
-"pink and fluffy" / "goth day, red and black" / "80s/90s, grey with a hot
-pink edge" -- distinct vibes, some of which intentionally leave the house
-cottagecore-pink family since this is her own chat window, not the shared
-Hub/Discord surface that law protects. Font style is a fully independent
-choice from the color vibe. Both are allowlist keys only, never a raw
-color value, so there is still no path from client input to an arbitrary
-unreviewed hex landing in :root.
-"""
+'Runtime theme editor (#31): vibe preset buttons + independent font picker.'
 
 import unittest
 from pathlib import Path
@@ -18,6 +7,11 @@ from unittest.mock import patch
 from fastapi.responses import JSONResponse
 
 from api import settings
+
+
+def _discard_background_task(coroutine, **_kwargs):
+    """Consume the coroutine owned by a mocked scheduler without running it."""
+    coroutine.close()
 
 
 class _FakeRequest:
@@ -335,7 +329,7 @@ class SetThemeTests(unittest.IsolatedAsyncioTestCase):
     async def test_valid_payload_persists_and_returns_tokens(self):
         with patch.object(settings, "_set_setting", return_value=None) as set_mock, patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(
                 _FakeRequest({"preset": "eighties-neon", "font": "nunito"})
             )
@@ -362,7 +356,7 @@ class SetThemeTests(unittest.IsolatedAsyncioTestCase):
         # a client trying to submit one is simply ignored.
         with patch.object(settings, "_set_setting", return_value=None), patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(
                 _FakeRequest({"preset": "sunrise-pink", "font": "fredoka", "hex": "#0000FF"})
             )
@@ -372,7 +366,7 @@ class SetThemeTests(unittest.IsolatedAsyncioTestCase):
     async def test_missing_preset_field_uses_default(self):
         with patch.object(settings, "_set_setting", return_value=None), patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(_FakeRequest({"font": "lora"}))
         self.assertEqual(response["ok"], True)
         self.assertEqual(response["preset"], settings._DEFAULT_THEME_PRESET)
@@ -381,7 +375,7 @@ class SetThemeTests(unittest.IsolatedAsyncioTestCase):
     async def test_missing_font_field_uses_default(self):
         with patch.object(settings, "_set_setting", return_value=None), patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(_FakeRequest({"preset": "goth"}))
         self.assertEqual(response["ok"], True)
         self.assertEqual(response["preset"], "goth")
@@ -395,7 +389,7 @@ class SetThemeTests(unittest.IsolatedAsyncioTestCase):
     async def test_keys_are_case_insensitive(self):
         with patch.object(settings, "_set_setting", return_value=None), patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(_FakeRequest({"preset": "GOTH", "font": "LORA"}))
         self.assertEqual(response["ok"], True)
         self.assertEqual(response["preset"], "goth")
@@ -415,7 +409,7 @@ class ThemeIconBaseTests(unittest.IsolatedAsyncioTestCase):
     async def test_valid_https_base_persists_and_strips_trailing_slash(self):
         with patch.object(settings, "_set_setting", return_value=None) as set_mock, patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(
                 _FakeRequest({
                     "preset": "goth", "font": "lora",
@@ -429,7 +423,7 @@ class ThemeIconBaseTests(unittest.IsolatedAsyncioTestCase):
     async def test_bad_url_is_rejected_with_400(self):
         with patch.object(settings, "_set_setting", return_value=None), patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(
                 _FakeRequest({"preset": "goth", "font": "lora", "icon_base": "not a url"})
             )
@@ -441,7 +435,7 @@ class ThemeIconBaseTests(unittest.IsolatedAsyncioTestCase):
         # reach an attribute. javascript: fails ^https?:// so it 400s.
         with patch.object(settings, "_set_setting", return_value=None), patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(
                 _FakeRequest({"icon_base": "javascript:alert(1)"})
             )
@@ -451,7 +445,7 @@ class ThemeIconBaseTests(unittest.IsolatedAsyncioTestCase):
     async def test_empty_string_clears_the_base(self):
         with patch.object(settings, "_set_setting", return_value=None) as set_mock, patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(
                 _FakeRequest({"preset": "goth", "font": "lora", "icon_base": ""})
             )
@@ -463,7 +457,7 @@ class ThemeIconBaseTests(unittest.IsolatedAsyncioTestCase):
         # A plain preset/font save must not clobber a previously-set base.
         with patch.object(settings, "_set_setting", return_value=None) as set_mock, patch(
             "services.connection_registry.broadcast", return_value=None,
-        ), patch("services.task_manager.spawn", return_value=None):
+        ), patch("services.task_manager.spawn", side_effect=_discard_background_task):
             response = await settings.set_theme(
                 _FakeRequest({"preset": "goth", "font": "lora"})
             )
@@ -489,7 +483,7 @@ class AssistantBubbleOverrideTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(settings, "_get_setting", side_effect=lambda key, default: default), patch.object(
             settings, "_set_setting", side_effect=_fake_set,
         ), patch("services.connection_registry.broadcast", return_value=None), patch(
-            "services.task_manager.spawn", return_value=None,
+            "services.task_manager.spawn", side_effect=_discard_background_task,
         ):
             response = await settings.set_theme_bubbles(
                 _FakeRequest({"identity": self._identity(), "bg": "#AABBCC", "text": "#112233", "font": "lora"})
@@ -540,7 +534,7 @@ class AssistantBubbleOverrideTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(settings, "_get_setting", side_effect=_fake_get), patch.object(
             settings, "_set_setting", side_effect=_fake_set,
         ), patch("services.connection_registry.broadcast", return_value=None), patch(
-            "services.task_manager.spawn", return_value=None,
+            "services.task_manager.spawn", side_effect=_discard_background_task,
         ):
             response = await settings.set_theme_bubbles(
                 _FakeRequest({"identity": self._identity(), "bg": None, "text": None, "font": None})

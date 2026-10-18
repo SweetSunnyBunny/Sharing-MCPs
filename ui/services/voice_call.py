@@ -79,7 +79,8 @@ async def presence_create_and_wait(identity: str, seconds: int, note: str | None
         "done": asyncio.Event(),
     }
     async with _presence_lock:
-        # one pending job at a time — presence is not a queue of ears
+        # Drop requests older than 5 minutes so abandoned asks never pile up;
+        # several fresh requests may be pending at once.
         stale = [k for k, j in _presence_jobs.items() if time.monotonic() - j["created"] > 300]
         for k in stale:
             _presence_jobs.pop(k, None)
@@ -364,6 +365,20 @@ async def _transcribe_utterance(
     return transcript_result, prosody
 
 
+async def _settle_reply_task(task: "asyncio.Task | None", identity: str) -> None:
+    'Cancel an in-flight spoken reply and wait for it to unwind.'
+    if task is None:
+        return
+    if not task.done():
+        task.cancel()
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
+    except Exception as exc:
+        log.warning("Voice call reply for %s failed: %s", identity, exc)
+
+
 async def serve_voice_call(ws, identity: str) -> None:
     """Serve one native voice call. Accepts first so close codes reach clients."""
     await ws.accept()
@@ -531,11 +546,7 @@ async def serve_voice_call(ws, identity: str) -> None:
             if msg_type == "barge_in":
                 # She started talking over playback: stop generating + speaking.
                 if speaking_task and not speaking_task.done():
-                    speaking_task.cancel()
-                    try:
-                        await speaking_task
-                    except (asyncio.CancelledError, Exception):
-                        pass
+                    await _settle_reply_task(speaking_task, canonical)
                     speaking_task = None
                 await ws.send_json({"type": "state", "phase": "listening"})
                 continue
@@ -570,11 +581,7 @@ async def serve_voice_call(ws, identity: str) -> None:
 
             # A new utterance supersedes any in-flight reply (natural barge-in).
             if speaking_task and not speaking_task.done():
-                speaking_task.cancel()
-                try:
-                    await speaking_task
-                except (asyncio.CancelledError, Exception):
-                    pass
+                await _settle_reply_task(speaking_task, canonical)
                 speaking_task = None
 
             await ws.send_json({"type": "state", "phase": "thinking"})
@@ -670,21 +677,23 @@ async def serve_voice_call(ws, identity: str) -> None:
                 # Let him say goodnight in his own words, then close cleanly.
                 try:
                     await speaking_task
-                except (asyncio.CancelledError, Exception):
+                except asyncio.CancelledError:
                     pass
+                except Exception as exc:
+                    log.warning("Voice call goodnight reply for %s failed: %s", canonical, exc)
                 break
-    except Exception:
-        log.exception("Native voice call failed for %s", canonical)
+    except Exception as exc:
+        # A normal hang-up arrives as a WebSocket disconnect: that is not a
+        # crash and shouldn't fill the log with a traceback.
+        if type(exc).__name__ in {"WebSocketDisconnect", "ConnectionClosed", "ConnectionClosedOK"}:
+            log.info("Native voice call for %s: she hung up", canonical)
+        else:
+            log.exception("Native voice call failed for %s", canonical)
     finally:
         # Deregister FIRST: the Ear is waiting on this to rearm, and a slow
         # playback drain below must not keep her phone deaf a second longer.
         call_ended(call_token)
-        if speaking_task and not speaking_task.done():
-            speaking_task.cancel()
-            try:
-                await speaking_task
-            except (asyncio.CancelledError, Exception):
-                pass
+        await _settle_reply_task(speaking_task, canonical)
         try:
             await ws.close()
         except Exception:

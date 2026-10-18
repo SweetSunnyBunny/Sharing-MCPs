@@ -82,8 +82,7 @@ class ProviderRouterTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("resume_session", kwargs)
 
     async def test_identity_override_routes_to_different_provider(self):
-        """Global provider claude-code, but an override sends one identity
-        (e.g. Atlas) to codex — his stream must come from stream_codex."""
+        'Global provider claude-code, but an override sends one identity'
         codex_mock = Mock(return_value=iter(()))
         subprocess_mock = Mock(return_value=iter(()))
 
@@ -157,9 +156,7 @@ class ProviderRouterTests(unittest.IsolatedAsyncioTestCase):
             )
 
     async def test_gpt_model_override_reroutes_schedule_to_codex(self):
-        """A per-schedule model override naming a GPT model (e.g. River's
-        chapter reviews on gpt-5.6-sol) must reroute that one call to the
-        Codex CLI even though the identity's provider is claude-code."""
+        'Test gpt model override reroutes schedule to codex.'
         codex_mock = Mock(return_value=iter(()))
         subprocess_mock = Mock(return_value=iter(()))
 

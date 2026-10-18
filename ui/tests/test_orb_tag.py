@@ -113,7 +113,7 @@ def test_long_feeling_is_clamped_not_rejected():
 
 
 _REPLY_PATHS = [
-    "services/autowake.py",
+    "services/autonomous_session.py",
     "services/chat_turn_finalize.py",
     "services/discord_mentions_bridge.py",
     "services/platform_bridge.py",

@@ -1,9 +1,5 @@
 """House snapshot poller — background pre-fetch for turn-blocking reads."""
 
-# ANAM GUIDE: HOUSE SNAPSHOT CACHE
-# What: quietly re-fetches weather, calendar, and Home Hub data every few minutes so chat turns read a fresh copy from memory instead of waiting on the internet.
-# Called by: services/autowake.py registers the polling job; services/context_hooks.py, services/identity_context.py, and services/trigger_engine.py read the cached snapshots.
-# Edit here when: you want to change how often house data refreshes (POLL_INTERVAL_MINUTES) or add a new kind of data to pre-fetch (write a new _poll_* function).
 
 import asyncio
 import logging
@@ -83,11 +79,11 @@ async def _poll_hub() -> None:
         if not base:
             continue
         try:
-            payload = await asyncio.to_thread(safe_request_json, base, path, 5.0)
+            payload = await asyncio.to_thread(safe_request_json, base, path, timeout=5.0)
             if payload is not None:
                 _store(key, payload)
         except Exception as exc:
-            log.debug("House snapshot: %s poll failed: %s", key, exc)
+            log.warning("House snapshot: %s poll failed: %s", key, exc)
 
 
 async def poll_house_snapshot() -> None:

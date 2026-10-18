@@ -5,6 +5,7 @@ relationship endpoints, or follow initiators. NPCs may follow them, never vice
 versa. Stable IDs and content fingerprints make retries safe.
 """
 
+
 from __future__ import annotations
 
 import hashlib
@@ -73,7 +74,9 @@ async def import_history(db: aiosqlite.Connection, seed: dict[str, Any], *, appl
                 raise world_feed.WorldFeedError(f'History requires an existing non-user-controlled character: {handle}')
             return profile
 
-        # Validate the whole plan before any content is inserted.
+        # Validate posts, relationships and follows before inserting any of them.
+        # (New profiles above are already written, but all inside this one
+        # transaction: any failure below rolls the whole batch back.)
         keys = set()
         orders = {}
         for post in seed.get('posts', []):

@@ -91,11 +91,7 @@ class RunOneTurnSoftInterruptTests(unittest.IsolatedAsyncioTestCase):
         claude_subprocess.kill_all_sessions()
 
     async def test_soft_interrupt_success_keeps_session_alive(self):
-        """cancel_event set -> write_interrupt() fires once, then the CLI's
-        own `result` event ends the turn normally. The session must NOT be
-        retired/killed, and the resulting stream_end must carry
-        cancelled=True so the frontend knows Owner stopped it.
-        """
+        "cancel_event set -> write_interrupt() fires once, then the CLI's"
         session = await _make_session(conversation_id="conv-soft-ok")
         key = session.pool_key
         self.assertIn(key, claude_subprocess._sessions)

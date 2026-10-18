@@ -64,7 +64,7 @@ class CliMcpConfigTests(unittest.TestCase):
         ), patch(
             "services.cli_mcp_config.mcp_bridge._load_config",
             return_value=(fake_servers, set(fake_servers), {}),
-        ):
+        ), patch.object(cli_mcp_config, "_tools_host_is_up", return_value=False):
             path = cli_mcp_config.write_claude_mcp_config("Claude", "conversation-1")
             payload = json.loads(path.read_text(encoding="utf-8"))
 
@@ -78,6 +78,28 @@ class CliMcpConfigTests(unittest.TestCase):
             servers["anam-gateway"]["env"]["ANAM_CONVERSATION_ID"],
             "conversation-1",
         )
+
+    def test_claude_session_uses_the_shared_gateway_when_the_tools_host_is_up(self):
+        with TemporaryDirectory() as tmpdir, patch.object(
+            cli_mcp_config, "DATA_DIR", Path(tmpdir)
+        ), patch(
+            "services.cli_mcp_config.mcp_bridge._load_config",
+            return_value=({}, set(), {}),
+        ), patch.object(cli_mcp_config, "_tools_host_is_up", return_value=True):
+            path = cli_mcp_config.write_claude_mcp_config("Claude", "conversation-1")
+            bound = json.loads(path.read_text(encoding="utf-8"))["mcpServers"]
+            unbound_path = cli_mcp_config.write_claude_mcp_config()
+            unbound = json.loads(unbound_path.read_text(encoding="utf-8"))["mcpServers"]
+
+        gateway = bound["anam-gateway"]
+        self.assertEqual(set(bound), {"anam-gateway"})
+        self.assertEqual(gateway["type"], "http")
+        self.assertTrue(gateway["url"].endswith("/anam-gateway/mcp"))
+        self.assertEqual(gateway["headers"]["X-Anam-Identity"], "Claude")
+        self.assertEqual(gateway["headers"]["X-Anam-Conversation-Id"], "conversation-1")
+        self.assertNotIn("command", gateway)
+        # No identity to bind: keep the per-session process, which refuses to invoke.
+        self.assertIn("command", unbound["anam-gateway"])
 
     def test_one_shot_codex_exposes_only_identity_bound_gateway(self):
         fake_servers = {

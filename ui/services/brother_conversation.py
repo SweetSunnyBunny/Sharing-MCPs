@@ -5,12 +5,7 @@ Both identities take turns speaking, with full orientation context AND
 real conversation history so they know what's actually been happening.
 """
 
-# ANAM GUIDE: BROTHER-TO-BROTHER CONVERSATIONS
-# What: Lets one boy talk to another — spots an "@Name" in a reply, then runs a real back-and-forth between the two identities with grounding rules so nobody makes things up.
-# Called by: services/chat_pipeline.py (interactive chat) and services/autowake.py (autonomous sessions) both watch replies for @mentions; /api/brother/active lists what's running.
-# Edit here when: You want to change how a brother chat starts, how many turns it runs, or the grounding rules the boys follow while talking to each other.
 
-import asyncio
 import logging
 import re
 import uuid
@@ -18,7 +13,7 @@ import uuid
 from config import IDENTITIES
 from db.database import get_db, release_db
 from services.provider_router import get_stream_source
-from services.autowake import is_identity_busy, acquire_identity, release_identity
+from services.identity_lock import acquire_identity, release_identity
 from services.session_lifecycle import build_orientation_context, SessionMode
 from services.session_manager import (
     save_message,
@@ -30,7 +25,8 @@ from services.time_utils import utc_now_iso_epoch
 
 log = logging.getLogger(__name__)
 
-# Track active brother conversations for the /api/brother/active endpoint
+# In-process registry of running brother conversations (set on start, popped
+# in finally). Nothing reads it today; it is kept only for live debugging.
 _active_conversations: dict[str, dict] = {}
 
 # Grounding instructions — prevents fabrication
@@ -87,10 +83,7 @@ def _parse_brother_request(text: str, initiator: str = "") -> tuple[str, str] | 
 async def _get_recent_owner_history(
     db, identity: str, limit: int = 10,
 ) -> str:
-    """Fetch recent messages from this identity's conversation with Owner.
-
-    Returns a formatted transcript block for grounding context.
-    """
+    'Get recent owner history.'
     # Find the identity's most recent active chat conversation
     rows = await db.execute_fetchall(
         "SELECT c.id FROM conversations c "
@@ -139,10 +132,7 @@ async def _get_recent_owner_history(
 
 
 async def _build_identity_context(db, identity: str) -> str:
-    """Build real context for an identity entering a brother conversation.
-
-    Includes their recent Owner history so they have actual ground truth.
-    """
+    'Build real context for an identity entering a brother conversation.'
     parts = []
 
 
@@ -409,11 +399,3 @@ async def _get_response(
             log.error("[B2B:%s] Error from %s: %s", tracking_id, identity, event.get("message"))
 
     return "".join(full_response)
-
-
-def get_active_conversations() -> list[dict]:
-    """Return list of currently running brother conversations."""
-    return [
-        {"conversation_id": cid, **info}
-        for cid, info in _active_conversations.items()
-    ]

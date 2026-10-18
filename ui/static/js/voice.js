@@ -2,10 +2,7 @@
    - Play button on every message -> Kokoro (free, local)
    - Special <voice> messages -> ElevenLabs (premium, saved to disk)
 */
-/* ANAM GUIDE: MESSAGE AUDIO PLAYER
-   What: plays voice on chat messages — the little play button (free Kokoro voice) and the fancy ElevenLabs voice-note player with the waveform bars.
-   Loaded by: index.html (the main chat page); chat.js calls Voice.createPlayButton / createElevenLabsPlayer when drawing messages.
-   Edit here when: changing how play buttons or voice-note players look/behave, pause/resume, the fake waveform, or how text is cleaned before being spoken. */
+
 
 
 
@@ -482,15 +479,7 @@ const Voice = {
         return (text || '').replace(/\s+/g, ' ').trim();
     },
 
-    /**
-     * Play arbitrary text in the identity's REAL ElevenLabs voice.
-     *
-     * The premium sibling of playKokoro: same button, same progress UI, one
-     * whole clip instead of streamed chunks (so first audio is a beat slower,
-     * and it's actually him). Used by in-chat Voice Conversation mode when
-     * Owner's Settings voice switch says elevenlabs. Costs credits per call.
-     * Returns true if playback started, false so the caller can fall back.
-     */
+    
     async playElevenLabsText(text, identity, btn, wrapper) {
         if (this.currentAudio && this.currentBtn === btn) {
             this.stop();

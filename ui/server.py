@@ -1,5 +1,6 @@
 """Anam - FastAPI entry point + static serving."""
 
+
 import hashlib
 import json
 import logging
@@ -8,7 +9,7 @@ import sys
 import time
 
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse, Response
@@ -30,6 +31,11 @@ from config import (
 )
 from db.database import get_db, release_db
 from services.integration_owner import get_integration_owner_status
+from services.scheduler import scheduler
+
+# =============================================================================
+# ASSET VERSIONING + TEMPLATE PLACEHOLDERS
+# =============================================================================
 
 _ASSET_VERSION_PLACEHOLDER = "__ANAM_ASSET_VERSION__"
 _PUBLIC_BASE_URL_PLACEHOLDER = "__ANAM_PUBLIC_BASE_URL__"
@@ -71,10 +77,15 @@ def _compute_asset_version() -> str:
 ASSET_VERSION = _compute_asset_version()
 CACHE_VERSION = ASSET_VERSION
 
-from core.lifespan import lifespan, is_system_ready, get_server_start_time
+from core.lifespan import lifespan
+from core.readiness import is_system_ready, get_server_start_time
 from core.middleware import auth_and_cache_middleware
 
-# Infrastructure readiness is now managed by core.lifespan
+# Infrastructure readiness lives in core.readiness
+
+# =============================================================================
+# LOGGING
+# =============================================================================
 
 # Configure logging — write to both the terminal AND a log file at
 # data/logs/anam.log so debugging long-running issues doesn't require
@@ -147,6 +158,10 @@ log = logging.getLogger("anam")
 
 from services.rate_limit import limiter
 
+# =============================================================================
+# APP + MIDDLEWARE
+# =============================================================================
+
 app = FastAPI(title="Anam", docs_url=None, redoc_url=None, lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -170,10 +185,10 @@ if _cors_origins:
 app.middleware("http")(auth_and_cache_middleware)
 
 
-# ANAM GUIDE: ADD A NEW API AREA
-# A new api/<feature>.py router is imported and included in this block. Keep
-# substantial feature logic in services/; this file only assembles the app.
-# Mount API routes
+# =============================================================================
+# API ROUTERS
+# =============================================================================
+
 from api.auth import router as auth_router
 from api.avatars import router as avatars_router
 from api.audio import router as audio_router
@@ -200,13 +215,18 @@ from api.world_feed import router as world_feed_router
 from api.videos import router as videos_router
 from api.canvases import router as canvases_router
 from api.wearable import router as wearable_router
+from api.pack_sms import router as pack_sms_router
 from api.phone import router as phone_router
 from api.room import router as room_router
 from api.crosstalk import router as crosstalk_router
+from api.council import router as council_router
 from api.bridge import router as bridge_router
 from api.call_llm import router as call_llm_router
 from api.tool_gateway import router as tool_gateway_router
 from api.computer_tools import router as computer_tools_router
+from api.memory_nudges import router as memory_nudges_router
+from api.sticker_book import router as sticker_book_router
+from api.coloring import router as coloring_router
 
 
 app.include_router(auth_router)
@@ -235,22 +255,30 @@ app.include_router(world_feed_router)
 app.include_router(videos_router)
 app.include_router(canvases_router)
 app.include_router(wearable_router)
+app.include_router(pack_sms_router)
 app.include_router(phone_router)
 app.include_router(room_router)
 app.include_router(crosstalk_router)
+app.include_router(council_router)
 app.include_router(bridge_router)
 app.include_router(call_llm_router)
 app.include_router(tool_gateway_router)
 app.include_router(computer_tools_router)
+app.include_router(memory_nudges_router)
+app.include_router(sticker_book_router)
+app.include_router(coloring_router)
 from api.game_npc import router as game_npc_router
 app.include_router(game_npc_router)
 
+
+# =============================================================================
+# HEALTH
+# =============================================================================
 
 @app.get("/health")
 async def health_check():
     """Unauthenticated health endpoint for monitoring."""
     from services.connection_registry import _connections
-    from services.autowake import scheduler
 
     integration_owner = get_integration_owner_status()
     owns_integrations = bool(integration_owner.get("owner"))
@@ -366,18 +394,17 @@ async def health_check():
             if overall == "healthy":
                 overall = "degraded"
     except Exception:
-        pass
+        log.debug("health: google oauth status check failed", exc_info=True)
 
     checks["status"] = overall
     status_code = 503 if overall == "unhealthy" else 200
     return JSONResponse(content=checks, status_code=status_code)
 
 
-# ANAM GUIDE: SERVE BROWSER PAGES AND STATIC ASSETS
-# Add an HTML page route beside /settings, /hub, and /gameroom below. Shared
-# CSS/JS/images stay under static/ and the /static catch-all must remain last.
-# Cache entries are (mtime_ns, size, rendered_content) so an edited page can be
-# noticed without a restart. See _render_template for why that matters.
+# =============================================================================
+# BROWSER PAGES + STATIC FILES
+# =============================================================================
+
 _template_cache: dict[tuple[str, str], tuple[int, int, str]] = {}
 
 def _current_asset_version() -> str:
@@ -481,13 +508,20 @@ async def embodiment_page():
 
 @app.get("/wrist")
 async def wrist_page():
-    """Owner's tap-anywhere reach door for the phone (works off home wifi).
-
-    Same endpoint her Versa 2 hits, but over the public tunnel instead of the LAN
-    IP the watch companion is pinned to — so it keeps working when she's out.
-    Also reachable at /static/wrist.html, which needs no restart.
-    """
+    'Wrist page.'
     return _serve_html(STATIC_DIR / "wrist.html")
+
+
+@app.get("/sticker-book")
+async def sticker_book_page():
+    'Sticker book page.'
+    return _serve_html(STATIC_DIR / "sticker-book.html")
+
+
+@app.get("/princess")
+async def princess_page():
+    'Princess page.'
+    return _serve_html(STATIC_DIR / "princess.html")
 
 
 @app.get("/sw.js")

@@ -4,10 +4,6 @@ Uses Groq's OpenAI-compatible API for fast, cheap audio transcription.
 $0.04/hour for whisper-large-v3-turbo.
 """
 
-# ANAM GUIDE: GROQ VOICE-TO-TEXT
-# What: Sends recorded audio (like your voice messages) to Groq's fast, cheap Whisper service and returns the words as text.
-# Called by: api/voice.py and services/audio_transcription.py when a voice note arrives; scripts/index_voice_archive.py for bulk transcribing old recordings.
-# Edit here when: You want to switch the Whisper model, handle a new audio format, or change how transcription errors are handled. The API key lives in .env (GROQ_API_KEY), not here.
 
 import logging
 import os

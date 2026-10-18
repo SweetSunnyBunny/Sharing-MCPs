@@ -5,13 +5,6 @@ Provides persistent shell sessions (CWD, env vars, aliases survive across comman
 with an optional streaming callback for real-time output to the browser UI.
 """
 
-# ANAM GUIDE: PERSISTENT TERMINAL SESSIONS
-# What: Lets the boys run shell commands in a terminal that remembers its folder and
-#       variables between commands, and streams the output live to the browser.
-# Called by: services/claude_api.py (the direct-API provider's terminal tools);
-#            core/lifespan.py closes any open sessions at shutdown.
-# Edit here when: You want to change the shell used, command timeouts, output size
-#                 limits, or the friendly "how to fix this error" hint messages.
 
 import asyncio
 import logging

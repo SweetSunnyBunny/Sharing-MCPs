@@ -49,6 +49,8 @@ def _load_private_config() -> dict[str, Any]:
     try:
         return hearth_config('voice')
     except (OSError, json.JSONDecodeError, CloudUnavailable):
+        # Live calls then report "unavailable" rather than crashing the page.
+        log.debug("speech engine: voice config unavailable", exc_info=True)
         return {}
 
 
@@ -76,7 +78,7 @@ def get_live_call_status() -> dict[str, Any]:
     identities = sorted(_engine_ids())
     sdk_available = True
     try:
-        from elevenlabs.speech_engine import SpeechEngineSession  # noqa: F401
+        from elevenlabs.speech_engine import SpeechEngineSession  # noqa: F401  (availability check)
     except (ImportError, ModuleNotFoundError):
         sdk_available = False
     return {

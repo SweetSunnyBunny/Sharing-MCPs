@@ -64,6 +64,10 @@ does not contain another copy of the cloud setups.
 | [terminal-mcp](terminal-mcp/README.md) | A local shell connected to an MCP client |
 | [tumblr-mcp](tumblr-mcp/README.md) | Tumblr integration |
 | [twitter-mcp](twitter-mcp/README.md) | X/Twitter integration |
+| [home-assistant-mcp](home-assistant-mcp/README.md) | Home Assistant state and service calls |
+| [watch-mcp](watch-mcp/README.md) | Wrist replies, vitals and gated messages |
+| [anam-touch-mcp](anam-touch-mcp/README.md) | Timers, orbs, audio, daily wins and configured SMS |
+| [crosstalk-mcp](crosstalk-mcp/README.md) | Companion communication through Anam |
 | [world-tools-mcp](world-tools-mcp/README.md) | Local world-information tools |
 | [youtube-mcp](youtube-mcp/README.md) | YouTube tools |
 
@@ -76,6 +80,8 @@ Some packages need accounts, paid resources, installed apps or downloaded models
 Their guides list those requirements before the installation steps. Windows is
 the documented starting point; platform-specific tools are labelled in each guide.
 
+See [the current refresh report](REFRESH_REPORT.md) for coverage and verification.
+
 ## Snapshot verification
 
 See [SETUP_REVIEW.md](SETUP_REVIEW.md) for the scope and checks performed on the
@@ -86,7 +92,7 @@ To check an untouched extracted copy, open PowerShell in this folder and run:
 py -3.11 scripts\verify_setups.py
 ```
 
-Success prints `Verified ... files across 32 setup folders.` After you configure
+Success prints `Verified ... files across 36 setup folders.` After you configure
 the apps, this check intentionally reports changed files or private runtime files.
 It checks the clean distribution, not whether your installation works. Do not
 delete your own configuration just to make it pass.

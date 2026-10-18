@@ -25,7 +25,7 @@ New-Item -ItemType Directory -Force "C:\MCP-Practice"
 Set-Content -LiteralPath "C:\MCP-Practice\hello.txt" -Value "Hello from the filesystem test."
 ```
 
-Use this folder for the first calls. Paths refer to the machine running the server. No `.env` file is used. Local stdio is the simplest connection; `run_server.py` opens an unauthenticated HTTP listener on all interfaces and is not needed for these steps.
+Use this folder for the first calls. Paths refer to the machine running the server. No `.env` file is used. Both server.py and run_server.py default to local stdio. HTTP is optional and must be explicitly selected; the launcher defaults to loopback.
 
 ## 3. Check startup
 
@@ -76,6 +76,7 @@ Ask the client to call `fs_list_directory` for `C:/MCP-Practice`, then `fs_read_
 | `fs_read_image` | View images visually |
 | `fs_get_file_info` | Get file metadata |
 | `fs_write_file` | Write/append to files |
+| `fs_edit_file` | Apply checked text replacements |
 | `fs_write_binary` | Write binary files |
 | `fs_copy` | Copy files/folders |
 | `fs_move` | Move/rename files |
@@ -90,3 +91,7 @@ Ask the client to call `fs_list_directory` for `C:/MCP-Practice`, then `fs_read_
 ## Reading the code
 
 Start with [run_server.py](run_server.py), then [server.py](server.py). The installation steps above describe the runtime configuration.
+
+## Current launcher behavior
+
+`python run_server.py` now defaults to stdio. For an optional HTTP connection, run `python run_server.py --transport streamable-http --host 127.0.0.1 --port 8080`. Bind and expose it only through your own configured access layer.

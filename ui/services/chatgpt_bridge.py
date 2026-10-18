@@ -1,9 +1,4 @@
-"""Optional browser bridge to an existing ChatGPT conversation.
-
-Uses a separately configured Chrome profile through local CDP. The browser
-must be signed in by its owner before the bridge is used. Replies are read
-from the original conversation and never synthesized by this adapter.
-"""
+'Optional browser bridge to an existing ChatGPT conversation.'
 
 import asyncio
 import os
@@ -170,45 +165,6 @@ def _close_browser() -> None:
         logger.warning("chatgpt_bridge: browser close failed: %s", exc)
 
 
-async def _open_tab(url: str) -> _CdpPage:
-    import websockets
-    tab = _cdp_http(f"/json/new?{url}", method="PUT")
-    if tab is None:  # older Chrome accepts GET
-        tab = _cdp_http(f"/json/new?{url}")
-    ws = await websockets.connect(tab["webSocketDebuggerUrl"], max_size=50 * 1024 * 1024)
-    return _CdpPage(ws)
-
-
-# ---------------------------------------------------------------------------
-# Pure logic (unit-testable without a browser)
-# ---------------------------------------------------------------------------
-
-def extract_last_assistant(convo: dict) -> Optional[dict]:
-    """From a /backend-api/conversation payload, take the last assistant message.
-
-    Returns {"text", "finished", "create_time"} or None if there are no
-    assistant messages with text. Mirrors chatgpt_read.js exactly.
-    """
-    messages = []
-    for node in (convo.get("mapping") or {}).values():
-        m = node.get("message") if isinstance(node, dict) else None
-        if not m or (m.get("author") or {}).get("role") != "assistant":
-            continue
-        parts = (m.get("content") or {}).get("parts") or []
-        text = "\n".join(p for p in parts if isinstance(p, str))
-        if not text.strip():
-            continue
-        messages.append({
-            "text": text,
-            "finished": m.get("end_turn") is True or m.get("status") == "finished_successfully",
-            "create_time": m.get("create_time") or 0,
-        })
-    if not messages:
-        return None
-    messages.sort(key=lambda x: x["create_time"])
-    return messages[-1]
-
-
 # ---------------------------------------------------------------------------
 # Page-JS snippets (each one small, each one honest)
 # ---------------------------------------------------------------------------
@@ -258,121 +214,6 @@ fetch('/backend-api/conversations?offset=0&limit=1&order=updated',
   .then(l => l && l.items && l.items[0] && l.items[0].id || null)
 """
 
-
-# ---------------------------------------------------------------------------
-# The bridge itself
-# ---------------------------------------------------------------------------
-
-async def send_and_wait(message: str, conversation_id: Optional[str] = None) -> BridgeResult:
-    """Send `message` into a ChatGPT thread; return the finished reply.
-
-    conversation_id=None starts a fresh thread; passing one continues it.
-    The returned conversation_id is what the caller persists for next turn.
-    """
-    if not message or not message.strip():
-        raise BridgeError("empty message")
-
-    started = time.monotonic()
-    we_opened = False
-    if not _browser_is_up():
-        _open_browser()
-        we_opened = True
-
-    page = None
-    try:
-        url = f"{CHATGPT_ORIGIN}/c/{conversation_id}" if conversation_id else f"{CHATGPT_ORIGIN}/"
-        page = await _open_tab(url)
-        await asyncio.sleep(NAV_SETTLE_SECONDS)
-
-        # Session token first — also proves we're logged in before we type.
-        token = await page.evaluate(_JS_GET_TOKEN, await_promise=True)
-        if not token:
-            raise BridgeError("not logged in to chatgpt.com (no accessToken)")
-        token_js = json.dumps(token)
-
-        # Baseline: the current last assistant message (so we can tell the NEW
-        # reply from the old one when continuing a thread).
-        baseline_time = 0
-        if conversation_id:
-            convo = await page.evaluate(
-                _JS_FETCH_CONVO % (json.dumps(conversation_id), token_js), await_promise=True)
-            if isinstance(convo, dict) and not convo.get("__http_error"):
-                last = extract_last_assistant(convo)
-                baseline_time = last["create_time"] if last else 0
-
-        # Step 1: insert the text (retry once if the composer is slow to mount).
-        ins = None
-        for _ in range(6):
-            ins = await page.evaluate(_JS_INSERT_TEXT % json.dumps(message))
-            if ins and ins.get("ok"):
-                break
-            await asyncio.sleep(1.5)
-        if not ins or not ins.get("ok"):
-            raise BridgeError(f"composer insert failed: {ins and ins.get('error')}")
-
-        # Step 2: click send — SEPARATE step; the button renders async after text lands.
-        sent = False
-        for _ in range(SEND_BUTTON_RETRIES):
-            await asyncio.sleep(0.5)
-            click = await page.evaluate(_JS_CLICK_SEND)
-            if click and click.get("ok"):
-                sent = True
-                break
-        if not sent:
-            raise BridgeError("send button never appeared after text insert")
-
-        # Step 3: resolve the conversation id (a fresh thread gets its id async).
-        conv_id = conversation_id
-        if not conv_id:
-            deadline = time.monotonic() + 30
-            while time.monotonic() < deadline and not conv_id:
-                await asyncio.sleep(2)
-                conv_id = await page.evaluate(_JS_CURRENT_CONV_ID)
-            if not conv_id:
-                conv_id = await page.evaluate(_JS_MOST_RECENT_CONV % token_js, await_promise=True)
-        if not conv_id:
-            raise BridgeError("could not resolve a conversation id after send")
-
-        # Step 4: poll the BACKEND (never the DOM) until the new reply finishes.
-        deadline = time.monotonic() + REPLY_TIMEOUT_SECONDS
-        while time.monotonic() < deadline:
-            await asyncio.sleep(REPLY_POLL_SECONDS)
-            convo = await page.evaluate(
-                _JS_FETCH_CONVO % (json.dumps(conv_id), token_js), await_promise=True)
-            if not isinstance(convo, dict) or convo.get("__http_error"):
-                continue  # thread may not be readable for a beat right after creation
-            last = extract_last_assistant(convo)
-            if last and last["finished"] and last["create_time"] > baseline_time:
-                return BridgeResult(
-                    reply=last["text"],
-                    conversation_id=conv_id,
-                    finished=True,
-                    elapsed_seconds=round(time.monotonic() - started, 1),
-                )
-        raise BridgeError(f"reply did not finish within {REPLY_TIMEOUT_SECONDS:.0f}s "
-                          f"(conversation {conv_id} — it may still complete on chatgpt.com)")
-    finally:
-        if page is not None:
-            try:
-                await page._ws.close()
-            except Exception:
-                pass
-        if we_opened:
-            _close_browser()
-
-
-def send_and_wait_sync(message: str, conversation_id: Optional[str] = None) -> BridgeResult:
-    """CLI/test convenience wrapper."""
-    return asyncio.run(send_and_wait(message, conversation_id))
-
-
-if __name__ == "__main__":  # manual round-trip test: python -m services.chatgpt_bridge "hi" [conv_id]
-    import sys
-    logging.basicConfig(level=logging.INFO)
-    res = send_and_wait_sync(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
-    print(json.dumps({"conversation_id": res.conversation_id,
-                      "elapsed_seconds": res.elapsed_seconds,
-                      "reply": res.reply}, indent=2))
 
 
 def _assistant_records(convo: dict) -> list[dict]:
@@ -555,8 +396,10 @@ async def _send_and_wait_locked(
 
     started = time.monotonic()
     we_opened = False
-    if not _browser_is_up():
-        _open_browser()
+    # The CDP probe and pack-browser.ps1 are blocking (up to ~60s); run them
+    # off the event loop so opening Chrome never freezes the whole server.
+    if not await asyncio.to_thread(_browser_is_up):
+        await asyncio.to_thread(_open_browser)
         we_opened = True
 
     page = None
@@ -750,7 +593,7 @@ async def _send_and_wait_locked(
             except Exception:
                 pass
         if we_opened:
-            _close_browser()
+            await asyncio.to_thread(_close_browser)
 
 
 def _rate_limit_delay(convo: dict, previous: float) -> float:
@@ -802,7 +645,7 @@ async def _open_tab(url: str) -> _CdpPage:
     # Prefer an already-open ChatGPT page target. This keeps one visible bridge
     # tab alive across turns instead of littering Chrome with /json/new targets.
     try:
-        targets = _cdp_http("/json") or []
+        targets = await asyncio.to_thread(_cdp_http, "/json") or []
     except Exception:
         targets = []
 
@@ -837,9 +680,25 @@ async def _open_tab(url: str) -> _CdpPage:
     # No ChatGPT target exists yet: create exactly one and keep it around for
     # later turns. Closing the CDP websocket in send_and_wait() disconnects the
     # bridge but does not close the Chrome tab, intentionally.
-    tab = _cdp_http(f"/json/new?{url}", method="PUT")
+    tab = await asyncio.to_thread(_cdp_http, f"/json/new?{url}", "PUT")
     if tab is None:  # older Chrome accepts GET
-        tab = _cdp_http(f"/json/new?{url}")
+        tab = await asyncio.to_thread(_cdp_http, f"/json/new?{url}")
+    if not isinstance(tab, dict) or not tab.get("webSocketDebuggerUrl"):
+        raise BridgeError(f"Chrome on CDP port {CDP_PORT} would not open a ChatGPT tab")
     ws = await websockets.connect(tab["webSocketDebuggerUrl"], max_size=50 * 1024 * 1024)
     logger.info("chatgpt_bridge: created reusable ChatGPT tab target=%s url=%s", tab.get("id"), url)
     return _CdpPage(ws)
+
+
+def send_and_wait_sync(message: str, conversation_id: Optional[str] = None) -> BridgeResult:
+    """CLI/test convenience wrapper around the current send_and_wait."""
+    return asyncio.run(send_and_wait(message, conversation_id))
+
+
+if __name__ == "__main__":  # manual round-trip test: python -m services.chatgpt_bridge "hi" [conv_id]
+    import sys
+    logging.basicConfig(level=logging.INFO)
+    res = send_and_wait_sync(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
+    print(json.dumps({"conversation_id": res.conversation_id,
+                      "elapsed_seconds": res.elapsed_seconds,
+                      "reply": res.reply}, indent=2))

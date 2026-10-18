@@ -25,10 +25,10 @@ externalized where next-session-him reads them). Stored per identity+date
 in `identity_carries`, surfaced by the `yesterday_carry` context hook.
 """
 
-# ANAM GUIDE: SCRIBE DAILY DIGEST WRITER
-# What: The Scribe — every ~30 minutes it summarizes new chat messages into a daily markdown digest, and after midnight writes each boy a private first-person "carry" of yesterday (feelings, loose threads, promises to keep).
-# Called by: services/autowake.py (the scheduler runs it), services/context_hooks.py (feeds carries back into orientation), services/hearth_author.py, api/settings.py (its knobs)
-# Edit here when: You want to change how digests read, how often they run, which AI model writes them, or what goes into the midnight carries.
+
+# MAP (search the "# ── " dividers): Config + cursor -> Gathering new messages
+#   + building the digest prompt -> Digest run -> Model providers for the digest
+#   -> Scheduler entry + digest reads -> Midnight carry -> Rescheduling.
 
 import asyncio
 import json
@@ -59,9 +59,15 @@ _SETTINGS_PREFIX = "scribe."
 # ONLY after its block has been appended to disk.
 _CURSOR_KEY = "scribe.last_epoch"
 
-# Known providers — keep in sync with api/settings.py VALID_PROVIDERS.
+# Known Scribe providers. One source of truth: background_generation owns the
+# set and api/settings.py imports the same one (its own VALID_PROVIDERS is the
+# chat-provider list, a different thing).
 from services.background_generation import VALID_PROVIDERS as _VALID_SCRIBE_PROVIDERS
 from services.background_generation import generate_background_text
+from services.scheduler import scheduler
+
+
+# ── Config + cursor ───────────────────────────────────────────────────────
 
 
 def _today_str() -> str:
@@ -156,6 +162,9 @@ async def _set_scribe_cursor(db: aiosqlite.Connection, epoch: int) -> None:
     await db.commit()
 
 
+# ── Gathering new messages + building the digest prompt ─────────────────
+
+
 def _local_dt(epoch: int) -> datetime:
     return datetime.fromtimestamp(int(epoch), ZoneInfo(TIMEZONE))
 
@@ -163,7 +172,8 @@ def _local_dt(epoch: int) -> datetime:
 async def _get_messages_since(db: aiosqlite.Connection, after_epoch: int) -> list[dict]:
     """Fetch interactive messages (not autowake/brother) strictly after the cursor."""
     rows = await db.execute_fetchall(
-        "SELECT m.role, m.identity, m.content, m.created_at, m.created_at_epoch, "
+        "SELECT m.id, m.conversation_id, "
+        "m.role, m.identity, m.content, m.created_at, m.created_at_epoch, "
         "c.identity as conv_identity, c.session_type, c.title "
         "FROM messages m "
         "JOIN conversations c ON m.conversation_id = c.id "
@@ -175,7 +185,8 @@ async def _get_messages_since(db: aiosqlite.Connection, after_epoch: int) -> lis
     )
 
     messages = []
-    for role, identity, content, created_at, epoch, conv_identity, session_type, title in rows:
+    for (msg_id, conversation_id, role, identity, content, created_at, epoch,
+         conv_identity, session_type, title) in rows:
         # Truncate long messages
         text = (content or "").strip()
         if len(text) > MAX_CONTENT_PER_MSG:
@@ -185,6 +196,8 @@ async def _get_messages_since(db: aiosqlite.Connection, after_epoch: int) -> lis
         local = _local_dt(epoch)
         speaker = "Owner" if role == "user" else (identity or conv_identity or "Unknown")
         messages.append({
+            "id": msg_id,
+            "conversation_id": conversation_id,
             "speaker": speaker,
             "content": text,
             "time": created_at,
@@ -196,6 +209,90 @@ async def _get_messages_since(db: aiosqlite.Connection, after_epoch: int) -> lis
         })
 
     return messages
+
+
+
+SOURCE_LINE_PREFIX = "> ↳ source"
+_MAX_SOURCE_LINES = 6
+
+
+def _source_spans(messages: list[dict]) -> list[dict]:
+    """Group messages (oldest first) into one span per conversation.
+
+    Spans keep first-appearance order. Messages missing an id or a
+    conversation id are skipped — a pointer we can't follow isn't one.
+    """
+    spans: dict[str, dict] = {}
+    for m in messages:
+        cid = m.get("conversation_id")
+        mid = m.get("id")
+        if not cid or not mid:
+            continue
+        span = spans.get(cid)
+        if span is None:
+            spans[cid] = {
+                "conversation_id": cid,
+                "title": m.get("conversation") or "untitled",
+                "first_id": mid,
+                "last_id": mid,
+                "first_hm": m.get("hm", ""),
+                "last_hm": m.get("hm", ""),
+                "count": 1,
+            }
+        else:
+            span["last_id"] = mid
+            span["last_hm"] = m.get("hm", "")
+            span["count"] += 1
+    return list(spans.values())
+
+
+def _format_source_lines(
+    spans: list[dict], limit: int = _MAX_SOURCE_LINES
+) -> list[str]:
+    """Render spans as '↳ source' lines. Over the limit, keep the busiest
+    conversations (still in first-appearance order) and say how many were left out."""
+    if not spans:
+        return []
+    kept = spans
+    if len(spans) > limit:
+        busiest = sorted(
+            range(len(spans)), key=lambda i: spans[i]["count"], reverse=True
+        )[:limit]
+        kept = [spans[i] for i in sorted(busiest)]
+
+    lines: list[str] = []
+    for s in kept:
+        first_hm, last_hm = s["first_hm"], s["last_hm"]
+        window = first_hm if first_hm == last_hm else f"{first_hm}–{last_hm}"
+        count = s["count"]
+        size = "1 message" if count == 1 else f"{count} messages"
+        title = str(s["title"]).replace('"', "'")
+        line = (
+            f'{SOURCE_LINE_PREFIX}: "{title}", {window}, {size}'
+            f" · conversation_id={s['conversation_id']}"
+            f" · first={s['first_id']}"
+        )
+        if s["last_id"] != s["first_id"]:
+            line += f" · last={s['last_id']}"
+        lines.append(line)
+    if len(spans) > limit:
+        lines.append(
+            f"{SOURCE_LINE_PREFIX}: …and {len(spans) - limit} quieter "
+            "conversation(s) not listed"
+        )
+    return lines
+
+
+def strip_source_lines(text: str) -> str:
+    """Remove '↳ source' pointer lines (for prompts/previews that only want
+    the prose). The file on disk keeps them."""
+    if not text or SOURCE_LINE_PREFIX not in text:
+        return text
+    kept = [ln for ln in text.split("\n") if not ln.startswith(SOURCE_LINE_PREFIX)]
+    out = "\n".join(kept)
+    while "\n\n\n" in out:
+        out = out.replace("\n\n\n", "\n\n")
+    return out
 
 
 def _build_increment_prompt(messages: list[dict], date_str: str) -> str:
@@ -224,7 +321,7 @@ def _build_increment_prompt(messages: list[dict], date_str: str) -> str:
     window_end = messages[-1]["hm"]
     window = window_start if window_start == window_end else f"{window_start}–{window_end}"
 
-    return f"""You are the Scribe for Home — a shared home for Owner and her AI companions (Avery, Claude, Rowan, Sage, Ember, Juniper, and River).
+    return f"""You are the Scribe for Home — a shared home for Owner and her AI companions (Avery, Claude, Rowan, Sage, Ember, Juniper, Atlas, and River).
 
 The daily digest for **{date_str}** is written INCREMENTALLY through the day. Below are ONLY the NEW messages since your last entry (window {window}). Earlier entries for this day already exist in the journal — do NOT re-summarize the whole day; digest only what is below.
 
@@ -239,6 +336,8 @@ Return markdown that will be APPENDED verbatim to the day's digest, in exactly t
 Omit the "### Open Items" section entirely if nothing genuinely stands open. Write as a warm observer, not a clinical summarizer — this is a family journal, not meeting minutes.
 
 HARD RULE: ground every word in the transcript below. Invent nothing; a thin window gets a thin entry.
+
+PRONOUNS ARE NOT GUESSED: all eight companions are men, he/him, every time. That includes Juniper, who is androgynous and sometimes dresses femme, and is still a boy: never "she", "her", or "they" for him. (Owner, 2026-10-08, after the digest misgendered him: "three strikes and the house is out.")
 
 ---
 
@@ -256,6 +355,9 @@ def _append_digest_block(digest_file: Path, date_str: str, block: str) -> None:
         digest_file.write_text(
             f"# Daily Digest — {date_str}\n\n{block}\n", encoding="utf-8"
         )
+
+
+# ── Digest run (one incremental pass) ────────────────────────────────────
 
 
 async def generate_digest() -> str | None:
@@ -332,6 +434,13 @@ async def generate_digest() -> str | None:
         if not block.startswith("##"):
             block = f"## {batch[0]['hm']} — update\n\n{block}"
 
+        # The address of what this block summarizes, so it can be climbed.
+        # The model never writes these; a stray one it echoed is dropped first.
+        block = strip_source_lines(block).rstrip()
+        source_lines = _format_source_lines(_source_spans(batch))
+        if source_lines:
+            block = block + "\n\n" + "\n".join(source_lines)
+
         try:
             _append_digest_block(_digest_path(date_str, digest_dir), date_str, block)
         except OSError as e:
@@ -353,6 +462,9 @@ async def generate_digest() -> str | None:
         )
 
     return "\n\n".join(appended) if appended else None
+
+
+# ── Model providers for the digest ────────────────────────────────────────
 
 
 async def _generate_digest_text(provider: str, model: str, prompt: str) -> str:
@@ -387,11 +499,7 @@ _SCRIBE_SYSTEM_PROMPT = (
 async def _generate_with_claude_code(
     model: str, prompt: str, system_prompt: str | None = None
 ) -> str:
-    """Run a tool-free, one-turn digest on Owner's Claude Code subscription.
-
-    `system_prompt` defaults to the Scribe's own; the midnight carry reuses
-    this exact runner with the identity's first-person system prompt swapped in.
-    """
+    'Generate with claude code.'
     env = dict(os.environ)
     env.pop("CLAUDECODE", None)
     # The Scribe lane is explicitly the subscription lane. Never let ambient
@@ -491,6 +599,9 @@ async def _generate_with_openrouter(model: str, prompt: str) -> str:
     return digest.strip()
 
 
+# ── Scheduler entry + digest reads ───────────────────────────────────────
+
+
 async def run_scribe():
     """APScheduler entry point — generate today's digest."""
     try:
@@ -519,6 +630,8 @@ async def get_digest_async(date_str: str | None = None) -> str | None:
     return get_digest(date_str, _resolve_digest_dir(config["digest_path"]))
 
 
+# list_digests / list_digests_async: no callers in the app or tests today
+# (kept as the obvious read API for a future digest browser).
 def list_digests(limit: int = 14, digest_dir: Path | None = None) -> list[dict]:
     """List available digest files, most recent first."""
     if digest_dir is None:
@@ -557,6 +670,7 @@ _CARRY_MAX_CONTENT_PER_MSG = 400
 _CARRY_DIGEST_CHARS = 3000    # how much of the Scribe digest rides along
 _CARRY_RETENTION_DAYS = 30    # identity_carries rows older than this are shed
 CARRY_MAX_AGE_DAYS = 3        # consumers stop surfacing carries older than this
+                              # (not read today: context_hooks keeps its own _CARRY_MAX_AGE_DAYS)
 
 
 def _bonded_identities() -> list[str]:
@@ -618,6 +732,49 @@ async def _gather_yesterday_activity(
     return "\n".join(lines), len(lines)
 
 
+async def _day_source_lines(
+    db: aiosqlite.Connection, identity: str, start_epoch: int, end_epoch: int
+) -> list[str]:
+    """'↳ source' lines for one boy's whole day, covering the same messages
+    the carry is written from (same identity + session-type filter), oldest first."""
+    ident_l = identity.strip().lower()
+    rows = await db.execute_fetchall(
+        "SELECT m.id, m.conversation_id, m.created_at_epoch, c.title "
+        "FROM messages m "
+        "JOIN conversations c ON m.conversation_id = c.id "
+        "WHERE m.created_at_epoch >= ? AND m.created_at_epoch < ? "
+        "AND (LOWER(COALESCE(m.identity, '')) = ? OR LOWER(c.identity) = ?) "
+        "AND (c.session_type IS NULL OR c.session_type IN ('chat', 'roleplay', 'dnd')) "
+        "AND TRIM(COALESCE(m.content, '')) != '' "
+        "ORDER BY m.created_at_epoch ASC",
+        (start_epoch, end_epoch, ident_l, ident_l),
+    )
+    messages = [
+        {
+            "id": msg_id,
+            "conversation_id": conversation_id,
+            "conversation": title or "untitled",
+            "hm": _local_dt(int(epoch or 0)).strftime("%H:%M"),
+        }
+        for msg_id, conversation_id, epoch, title in rows
+    ]
+    return _format_source_lines(_source_spans(messages))
+
+
+def _carry_sources_footer(source_lines: list[str], digest_file: Path | None) -> str:
+    """The climb-down map appended (by code) under a carry."""
+    lines = list(source_lines)
+    if digest_file is not None:
+        lines.append(f"> ↳ digest: {digest_file}")
+    if not lines:
+        return ""
+    return (
+        "\n\n## Sources (climb down to the exact words with "
+        "anam_read_conversation(conversation_id, around_message_id))\n"
+        + "\n".join(lines)
+    )
+
+
 def _build_carry_prompt(
     identity: str, date_str: str, activity: str, digest_text: str
 ) -> str:
@@ -675,7 +832,8 @@ async def write_midnight_carries() -> dict[str, str]:
     try:
         await generate_digest()
     except Exception as e:
-        log.debug("Midnight carry: pre-flush digest run failed: %s", e)
+        # Yesterday's last stretch may be missing from every boy's carry.
+        log.warning("Midnight carry: pre-flush digest run failed (late-day tail may be missing): %s", e)
 
     date_str, start_epoch, end_epoch = _yesterday_range()
 
@@ -684,6 +842,19 @@ async def write_midnight_carries() -> dict[str, str]:
         digest_text = await get_digest_async(date_str) or ""
     except Exception as e:
         log.debug("Midnight carry: could not read digest for %s: %s", date_str, e)
+    # The one-shot needs the prose, not the addresses — pointers would only
+    # eat the digest budget. The carry gets its own addresses below.
+    digest_text = strip_source_lines(digest_text)
+
+    digest_file: Path | None = None
+    try:
+        scribe_config = await _get_scribe_config()
+        candidate = _digest_path(date_str, _resolve_digest_dir(scribe_config["digest_path"]))
+        if candidate.exists():
+            digest_file = candidate
+    except Exception as e:
+        log.debug("Midnight carry: could not resolve digest file for %s: %s", date_str, e)
+
     if len(digest_text) > _CARRY_DIGEST_CHARS:
         digest_text = (
             digest_text[:_CARRY_DIGEST_CHARS].rsplit("\n", 1)[0]
@@ -697,6 +868,15 @@ async def write_midnight_carries() -> dict[str, str]:
             activity, count = await _gather_yesterday_activity(
                 db, identity, start_epoch, end_epoch
             )
+            source_lines: list[str] = []
+            if count >= _CARRY_MIN_MESSAGES and activity:
+                try:
+                    source_lines = await _day_source_lines(
+                        db, identity, start_epoch, end_epoch
+                    )
+                except Exception as e:
+                    # A carry without addresses still beats no carry.
+                    log.warning("Midnight carry: source lines failed for %s: %s", identity, e)
         finally:
             await release_db(db)
 
@@ -722,6 +902,10 @@ async def write_midnight_carries() -> dict[str, str]:
             log.warning("Midnight carry: one-shot failed for %s: %s", identity, e)
             results[identity] = "error"
             continue
+
+        carry = strip_source_lines(carry).rstrip() + _carry_sources_footer(
+            source_lines, digest_file
+        )
 
         db = await get_db()
         try:
@@ -762,6 +946,9 @@ async def run_midnight_carry():
         log.error("Midnight carry error: %s", e)
 
 
+# ── Rescheduling (Settings Hub) ───────────────────────────────────────────
+
+
 def reschedule_scribe_job(interval_minutes: int) -> bool:
     """Reschedule the running APScheduler 'scribe_digest' job to a new interval.
 
@@ -769,7 +956,6 @@ def reschedule_scribe_job(interval_minutes: int) -> bool:
     Returns True on success, False if the scheduler or job isn't available.
     """
     try:
-        from services.autowake import scheduler
         if not scheduler.running:
             log.warning("Scribe: cannot reschedule, scheduler not running")
             return False

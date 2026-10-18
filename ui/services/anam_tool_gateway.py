@@ -4,6 +4,7 @@ The public machine connector and local Codex MCP adapter use the same API.
 Only configured servers are routable; connection credentials never enter the
 catalog. Calls execute once and survive HTTP timeouts as bounded jobs.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -65,12 +66,11 @@ _MIND_MAINTENANCE_TOOLS = {
     "mind_mutations",
     "mind_orphans",
     "mind_proposals",
+    "mind_put_away",
     "mind_queue_packet",
-    "mind_recall_feedback",
     "mind_recent_handoffs",
     "mind_recent_packets",
     "mind_record_handoff",
-    "mind_resolve",
     "mind_schema_status",
     "mind_update_identity_routing",
 }
@@ -78,6 +78,11 @@ _MIND_MAINTENANCE_INTENTS = {
     "maintenance", "housekeeping", "consolidate", "consolidation",
     "delete", "edit", "mutation", "mutations", "orphan", "orphans",
     "proposal", "proposals", "index", "indexing", "schema", "routing",
+    # Words a boy actually thinks when a memory is wrong or must be undone.
+    # Kept narrow on purpose: a hit flips Qualia discovery to the admin drawer,
+    # so everyday words ("forget", "away", "fix") would hide mind_store/intend.
+    "correct", "correction", "undo", "rollback", "annotate", "evidence",
+    "export",
 }
 _MIND_MAINTENANCE_DRAWER_QUERIES = {
     "mind maintenance",
@@ -148,7 +153,15 @@ async def _client(server: str):
         return
     # Identity browser profiles suppressed in the flattened API tool list are
     # still available by their explicit server name, as they are in Codex.
-    if cfg.get("url"):
+    from services import claude_ai_connectors
+    if claude_ai_connectors.is_connector(cfg):
+        cfg = await claude_ai_connectors.resolve(cfg)
+        transport = StreamableHttpTransport(
+            cfg["url"],
+            headers=claude_ai_connectors.session_headers(),
+            auth=claude_ai_connectors.ClaudeAccountAuth(),
+        )
+    elif cfg.get("url"):
         headers = dict(cfg.get("headers") or cfg.get("http_headers") or cfg.get("httpHeaders") or {})
         token_var = cfg.get("bearer_token_env_var") or cfg.get("bearerTokenEnvVar")
         if token_var and os.getenv(token_var):
@@ -356,10 +369,7 @@ async def discover(query: str = "", server: str = "", offset: int = 0, limit: in
                 catalog.append({"server": "anam-context", "name": name,
                                 "description": tool.description, "inputSchema": tool.parameters})
     rank_query = "" if _mind_maintenance_drawer_query(query) else query
-    ranked = [(tool_discovery.score(t, rank_query), t) for t in catalog]
-    ranked = [(score,t) for score,t in ranked if score > 0]
-    ranked.sort(key=lambda item: (-item[0], item[1]['server'], item[1]['name']))
-    catalog = [t for _,t in ranked]
+    catalog = await tool_discovery.rank(catalog, rank_query)
     page = [tool_discovery.present(t, include_schema) for t in catalog[offset:offset + limit]]
     runtime_metrics.record('tool_discovery', (time.monotonic()-started)*1000, provider='gateway')
     return {"servers": names, "tools": page, "total": len(catalog),
@@ -380,18 +390,22 @@ def _envelope(result):
             **({"structuredContent": structured} if structured is not None else {})}
 
 
+_ACTING_IDENTITY_ARGS = ("identity", "from_identity")
+
+
 def _arguments(schema, arguments, identity):
     args = dict(arguments)
-    prop = schema.get("properties", {}).get("identity")
+    props = schema.get("properties", {}) or {}
     canonical = next((name for name in IDENTITIES if name.lower() == identity.lower()), identity)
-    requested = str(args.get("identity") or "").strip()
-    known_requested = next((name for name in IDENTITIES if name.lower() == requested.lower()), "")
-    if prop and known_requested and known_requested.lower() not in _SHARED_IDENTITIES and known_requested.lower() != canonical.lower():
-        requested = ""
-        args.pop("identity", None)
-    if prop and not requested:
-        choices = prop.get("enum", [])
-        args["identity"] = next((x for x in choices if str(x).lower() == canonical.lower()), canonical)
+    for field in _ACTING_IDENTITY_ARGS:
+        prop = props.get(field)
+        if not prop and field not in args:
+            continue
+        requested = str(args.get(field) or "").strip()
+        if field == "identity" and requested.lower() in _SHARED_IDENTITIES:
+            continue
+        choices = (prop or {}).get("enum", [])
+        args[field] = next((x for x in choices if str(x).lower() == canonical.lower()), canonical)
     errors = sorted(Draft202012Validator(schema).iter_errors(args), key=lambda e: str(e.path))
     if errors:
         # Validation messages can echo secret argument values. Report only the

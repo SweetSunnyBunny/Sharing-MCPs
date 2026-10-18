@@ -63,7 +63,9 @@ export default {
       });
     }
 
-    // Secret path check
+    if (!env.MCP_SECRET_PATH || env.MCP_SECRET_PATH.length < 8) {
+      return new Response('Service misconfigured', { status: 503 });
+    }
     const expectedPrefix = `/mcp/${env.MCP_SECRET_PATH}`;
     if (!path.startsWith(expectedPrefix)) {
       return new Response('Not found', { status: 404 });

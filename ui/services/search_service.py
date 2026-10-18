@@ -4,10 +4,6 @@ Uses the messages_fts virtual table (created by migration 009) for
 full-text search, with optional identity filtering.
 """
 
-# ANAM GUIDE: MESSAGE HISTORY TEXT SEARCH
-# What: Keyword (full-text) search over saved chat messages — powers the "find that thing we said" lookups, with filters for identity, speaker, and date range.
-# Called by: api/search.py (the /api/search route, used by the search box in static/js/chat.js), services/claude_api.py
-# Edit here when: You want search results ranked, filtered, or previewed differently. (Semantic/meaning search lives in services/embedding_service.py, not here.)
 
 import logging
 from datetime import datetime, timezone
@@ -29,16 +25,7 @@ async def search_messages(
     after: str | None = None,
     before: str | None = None,
 ) -> list[dict]:
-    """Search messages using FTS5 MATCH.
-
-    Filters:
-      identity — scope to conversations owned by this identity
-      speaker — "user"/"owner" or an identity name (who said it)
-      after/before — YYYY-MM-DD, inclusive date window on created_at
-
-    Returns a list of results with message id, content preview,
-    identity, timestamp, conversation_id, and relevance rank.
-    """
+    'Search messages using FTS5 MATCH.'
     if not query or not query.strip():
         return []
 

@@ -90,9 +90,7 @@
 }
 
 /* ── CSS Variables ── */
-/* ANAM GUIDE: GLOBAL COLORS AND FONTS
-   These are the default house tokens for the whole app. Curated saved presets
-   override them from api/settings.py; identity-only colors live in config.py. */
+
 :root {
     /* Page */
     --bg-page: #FFF3F6;

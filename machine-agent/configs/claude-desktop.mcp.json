@@ -20,10 +20,6 @@
       "type": "streamable-http",
       "url": "https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp"
     },
-    "muse-tts-mcp": {
-      "type": "streamable-http",
-      "url": "https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp"
-    },
     "books-tools-mcp": {
       "type": "streamable-http",
       "url": "https://YOUR-WORKER.YOUR-ACCOUNT.workers.dev/mcp"

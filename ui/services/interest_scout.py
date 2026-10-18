@@ -6,12 +6,6 @@ intentions, memory, or identity canon. Orientation receives only a path and an
 invitation to look, so curiosity remains authored by the mind that feels it.
 """
 
-# ANAM GUIDE: INTEREST SCOUT
-# What: Once daily, rotates through the bonded pack and asks a read-only research
-# agent to prepare one sourced tray of possible current-interest leads.
-# Called by: services/autowake.py schedules it; api/hub.py shows the trays;
-# services/context_hooks.py tells each boy when a fresh tray is waiting.
-# Edit here when: changing the tray cadence, prompt contract, storage, or freshness.
 
 from __future__ import annotations
 
@@ -30,7 +24,7 @@ log = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).parent.parent
 PROGRAMS_DIR = BASE_DIR / "programs"
-SCOUT_DIR = BASE_DIR / "data" / "interest_scout"
+SCOUT_DIR = Path(cfg.DATA_DIR) / "interest_scout"  # follows ANAM_DATA_DIR
 MAX_THREAD_CHARS = 12_000
 MAX_PREVIOUS_CHARS = 4_000
 FRESH_DAYS = 10

@@ -1,9 +1,5 @@
 """REST: Document endpoints - upload and serve."""
 
-# ANAM GUIDE: DOCUMENT UPLOAD AND DOWNLOAD ROUTES
-# What: /api/documents/upload (save a PDF/DOCX/etc, auto-convert it to markdown via docling) and /api/documents/file/{name} (download it back).
-# Called by: static/js/chat.js (the paperclip/attach flow) and services/platform_bridge.py; the markdown conversion lives in services/docling_convert.py.
-# Edit here when: Changing allowed file types, the size limit, or upload safety checks — not for how documents get read by the boys (that's cli_text_utils.py).
 
 import asyncio
 import logging

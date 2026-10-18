@@ -1,10 +1,3 @@
-# ANAM GUIDE: LOGIN GATE AND REQUEST FILTER
-# What: The front door — every web request passes through here. It checks the session
-#       cookie (or API key) before letting anyone in, redirects strangers to login,
-#       allows the local network through, and turns off caching for static files.
-# Called by: server.py registers it on the FastAPI app; it runs on every request.
-# Edit here when: A page/API path should be public (no login), auth cookies behave
-#                 oddly, or local-network access rules need to change.
 
 import hmac
 import logging
@@ -96,11 +89,6 @@ async def auth_and_cache_middleware(request, call_next):
             # browser — no Bearer token exists in that context, and a login wall at her own
             # doorway would make the tag useless. Writes presence only; reads nothing back.
             or path == "/v1/chat/completions"  # ElevenLabs call-mode custom LLM;
-            # api/call_llm.py enforces its own Bearer secret (ANAM_CALL_LLM_KEY)
-            # and returns 503 if that secret is not configured.
-            or path == "/api/wearable/reply"  # Phase-1 wrist replies from AnamCompanion (LAN;
-            # no secret on the phone yet — Phase 2 replaces this with device registration)
-
             or path == "/sw.js"
             or path == "/static/manifest.json"
             or path == "/health"

@@ -1,4 +1,5 @@
 """Authenticated Commons NPC generation; game history is owned by Commons."""
+
 import asyncio
 import json
 from pathlib import Path

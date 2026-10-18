@@ -38,6 +38,10 @@ chat message through the browser, API, provider and database.
 | [twitter-mcp](twitter-mcp/README.md) | X/Twitter tools | [run_stdio.py](twitter-mcp/run_stdio.py), [server.py](twitter-mcp/server.py), [run_server.py](twitter-mcp/run_server.py) |
 | [ui](ui/README.md) | Anam chat application | [CODE_GUIDE.md](ui/CODE_GUIDE.md), [server.py](ui/server.py), [config.py](ui/config.py) |
 | [world-feed](world-feed/README.md) | Starter for the sibling UI World Feed | [setup_world.py](world-feed/setup_world.py), [start_world_feed.py](world-feed/start_world_feed.py), [examples/](world-feed/examples/) |
+| [home-assistant-mcp](home-assistant-mcp/README.md) | Home Assistant state and service calls | [server.py](home-assistant-mcp/server.py) |
+| [watch-mcp](watch-mcp/README.md) | Wrist replies, vitals and gated messages | [server.py](watch-mcp/server.py) |
+| [anam-touch-mcp](anam-touch-mcp/README.md) | Timers, orbs, audio, daily wins and configured SMS | [server.py](anam-touch-mcp/server.py) |
+| [crosstalk-mcp](crosstalk-mcp/README.md) | Companion communication through Anam | [server.py](crosstalk-mcp/server.py) |
 | [world-tools-mcp](world-tools-mcp/README.md) | World information tools | [run_server.py](world-tools-mcp/run_server.py), [world_tools_server.py](world-tools-mcp/world_tools_server.py) |
 | [youtube-mcp](youtube-mcp/README.md) | YouTube tools | [run_server.py](youtube-mcp/run_server.py), [server.py](youtube-mcp/server.py), [auth/](youtube-mcp/auth/) |
 

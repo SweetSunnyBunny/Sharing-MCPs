@@ -1339,7 +1339,7 @@ export async function assembleLifeStory(
   };
 }
 
-// Fold every self-delta up to a date into a portrait: the Example query.
+// Fold every self-delta up to a date into a portrait: the Connor query.
 // Only the identity's own beats fold (a pack beat carries no personal facets);
 // strand aliveness reads born/shed/revived events, falling back to the strand
 // row itself when no events were ever logged.

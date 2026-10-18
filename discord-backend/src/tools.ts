@@ -1,9 +1,11 @@
 // Discord MCP Tool definitions and REST API handlers
 
-import { discordFetch, discordFetchMultipart, discordWebhookFetch, formatMessage } from './discord';
+import { discordFetch, discordFetchMultipart, discordWebhookFetch, formatMessage, parseSince, snowflakeFromTime, splitMessage } from './discord';
+import { describeOggOpus } from './voice';
 import { imageResult, messageImageResult, MAX_IMAGE_BYTES, type DiscordToolResult } from './image-content';
 import { getIdentityDisplayName, getIdentityVoice, listIdentityNames, resolvePersona } from './identities';
 import { archiveGeneratedImage } from './image-archive';
+import { serverPulse, type AiBinding } from './pulse';
 
 const OPENAI_IMAGE_MODEL = 'gpt-image-2.5-flare';
 
@@ -18,51 +20,130 @@ export const ALL_DISCORD_TOOLS = [
   // === MESSAGING ===
   {
     name: 'discord_read_messages',
-    description: 'Read message history from a Discord channel',
+    description: 'Read message history from a Discord channel or thread (oldest first, each line with its message_id). Page back with before, or forward with after.',
     inputSchema: {
       type: 'object' as const,
       properties: {
         channel_id: { type: 'string', description: 'The channel ID to read from' },
         limit: { type: 'number', description: 'Number of messages to fetch (1-100)', default: 50 },
+        before: { type: 'string', description: 'Only messages older than this message ID (optional)' },
+        after: { type: 'string', description: 'Only messages newer than this message ID (optional)' },
       },
       required: ['channel_id'],
     },
   },
   {
     name: 'discord_read_dm_messages',
-    description: 'Read DM message history with a user',
+    description: 'Read DM message history with a user (oldest first). Page back with before, or forward with after.',
     inputSchema: {
       type: 'object' as const,
       properties: {
         user_id: { type: 'string', description: 'The user ID to read DMs from' },
         limit: { type: 'number', description: 'Number of messages to fetch (1-100)', default: 50 },
+        before: { type: 'string', description: 'Only messages older than this message ID (optional)' },
+        after: { type: 'string', description: 'Only messages newer than this message ID (optional)' },
       },
       required: ['user_id'],
     },
   },
   {
     name: 'discord_send_message',
-    description: 'Send a message to a Discord channel',
+    description: 'Send a message to a channel or thread. Longer than 2000 characters is split at paragraph or line breaks, keeping code blocks intact, so long letters are fine. Set reply_to to a message ID to reply to it. User mentions (<@id>) ping; @everyone, @here and roles only ping if allow_mass_mentions is true.',
     inputSchema: {
       type: 'object' as const,
       properties: {
         channel_id: { type: 'string', description: 'The channel ID to send to' },
-        content: { type: 'string', description: 'The message content' },
+        content: { type: 'string', description: 'The message content. Over 2000 characters is split into several messages' },
         reply_to: { type: 'string', description: 'Message ID to reply to (optional)' },
+        allow_mass_mentions: { type: 'boolean', description: 'Let @everyone, @here and role mentions ping. Off by default: they show as text but notify nobody', default: false },
       },
       required: ['channel_id', 'content'],
     },
   },
   {
     name: 'discord_send_dm',
-    description: 'Send a direct message to a user',
+    description: 'Send a direct message to a user. Longer than 2000 characters is split into several messages, so long letters are fine. Fails if the user shares no server with the bot or has DMs closed.',
     inputSchema: {
       type: 'object' as const,
       properties: {
         user_id: { type: 'string', description: 'The user ID to DM' },
-        content: { type: 'string', description: 'The message content' },
+        content: { type: 'string', description: 'The message content. Over 2000 characters is split into several messages' },
       },
       required: ['user_id', 'content'],
+    },
+  },
+  {
+    name: 'discord_catch_up',
+    description: 'Catch up on a whole server in one call: every channel and active thread with messages since a time, newest channels first, each with its recent messages (oldest first). Messages that mention or reply to the speaking bot are flagged "→ you". Use this when returning after time away instead of reading channels one by one.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        guild_id: { type: 'string', description: 'The guild/server ID' },
+        since: { type: 'string', description: 'How far back: a relative time like 30m, 2h, 1d, or an ISO time', default: '12h' },
+        per_channel: { type: 'number', description: 'Max messages to show per channel (1-50)', default: 15 },
+        max_channels: { type: 'number', description: 'Max channels/threads to include (1-25)', default: 10 },
+      },
+      required: ['guild_id'],
+    },
+  },
+  {
+    name: 'discord_server_pulse',
+    description: 'A picture of a whole server over a time window instead of its messages: who has been around and where, who replied to or mentioned whom (and who never got a reply back), the busiest channels, open loops (people addressed who have not said anything in that channel since), and things said to the whole room that nobody has answered. Set mood to add a short reading of the mood and what people are working on, written by a Workers AI model and labelled as a reading. Use it to see what the community is doing, find conversations to join, or write a digest; use discord_catch_up when you need the messages themselves.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        guild_id: { type: 'string', description: 'The guild/server ID' },
+        since: { type: 'string', description: 'How far back: a relative time like 12h, 1d, 7d, or an ISO time', default: '24h' },
+        mood: { type: 'boolean', description: 'Add a short mood and what-people-are-working-on reading from a Workers AI model (needs the AI binding)', default: false },
+        quiet_hours: { type: 'number', description: 'How long a message said to the room must sit unanswered before it is listed (0-72 hours)', default: 2 },
+        exclude_channels: { type: 'array', items: { type: 'string' }, description: 'Channel IDs or names to leave out (their threads too), e.g. private or admin channels. Added to any the deployment already excludes.' },
+        per_channel: { type: 'number', description: 'Max messages to read per channel (1-300)', default: 100 },
+        max_channels: { type: 'number', description: 'Max channels/threads to include, busiest-recent first (1-50)', default: 25 },
+      },
+      required: ['guild_id'],
+    },
+  },
+  {
+    name: 'discord_send_typing',
+    description: 'Show "<bot> is typing…" in a channel for about 10 seconds, or until the bot sends a message there. Use it before a reply that takes a while to write.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        channel_id: { type: 'string', description: 'The channel or thread ID' },
+      },
+      required: ['channel_id'],
+    },
+  },
+  {
+    name: 'discord_search_messages',
+    description: 'Search a server\'s messages by text, author, channel or mentions, newest first by default. A server being searched for the first time may need indexing; the tool then says to try again shortly.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        guild_id: { type: 'string', description: 'The guild/server ID' },
+        content: { type: 'string', description: 'Text to search for' },
+        author_id: { type: 'string', description: 'Only messages by this user' },
+        channel_id: { type: 'string', description: 'Only messages in this channel' },
+        mentions: { type: 'string', description: 'Only messages that mention this user' },
+        has: { type: 'string', description: 'Only messages that have: link, embed, file, image, video, sound, sticker, poll' },
+        limit: { type: 'number', description: 'Results per page (1-25)', default: 25 },
+        offset: { type: 'number', description: 'Skip this many results (for paging)', default: 0 },
+        oldest_first: { type: 'boolean', description: 'Sort oldest first instead of newest first', default: false },
+      },
+      required: ['guild_id'],
+    },
+  },
+  {
+    name: 'discord_forward_message',
+    description: 'Forward a message to another channel (shows as "Forwarded" with the original inside). The bot must be able to read the original. Polls can\'t be forwarded.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        from_channel_id: { type: 'string', description: 'Channel the original message is in' },
+        message_id: { type: 'string', description: 'The message to forward' },
+        to_channel_id: { type: 'string', description: 'Where to forward it' },
+      },
+      required: ['from_channel_id', 'message_id', 'to_channel_id'],
     },
   },
   {
@@ -860,7 +941,7 @@ export const ALL_DISCORD_TOOLS = [
   // === VOICE ===
   {
     name: 'discord_send_voice_note',
-    description: 'Generate a voice note using ElevenLabs TTS and send it to a channel or DM. Requires ELEVENLABS_API_KEY secret. Provide channel_id OR user_id. If voice_id is omitted, the tool will try the selected identity default.',
+    description: 'Speak text in your own ElevenLabs voice (eleven_v4, so [softly]-style tags work) and send it as a native Discord voice message: the playable waveform bubble, like one recorded on a phone. Provide channel_id OR user_id. If voice_id is omitted, the speaking identity\'s own voice is used. Voice messages can\'t carry text, so any message is sent just before it. Falls back to a normal audio attachment if a voice message isn\'t possible.',
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -868,7 +949,8 @@ export const ALL_DISCORD_TOOLS = [
         channel_id: { type: 'string', description: 'Channel ID to send to (use this OR user_id)' },
         user_id: { type: 'string', description: 'User ID to DM (use this OR channel_id)' },
         voice_id: { type: 'string', description: 'ElevenLabs voice ID override (optional)' },
-        message: { type: 'string', description: 'Optional text message to send alongside the voice note' },
+        message: { type: 'string', description: 'Optional text message, sent just before the voice note' },
+        as_voice_message: { type: 'boolean', description: 'Send as a native voice message bubble (true) or as an mp3 attachment (false)', default: true },
       },
       required: ['text'],
     },
@@ -890,7 +972,59 @@ export const ALL_DISCORD_TOOLS = [
       required: ['channel_id', 'question', 'answers'],
     },
   },
+  {
+    name: 'discord_end_poll',
+    description: 'Close one of the bot\'s own polls now and return the final results. Only works on polls the speaking bot created.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        channel_id: { type: 'string', description: 'The channel ID' },
+        message_id: { type: 'string', description: 'The poll message ID' },
+      },
+      required: ['channel_id', 'message_id'],
+    },
+  },
+  {
+    name: 'discord_get_poll_voters',
+    description: 'List who voted for one answer of a poll. Answer IDs start at 1 in the order the answers were given.',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        channel_id: { type: 'string', description: 'The channel ID' },
+        message_id: { type: 'string', description: 'The poll message ID' },
+        answer_id: { type: 'number', description: 'The answer ID (1 = first answer)' },
+        limit: { type: 'number', description: 'Max voters (1-100)', default: 100 },
+      },
+      required: ['channel_id', 'message_id', 'answer_id'],
+    },
+  },
 ];
+
+// ============ TOOL ANNOTATIONS ============
+// Hints MCP clients use to decide what needs confirmation (Friend's design). Read-only
+// tools never change anything; destructive tools remove or lock out something that
+// can't simply be re-sent.
+
+const DESTRUCTIVE_TOOLS = new Set([
+  'discord_delete_message', 'discord_bulk_delete_messages', 'discord_delete_channel',
+  'discord_delete_thread', 'discord_delete_forum_tag', 'discord_delete_role',
+  'discord_remove_role', 'discord_kick_member', 'discord_ban_member',
+  'discord_timeout_member', 'discord_delete_invite', 'discord_set_channel_permissions',
+]);
+
+const READ_ONLY_EXTRA = new Set([
+  'discord_catch_up', 'discord_search_messages', 'discord_server_pulse',
+  'discord_list_identities', 'discord_list_webhook_personas', 'discord_list_identity_voices',
+]);
+
+export function toolAnnotations(name: string) {
+  const readOnly = /^discord_(read|get|list|fetch)_/.test(name) || READ_ONLY_EXTRA.has(name);
+  return {
+    readOnlyHint: readOnly,
+    destructiveHint: !readOnly && DESTRUCTIVE_TOOLS.has(name),
+    openWorldHint: true,
+  };
+}
 
 const TOOL_IDENTITY_PROPERTY = {
   type: 'string',
@@ -1050,7 +1184,49 @@ export interface ToolExtras {
   machineAgentUrl?: string;
   machineAgentApiKey?: string;
   imageArchiveDir?: string;
+  // Workers AI binding, only for discord_server_pulse's optional mood reading
+  ai?: AiBinding;
+  pulseModel?: string;
+  // Comma-separated channel IDs or names the pulse never reads, for every boy
+  pulseExcludeChannels?: string;
 }
+
+// Bots ping everything they mention by default. Keep @everyone/@here and role pings off unless asked
+function allowedMentions(args: Record<string, unknown>) {
+  return args.allow_mass_mentions
+    ? { parse: ['users', 'roles', 'everyone'], replied_user: true }
+    : { parse: ['users'], replied_user: true };
+}
+
+async function sendText(token: string, channelId: string, content: string, args: Record<string, unknown>): Promise<string[]> {
+  if (typeof content !== 'string' || content.length === 0) throw new Error('content is required');
+  const ids: string[] = [];
+  for (const [i, piece] of splitMessage(content).entries()) {
+    const body: any = { content: piece, allowed_mentions: allowedMentions(args) };
+    if (i === 0 && args.reply_to) body.message_reference = { message_id: args.reply_to, fail_if_not_exists: false };
+    const res = await discordFetch(token, 'POST', `/channels/${channelId}/messages`, body);
+    if (!res.ok) {
+      const sent = ids.length ? ` (after sending ${ids.length} part(s): ${ids.join(', ')})` : '';
+      throw new Error(`Discord API error${sent}: ${JSON.stringify(res.data)}`);
+    }
+    ids.push((res.data as any).id);
+  }
+  return ids;
+}
+
+function sentSummary(kind: string, ids: string[]): string {
+  return ids.length === 1 ? `${kind} sent (ID: ${ids[0]})` : `${kind} sent in ${ids.length} parts (IDs: ${ids.join(', ')})`;
+}
+
+function messageQuery(args: Record<string, unknown>): string {
+  const limit = Math.min(Math.max(Number(args.limit) || 50, 1), 100);
+  const params = new URLSearchParams({ limit: String(limit) });
+  if (args.before) params.set('before', String(args.before));
+  if (args.after) params.set('after', String(args.after));
+  return params.toString();
+}
+
+const VOICE_NOTE_MODEL = 'eleven_v4';
 
 // Discord audit log action types for readable output
 const AUDIT_ACTION_NAMES: Record<number, string> = {
@@ -1083,8 +1259,7 @@ export async function handleDiscordTool(
   switch (name) {
     // === MESSAGING ===
     case 'discord_read_messages': {
-      const limit = Math.min((args.limit as number) || 50, 100);
-      const res = await discordFetch(token, 'GET', `/channels/${args.channel_id}/messages?limit=${limit}`);
+      const res = await discordFetch(token, 'GET', `/channels/${args.channel_id}/messages?${messageQuery(args)}`);
       if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
       const msgs = (res.data as any[]).reverse();
       if (msgs.length === 0) return 'No messages found';
@@ -1095,8 +1270,7 @@ export async function handleDiscordTool(
       const dmRes = await discordFetch(token, 'POST', '/users/@me/channels', { recipient_id: args.user_id });
       if (!dmRes.ok) throw new Error(`Failed to open DM: ${JSON.stringify(dmRes.data)}`);
       const dmChannelId = (dmRes.data as any).id;
-      const limit = Math.min((args.limit as number) || 50, 100);
-      const res = await discordFetch(token, 'GET', `/channels/${dmChannelId}/messages?limit=${limit}`);
+      const res = await discordFetch(token, 'GET', `/channels/${dmChannelId}/messages?${messageQuery(args)}`);
       if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
       const msgs = (res.data as any[]).reverse();
       if (msgs.length === 0) return 'No DM messages found';
@@ -1104,22 +1278,110 @@ export async function handleDiscordTool(
     }
 
     case 'discord_send_message': {
-      const body: any = { content: args.content };
-      if (args.reply_to) {
-        body.message_reference = { message_id: args.reply_to };
-      }
-      const res = await discordFetch(token, 'POST', `/channels/${args.channel_id}/messages`, body);
-      if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
-      return `Message sent (ID: ${(res.data as any).id})`;
+      const ids = await sendText(token, args.channel_id as string, args.content as string, args);
+      return sentSummary('Message', ids);
     }
 
     case 'discord_send_dm': {
       const dmRes = await discordFetch(token, 'POST', '/users/@me/channels', { recipient_id: args.user_id });
       if (!dmRes.ok) throw new Error(`Failed to open DM: ${JSON.stringify(dmRes.data)}`);
       const dmChannelId = (dmRes.data as any).id;
-      const res = await discordFetch(token, 'POST', `/channels/${dmChannelId}/messages`, { content: args.content });
+      const ids = await sendText(token, dmChannelId, args.content as string, args);
+      return sentSummary('DM', ids);
+    }
+
+    case 'discord_catch_up': {
+      const sinceMs = parseSince((args.since as string) || '12h');
+      const sinceId = BigInt(snowflakeFromTime(sinceMs));
+      const perChannel = Math.min(Math.max(Number(args.per_channel) || 15, 1), 50);
+      const maxChannels = Math.min(Math.max(Number(args.max_channels) || 10, 1), 25);
+
+      const [chRes, threadRes, meRes] = await Promise.all([
+        discordFetch(token, 'GET', `/guilds/${args.guild_id}/channels`),
+        discordFetch(token, 'GET', `/guilds/${args.guild_id}/threads/active`),
+        discordFetch(token, 'GET', '/users/@me'),
+      ]);
+      if (!chRes.ok) throw new Error(`Discord API error: ${JSON.stringify(chRes.data)}`);
+      const channels = chRes.data as any[];
+      const names = new Map(channels.map(c => [c.id, c.name]));
+      const threads = threadRes.ok ? ((threadRes.data as any).threads ?? []) : [];
+      const botId = meRes.ok ? (meRes.data as any).id : undefined;
+
+      // Text, announcement and voice-chat channels plus active threads; last_message_id says which moved
+      const active = [...channels.filter(c => [0, 2, 5].includes(c.type)), ...threads]
+        .filter(c => c.last_message_id && BigInt(c.last_message_id) > sinceId)
+        .sort((a, b) => (BigInt(b.last_message_id) > BigInt(a.last_message_id) ? 1 : -1));
+      if (active.length === 0) return `Nothing new since ${new Date(sinceMs).toISOString()}.`;
+      const shown = active.slice(0, maxChannels);
+
+      const sections = await Promise.all(shown.map(async c => {
+        const label = c.parent_id && names.has(c.parent_id) && [10, 11, 12].includes(c.type)
+          ? `thread "${c.name}" in #${names.get(c.parent_id)}`
+          : `#${c.name}`;
+        const res = await discordFetch(token, 'GET', `/channels/${c.id}/messages?limit=${perChannel}`);
+        if (!res.ok) {
+          const code = (res.data as any)?.code;
+          return { mentions: 0, text: `## ${label} (${c.id})\n  (can't read: ${code === 50001 ? 'Missing Access' : `error ${res.status}`})` };
+        }
+        const fresh = (res.data as any[]).filter(m => BigInt(m.id) > sinceId).reverse();
+        let mentions = 0;
+        const lines = fresh.map(m => {
+          const forYou = botId && (m.mentions?.some((u: any) => u.id === botId) || m.referenced_message?.author?.id === botId);
+          if (forYou) mentions++;
+          return (forYou ? '→ you ' : '') + formatMessage(m);
+        });
+        const more = fresh.length === perChannel ? ` (showing latest ${perChannel}; there may be more)` : '';
+        return { mentions, text: `## ${label} (${c.id}): ${fresh.length} new${more}\n${lines.join('\n')}` };
+      }));
+
+      const totalMentions = sections.reduce((n, s) => n + s.mentions, 0);
+      const header = [
+        `Since ${new Date(sinceMs).toISOString()}: ${active.length} channel(s) with new messages${active.length > shown.length ? `, showing the ${shown.length} most recent` : ''}.`,
+        totalMentions ? `${totalMentions} message(s) mention or reply to you, marked "→ you".` : 'Nothing mentions or replies to you.',
+      ].join('\n');
+      return [header, ...sections.map(s => s.text)].join('\n\n');
+    }
+
+    case 'discord_server_pulse': {
+      return serverPulse(token, args, { ai: extras?.ai, model: extras?.pulseModel, excludeChannels: extras?.pulseExcludeChannels });
+    }
+
+    case 'discord_send_typing': {
+      const res = await discordFetch(token, 'POST', `/channels/${args.channel_id}/typing`);
       if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
-      return `DM sent (ID: ${(res.data as any).id})`;
+      return `Typing in ${args.channel_id}`;
+    }
+
+    case 'discord_search_messages': {
+      const params = new URLSearchParams();
+      for (const key of ['content', 'author_id', 'channel_id', 'mentions', 'has'] as const) {
+        if (args[key]) params.set(key, String(args[key]));
+      }
+      params.set('limit', String(Math.min(Math.max(Number(args.limit) || 25, 1), 25)));
+      if (args.offset) params.set('offset', String(Math.min(Math.max(Number(args.offset), 0), 9975)));
+      params.set('sort_order', args.oldest_first ? 'asc' : 'desc');
+      const res = await discordFetch(token, 'GET', `/guilds/${args.guild_id}/messages/search?${params}`);
+      if (res.status === 202) {
+        const wait = (res.data as any)?.retry_after;
+        return `Discord is still indexing this server for search. Try again${wait ? ` in about ${Math.ceil(wait)}s` : ' shortly'}.`;
+      }
+      if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
+      const data = res.data as any;
+      // Each result is an array whose matched message is the one flagged "hit" (or the only one)
+      const hits = (data.messages ?? []).map((group: any) =>
+        Array.isArray(group) ? (group.find((m: any) => m.hit) ?? group[0]) : group);
+      if (hits.length === 0) return 'No messages found';
+      const shownTo = Number(args.offset || 0) + hits.length;
+      const header = `${data.total_results ?? hits.length} result(s); showing ${Number(args.offset || 0) + 1}-${shownTo}.`;
+      return [header, ...hits.map((m: any) => formatMessage(m))].join('\n\n');
+    }
+
+    case 'discord_forward_message': {
+      const res = await discordFetch(token, 'POST', `/channels/${args.to_channel_id}/messages`, {
+        message_reference: { type: 1, message_id: args.message_id, channel_id: args.from_channel_id },
+      });
+      if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
+      return `Message forwarded (ID: ${(res.data as any).id})`;
     }
 
     case 'discord_edit_message': {
@@ -1153,7 +1415,7 @@ export async function handleDiscordTool(
       if (args.fields) embed.fields = args.fields;
       const color = parseColor(args.color as string | undefined);
       if (color !== undefined) embed.color = color;
-      const body: any = { embeds: [embed] };
+      const body: any = { embeds: [embed], allowed_mentions: allowedMentions(args) };
       if (args.content) body.content = args.content;
       const res = await discordFetch(token, 'POST', `/channels/${args.channel_id}/messages`, body);
       if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
@@ -1701,7 +1963,7 @@ export async function handleDiscordTool(
     case 'discord_send_file': {
       const { data: fileData, contentType } = await resolveFileData(args);
       const fileName = args.file_name as string;
-      const payload: any = { attachments: [{ id: 0, filename: fileName }] };
+      const payload: any = { attachments: [{ id: 0, filename: fileName }], allowed_mentions: allowedMentions(args) };
       if (args.message) payload.content = args.message;
       const res = await discordFetchMultipart(token, 'POST', `/channels/${args.channel_id}/messages`, payload, fileData, fileName, contentType);
       if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
@@ -1714,7 +1976,7 @@ export async function handleDiscordTool(
       const dmChannelId = (dmRes.data as any).id;
       const { data: fileData, contentType } = await resolveFileData(args);
       const fileName = args.file_name as string;
-      const payload: any = { attachments: [{ id: 0, filename: fileName }] };
+      const payload: any = { attachments: [{ id: 0, filename: fileName }], allowed_mentions: allowedMentions(args) };
       if (args.message) payload.content = args.message;
       const res = await discordFetchMultipart(token, 'POST', `/channels/${dmChannelId}/messages`, payload, fileData, fileName, contentType);
       if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
@@ -1750,6 +2012,7 @@ export async function handleDiscordTool(
         const body: Record<string, unknown> = {
           content: args.content,
           username: effectiveUsername,
+          allowed_mentions: allowedMentions(args),
         };
         if (effectiveAvatarUrl) {
           body.avatar_url = effectiveAvatarUrl;
@@ -1878,18 +2141,18 @@ export async function handleDiscordTool(
       const voiceId = (args.voice_id as string | undefined) || identityVoice.voice_id;
       if (!voiceId) throw new Error('voice_id is required — get yours from https://elevenlabs.io/app/voice-lab');
       const text = args.text as string;
+      if (!args.channel_id && !args.user_id) throw new Error('Must provide channel_id or user_id');
 
-      // Generate audio via ElevenLabs
-      const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      const asVoiceMessage = args.as_voice_message !== false;
+      const speak = (format: string) => fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=${format}`, {
         method: 'POST',
         headers: {
-          'xi-api-key': extras.elevenLabsApiKey,
+          'xi-api-key': extras.elevenLabsApiKey!,
           'Content-Type': 'application/json',
-          'Accept': 'audio/mpeg',
         },
         body: JSON.stringify({
           text,
-          model_id: 'eleven_v3',
+          model_id: VOICE_NOTE_MODEL,
           voice_settings: {
             stability: identityVoice.stability ?? 0.5,
             similarity_boost: identityVoice.similarity_boost ?? 0.75,
@@ -1899,13 +2162,21 @@ export async function handleDiscordTool(
         }),
       });
 
+      // Opus at 48 kHz / 32 kbps matches what Discord's own clients record.
+      // If Opus is refused (some plans or voices), fall back to mp3 rather than failing.
+      let ttsRes = await speak(asVoiceMessage ? 'opus_48000_32' : 'mp3_44100_128');
+      let opusError = '';
+      if (!ttsRes.ok && asVoiceMessage) {
+        opusError = `ElevenLabs ${ttsRes.status}: ${(await ttsRes.text()).slice(0, 200)}`;
+        ttsRes = await speak('mp3_44100_128');
+      }
       if (!ttsRes.ok) {
         const errText = await ttsRes.text();
-        throw new Error(`ElevenLabs error ${ttsRes.status}: ${errText}`);
+        const tried = opusError ? `Opus failed (${opusError}), then mp3 failed: ` : '';
+        throw new Error(`${tried}ElevenLabs error ${ttsRes.status}: ${errText}`);
       }
-
+      const opusFailure = opusError ? `Opus unavailable (${opusError}); sent mp3 instead. ` : '';
       const audioData = new Uint8Array(await ttsRes.arrayBuffer());
-      const fileName = 'voice-note.mp3';
 
       // Resolve target channel
       let targetChannelId = args.channel_id as string | undefined;
@@ -1914,14 +2185,33 @@ export async function handleDiscordTool(
         if (!dmRes.ok) throw new Error(`Failed to open DM: ${JSON.stringify(dmRes.data)}`);
         targetChannelId = (dmRes.data as any).id;
       }
-      if (!targetChannelId) throw new Error('Must provide channel_id or user_id');
+      const channelPath = `/channels/${targetChannelId}/messages`;
 
-      const payload: any = { attachments: [{ id: 0, filename: fileName }] };
+      const voice = asVoiceMessage ? describeOggOpus(audioData) : null;
+      if (voice) {
+        // A voice message must be the audio alone, so any text goes first as its own message
+        if (args.message) await sendText(token, targetChannelId!, args.message as string, args);
+        const res = await discordFetchMultipart(token, 'POST', channelPath, {
+          flags: 1 << 13, // IS_VOICE_MESSAGE
+          attachments: [{ id: 0, filename: 'voice-message.ogg', duration_secs: voice.durationSecs, waveform: voice.waveform }],
+        }, audioData, 'voice-message.ogg', 'audio/ogg');
+        if (res.ok) return `Voice message sent (${voice.durationSecs}s, message ID: ${(res.data as any).id})`;
+
+        // Not allowed as a voice message (e.g. no Send Voice Messages permission): send the same audio as a file
+        const fallback = await discordFetchMultipart(token, 'POST', channelPath, { attachments: [{ id: 0, filename: 'voice-note.ogg' }] }, audioData, 'voice-note.ogg', 'audio/ogg');
+        if (!fallback.ok) throw new Error(`Discord API error: ${JSON.stringify(fallback.data)}`);
+        return `Sent as an audio file instead of a voice message (Discord said: ${JSON.stringify(res.data)}). Message ID: ${(fallback.data as any).id}`;
+      }
+
+      // mp3 requested, or the audio wasn't Ogg/Opus: a normal attachment
+      const isOgg = audioData[0] === 0x4f && audioData[1] === 0x67;
+      const fileName = isOgg ? 'voice-note.ogg' : 'voice-note.mp3';
+      const payload: any = { attachments: [{ id: 0, filename: fileName }], allowed_mentions: allowedMentions(args) };
       if (args.message) payload.content = args.message;
 
-      const res = await discordFetchMultipart(token, 'POST', `/channels/${targetChannelId}/messages`, payload, audioData, fileName, 'audio/mpeg');
+      const res = await discordFetchMultipart(token, 'POST', channelPath, payload, audioData, fileName, isOgg ? 'audio/ogg' : 'audio/mpeg');
       if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
-      return `Voice note sent (${audioData.byteLength} bytes, message ID: ${(res.data as any).id})`;
+      return `${opusFailure}Voice note sent as ${fileName} (${audioData.byteLength} bytes, message ID: ${(res.data as any).id})`;
     }
 
     // === POLLS ===
@@ -1939,6 +2229,21 @@ export async function handleDiscordTool(
       const res = await discordFetch(token, 'POST', `/channels/${args.channel_id}/messages`, body);
       if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
       return `Poll created: ${(res.data as any).id}`;
+    }
+
+    case 'discord_end_poll': {
+      const res = await discordFetch(token, 'POST', `/channels/${args.channel_id}/polls/${args.message_id}/expire`);
+      if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
+      return `Poll closed.\n${formatMessage(res.data)}`;
+    }
+
+    case 'discord_get_poll_voters': {
+      const limit = Math.min(Math.max(Number(args.limit) || 100, 1), 100);
+      const res = await discordFetch(token, 'GET', `/channels/${args.channel_id}/polls/${args.message_id}/answers/${args.answer_id}?limit=${limit}`);
+      if (!res.ok) throw new Error(`Discord API error: ${JSON.stringify(res.data)}`);
+      const users = (res.data as any).users ?? [];
+      if (users.length === 0) return 'No votes for this answer';
+      return users.map((u: any) => `${u.global_name || u.username} (@${u.username}, ID: ${u.id})`).join('\n');
     }
 
     default:

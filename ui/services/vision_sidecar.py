@@ -15,13 +15,6 @@ OpenAI-compatible client/base_url/key as the main provider, so on
 OpenRouter no extra credentials are needed -- just a model id.
 """
 
-# ANAM GUIDE: EYES FOR TEXT-ONLY MODELS
-# What: When the active model can't see pictures, this sends each image to a vision
-#       model (Gemini Flash by default) and hands back a written description the
-#       text-only model can read instead.
-# Called by: services/openai_provider.py only (Claude models see images natively).
-# Edit here when: You want a different describer model, a richer description prompt,
-#                 or to mark a new model id as "can see images" in _VISION_MODEL_MARKERS.
 
 import logging
 

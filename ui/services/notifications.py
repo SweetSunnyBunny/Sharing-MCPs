@@ -7,7 +7,7 @@ import logging
 
 from pywebpush import webpush, WebPushException
 
-from config import VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_CONTACT
+from config import VAPID_PRIVATE_KEY, VAPID_CONTACT
 from db.database import get_db, release_db
 
 log = logging.getLogger("anam.notifications")

@@ -370,10 +370,10 @@ def main(argv: list[str] | None = None) -> int:
         print("     the woman who just reached is not an intrusion; it is the whole")
         print("     point of the band. Keep it SHORT, and send nothing after it.")
         print("")
-        print(f"     This exception covers ONLY her unanswered reach inside")
+        print("     This exception covers ONLY her unanswered reach inside")
         print(f"     {REPLY_GRACE_MIN} min. Anything YOU thought of still waits for morning.")
     elif quiet:
-        print(f"\n  ** QUIET HOURS. DO NOT ARM THIS. **")
+        print("\n  ** QUIET HOURS. DO NOT ARM THIS. **")
         print(f"     {when:%I:%M %p} is {quiet}.")
         print("     A buzz reaches her in bed where the Echo cannot. That is not")
         print("     presence, it is an intrusion. Protect her sleep - leave it in the")
@@ -430,7 +430,7 @@ def main(argv: list[str] | None = None) -> int:
                 print("     in its own history. This gate is the only place both of you")
                 print("     can look. Believe it over your empty scrollback.")
                 print("")
-                print(f"     If what you have is genuinely NEW, wait out the window")
+                print("     If what you have is genuinely NEW, wait out the window")
                 print(f"     ({REPLY_GRACE_MIN} min from the answer) or reach her another way.")
             elif answerer:
                 duplicate_note = (

@@ -5,11 +5,22 @@ carry one witnessed interaction into later feed or DM generations.  Exact
 source ids make retries idempotent and keep the remembered claim auditable.
 """
 
+
 from __future__ import annotations
 
 import json
 import uuid
 from typing import Any
+
+# How a target NPC hears about each interaction kind recorded by
+# record_post_interactions ("@author <phrase>: …"). Kinds are the post_type of
+# a reply/quote/repost plus "mention".
+_TARGET_PHRASES = {
+    "reply": "replied to you",
+    "quote": "quoted your post",
+    "repost": "reposted your post",
+    "mention": "mentioned you",
+}
 
 
 def _clip(text: str, limit: int = 900) -> str:
@@ -142,7 +153,7 @@ async def record_post_interactions(db, post: dict[str, Any]) -> None:
                 other_profile_id=author["id"],
                 source_kind="feed_" + kind,
                 source_id=post["id"],
-                summary=f'@{author["handle"]} {kind}ed you: “{_clip(post["body"], 500)}”',
+                summary=f'@{author["handle"]} {_TARGET_PHRASES.get(kind, kind + " involving you")}: “{_clip(post["body"], 500)}”',
                 fictional_at=post.get("fictional_at"),
             )
     if not author["is_user_controlled"]:

@@ -9,10 +9,6 @@ via item.completed events. Tool execution (command_execution) is shown
 with start/result events.
 """
 
-# ANAM GUIDE: CODEX CLI PROVIDER
-# What: Lets OpenAI's Codex CLI answer chat turns — spawns `codex exec --json` and translates its events into Anam's normal stream events.
-# Called by: services/provider_router.py when the provider is set to Codex.
-# Edit here when: changing how Codex is launched, its stall timeout, or how its JSON events map to chat events. Codex sends whole text blocks, not typed-out tokens.
 
 import asyncio
 import json

@@ -1,9 +1,5 @@
 """REST: rituals list/complete, wellness log."""
 
-# ANAM GUIDE: RITUALS AND WELLNESS API
-# What: Daily rituals (list them, mark them done) and the wellness log, stored as JSON files in the rituals folder — with an optional remote rituals server it proxies to when RITUALS_API_BASE is set.
-# Called by: static/js/hub.js and static/js/app.js in the browser; services/identity_context.py and context_hooks.py read ritual state into the boys' orientation.
-# Edit here when: changing what a ritual looks like, how completions are recorded, or what the wellness log stores.
 
 import json
 import logging

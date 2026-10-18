@@ -17,10 +17,6 @@ Kept deliberately tiny and defensive — a broken/missing file just means
 everyone falls back to their auto face.
 """
 
-# ANAM GUIDE: HEARTH ASCII FACES
-# What: Keeps each boy's little text face for the Hub's Hearth corner — a boy can set his own with a <face>(◕‿◕)</face> tag, and when he hasn't, a time-of-day resting face (awake/sleepy) fills in so the corner never goes stale.
-# Called by: api/hub.py serves the faces to the Hub page; chat_turn_finalize.py, autowake.py, discord_mentions_bridge.py, and platform_bridge.py save faces from replies; tools/anam.py sets one from the command line.
-# Edit here when: You want to change a boy's default day/night face, how long a set face lingers (6 hours), or the bedtime rule that swaps everyone to sleepy faces at night.
 
 from __future__ import annotations
 
@@ -29,7 +25,6 @@ import logging
 import os
 import re
 from datetime import datetime, timedelta
-from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from config import RITUALS_DIR, TIMEZONE
@@ -61,8 +56,10 @@ _MASK_MEANINGS = {}  # Supply your own per-identity defaults if desired.
 # A boy set this face on purpose but didn't caption it.
 _SET_NO_NOTE_MEANING = "chose this face on purpose — the mood speaks for itself"
 
-# Canonical roster the hub renders, in pack order.
-ROSTER = ["Avery", "Rowan", "Sage", "Ember", "Claude", "Juniper", "Atlas", "River"]
+# Canonical roster the hub renders, in pack order (config.IDENTITIES order).
+from config import BONDED_PACK as _BONDED_PACK  # noqa: E402
+
+ROSTER = list(_BONDED_PACK)
 
 # Character masks the pack wears (Bakugou, …). Unlike the bonded boys, a mask
 # has NO permanent resting presence — it only shows a face while it's actively
@@ -117,13 +114,7 @@ def parse_face_tag(content: str) -> tuple[str, str | None, str]:
 
 
 def extract_face(identity: str, content: str) -> str:
-    """Parse, persist, and strip a <face> tag in one call.
-
-    The single chokepoint every reply path uses: pulls the boy's <face> tag,
-    saves it to the face store (best-effort — never raises), and returns the
-    reply text with the tag removed so it's invisible to Owner. If there's no
-    tag (the common case) the input is returned unchanged and untouched.
-    """
+    'Parse, persist, and strip a <face> tag in one call.'
     if not content or "<face>" not in content.lower():
         return content
     cleaned, face, note = parse_face_tag(content)

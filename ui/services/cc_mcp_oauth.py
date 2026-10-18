@@ -1,16 +1,4 @@
-"""Borrow Claude Code's stored MCP sign-ins for hosted connectors.
-
-When Owner signs a hosted MCP connector in through Claude Code (``/mcp`` ->
-authenticate), the CLI keeps the OAuth tokens in ``~/.claude/.credentials.json``
-under ``mcpOAuth``. Anam's own MCP bridge and tool gateway open their own HTTP
-connections, so without this they knock on those servers as a stranger (401).
-
-``ClaudeCodeOAuth`` is an ``httpx.Auth`` that reads the matching sign-in on
-every request (cached by file mtime), attaches the bearer, refreshes it with the
-stored refresh token when it is about to expire or the server answers 401, and
-writes the refreshed token back into the same entry so the CLI and Anam keep
-sharing one sign-in. Tokens are never logged.
-"""
+"Borrow Claude Code's stored MCP sign-ins for hosted connectors."
 
 
 from __future__ import annotations
@@ -81,10 +69,6 @@ def find_entry(server_name: str, url: str, path: Path | None = None) -> tuple[st
         if name == server_name and _norm_url(entry.get("serverUrl", "")) == want_url:
             return key, entry
     return None
-
-
-def has_signin(server_name: str, url: str) -> bool:
-    return find_entry(server_name, url) is not None
 
 
 def _needs_refresh(entry: dict) -> bool:

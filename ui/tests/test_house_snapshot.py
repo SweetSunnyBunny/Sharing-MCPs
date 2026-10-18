@@ -83,7 +83,7 @@ class PollHubTests(unittest.IsolatedAsyncioTestCase):
     async def test_populates_configured_endpoints_only(self):
         with patch("config.HUB_API_BASE", "http://hub.example"), \
              patch("config.RITUALS_API_BASE", ""), \
-             patch("services.remote_state.safe_request_json", return_value={"ok": True}):
+             patch("services.remote_state.safe_request_json", autospec=True, return_value={"ok": True}):
             await house_snapshot._poll_hub()
         data, _age = house_snapshot.get_snapshot("hub_status")
         self.assertEqual(data, {"ok": True})

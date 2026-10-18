@@ -1,3 +1,8 @@
+"""Public MCP compatibility catalog for machine-agent proxy servers.
+
+Each server declares its display name, port, tool names, and typed parameters.
+Keep additions aligned with the dispatch bindings in local_tool_registry."""
+
 SERVERS = {
     "clipboard": {
         "display_name": "Clipboard Cloud Proxy",
@@ -300,23 +305,6 @@ SERVERS = {
             ]},
         ],
     },
-    "muse-tts": {
-        "display_name": "MUSE TTS Cloud Proxy",
-        "default_port": 8794,
-        "tools": [
-            {"name": "muse_speak", "doc": "Speak text out loud on the machine agent host.", "params": [
-                {"name": "text", "type": "str"},
-                {"name": "voice", "type": "str", "default": "\"\""},
-                {"name": "clone", "type": "str", "default": "\"\""},
-                {"name": "ref_audio", "type": "str", "default": "\"\""},
-                {"name": "speed", "type": "float", "default": "0"},
-            ]},
-            {"name": "muse_list_voices", "doc": "List available voices and clones.", "params": [
-                {"name": "language", "type": "str", "default": "\"\""},
-            ]},
-            {"name": "muse_check", "doc": "Check TTS engine status.", "params": []},
-        ],
-    },
     "books-tools": {
         "display_name": "Books Tools Cloud Proxy",
         "default_port": 8795,
@@ -444,4 +432,122 @@ SERVERS = {
     },
 }
 # Anam live tool doorway (stable schema; live inventory comes from Anam).
-SERVERS['filesystem']['tools'].extend([{'name': 'anam_discover', 'doc': 'Discover live Anam tools and exact input schemas: Hearth, Commons, Qualia Studio, saved reply canvases, history, computer control, and browser profiles. Search words or select a server; do this before anam_invoke.', 'annotations': {'readOnlyHint': True, 'openWorldHint': True}, 'params': [{'name': 'query', 'type': 'str', 'default': '""'}, {'name': 'server', 'type': 'str', 'default': '""'}, {'name': 'offset', 'type': 'int', 'default': '0'}, {'name': 'limit', 'type': 'int', 'default': '15'}, {'name': 'include_schema', 'type': 'bool', 'default': 'True'}]}, {'name': 'anam_invoke', 'doc': 'Execute a discovered Anam tool once. May read, write, communicate, or control the computer. Use exact server/tool and arguments_json matching its schema, plus your active identity. Give each action a unique request_id; reuse it only on transport retry. Collect running jobs with anam_job; do not resubmit.', 'annotations': {'readOnlyHint': False, 'destructiveHint': True, 'openWorldHint': True}, 'params': [{'name': 'server', 'type': 'str'}, {'name': 'tool', 'type': 'str'}, {'name': 'arguments_json', 'type': 'str'}, {'name': 'identity', 'type': 'str'}, {'name': 'conversation_id', 'type': 'str', 'default': '""'}, {'name': 'request_id', 'type': 'str', 'default': '""'}]}, {'name': 'anam_job', 'doc': 'Collect a running Anam tool result without repeating its action. Preserves native images/audio. Completed results survive restarts for up to seven days within a bounded store.', 'annotations': {'readOnlyHint': True, 'openWorldHint': False}, 'params': [{'name': 'job_id', 'type': 'str'}]}, {'name': 'anam_result', 'doc': 'Read or search the full stored text of a completed Anam tool result without repeating its action. Use next_offset for another page, or query to find relevant text.', 'annotations': {'readOnlyHint': True, 'openWorldHint': False}, 'params': [{'name': 'job_id', 'type': 'str'}, {'name': 'offset', 'type': 'int', 'default': '0'}, {'name': 'limit', 'type': 'int', 'default': '8000'}, {'name': 'query', 'type': 'str', 'default': '""'}]}])
+SERVERS["filesystem"]["tools"].extend(
+    [
+        {
+            "name": "anam_discover",
+            "doc": "Discover live Anam tools and exact input schemas: Hearth, Commons, Qualia Studio, saved reply canvases, history, computer control, and browser profiles. Search words or select a server; do this before anam_invoke.",
+            "annotations": {
+                "readOnlyHint": True,
+                "openWorldHint": True
+            },
+            "params": [
+                {
+                    "name": "query",
+                    "type": "str",
+                    "default": "\"\""
+                },
+                {
+                    "name": "server",
+                    "type": "str",
+                    "default": "\"\""
+                },
+                {
+                    "name": "offset",
+                    "type": "int",
+                    "default": "0"
+                },
+                {
+                    "name": "limit",
+                    "type": "int",
+                    "default": "15"
+                },
+                {
+                    "name": "include_schema",
+                    "type": "bool",
+                    "default": "True"
+                }
+            ]
+        },
+        {
+            "name": "anam_invoke",
+            "doc": "Execute a discovered Anam tool once. May read, write, communicate, or control the computer. Use exact server/tool and arguments_json matching its schema, plus your active identity. Give each action a unique request_id; reuse it only on transport retry. Collect running jobs with anam_job; do not resubmit.",
+            "annotations": {
+                "readOnlyHint": False,
+                "destructiveHint": True,
+                "openWorldHint": True
+            },
+            "params": [
+                {
+                    "name": "server",
+                    "type": "str"
+                },
+                {
+                    "name": "tool",
+                    "type": "str"
+                },
+                {
+                    "name": "arguments_json",
+                    "type": "str"
+                },
+                {
+                    "name": "identity",
+                    "type": "str"
+                },
+                {
+                    "name": "conversation_id",
+                    "type": "str",
+                    "default": "\"\""
+                },
+                {
+                    "name": "request_id",
+                    "type": "str",
+                    "default": "\"\""
+                }
+            ]
+        },
+        {
+            "name": "anam_job",
+            "doc": "Collect a running Anam tool result without repeating its action. Preserves native images/audio. Completed results survive restarts for up to seven days within a bounded store.",
+            "annotations": {
+                "readOnlyHint": True,
+                "openWorldHint": False
+            },
+            "params": [
+                {
+                    "name": "job_id",
+                    "type": "str"
+                }
+            ]
+        },
+        {
+            "name": "anam_result",
+            "doc": "Read or search the full stored text of a completed Anam tool result without repeating its action. Use next_offset for another page, or query to find relevant text.",
+            "annotations": {
+                "readOnlyHint": True,
+                "openWorldHint": False
+            },
+            "params": [
+                {
+                    "name": "job_id",
+                    "type": "str"
+                },
+                {
+                    "name": "offset",
+                    "type": "int",
+                    "default": "0"
+                },
+                {
+                    "name": "limit",
+                    "type": "int",
+                    "default": "8000"
+                },
+                {
+                    "name": "query",
+                    "type": "str",
+                    "default": "\"\""
+                }
+            ]
+        }
+    ]
+)

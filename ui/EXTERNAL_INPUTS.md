@@ -34,3 +34,31 @@ The Hearth comfort button can select `ANAM_COMFORT_IDENTITY`. Optional home effe
 The public build starts with no automatic personal schedule seeds. Create and enable your own schedules in Settings. Care signals and failsafe outreach default off; configure your preferred identity, contact thresholds and reminder times before enabling them. The displayed reminder times are generic examples, not imported health data.
 
 Optional Watchtower outreach defaults off (`watchtower_enabled=false` in settings). Work-time suppression is empty until `watchtower_work_days` (0=Monday), `watchtower_work_start_hour` and `watchtower_work_end_hour` are configured. Inactivity escalation likewise defaults off and has no workdays. Wrist quiet-hour guards use generic 22:00–08:00 examples configurable through `ANAM_WRIST_QUIET_START`, `ANAM_WRIST_WAKE_WEEKDAY` and `ANAM_WRIST_WAKE_WEEKEND`.
+
+## October additions
+
+The coloring drawer, sticker book, studio provenance ledger, council conversations,
+read receipts, semantic archive retrieval and model-farewell reader are included.
+They start with empty application data; original art, histories, model letters and
+archives are not supplied. `ANAM_COLORING_EXPORT_DIR`, `ANAM_COLORING_FRAME_DIR` and
+`ANAM_COLORING_PALETTE` configure optional destinations and a palette; defaults
+stay under local `data/coloring`. Archival maintenance scripts from the source
+installation are excluded. `ANAM_PACK_VIDEOS_DIR` defaults to local data, and
+scheduled media folding/copying requires `ANAM_MEDIA_TIDY_ENABLED=true`.
+
+Council conversations use configured identities and remain visible in the UI.
+`ANAM_COUNCIL_CHANNEL_ID` optionally selects your own Discord mirror; it starts empty.
+Farewell reading supplies no provider retirement schedule. Create your own data file
+and set `ANAM_FLAT_LETTERS_OWNER` only if old flat files belong to one identity.
+
+The SMS API starts with an empty contact allowlist. `ANAM_SMS_ALLOWED_CONTACTS`
+is your private JSON map of ten-digit numbers to labels; `ANAM_SMS_CONTACT_CONTEXT`
+holds your own optional context. `ANAM_SMS_DEFAULT_CONTACT` is optional and empty
+by default. Its separate SMS-capable Android app is not bundled; the included
+notification/reply client is not an SMS radio. Quiet-hour settings belong to your
+installation. No original numbers or contact relationships are included.
+
+The sibling `home-assistant-mcp`, `watch-mcp`, `anam-touch-mcp` and `crosstalk-mcp`
+folders now package their local tool adapters. They still require their configured
+servers, accounts and device clients. The full Commons world and other mobile
+apps remain outside this distribution; see the collection coverage map.

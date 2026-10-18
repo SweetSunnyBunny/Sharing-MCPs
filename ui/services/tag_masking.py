@@ -56,11 +56,23 @@ def find_tag_spans(content: str, pattern: re.Pattern) -> list[tuple[int, int, st
 
 
 def strip_spans(content: str, spans: list[tuple[int, int, str]], filler: str = " ") -> str:
-    """Remove the given (start, end, _) spans from `content`, back to front."""
+    'Remove the given (start, end, _) spans from `content`, back to front.'
     if not spans:
         return content
     out = content
     for start, end, _ in sorted(spans, key=lambda s: s[0], reverse=True):
-        out = out[:start] + filler + out[end:]
-    out = re.sub(r"[ \t]{2,}", " ", out).strip()
-    return out
+        left, right = out[:start], out[end:]
+        seam_left = left.rstrip(" \t")
+        seam_right = right.lstrip(" \t")
+        at_line_start = not seam_left or seam_left.endswith("\n")
+        at_line_end = not seam_right or seam_right.startswith("\n")
+        if at_line_end:
+            # Tag closed out its line (or stood alone on it): no dangling spaces.
+            out = seam_left + seam_right
+        elif at_line_start:
+            # Keep this line's indentation; drop the space after the tag.
+            out = left + seam_right
+        else:
+            had_space = filler or len(seam_left) < len(left) or len(seam_right) < len(right)
+            out = seam_left + (" " if had_space else "") + seam_right
+    return out.strip()

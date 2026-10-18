@@ -1,4 +1,4 @@
-/* Redacted status only: never insert connector-supplied HTML or raw errors. */
+
 (() => {
     const grid = document.getElementById('connectors');
     const summary = document.getElementById('summary');

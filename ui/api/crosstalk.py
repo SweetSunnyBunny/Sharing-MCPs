@@ -7,6 +7,8 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
+from services.identity_lock import is_identity_busy
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/crosstalk")

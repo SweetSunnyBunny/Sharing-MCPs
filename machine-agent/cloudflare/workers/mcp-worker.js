@@ -6,7 +6,8 @@
  * Environment variables (set via wrangler.jsonc or `wrangler secret put`):
  *   MACHINE_AGENT_URL  - e.g. "https://machine-agent.example.com"
  *   MACHINE_AGENT_KEY  - optional Bearer token for the machine agent
- *   MCP_AUTH_TOKEN     - optional Bearer token clients must send to this Worker
+ *   MCP_AUTH_TOKEN     - REQUIRED Bearer token clients must send to this Worker;
+ *                        /mcp answers 503 to everyone until it is set
  *   SERVER_NAME        - which server spec to serve (e.g. "clipboard")
  */
 
@@ -15,17 +16,13 @@ import { SERVERS } from "./tool-specs.js";
 // ---------------------------------------------------------------------------
 // Auth
 // ---------------------------------------------------------------------------
-function checkAuth(request, env) {
-  const token = env.MCP_AUTH_TOKEN;
-  if (!token) return null;
-  const auth = request.headers.get("Authorization") || "";
-  const url = new URL(request.url);
-  const query = url.searchParams.get("token") || "";
-  if (auth === `Bearer ${token}` || query === token) return null;
-  return new Response(JSON.stringify({ jsonrpc: "2.0", error: { code: -32001, message: "Unauthorized" } }), {
-    status: 401,
-    headers: { "Content-Type": "application/json" },
-  });
+// Constant-time string comparison, so a wrong token is rejected in the same
+// time however many leading characters happen to match.
+function safeEqual(a, b) {
+  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -40,8 +37,14 @@ async function invokeRemoteTool(env, toolName, args) {
   const headers = { "Content-Type": "application/json", Accept: "application/json" };
   if (env.MACHINE_AGENT_KEY) headers["Authorization"] = `Bearer ${env.MACHINE_AGENT_KEY}`;
 
+  // Wait a little LONGER than the bridge will. The terminal kills a command at
+  // its own timeout (120s by default, or whatever the caller passed) and answers
+  // with what it has. At the old fixed 90s the Worker gave up first, so a command
+  // still running was reported as failed and a retry ran it twice.
+  const toolSeconds = toolName === "terminal_execute" && Number(args?.timeout) > 0 ? Number(args.timeout) : 120;
+  const waitSeconds = Math.min(toolSeconds, 900) + 10;
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 90_000);
+  const timeout = setTimeout(() => controller.abort(), waitSeconds * 1000);
   let resp;
   try {
     resp = await fetch(url, {
@@ -52,7 +55,7 @@ async function invokeRemoteTool(env, toolName, args) {
     });
   } catch (err) {
     if (err?.name === "AbortError") {
-      throw new Error(`Machine agent timed out after 90 seconds while invoking ${toolName}`);
+      throw new Error(`Machine agent timed out after ${waitSeconds} seconds while invoking ${toolName}`);
     }
     throw err;
   } finally {
@@ -77,7 +80,7 @@ async function invokeRemoteTool(env, toolName, args) {
 // ---------------------------------------------------------------------------
 function serverInfo(spec) {
   return {
-    name: spec.displayName || spec.displayName,
+    name: spec.displayName || "Machine Agent MCP",
     version: "0.1.0",
   };
 }
@@ -221,7 +224,16 @@ async function handleMessage(msg, env, spec) {
 async function handleMcpRequest(request, env, spec) {
   // Accept header determines response format
   const accept = request.headers.get("Accept") || "";
-  const body = await request.json();
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    // A body that is not JSON is the client's error, not a Worker crash (500).
+    return new Response(JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error" } }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
   // Handle batch or single
   const messages = Array.isArray(body) ? body : [body];
@@ -293,16 +305,23 @@ export default {
       // Support path-based auth: /mcp/<token> (matches pattern used by hearth, qualia, etc.)
       const pathToken = mcpMatch[1];
       const expectedToken = env.MCP_AUTH_TOKEN;
-      if (expectedToken) {
-        const authHeader = request.headers.get("Authorization") || "";
-        const headerOk = authHeader === `Bearer ${expectedToken}`;
-        const pathOk = pathToken === expectedToken;
-        if (!headerOk && !pathOk) {
-          return new Response(JSON.stringify({ jsonrpc: "2.0", error: { code: -32001, message: "Unauthorized" } }), {
-            status: 401,
-            headers: { "Content-Type": "application/json" },
-          });
-        }
+      // Fail closed. This Worker forwards to a bridge that runs commands on the
+      // PC, so a Worker deployed without its token must refuse everyone rather
+      // than serve everyone (the check used to be skipped when the secret was unset).
+      if (!expectedToken) {
+        return new Response(JSON.stringify({ jsonrpc: "2.0", error: { code: -32001, message: "Server not configured: MCP_AUTH_TOKEN is not set" } }), {
+          status: 503,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      const authHeader = request.headers.get("Authorization") || "";
+      const headerOk = safeEqual(authHeader, `Bearer ${expectedToken}`);
+      const pathOk = safeEqual(pathToken || "", expectedToken);
+      if (!headerOk && !pathOk) {
+        return new Response(JSON.stringify({ jsonrpc: "2.0", error: { code: -32001, message: "Unauthorized" } }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        });
       }
 
       if (request.method === "POST") {

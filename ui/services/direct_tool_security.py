@@ -1,9 +1,5 @@
 """Safety and path compatibility for tools exposed to remote API models."""
 
-# ANAM GUIDE: REMOTE MODEL TOOL SAFETY
-# What: The guard rails for the direct-API path — blocks remote models from reading credential files (.env, keys), blocks credential-reading commands, and scrubs secrets out of tool output. Also translates WSL/Git-Bash paths to Windows.
-# Called by: services/claude_api.py (the direct Anthropic API provider) around every file/command tool call.
-# Edit here when: adding a new secret filename or command pattern to block, or fixing path translation. Be careful loosening anything here — it protects the API keys.
 
 from __future__ import annotations
 

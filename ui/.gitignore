@@ -28,6 +28,7 @@ htmlcov/
 .claude/
 .codex-skill-staging/
 .playwright-mcp/
+.codex-remote-attachments/
 .wrangler/
 .zvec-grep/
 

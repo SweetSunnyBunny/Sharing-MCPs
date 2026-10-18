@@ -1,9 +1,5 @@
 """Conversation/session operations used by the websocket chat handler."""
 
-# ANAM GUIDE: CONVERSATION HISTORY LOADER
-# What: Opens, creates, and pins conversations, and loads past messages for the browser — trimming huge tool results down to short previews so old chats open fast.
-# Called by: api/chat.py (the websocket handler) and api/chat_http.py when the chat page loads history, switches identity, or starts a new conversation.
-# Edit here when: Old messages load wrong or slow, you want to change how much of a tool result shows in history, or new-conversation/pin behavior needs adjusting.
 
 import json
 from copy import deepcopy

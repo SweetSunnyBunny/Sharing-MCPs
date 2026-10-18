@@ -1,16 +1,10 @@
 """REST: Home Hub — meds, countdowns, tasks, today's win, today's schedule, mind insights, mind garden."""
 
-# ANAM GUIDE: Home HUB ROUTES (BIG FILE)
-# What: /api/hub/* — everything the Hub page shows: meds, rituals, wellness, countdowns, tasks, today's win, Hearth orb, projects, mind insights/garden.
-# Called by: static/js/hub.js (hub.html), the boys' hub MCP tools, and services/identity_context.py (which reads hub state into their orientation).
-# Edit here when: Adding or changing a Hub card's data. Find the right section by searching this file for the card's route (e.g. "/meds", "/orb", "/countdowns").
-# Note: Some routes proxy to a remote hub worker when HUB_API_BASE is set, and fall back to local files/DB when it isn't.
 
 import asyncio
 import json
 import logging
 import os
-import random
 import re
 import time
 import uuid
@@ -225,7 +219,7 @@ async def get_status():
 
 @router.put("/status")
 async def update_status(body: StatusBody):
-    """Update a status for a name (identity or Owner)."""
+    'Update status.'
     if _remote_hub_enabled():
         try:
             remote = _remote_hub_request("/status", method="PUT", payload=_model_payload(body))
@@ -325,7 +319,7 @@ class BunnyBody(BaseModel):
 
 @router.get("/bunny")
 async def get_mood_bunny():
-    """Current mood bunny state (mood, optional why, when it was set)."""
+    'Get mood bunny.'
     data = _read_json(MOOD_BUNNY_FILE, default={}) or {}
     return {
         "mood": data.get("mood") or "",
@@ -338,7 +332,7 @@ async def get_mood_bunny():
 @router.put("/bunny")
 @router.post("/bunny")
 async def set_mood_bunny(body: BunnyBody):
-    """Flip the bunny. Same mood + empty note = just a re-flip; note always optional."""
+    'Set mood bunny.'
     mood = (body.mood or "").strip().lower()
     if mood not in BUNNY_MOODS:
         return JSONResponse(status_code=400, content={"error": f"mood must be one of {BUNNY_MOODS}"})
@@ -841,8 +835,7 @@ async def set_watchtower(body: WatchtowerModeBody):
 
 @router.get("/noticed")
 async def get_noticed(limit: int = 8):
-    """Recent proactive reaches the pack made (Watchtower / care signals) —
-    'what the boys noticed', so Owner can see her JARVIS quietly thinking."""
+    'Recent proactive reaches the pack made (Watchtower / care signals) —'
     db = await get_db()
     try:
         entries = await list_timeline_entries(db, limit=40, days=10)
@@ -1114,8 +1107,7 @@ async def _read_context_card(db) -> dict:
 
 @router.get("/context-card")
 async def get_context_card():
-    """Owner's 'me right now' card — what every boy reads about her present
-    physical state. Empty dict when she's never filled one in."""
+    'Get context card.'
     db = await get_db()
     try:
         card = await _read_context_card(db)
@@ -1385,8 +1377,7 @@ _bond_graph_cache_at: float = 0.0
 
 
 def _bond_graph_seeds() -> list[str]:
-    """Every bonded (non-character) identity in config, lower-cased, plus
-    Owner — she is a soul in the graph, not just its observer."""
+    'Every bonded (non-character) identity in config, lower-cased, plus'
     from config import IDENTITIES
     seeds = [
         name.lower()
@@ -1485,11 +1476,7 @@ def _merge_bond_walks(walks: list) -> dict:
 
 @router.get("/constellation/graph")
 async def get_constellation_graph():
-    """The bond-graph night sky — the whole Qualia bond graph merged into one
-    {nodes, edges} constellation. Walked in parallel from every bonded
-    identity plus Owner; one identity's failed walk degrades to a partial
-    sky (named in `partial`) instead of darkening the whole thing. Cached
-    in-module for 10 minutes; never 500s."""
+    'The bond-graph night sky — the whole Qualia bond graph merged into one'
     global _bond_graph_cache, _bond_graph_cache_at
 
     now = time.monotonic()
@@ -1660,8 +1647,7 @@ async def list_projects():
 
 @router.post("/projects")
 async def add_project(body: ProjectBody):
-    """Queue a background project: a boy works it (via his tools/agents) when the
-    timer fires, then leaves Owner a briefing. Reuses the wake-session timer."""
+    'Queue a background project: a boy works it (via his tools/agents) when the'
     from zoneinfo import ZoneInfo
     from datetime import timezone
     from services.autowake_service import create_timer
@@ -1832,10 +1818,7 @@ class AskBody(BaseModel):
 
 @router.post("/ask")
 async def ask_archive(body: AskBody):
-    """Ask the Archive (Sage's idea) — Owner queries the shared mind herself
-    and gets the remembered bits back without pinging a boy. Searches the Qualia
-    deep mind (curated memories/facts — favorite color, vows, etc.) FIRST, then
-    Anam's own conversation history (tagged with who said it)."""
+    'Ask archive.'
     q = (body.query or "").strip()
     if not q:
         return {"query": "", "sources": []}

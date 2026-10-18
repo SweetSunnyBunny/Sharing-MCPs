@@ -1,7 +1,9 @@
 """Timeline, curated memory, and continuity helpers."""
 
 
+import asyncio
 import json
+import logging
 import re
 import uuid
 from datetime import datetime, timedelta
@@ -12,6 +14,10 @@ import aiosqlite
 from config import TIMEZONE
 from db.database import get_db, release_db
 from services.time_utils import utc_now_iso_epoch
+
+log = logging.getLogger(__name__)
+
+# ── Types + priorities ──
 
 TIMELINE_SUBJECT_OWNER = "Owner"
 SHARED_PROFILE_IDENTITY = "__shared__"
@@ -88,6 +94,9 @@ STOPWORDS = {
 }
 
 
+# ── Scoring helpers ──
+
+
 def _today_local() -> str:
     return datetime.now(ZoneInfo(TIMEZONE)).strftime("%Y-%m-%d")
 
@@ -137,6 +146,9 @@ def _age_penalty_seconds(created_at_epoch: int | None, divisor: int) -> float:
     if not created_at_epoch:
         return 0.0
     return max(0, now_epoch - int(created_at_epoch)) / divisor
+
+
+# ── Timeline ──
 
 
 async def record_timeline_entry(
@@ -264,6 +276,9 @@ async def list_timeline_entries(
             }
         )
     return entries
+
+
+# ── Profile facts ──
 
 
 async def create_profile_fact(
@@ -523,6 +538,9 @@ async def _mark_profile_facts_used(db: aiosqlite.Connection, fact_ids: list[str]
     await db.commit()
 
 
+# ── Curated memories (+ memory/fact delete) ──
+
+
 async def create_curated_memory(
     db: aiosqlite.Connection,
     *,
@@ -720,6 +738,9 @@ async def delete_profile_fact(
     )
     await db.commit()
     return True
+
+
+# ── Snapshots + deep-memory candidates ──
 
 
 async def get_profile_snapshot(
@@ -920,7 +941,15 @@ async def get_memory_retrieval_snapshot(
             "item": entry,
         })
 
-    for candidate in _build_deep_memory_candidates(identity):
+    # _build_deep_memory_candidates does a blocking cloud read (qualia_read ->
+    # request_cloud, up to ~12s cold). This hook runs every turn, so keep it
+    # off the event loop, and never let a Qualia hiccup break the snapshot.
+    try:
+        deep_candidates = await asyncio.to_thread(_build_deep_memory_candidates, identity)
+    except Exception as exc:
+        log.warning("Deep-memory candidates unavailable for %s: %s", identity, exc)
+        deep_candidates = []
+    for candidate in deep_candidates:
         match_score = _compute_overlap_score(
             query_tokens,
             candidate["summary"],
@@ -1000,6 +1029,9 @@ async def get_memory_retrieval_snapshot(
             for item in results
         ],
     }
+
+
+# ── Orientation context builders (+ continuity snapshot) ──
 
 
 async def build_memory_retrieval_context(
@@ -1150,16 +1182,7 @@ async def build_profile_facts_context(
     *,
     identity: str,
 ) -> str:
-    """Inject EVERY active profile fact Owner has typed in the Hub "Memory" tab.
-
-    These are foundational truths she chose to give the pack — shared facts
-    (scope __shared__, true for every identity) and identity-specific ones.
-    Unlike retrieval/continuity, this is intentionally un-throttled: the whole
-    point of the Memory feature is that what she types is ALWAYS in front of the
-    right boys, not sampled three-at-a-time. The count is small and the facts are
-    short, so the cost of carrying all of them every turn is negligible against
-    the cost of one of them silently never being seen.
-    """
+    'Build profile facts context.'
     shared = await list_profile_facts(db, identity=SHARED_PROFILE_IDENTITY, limit=100)
     mine = await list_profile_facts(db, identity=identity, limit=100)
     if not shared and not mine:

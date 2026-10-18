@@ -1,4 +1,7 @@
 /* Timeline interactions, draft receipts and navigation continuity. */
+
+
+
 (() => {
     const feed = WorldFeed;
     const base = { bindEvents: feed.bindEvents, setView: feed.setView, selectWorld: feed.selectWorld };

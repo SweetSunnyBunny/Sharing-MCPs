@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import json
 import sys
 from pathlib import Path
 from urllib.parse import quote, urlparse, urlunparse
@@ -45,7 +44,7 @@ def _engine_options(identity: str, voice: dict) -> dict:
         "name": f"Anam - {identity} Live Call",
         "speech_engine": {"ws_url": _upstream_url(identity)},
         "tts": {
-            "model_id": "eleven_v3_conversational",
+            "model_id": "eleven_v4_turbo",
             "voice_id": voice["voice_id"],
             "expressive_mode": True,
             "optimize_streaming_latency": 3,

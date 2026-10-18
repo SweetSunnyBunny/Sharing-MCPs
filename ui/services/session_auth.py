@@ -1,9 +1,5 @@
 """Session token hashing utilities."""
 
-# ANAM GUIDE: LOGIN TOKEN HASHER
-# What: Two tiny helpers that scramble (hash) login session tokens before they're stored, so the raw token never sits in the database.
-# Called by: api/auth.py, api/chat.py, core/middleware.py, db/schema.py
-# Edit here when: Almost never — only if the way session tokens are hashed needs to change. Login flow itself lives in api/auth.py.
 
 import hashlib
 import re

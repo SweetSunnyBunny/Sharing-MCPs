@@ -1,34 +1,6 @@
-"""The Hearth Author — each boy writes his own hearth card, in his own voice.
+'The Hearth Author — each boy writes his own hearth card, in his own voice.'
 
-Every ~3 hours (APScheduler job registered in services/autowake.py, same
-pattern as the Scribe), each bonded identity who had real activity in the
-last 24 hours — and who isn't mid-session — gets a one-shot, no-tools
-run through the selected provider (including per-identity overrides). The one-shot
-reads his own recent activity (messages + autowake session log) and writes,
-FIRST PERSON, a small strict-JSON hearth card:
 
-    {"mood": str, "on_my_mind": str, "circling": str, "needs_you": str|null}
-
-HARD RULE baked into the prompt: invent nothing. Thin facts make a sparse
-hearth; `needs_you` only when something real stands open for Owner.
-
-Cards are stored per identity in the settings table (key
-`hearth_author_state`, the same one-key-JSON pattern the Hearth orb uses)
-and surfaced two ways:
-  - GET /api/hub/hearths → the Hub's Hearth tab renders each card beside
-    his presence, with an honest age stamp.
-  - Each boy's OWN card is injected back into his orientation context
-    (services.identity_context.build_hearth_self_context) — the
-    self-coherence trick: he reads what he wrote N hours ago and can either
-    still mean it or move on from it.
-"""
-
-# ANAM GUIDE: HEARTH CARD AUTHOR
-# What: Every ~3 hours, each boy who's been active lately gets a tiny one-shot AI run to write his own Hearth card (mood, what's on his mind, what he's circling, whether he needs you) in his own first-person voice.
-# Called by: scheduled from services/autowake.py; api/hub.py serves the cards to the Hub's Hearth tab; services/identity_context.py feeds each boy his own card back so he stays coherent with himself.
-# Edit here when: You want to change how often cards refresh, how much recent activity a boy reads before writing, the card fields or their length limits, or the "invent nothing" prompt itself.
-
-import asyncio
 import json
 import logging
 import time
@@ -37,8 +9,25 @@ from pathlib import Path
 
 import config as cfg
 from config import IDENTITIES
+from services.excerpt import head_tail
+from services.identity_lock import is_identity_busy
 
 log = logging.getLogger(__name__)
+
+
+def _local_stamp(raw) -> str:
+    'Local stamp.'
+    if not raw:
+        return "time unknown"
+    try:
+        from zoneinfo import ZoneInfo
+        dt = datetime.fromisoformat(str(raw))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        local = dt.astimezone(ZoneInfo(getattr(cfg, "TIMEZONE", "America/Chicago")))
+        return local.strftime("%a %b %d ") + local.strftime("%I:%M%p").lstrip("0").lower()
+    except (ValueError, TypeError, KeyError):
+        return str(raw)
 
 BASE_DIR = Path(__file__).parent.parent
 
@@ -66,12 +55,7 @@ def _bonded_identities() -> list[str]:
 
 
 async def _gather_activity(db, identity: str) -> str:
-    """Collect a boy's real last-24h activity as a compact transcript.
-
-    Sources: messages in his conversations (his words + Owner's words to
-    him) and his autowake_log rows (which autonomous sessions ran and how
-    they went). Returns "" when there's nothing — no activity, no card.
-    """
+    "Collect a boy's real last-24h activity as a compact transcript."
     ident_l = identity.strip().lower()
     since_epoch = int(time.time()) - _LOOKBACK_HOURS * 3600
 
@@ -92,14 +76,14 @@ async def _gather_activity(db, identity: str) -> str:
         text = (content or "").strip()
         if not text:
             continue
-        if len(text) > _MAX_CONTENT_PER_MSG:
-            text = text[:_MAX_CONTENT_PER_MSG] + "..."
+        text = head_tail(text, _MAX_CONTENT_PER_MSG)
         if role == "user":
             speaker = "[system]" if (msg_identity or "").lower() == "system" else "Owner"
         else:
             speaker = identity
         tag = f" ({session_type})" if session_type and session_type not in ("chat", None) else ""
-        lines.append(f"{speaker}{tag}: {text}")
+        # The prompt tells him to read timestamps, so print them.
+        lines.append(f"[{_local_stamp(created_at)}] {speaker}{tag}: {text}")
 
     autowake_rows = await db.execute_fetchall(
         "SELECT session_type, status, message_count, started_at "
@@ -109,7 +93,7 @@ async def _gather_activity(db, identity: str) -> str:
         (ident_l, since_epoch, _MAX_AUTOWAKE_ROWS),
     )
     session_lines = [
-        f"- {started_at}: {session_type} session, status={status}, {message_count or 0} message(s)"
+        f"- {_local_stamp(started_at)}: {session_type} session, status={status}, {message_count or 0} message(s)"
         for session_type, status, message_count, started_at in autowake_rows
     ]
 
@@ -222,7 +206,6 @@ async def author_hearths() -> dict[str, str]:
     'authored', 'busy', 'no-activity', 'unparseable', or 'error'.
     """
     from db.database import get_db, release_db
-    from services.autowake import is_identity_busy
 
     results: dict[str, str] = {}
     for identity in _bonded_identities():

@@ -182,7 +182,7 @@ Add a **remote HTTP / Streamable HTTP MCP server** in your client's server
 settings. Use this address, replacing both placeholders:
 
 ```text
-https://YOUR-WORKER.workers.dev/mcp/YOUR-MCP_SECRET_PATH
+https://YOUR-WORKER.workers.dev/mcp/YOUR-SECRET
 ```
 
 Use the Worker URL and password from the successful test above. If the client
@@ -192,7 +192,7 @@ the client's tool list after adding it. Client configuration screens vary;
 this package does not install or log in to a chat application for you.
 
 If your client can send custom headers, you can instead use `/mcp` and
-`Authorization: Bearer YOUR-MCP_SECRET_PATH`.
+`Authorization: Bearer YOUR-TOKEN`.
 
 ## Add accounts, YouTube or Google Health
 
@@ -242,7 +242,3 @@ names, apply the D1 migration with `--local`, and run `npm run dev`.
 
 Only generic examples belong in a shared copy. Keep your populated secret
 files, account tokens, generated data, and `.wrangler` directory private.
-
-## Reading the code
-
-Start with [src/index.ts](src/index.ts), then [src/oauth.ts](src/oauth.ts), then [migrations/](migrations/). The installation steps above describe the runtime configuration.

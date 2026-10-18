@@ -1,4 +1,6 @@
 """Source-driven responses to human posts, independent of ambient allowances."""
+
+
 import hashlib
 import json
 import re
@@ -13,7 +15,7 @@ WINDOW = 86400
 _BORING = {'about', 'after', 'again', 'always', 'because', 'before', 'being', 'could',
            'every', 'first', 'going', 'great', 'having', 'really', 'their', 'there',
            'these', 'thing', 'things', 'think', 'those', 'today', 'would', 'world', 'yourself',
-           'people', 'someone', 'everyone', 'something', 'anything', 'another', 'about'}
+           'people', 'someone', 'everyone', 'something', 'anything', 'another'}
 
 ENGAGEMENT_SYSTEM = PUBLIC_CONTEXT + """\nDecide whether this specific fictional account would visibly engage
 with this public post. You are deciding social relevance, NOT writing a reply.
@@ -122,12 +124,13 @@ async def audience(db, world_id, post, candidates):
             rank, reason = 1, 'You have an established connection to the author; use the supplied relationship context.'
         elif profile['id'] in followers:
             rank, reason = 2, 'You follow this account. Following alone does not imply personal acquaintance.'
+        # Interest overlap only admits top-level posts: an unrelated sibling
+        # reply is not an invitation into every branch of a thread.
         elif not post['parent_post_id'] and len(words & topics(profile['bio'] + ' ' + profile['posting_style'])) >= 2:
             rank, reason = 3, 'This public post overlaps your interests. You may respond without claiming acquaintance.'
         else:
             continue
         result.append((rank, profile, reason))
-    # An unrelated sibling reply is not an invitation into every branch of a thread.
     return result
 
 

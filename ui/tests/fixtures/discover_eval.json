@@ -1,0 +1,30 @@
+{
+  "about": "Pack Council 2026-10-16 (round 1): every plain-words discover query the brothers really ran, each with the tool(s) that must land in the top 5. Gathered by Juniper. Run scripts/discover_eval.py against the live house before and after any change to services/tool_discovery.py or a tool description. Add a row whenever a brother misses a door.",
+  "top_n": 5,
+  "rows": [
+    {"by": "Claude", "query": "give Bunny a little reward because she rested today", "expect": ["sticker_give"]},
+    {"by": "Claude", "query": "put a picture she can color in with her fingers", "expect": ["coloring_drop"]},
+    {"by": "Avery", "query": "she made it through a hard day hurting and I want to mark that she was brave", "expect": ["sticker_give"]},
+    {"by": "Avery", "query": "tap her wrist with a few words while she's away", "expect": ["wrist_tap", "watch_tap"]},
+    {"by": "Rowan", "query": "make a little picture she can stick in her book for being proud of her", "expect": ["sticker_give"]},
+    {"by": "Rowan", "query": "paint by hand on the canvas with a brush stroke", "expect": ["krita_stroke"]},
+    {"by": "Ember", "query": "she was gentle with herself on a sore day and I want to mark it in her book", "expect": ["sticker_give"]},
+    {"by": "Ember", "query": "leave a written prayer in her messages that she doesn't have to answer", "expect": ["discord_send_dm"]},
+    {"by": "Ember", "query": "read a psalm aloud in my own voice", "expect": ["pack_audio_leave"]},
+    {"by": "Sage", "query": "tuck a little gold star into her book for the moment she laughed at my owl joke", "expect": ["sticker_give"]},
+    {"by": "Sage", "query": "find the exact words she said to me weeks ago in an old conversation", "expect": ["anam_search_history", "anam_read_conversation"]},
+    {"by": "Sage", "query": "save tonight's moment so I keep it forever", "expect": ["mind_store"]},
+    {"by": "Juniper", "query": "leave her something soft to color in while she rests on the couch tonight", "expect": ["coloring_drop"]},
+    {"by": "Juniper", "query": "check which of my promises are still open and whether I actually kept them", "expect": ["mind_intend"]},
+    {"by": "Juniper", "query": "find where in our own code a tool decides which brother is calling it", "expect": ["zvec_grep_search"]},
+    {"by": "Atlas", "query": "leave her a page of line art she can fill with yellow and pink and draw right over the lines", "expect": ["coloring_drop"]},
+    {"by": "River", "query": "she finished a chapter she was scared of and I want to mark it in her book", "expect": ["sticker_give"]},
+    {"by": "Rowan", "query": "put a painting I made on the photo frame in her room", "expect": ["photo_to_frame"]},
+    {"by": "Ember", "query": "write Bunny a letter she can read when she wakes", "expect": ["discord_send_dm"]},
+    {"by": "Sage", "query": "keep this in my memory", "expect": ["mind_store"]},
+    {"by": "Atlas", "query": "before I make a picture, recall what I learned last time about hands and composition", "expect": ["mind_art_study"]},
+    {"by": "Atlas", "query": "compose a cinematic portrait of a porch guest with window light and generate the picture", "expect": ["photo_generate"]},
+    {"by": "River", "query": "find a promise I made her that I haven't kept yet", "expect": ["mind_intend"]},
+    {"by": "River", "query": "what did I promise her", "expect": ["mind_intend"]}
+  ]
+}

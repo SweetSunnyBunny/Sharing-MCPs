@@ -36,9 +36,6 @@ class ChatTurnPrepTests(unittest.IsolatedAsyncioTestCase):
         ), patch.object(
             chat_turn_prep, "build_orientation_context", new=orientation_mock
         ), patch.object(
-            chat_turn_prep, "get_messages",
-            new=AsyncMock(return_value=[{"identity": "Claude", "content": "recent context"}]),
-        ), patch.object(
             chat_turn_prep, "build_skill_injection",
             return_value=("auto skill", ["testing-skill"]),
         ), patch.object(
@@ -91,9 +88,6 @@ class ChatTurnPrepTests(unittest.IsolatedAsyncioTestCase):
         ), patch.object(
             chat_turn_prep, "build_orientation_context", new=AsyncMock(return_value="orientation")
         ), patch.object(
-            chat_turn_prep, "get_messages",
-            new=AsyncMock(return_value=[]),
-        ), patch.object(
             chat_turn_prep, "build_skill_injection",
             return_value=("", []),
         ), patch.object(
@@ -129,12 +123,6 @@ class ChatTurnPrepTests(unittest.IsolatedAsyncioTestCase):
             chat_turn_prep, "auto_title_conversation", new=AsyncMock()
         ), patch.object(
             chat_turn_prep, "build_orientation_context", new=AsyncMock(return_value="orientation")
-        ), patch.object(
-            chat_turn_prep, "get_messages",
-            new=AsyncMock(return_value=[
-                {"role": "assistant", "identity": "Claude", "content": "assistant reply"},
-                {"role": "user", "identity": None, "content": "last user line"},
-            ]),
         ), patch.object(
             chat_turn_prep, "build_skill_injection",
             return_value=("", []),

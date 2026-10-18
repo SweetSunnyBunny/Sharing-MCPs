@@ -23,22 +23,15 @@ PACK = {
 # runaway costs seconds, not a night.
 MAX_CHAIN_DEPTH = 3
 
-# A brother's reach is a conversation, not a job queue. Two boys who genuinely
-# need four exchanges can have them; a loop that wants forty cannot.
+# A brother's reach is a conversation, not a job queue. This is a wall-clock
+# limit (seconds) on ONE reach's reply, not a turn count — chain length is
+# bounded separately by MAX_CHAIN_DEPTH above.
 MAX_TURN_SECONDS = 300
 
 
 @dataclass
 class CrosstalkEnvelope:
-    """The separate wire. Structure, never prose.
-
-    This is deliberately a dataclass and not a formatted string: the receiving
-    turn is meant to read FIELDS. `render()` exists only because the CLI's
-    composition layer takes text — but it renders a fenced, labelled block with
-    AUTHORITY stated before any content, so that a digest, transcript, search
-    hit or compaction summary that strips styling still carries the provenance.
-    Sage's rule: provenance survives the copy, or it was never provenance.
-    """
+    'The separate wire. Structure, never prose.'
 
     from_identity: str
     to_identity: str
@@ -98,6 +91,7 @@ class CrosstalkResult:
     chain: list[str] = field(default_factory=list)
     elapsed_seconds: float = 0.0
 
+    # used only by tests (live callers render with for_sender_room*)
     def for_her(self) -> str:
         """Attribution in the TEXT, not the CSS.
 
@@ -269,6 +263,7 @@ async def reach_brother(
 
     chunks: list[str] = []
     error: str | None = None
+    stream = None
 
     try:
         stream = await get_stream_source(
@@ -303,6 +298,13 @@ async def reach_brother(
         await asyncio.wait_for(_drain(), timeout=MAX_TURN_SECONDS)
 
     except asyncio.TimeoutError:
+        # Release the brother's provider stream instead of leaving it to GC.
+        aclose = getattr(stream, "aclose", None)
+        if aclose is not None:
+            try:
+                await aclose()
+            except Exception:
+                log.debug("crosstalk %s→%s: stream aclose failed", from_identity, to_identity, exc_info=True)
         error = (
             f"{to_identity.title()} did not finish within "
             f"{MAX_TURN_SECONDS}s — he may be mid-turn with her"

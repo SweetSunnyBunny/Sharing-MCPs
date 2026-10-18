@@ -1,7 +1,4 @@
-/* ANAM GUIDE: CANVAS SIDE PANEL
-   What: The slide-out side panel where the boys show rich content (a <canvas title="...">...</canvas> tag in their reply opens it), plus the saved-canvas library.
-   Loaded by: static/index.html (the main chat page only). Saves and loads canvases through api/canvases.py.
-   Edit here when: You want to change how the canvas panel opens/closes, how its content renders, or how the library list looks and behaves. */
+
 
 /* Canvas panel — rich content side panel for displaying structured content.
  *
@@ -181,16 +178,7 @@ const Canvas = {
         }, 300);
     },
 
-    /**
-     * Mask fenced/inline code-span contents with same-length NUL runs, so a
-     * boy explaining the <canvas> feature in prose (e.g. `<canvas
-     * title="...">` inside backticks) doesn't get matched as a real block --
-     * without this, the regex starts at that literal mention and greedily
-     * swallows everything up to the NEXT real </canvas>, splicing his
-     * surrounding prose into the extracted content (caught live, 2026-07-08).
-     * Same-length replacement keeps character offsets identical to the
-     * original, so match indices still slice correctly from the real text.
-     */
+    
     _maskCodeSpans(text) {
         return text
             .replace(/```[\s\S]*?```/g, (m) => '\0'.repeat(m.length))
@@ -364,6 +352,8 @@ const Canvas = {
                 { timeoutMs: 8000 },
             );
         } catch (err) {
+            console.warn('[Canvas] Could not open saved canvas:', err);
+            this._showLibraryNotice(`Couldn't open that canvas: ${err.message || 'network error'}`, true);
             return;
         }
         const rendered = typeof renderMarkdown === 'function'
@@ -386,18 +376,45 @@ const Canvas = {
         try {
             await fetchJson(`/api/canvases/${id}/share`, {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ identity: App.currentIdentity, share_with: target }),
             });
-        } catch (err) { /* best-effort */ }
+            this._showLibraryNotice(`Shared with ${target} ✓`);
+        } catch (err) {
+            console.warn('[Canvas] Share failed:', err);
+            this._showLibraryNotice(`Couldn't share: ${err.message || 'network error'}`, true);
+        }
     },
 
     async _deleteCanvas(id, currentOffset) {
         if (typeof App === 'undefined' || !App.currentIdentity) return;
+        let failure = null;
         try {
             await fetchJson(`/api/canvases/${id}?identity=${encodeURIComponent(App.currentIdentity)}`, {
                 method: 'DELETE',
             });
-        } catch (err) { /* best-effort */ }
-        this.openLibrary(currentOffset);
+        } catch (err) {
+            console.warn('[Canvas] Delete failed:', err);
+            failure = err;
+        }
+        // Re-render first, THEN show the notice (the re-render replaces the list).
+        await this.openLibrary(currentOffset);
+        if (failure) this._showLibraryNotice(`Couldn't delete that canvas: ${failure.message || 'network error'}`, true);
+    },
+
+    // Short-lived notice at the top of the library panel. She's on her phone
+    // with no console, so open/share/delete outcomes have to be visible here.
+    _showLibraryNotice(text, isError = false) {
+        if (!this.contentEl) return;
+        let note = this.contentEl.querySelector('.canvas-library-notice');
+        if (!note) {
+            note = document.createElement('p');
+            note.setAttribute('role', isError ? 'alert' : 'status');
+            this.contentEl.prepend(note);
+        }
+        note.className = `canvas-library-notice${isError ? ' is-error' : ''}`;
+        note.textContent = text;
+        clearTimeout(this._noticeTimer);
+        this._noticeTimer = setTimeout(() => note.remove(), 5000);
     },
 };

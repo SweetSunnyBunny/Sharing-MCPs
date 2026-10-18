@@ -1,18 +1,15 @@
 """OpenAI-compatible streaming provider -- works with OpenAI API and Ollama.
 
-Yields the same event dict interface as claude_api.stream_api() so callers
-need no changes: meta, stream_delta, thinking_start, thinking_delta,
-tool_use_start, tool_input, tool_result, content_block_stop, stream_end,
-keepalive, error.
+Yields the same event dict shapes as claude_api.stream_api() so callers need
+no changes. Events actually emitted here: meta, stream_delta, stream_reset
+(narration before a tool round), thinking_delta, tool_use_start, tool_input,
+tool_result, keepalive, stream_end, error. (No thinking_start /
+content_block_stop — thinking arrives as bare deltas.)
 
 Full tool support: converts Anthropic tool schemas to OpenAI function calling
 format and runs the same agentic tool loop.
 """
 
-# ANAM GUIDE: OPENAI / OLLAMA / LM STUDIO PROVIDER
-# What: The chat brain used when the provider is set to openai, lmstudio, or ollama — streams replies and runs tools the same way the Claude providers do.
-# Called by: services/provider_router.py (which picks the provider), plus services/vision_sidecar.py and services/cli_text_utils.py.
-# Edit here when: changing how OpenAI-compatible models are called — their tool handling, thinking display, or streaming behavior.
 
 import asyncio
 import json
@@ -223,7 +220,7 @@ async def stream_openai_compatible(
     Converts Anthropic tool schemas to OpenAI function calling format.
     """
     try:
-        from openai import AsyncOpenAI
+        from openai import AsyncOpenAI  # noqa: F401  (availability check)
     except ImportError:
         yield {"type": "error", "message": "openai package not installed. Run: pip install openai"}
         return
@@ -483,6 +480,14 @@ async def stream_openai_compatible(
             # Check cancel after stream completes
             if cancel_event and cancel_event.is_set():
                 break
+
+            if finish_reason == "length":
+                # The model hit max_tokens: this round's reply is cut off.
+                log.warning(
+                    "OpenAI-compatible reply for %s hit max_tokens=%s (model %s) "
+                    "— the reply was cut off",
+                    identity, max_tokens, model,
+                )
 
             # Some OpenRouter backends emit tool calls with a non-standard
             # finish reason. The calls themselves are the source of truth.

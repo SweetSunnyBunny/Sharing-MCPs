@@ -1,15 +1,7 @@
-"""Echo relay — routes voice commands from Echo Show into Owner's active chat.
-
-Instead of going through the HTTP/SSE chat endpoint (which creates orphan sessions),
-this endpoint finds the active WebSocket conversation and injects the message there,
-so it appears live in Owner's chat alongside her normal messages.
-
-Flow: Echo -> Alexa -> Pack Bond Worker -> this endpoint -> active WS conversation
-"""
+'Application module.'
 
 
 import asyncio
-import json
 import logging
 
 from fastapi import APIRouter, Request
@@ -52,11 +44,7 @@ def _strip_for_speech(text: str) -> str:
 
 @router.post("/relay")
 async def echo_relay(request: Request):
-    """Receive a voice command from Echo and inject it into the active chat.
-
-    Returns the AI response as JSON for the Alexa skill to speak back.
-    Also broadcasts through WebSocket so Owner sees it in her chat UI.
-    """
+    'Receive a voice command from Echo and inject it into the active chat.'
     body = await request.json()
     content = (body.get("content") or "").strip()
     requested_identity = body.get("identity", "Avery")

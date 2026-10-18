@@ -1,5 +1,6 @@
 """REST endpoints for Pack avatar discovery and GLB delivery."""
 
+
 from __future__ import annotations
 
 import mimetypes

@@ -1,17 +1,4 @@
-"""Pending 'Owner reacted to your message' notices.
-
-When Owner taps a reaction on one of a boy's messages, we stash a little notice
-here keyed by (conversation_id, identity). On that identity's next interactive
-turn, `prepare_chat_turn` pops the notices and prepends them to the model-facing
-prompt — so the reaction lands as an *event he received* ("Owner reacted 🥰 to
-your message: …"), right at the top of her message, instead of only living in
-the slower background-context hook.
-
-This is deliberately in-memory and ephemeral: Anam is a single process, notices
-are tiny and only matter until the boy's very next turn, and the durable
-`get_recent_reactions` orientation hook still backstops anything lost to a
-restart in the gap between a react and a reply.
-"""
+'Application module.'
 
 
 from __future__ import annotations
@@ -27,7 +14,7 @@ _pending: dict[tuple[str, str], list[dict]] = defaultdict(list)
 def queue_reaction_notice(
     conversation_id: str, identity: str, emoji: str, preview: str = "",
 ) -> None:
-    """Record that Owner reacted to `identity`'s message in this conversation."""
+    'Queue reaction notice.'
     if not conversation_id or not identity or not emoji:
         return
     with _lock:

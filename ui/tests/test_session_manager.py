@@ -250,7 +250,7 @@ class SessionManagerTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(rows[0], ("Chat with Avery", None))
 
-    async def test_new_conversation_archives_only_same_day_active_chat_threads(self):
+    async def test_new_conversation_keeps_same_day_thread_visible_and_numbers_title(self):
         today_iso, today_day, today_epoch = self._day_parts()
         yesterday_iso, yesterday_day, yesterday_epoch = self._day_parts(-1)
         await self.db.execute(
@@ -297,11 +297,26 @@ class SessionManagerTests(unittest.IsolatedAsyncioTestCase):
             ("Avery",),
         )
         self.assertEqual(rows[0], ("yesterday-chat", 1))
-        self.assertEqual(rows[1], ("existing-chat", 0))
+        # "+" must never hide today's earlier thread (is_active = 0 is delete).
+        self.assertEqual(rows[1], ("existing-chat", 1))
         self.assertEqual(rows[2][0], new_id)
         self.assertEqual(rows[2][1], 1)
 
-    async def test_new_conversation_archives_same_day_legacy_chat_without_hiding_yesterday(self):
+        day_title = datetime.now(ZoneInfo(TIMEZONE)).strftime("%B %d, %Y")
+        title = (await self.db.execute_fetchall(
+            "SELECT title FROM conversations WHERE id = ?", (new_id,)))[0][0]
+        self.assertEqual(title, f"Avery - {day_title} (1)")
+
+        # A third "+" the same day takes the next free number.
+        third_id = await new_conversation(self.db, "Avery")
+        title = (await self.db.execute_fetchall(
+            "SELECT title FROM conversations WHERE id = ?", (third_id,)))[0][0]
+        self.assertEqual(title, f"Avery - {day_title} (2)")
+
+        # The newest thread wins the daily funnel until she writes elsewhere.
+        self.assertEqual(await get_or_create_conversation(self.db, "Avery"), third_id)
+
+    async def test_new_conversation_leaves_legacy_and_yesterday_threads_visible(self):
         today_iso, _, today_epoch = self._day_parts()
         yesterday_iso, yesterday_day, yesterday_epoch = self._day_parts(-1)
         await self.db.execute(
@@ -346,7 +361,8 @@ class SessionManagerTests(unittest.IsolatedAsyncioTestCase):
             "SELECT id, is_active FROM conversations WHERE identity = ? ORDER BY created_at_epoch ASC",
             ("Avery",),
         )
-        self.assertEqual(rows[0], ("dated-yesterday", 1))
-        self.assertEqual(rows[1], ("legacy-today", 0))
-        self.assertEqual(rows[2][0], new_id)
-        self.assertEqual(rows[2][1], 1)
+        active = dict(rows)
+        self.assertEqual(len(active), 3)
+        self.assertEqual(active["dated-yesterday"], 1)
+        self.assertEqual(active["legacy-today"], 1)
+        self.assertEqual(active[new_id], 1)

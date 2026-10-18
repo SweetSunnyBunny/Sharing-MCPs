@@ -700,6 +700,14 @@ const Sidebar = {
         Chat.saveDraft(App.conversationId);
         Chat.parkAttachmentPreview();
 
+        // A reply still streaming in the chat she's leaving would make
+        // Chat.loadHistory skip the repaint ("stream in progress"), so the
+        // theme changed but the messages didn't. Let the old reply finish
+        // on the server and stop listening to it, as the identity picker does.
+        if (conversationId !== App.conversationId) {
+            Chat.detachActiveStream(App.conversationId);
+        }
+
         App.conversationId = conversationId;
         App.saveState();
 
@@ -818,14 +826,16 @@ const Sidebar = {
             onConfirm: async (newTitle) => {
                 if (!newTitle || newTitle === convo.title) return;
                 try {
-                    await apiFetch(`/api/messages/conversations/${convo.id}/rename`, {
+                    const res = await apiFetch(`/api/messages/conversations/${convo.id}/rename`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ title: newTitle }),
                     });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     await this._fetchAndRender();
                 } catch (err) {
                     console.error('[Sidebar] Rename failed:', err);
+                    this._showActionError(`Couldn't rename that conversation (${err.message}).`);
                 }
             },
         });
@@ -841,18 +851,28 @@ const Sidebar = {
             danger: true,
             onConfirm: async () => {
                 try {
-                    await apiFetch(`/api/messages/conversations/${convo.id}`, {
+                    const res = await apiFetch(`/api/messages/conversations/${convo.id}`, {
                         method: 'DELETE',
                     });
+                    // Only leave the conversation once the server confirms it's gone.
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     if (convo.id === App.conversationId) {
                         App.newConversation();
                     }
                     await this._fetchAndRender();
                 } catch (err) {
                     console.error('[Sidebar] Delete failed:', err);
+                    this._showActionError(`Couldn't delete that conversation (${err.message}). It's still here.`);
                 }
             },
         });
+    },
+
+    // Surface a failed rename/delete where she can see it (phone, no console).
+    _showActionError(text) {
+        if (typeof App !== 'undefined' && typeof App._showToast === 'function') {
+            App._showToast(`⚠️ ${escapeHtml(text)}`, null, null);
+        }
     },
 
     /* ── Inline modal (keep exactly) ── */

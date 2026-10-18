@@ -5,13 +5,6 @@ provider loops can append its warning to a tool result, while hard-stop mode
 can block an identical call before another expensive network round trip.
 """
 
-# ANAM GUIDE: STUCK-TOOL LOOP BREAKER
-# What: Watches for a boy calling the exact same tool with the exact same inputs over
-#       and over (a stuck loop) and warns him, then blocks the repeat call.
-# Called by: services/claude_api.py and services/openai_provider.py (the paid direct-API
-#            providers — this saves money when a model gets stuck).
-# Edit here when: You want to change how many repeats are allowed before a warning or
-#                 block, or which tools are exempt because repeating them is harmless.
 
 from __future__ import annotations
 

@@ -111,6 +111,73 @@ def _downloaded_files(key: str) -> list[Path]:
             if p.is_file() and p.suffix.lower() in _MEDIA_SUFFIXES and p.stat().st_size > 0]
 
 
+_PRIMARY_VIDEO_FMT = ["-f", "bv*[height<=720]+ba/b[height<=720]/b",
+                      "--merge-output-format", "mp4"]
+
+_MP3 = ["-x", "--audio-format", "mp3"]
+
+def _format_ladder(url: str, audio_only: bool) -> list[list[str]]:
+    is_tiktok = "tiktok.com" in url.lower()
+    if audio_only:
+        ladder = [_MP3]
+        if is_tiktok:
+            ladder += [["-f", "b[vcodec^=h264]/bv*[vcodec^=h264]+ba"] + _MP3,
+                       ["-f", "download"] + _MP3]
+        return ladder
+    ladder = [_PRIMARY_VIDEO_FMT]
+    if is_tiktok:
+        # honest codec first (<=720p preferred), then TikTok's own watermarked
+        # export, which is ugly but always carries real sound
+        ladder += [["-f", "b[vcodec^=h264][height<=720]/bv*[vcodec^=h264][height<=720]+ba"
+                          "/b[vcodec^=h264]/bv*[vcodec^=h264]+ba",
+                    "--merge-output-format", "mp4"],
+                   ["-f", "download"]]
+    # Everything else keeps its single rung: "bv*+ba" already asks for sound,
+    # and a second rung would only double the wait on a video that's gone.
+    return ladder
+
+def _audio_stream_count(path: Path) -> int | None:
+    """How many audio streams the file really has. None = couldn't tell
+    (no ffprobe / probe failed), which callers treat as 'fine' rather than
+    throwing away a download over a missing tool."""
+    ffprobe = shutil.which("ffprobe")
+    if not ffprobe:
+        return None
+    try:
+        r = subprocess.run([ffprobe, "-v", "error", "-select_streams", "a",
+                            "-show_entries", "stream=codec_type",
+                            "-of", "json", str(path)],
+                           capture_output=True, text=True, timeout=30)
+        if r.returncode != 0:
+            return None
+        return len(json.loads(r.stdout or "{}").get("streams", []))
+    except Exception:
+        return None
+
+SPECTROGRAM_SHELF = os.environ.get("AUDIO_SPECTROGRAM_SHELF", "").strip()
+
+def _shelve_picture(png: Path) -> str | None:
+    """Optionally copy a render to a configured shelf, preserving existing files."""
+    if not SPECTROGRAM_SHELF:
+        return None
+    shelf = Path(SPECTROGRAM_SHELF).expanduser()
+    if not shelf.is_absolute():
+        shelf = _HERE / shelf
+    try:
+        if not png.is_file(): return None
+        shelf.mkdir(parents=True, exist_ok=True)
+        dest = shelf / png.name
+        n = 2
+        while dest.exists():
+            if dest.read_bytes() == png.read_bytes(): return str(dest)
+            dest = shelf / f"{png.stem}_{n}{png.suffix}"
+            n += 1
+        shutil.copy2(png, dest)
+        return str(dest)
+    except OSError:
+        return None
+
+
 def _fetch_url(url: str, identity: str = "default", audio_only: bool = False) -> tuple[Path | None, str]:
     """Fetch authorized HTTP(S) media; default mode never opens a browser cookie store."""
     from urllib.parse import urlsplit
@@ -138,30 +205,61 @@ def _fetch_url(url: str, identity: str = "default", audio_only: bool = False) ->
         return existing[0], "served from this identity's URL cache; no download needed"
     base = yt + ["--ignore-config", "--no-playlist", "--no-warnings", "--no-progress",
                  "--restrict-filenames", "-o", str(URL_CACHE / f"{key}--%(title).60s.%(ext)s")]
-    fmt = (["-x", "--audio-format", "mp3"] if audio_only else
-           ["-f", "bv*[height<=720]+ba/b[height<=720]/b", "--merge-output-format", "mp4"])
+    fmts = _format_ladder(url, audio_only)
     attempts = []
     if profile:
         attempts.append((["--cookies-from-browser", f"chrome:{profile}"], "the explicitly configured Chrome profile"))
     attempts.append(([], "no browser cookies"))
     timeout_s = 240 if audio_only else 300
-    last_error = "download failed"
-    for extra, description in attempts:
-        try:
-            result = subprocess.run(base + fmt + extra + ["--", url],
-                                    capture_output=True, text=True, timeout=timeout_s)
-            files = _downloaded_files(key)
-            if result.returncode == 0 and files:
-                return files[0], f"downloaded using {description}"
-            detail = (result.stderr or result.stdout or "yt-dlp returned no completed media").strip()
-            last_error = detail.replace(url, "[media URL]")[-400:]
-        except subprocess.TimeoutExpired:
-            last_error = f"download timed out after {timeout_s}s"
-        # Only the current cache key's files are removed on a failed attempt.
-        for partial in URL_CACHE.glob(f"{key}--*"):
-            if partial.is_file():
-                partial.unlink(missing_ok=True)
-    return None, f"download failed: {last_error}"
+    last_err = ""
+    # A downloaded video with NO audio stream is parked here (outside the
+    # `{key}--*` cache glob) while we climb the ladder for one that has sound.
+    mute_park = URL_CACHE / f"{key}.mute-fallback"
+    mute_name = None
+    mute_park.unlink(missing_ok=True)
+    for fmt in fmts:
+        for extra, how in attempts:
+            try:
+                r = subprocess.run(base + fmt + extra + ["--", url],
+                                   capture_output=True, text=True,
+                                   timeout=timeout_s)
+            except subprocess.TimeoutExpired:
+                last_err = f"download timed out after {timeout_s}s"
+                for partial in URL_CACHE.glob(f"{key}--*"):
+                    if partial.is_file(): partial.unlink(missing_ok=True)
+                continue
+            got = _downloaded_files(key)
+            if r.returncode == 0 and got:
+                if audio_only or _audio_stream_count(got[0]) != 0:
+                    mute_park.unlink(missing_ok=True)
+                    return got[0], f"downloaded with {how}"
+                # Downloaded fine but SILENT (TikTok's bytevc1/h265 variants
+                # do this while their metadata still claims aac). Park it and
+                # try the next rung — one that has real sound.
+                if mute_name is None:
+                    mute_name = got[0].name
+                    got[0].replace(mute_park)
+                for p in URL_CACHE.glob(f"{key}--*"):
+                    p.unlink(missing_ok=True)
+                last_err = "downloaded, but the file had no sound track"
+                break  # cookies won't change the codec; next format instead
+            last_err = (r.stderr or r.stdout or "unknown error").replace(url, "[media URL]").strip()[-400:]
+            # Clear partial files so a retry doesn't inherit a broken download.
+            for p in URL_CACHE.glob(f"{key}--*"):
+                p.unlink(missing_ok=True)
+
+    if mute_name is not None and mute_park.exists():
+        # Nothing on the ladder had sound: keep the silent copy (the frames are
+        # still real) and SAY so, so an empty transcript reads as "no sound
+        # track", never as "nobody spoke".
+        final = URL_CACHE / mute_name
+        mute_park.replace(final)
+        return final, ("downloaded, but this video has NO sound track — every "
+                       "format tried came back silent, so any transcript will "
+                       "be empty because there's no audio, not because nobody "
+                       "spoke")
+
+    return None, f"download failed — {last_err}"
 
 
 def _resolve_media(path_or_url: str, identity: str = "default", audio_only: bool = False) -> tuple[Path | None, str]:
@@ -246,7 +344,10 @@ def audio_tempo_key(path: str) -> str:
 
 @mcp.tool()
 def audio_visualize(path: str) -> str:
-    'Render waveform, mel spectrogram and chromagram; returns a local PNG path.'
+    """Render the 3-panel sound image: waveform (rhythm), mel spectrogram
+    (texture), chromagram (harmony). Returns the PNG path — Read it to SEE
+    the music.
+    """
     audio = _check_path(path)
     if not audio:
         return f"Error: file not found: {path}"
@@ -258,7 +359,7 @@ def audio_visualize(path: str) -> str:
     output_path = out_dir / f"{audio.stem}_sound_image.png"
     try:
         import matplotlib
-        matplotlib.use("Agg")  
+        matplotlib.use("Agg")  # headless — no display in an MCP server
         import librosa
         import librosa.display
         import matplotlib.pyplot as plt
@@ -290,15 +391,18 @@ def audio_visualize(path: str) -> str:
     except Exception as e:
         return f"Error rendering sound image: {e}"
 
+    shelved = _shelve_picture(output_path)
     return (
         f"Sound image saved: {output_path}\n"
+        + (f"Also on configured spectrogram shelf: {shelved}\n" if shelved else "")
+        +
         "Use the Read tool on that path to SEE the music — rhythm in the "
         "waveform, texture in the spectrogram, harmony in the chromagram."
     )
 
 
 def _analyze_impl(path: str) -> str:
-    'Shared implementation for the analysis and review tools.'
+    'Shared implementation for audio_analyze and audio_review — plain'
     audio = _check_path(path)
     if not audio:
         return f"Error: file not found: {path}"
@@ -309,11 +413,11 @@ def _analyze_impl(path: str) -> str:
     out_dir = _out_dir_for(audio)
     base = audio.stem
     try:
-        
+        # 1. Normalize
         wav_path = out_dir / f"{base}_normalized.wav"
         sti.normalize_audio(str(audio), str(wav_path))
 
-
+        # 2. Spectrogram (ffmpeg fast path)
         spec_path = out_dir / f"{base}_spectrogram.png"
         ffmpeg = shutil.which("ffmpeg")
         if ffmpeg:
@@ -323,19 +427,19 @@ def _analyze_impl(path: str) -> str:
                 capture_output=True,
             )
 
-
+        # 3. Tempo / key / onsets
         features = sti.compute_music_features(str(wav_path))
 
-
+        # 4. Notes
         audio_arr, sr = sti.load_wav_scipy(str(wav_path))
         notes = sti.extract_notes(audio_arr, sr)
 
-
+        # 5. MIDI
         midi_path = out_dir / f"{base}_transcription.mid"
         midi_tempo = features.get("tempo_bpm", 120) if "error" not in features else 120
         sti.write_midi(notes, str(midi_path), tempo_bpm=midi_tempo)
 
-
+        # 6. JSON report
         analysis = {
             "source_file": audio.name,
             "sample_rate": sr,
@@ -356,6 +460,7 @@ def _analyze_impl(path: str) -> str:
         "notes_detected": len(notes),
         "artifacts": {
             "spectrogram_png": str(spec_path) if spec_path.exists() else None,
+            "spectrogram_on_shelf": _shelve_picture(spec_path),
             "midi": str(midi_path),
             "full_notes_json": str(json_path),
         },

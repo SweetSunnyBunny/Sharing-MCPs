@@ -1,5 +1,7 @@
 /* World Feed — private, persistent story-social UI. */
 
+
+
 const WorldFeed = {
     state: {
         worlds: [],
@@ -37,6 +39,7 @@ const WorldFeed = {
     worldModalGeneration: 0,
     editingWorldId: '',
 
+    // ── SECTION: boot, element cache, event wiring, HTTP ──────────────────
     async latestRequest(key, url) {
         const sequence = this.requests[key] = (this.requests[key] || 0) + 1;
         const world = this.worldGeneration;
@@ -90,7 +93,7 @@ const WorldFeed = {
             'wf-modal-backdrop', 'wf-profile-modal', 'wf-profile-modal-title',
             'wf-profile-form', 'wf-profile-id', 'wf-profile-name', 'wf-profile-handle',
             'wf-profile-type', 'wf-profile-color', 'wf-profile-bio', 'wf-profile-location',
-            'wf-profile-website', 'wf-profile-style', 'wf-profile-notes',
+            'wf-profile-website', 'wf-profile-style', 'wf-profile-notes', 'wf-profile-appearance', 'wf-profile-likeness',
             'wf-profile-controlled', 'wf-profile-verified', 'wf-avatar-url', 'wf-header-url',
             'wf-avatar-preview', 'wf-header-preview', 'wf-upload-avatar', 'wf-upload-header',
             'wf-avatar-input', 'wf-header-input', 'wf-relationship-modal',
@@ -183,6 +186,8 @@ const WorldFeed = {
         return data;
     },
 
+    // ── SECTION: world selection, active account, chrome ──────────────────
+    // (selectWorld is wrapped by world-feed-social.js and world-feed-dms.js)
     async selectWorld(worldId) {
         const generation = ++this.worldGeneration;
         ++this.viewGeneration;
@@ -246,6 +251,7 @@ const WorldFeed = {
         this.renderProfilePreview();
     },
 
+    // ── SECTION: data loading (feed, trends, relationships, notifications) ─
     async loadFeed(append = false) {
         if (!this.state.world) return;
         const params = new URLSearchParams();
@@ -321,6 +327,8 @@ const WorldFeed = {
         finally { this.el['wf-refresh'].disabled = false; }
     },
 
+    // ── SECTION: routing + view switching ─────────────────────────────────
+    // (setView is wrapped by world-feed-social.js and world-feed-dms.js)
     readRoute() {
         const [view, id = ''] = location.hash.slice(1).split('/');
         const valid = ['home', 'following', 'media', 'bookmarks', 'search', 'photos', 'review', 'notifications', 'dms', 'profiles', 'relationships', 'profile', 'thread', 'followers', 'following-list'];
@@ -405,6 +413,7 @@ const WorldFeed = {
         else if (this.state.view === 'photos') this.renderPhotos();
     },
 
+    // ── SECTION: Photo Studio (requests, background photo settings, jobs) ─
     async loadPhotos() {
         const data = await this.latestRequest('photos', `/api/world-feed/worlds/${encodeURIComponent(this.state.world.id)}/photos`);
         if (data) this.state.photoData = data;
@@ -418,6 +427,7 @@ const WorldFeed = {
         this.el['wf-content'].innerHTML = `<div class="wf-photo-studio">
             <p>Generate a character's picture and caption. Images use paid image credits. Every result goes to <a href="#review" id="wf-photo-review">Canon review</a> before it appears in the feed.</p>
             <p class="wf-muted">Pictures you deliberately request here are not limited by the unattended background-photo budget.</p>
+            <p class="wf-muted">Character photos use their selected profile portraits and appearance notes. Edit a profile to fine-tune likeness; fan icons and logos aren't treated as faces.</p>
             ${references.map(ref => `<details class="wf-photo-reference"><summary>${this.text(ref.display_name)} · visual reference</summary>
                 <p>Her reference is included automatically when you request her in a picture or an established story moment supports it. Her dialogue and decisions stay yours.</p>
                 <a href="${this.attr(this.safeImage(ref.reference_url))}" target="_blank" rel="noopener"><img src="${this.attr(this.safeImage(ref.reference_url))}" alt="${this.attr(ref.display_name)} appearance reference" style="max-width:100%;width:280px;height:auto" loading="lazy"></a>
@@ -429,6 +439,7 @@ const WorldFeed = {
             </form>
             <details class="wf-photo-settings"><summary>Occasional background photos</summary>
                 <form id="wf-photo-settings-form">
+                    <p id="wf-photo-save-status" role="status" aria-live="polite">${config.enabled ? `Saved: automatic photos on, up to ${config.daily_limit} per 24 hours.` : 'Saved: automatic photos paused.'} Changes save automatically.</p>
                     <p>Choose an allowance of up to ${config.max_daily_limit || 20} automatic photo attempts per rolling 24 hours. Photos are spaced across the day, with no catch-up batches. Failed attempts count; unused allowance is not carried forward. Deliberate Photo Studio requests are additional.</p>
                     <p>Pause when unfinished or unreviewed photos reach the daily allowance (at least two). Every image still waits in Canon review. This is separate from general character pulses. No automatic retries.</p>
                     <label><input type="checkbox" id="wf-photos-enabled" ${config.enabled ? 'checked' : ''}> Enable occasional photo drafts</label>
@@ -443,6 +454,8 @@ const WorldFeed = {
         document.getElementById('wf-photo-review').addEventListener('click', event => { event.preventDefault(); this.setView('review'); });
         document.getElementById('wf-photo-form').addEventListener('submit', event => this.submitPhoto(event));
         document.getElementById('wf-photo-settings-form').addEventListener('submit', event => this.savePhotoSettings(event));
+        document.getElementById('wf-photo-settings-form').addEventListener('change', event =>
+            this.savePhotoSettings({ preventDefault() {}, target: event.currentTarget }));
         this.renderPhotoJobs();
     },
 
@@ -485,20 +498,45 @@ const WorldFeed = {
         const worldId = this.state.world.id;
         const form = event.target;
         const button = form.querySelector('button[type="submit"]');
+        const status = form.querySelector('#wf-photo-save-status');
+        const payload = { enabled: document.getElementById('wf-photos-enabled').checked,
+            daily_limit: Number(document.getElementById('wf-photo-limit').value),
+            profile_ids: [...form.querySelectorAll('input[name="photo-profile"]:checked')].map(input => input.value) };
+        // Never auto-save an empty/invalid allowance: the API rejects < 1 with a 422.
+        // Explain inline instead, and leave the last saved settings untouched.
+        const maxLimit = this.state.photoData?.settings?.max_daily_limit || 20;
+        if (!Number.isInteger(payload.daily_limit) || payload.daily_limit < 1 || payload.daily_limit > maxLimit) {
+            if (status) status.textContent = `Not saved: choose 1–${maxLimit} automatic photos per 24 hours.`;
+            return;
+        }
+        const sequence = this.photoSaveSequence = (this.photoSaveSequence || 0) + 1;
+        const current = () => this.photoSaveSequence === sequence && this.state.world.id === worldId;
         button.disabled = true;
+        if (status) status.textContent = 'Saving photo settings…';
+        // Rapid changes must reach the server in order, especially ON -> OFF.
+        const save = this.photoSettingsSave = (this.photoSettingsSave || Promise.resolve()).catch(() => {}).then(() =>
+            this.request(`/api/world-feed/worlds/${encodeURIComponent(worldId)}/photos/settings`, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+            }));
         try {
-            const world = await this.request(`/api/world-feed/worlds/${encodeURIComponent(worldId)}/photos/settings`, {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ enabled: document.getElementById('wf-photos-enabled').checked,
-                    daily_limit: Number(document.getElementById('wf-photo-limit').value),
-                    profile_ids: [...form.querySelectorAll('input[name="photo-profile"]:checked')].map(input => input.value) }),
-            });
-            if (this.state.world.id === worldId) { this.state.world = world; await this.loadPhotos(); }
-            this.toast('Photo settings saved. Generated posts wait for your review.');
-        } catch (error) { this.toast(error.message, true); }
-        finally { button.disabled = false; }
+            const world = await save;
+            if (current()) {
+                this.state.world = world;
+                await this.loadPhotos();
+                if (current() && status) status.textContent = payload.enabled
+                    ? `Saved: automatic photos on, up to ${payload.daily_limit} per 24 hours.`
+                    : 'Saved: automatic photos paused. A render already sent may still finish.';
+            }
+        } catch (error) {
+            if (current()) {
+                if (status) status.textContent = `Not saved: ${error.message}. Use Save photo settings to retry.`;
+                this.toast(error.message, true);
+            }
+        }
+        finally { if (current()) button.disabled = false; }
     },
 
+    // ── SECTION: timeline + post rendering ────────────────────────────────
     renderFeed() {
         let posts = this.state.posts;
         if (!['profile', 'thread'].includes(this.state.view) && this.state.canonFilter !== 'all') posts = posts.filter(post => post.canon_level === this.state.canonFilter);
@@ -586,6 +624,7 @@ const WorldFeed = {
         this.el['wf-content'].querySelectorAll('[data-bg]').forEach(element => { element.style.backgroundImage = `url("${element.dataset.bg.replaceAll('"', '%22')}")`; });
     },
 
+    // ── SECTION: followers/following, profiles, relationships, notices, trends
     async loadConnections(append = false) {
         const params = new URLSearchParams({ direction: this.state.view === 'followers' ? 'followers' : 'following' });
         if (append && this.state.connectionCursor) params.set('after_id', this.state.connectionCursor);
@@ -669,6 +708,8 @@ const WorldFeed = {
         this.el['wf-profile-preview'].innerHTML = profiles.length ? profiles.map(profile => `<button class="wf-profile-mini" data-profile="${this.attr(profile.id)}">${this.avatarHtml(profile, 'wf-avatar-small')}<span><strong>${this.text(profile.display_name)}</strong><small>@${this.text(profile.handle)}</small></span></button>`).join('') : '<p class="wf-muted" style="padding:0 15px 14px">The cast has not arrived yet.</p>';
     },
 
+    // ── SECTION: click actions + composer context (reply/quote/media/canon) ─
+    // (handleContentAction is wrapped by world-feed-dms.js for DM actions)
     async handleContentAction(event) {
         const lightbox = event.target.closest('[data-lightbox]');
         if (lightbox) return this.openLightbox(lightbox.dataset.lightbox, lightbox.alt);
@@ -806,6 +847,7 @@ const WorldFeed = {
         this.setView('home');
     },
 
+    // ── SECTION: modals (profile, relationship, world settings) ───────────
     openProfileModal(profile = null) {
         const form = this.el['wf-profile-form'];
         form.reset();
@@ -820,6 +862,9 @@ const WorldFeed = {
         this.el['wf-profile-website'].value = profile?.website || '';
         this.el['wf-profile-style'].value = profile?.posting_style || '';
         this.el['wf-profile-notes'].value = profile?.prompt_notes || '';
+        const visual = profile?.metadata?.visual_reference || {};
+        this.el['wf-profile-appearance'].value = visual.description || '';
+        this.el['wf-profile-likeness'].value = typeof visual.use_avatar === 'boolean' ? String(visual.use_avatar) : 'auto';
         this.el['wf-profile-controlled'].checked = !!profile?.is_user_controlled;
         this.el['wf-profile-verified'].checked = !!profile?.is_verified;
         this.el['wf-avatar-url'].value = profile?.avatar_url || '';
@@ -832,7 +877,13 @@ const WorldFeed = {
     async saveProfile(event) {
         event.preventDefault();
         const id = this.el['wf-profile-id'].value;
+        const existing = this.state.profiles.find(profile => profile.id === id);
+        const visual = { ...(existing?.metadata?.visual_reference || {}), description: this.el['wf-profile-appearance'].value };
+        const likeness = this.el['wf-profile-likeness'].value;
+        if (likeness === 'auto') delete visual.use_avatar;
+        else visual.use_avatar = likeness === 'true';
         const payload = {
+            metadata: { ...(existing?.metadata || {}), visual_reference: visual },
             display_name: this.el['wf-profile-name'].value,
             handle: this.el['wf-profile-handle'].value,
             account_type: this.el['wf-profile-type'].value,
@@ -1025,6 +1076,7 @@ const WorldFeed = {
         document.body.style.overflow = '';
     },
 
+    // ── SECTION: small UI helpers (composer, avatars, escaping, toasts) ────
     focusComposer() {
         if (!this.activeProfile()) {
             this.setView('profiles');

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#FDEEF2" />
+<title>My sticker book</title>
+<link rel="icon" href="/static/assets/icons/app_icon.png?v=__ANAM_ASSET_VERSION__" />
+<style>
+  html, body { margin: 0; padding: 0; background: #FBE7EE; }
+  body { min-height: 100vh; box-sizing: border-box;
+         padding: calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 20px); }
+  #sticker-room { max-width: 720px; margin: 0 auto; }
+  .home { display: block; text-align: center; margin-top: 18px; color: #C8728A;
+          font-family: Georgia, serif; font-size: 1rem; text-decoration: none; padding: 12px; }
+</style>
+</head>
+<body>
+  <main id="sticker-room" aria-live="polite"></main>
+  <a class="home" href="/">back to the house</a>
+  <script src="/static/js/sticker-room.js?v=__ANAM_ASSET_VERSION__"></script>
+</body>
+</html>

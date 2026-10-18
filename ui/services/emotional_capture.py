@@ -5,19 +5,11 @@ Claude Code context compaction. Uses lightweight keyword matching,
 no LLM calls.
 """
 
-# ANAM GUIDE: EMOTIONAL TONE SNAPSHOTS
-# What: Every ~15 messages (or 10 minutes), skims recent chat for feeling-words and emoji and jots down the emotional weather — so the mood of a conversation survives even when the AI's memory gets compacted mid-session.
-# Called by: services/chat_pipeline.py during normal chat turns; services/autowake.py and context_hooks.py read the snapshots back into orientation.
-# Edit here when: You want to add/remove the keywords that count as positive, negative, intimate, playful, etc., or change how often a snapshot is taken.
 
 import json
 import logging
 import re
 import time
-from datetime import datetime
-from zoneinfo import ZoneInfo
-
-from config import TIMEZONE
 
 log = logging.getLogger(__name__)
 

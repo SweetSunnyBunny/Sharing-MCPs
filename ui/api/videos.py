@@ -6,10 +6,6 @@ Discord when a file exceeds the bot upload limit. Serve-only — uploads come
 exclusively from the backend writing to disk.
 """
 
-# ANAM GUIDE: GENERATED VIDEO SERVING
-# What: Serves finished Sora video files (MP4s) from the videos folder so they can play in a browser or be linked on Discord — serve-only, no uploads.
-# Called by: the Discord backend (discord_check_video saves the files and hands out /api/videos/file/... links); no Anam page JS calls this directly.
-# Edit here when: changing how video files are served or cached. The videos themselves are created and downloaded by the Discord backend, not here.
 
 import logging
 import mimetypes

@@ -1,8 +1,4 @@
-/* ANAM GUIDE: HERO BANNER (SANCTUARY VIEWER)
-   Fills the hero card at the top of chat: pulls sanctuary state from the
-   hearth-hub cloud worker, sets portrait/location/mood/thought, and handles
-   the tap-to-expand view. Looks live in anam.css SECTION 4 + MOBILE;
-   structure in static/index.html #sanctuary-viewer. */
+
 /* Sanctuary rendering + expanded view */
 
 // Hearth Hub — cloud sanctuary state API
@@ -154,13 +150,6 @@ const Sanctuary = {
                 </div>
             `;
             grid.appendChild(card);
-        }
-    },
-
-    destroy() {
-        if (this.pollInterval) {
-            clearInterval(this.pollInterval);
-            this.pollInterval = null;
         }
     },
 };

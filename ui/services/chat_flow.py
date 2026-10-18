@@ -1,9 +1,5 @@
 """Helpers for websocket chat message normalization and stream coordination."""
 
-# ANAM GUIDE: CHAT STREAM PLUMBING HELPERS
-# What: The shared toolbox for a live reply in flight — tidies incoming messages (text/images/documents/audio), collects the streaming reply piece by piece (StreamAccumulator), batches deltas for the browser, and strips rare glitch words.
-# Called by: services/chat_pipeline.py, services/autowake.py, api/chat_http.py, api/echo_relay.py, services/pack_night.py, services/claude_pty.py — basically every path that streams a reply.
-# Edit here when: A reply streams to the screen oddly (chunking, glued-together text), attachments aren't being picked up from a message, or message metadata needs a new field.
 
 import asyncio
 import json
@@ -155,6 +151,36 @@ def merge_tool_result_entry(
     tool_results_map[tool_id] = existing
 
 
+_TEXT_BLOCK_BOUNDARY_EVENTS = frozenset({"tool_use_start", "tool_input", "tool_result"})
+
+
+async def separate_text_blocks(stream):
+    "Yield ``stream``'s events with a paragraph break between text blocks."
+    boundary = False
+    tail = ""  # last character of text streamed so far ("" = none yet)
+    try:
+        async for event in stream:
+            event_type = event.get("type", "") if isinstance(event, dict) else ""
+            if event_type == "stream_delta":
+                delta = event.get("delta", "")
+                if isinstance(delta, str) and delta:
+                    if boundary and tail and not tail.isspace() and not delta[0].isspace():
+                        event = {**event, "delta": "\n\n" + delta}
+                        delta = event["delta"]
+                    boundary = False
+                    tail = delta[-1]
+            elif event_type == "stream_reset":
+                boundary = False
+                tail = ""
+            elif event_type in _TEXT_BLOCK_BOUNDARY_EVENTS:
+                boundary = True
+            yield event
+    finally:
+        aclose = getattr(stream, "aclose", None)
+        if aclose is not None:
+            await aclose()
+
+
 class StreamAccumulator:
     """Collects assistant-turn state from a provider event stream.
 
@@ -182,6 +208,9 @@ class StreamAccumulator:
         self.provider: str | None = None
         self.requested_model: str | None = None
         self.models_used: list[str] = []
+        # Set when a tool call ends a text block; the next text block opens
+        # on a paragraph break instead of running into the last one.
+        self._block_boundary = False
 
     def observe(self, event: dict[str, Any]) -> str:
         """Update internal state from one stream event; return its type.
@@ -203,15 +232,24 @@ class StreamAccumulator:
             if actual and actual != "<synthetic>" and actual not in self.models_used:
                 self.models_used.append(str(actual))
         elif event_type == "stream_delta":
-            self.full_response.append(event.get("delta", ""))
+            delta = event.get("delta", "")
+            if delta and self._block_boundary:
+                self._block_boundary = False
+                so_far = "".join(self.full_response)
+                if so_far.strip() and not so_far[-1].isspace() and not delta[0].isspace():
+                    delta = "\n\n" + delta
+            self.full_response.append(delta)
         elif event_type == "stream_reset":
             self.full_response = []
+            self._block_boundary = False
         elif event_type == "tool_use_start":
+            self._block_boundary = True
             self.tool_events.append({
                 "tool_name": event.get("tool_name", "unknown"),
                 "tool_id": event.get("tool_id", ""),
             })
         elif event_type == "tool_input":
+            self._block_boundary = True
             # Resolved input arrives after the stream, before execution.
             merge_tool_result_entry(
                 self.tool_results_map,
@@ -220,6 +258,7 @@ class StreamAccumulator:
                 tool_input=event.get("input") or {},
             )
         elif event_type == "tool_result":
+            self._block_boundary = True
             result_images = event.get("images") or []
             if result_images:
                 self.response_images.extend(result_images)
@@ -268,31 +307,7 @@ class StreamAccumulator:
 
 
 class DeltaCoalescer:
-    """Merges bursts of per-token delta events into batched frames.
-
-    Providers emit one ``stream_delta`` / ``thinking_delta`` event per token,
-    and every forwarded event costs a per-socket lock acquire plus a
-    ``ws.send_json`` (or a full ``broadcast()``) — hundreds to thousands of
-    websocket frames per reply. This buffers consecutive delta text and emits
-    ONE merged event (identical shape, concatenated ``delta`` field) when any
-    of these happens:
-
-      * ~48ms elapsed since the buffer opened (trailing timer flush — keeps
-        streaming visually identical while cutting frame count 10-20x),
-      * the buffered text exceeds ``max_chars``,
-      * an event of any other type (or a delta whose non-``delta`` fields
-        differ from the buffered ones) arrives — the buffer flushes FIRST,
-        then the new event is forwarded, so wire ordering exactly matches the
-        provider stream,
-      * the owner awaits ``flush()`` (stream end / teardown).
-
-    Only the ``delta`` string is concatenated; two delta events merge only
-    when every other field matches exactly, so per-chunk metadata is never
-    mixed across a merge. All sends happen under an internal lock, which keeps
-    the timer-driven flush strictly ordered against the feed path. ``send`` is
-    any async callable taking the event dict (e.g. ``StreamWebSocketBridge.send``
-    or ``connection_registry.broadcast``).
-    """
+    'Merges bursts of per-token delta events into batched frames.'
 
     _DELTA_TYPES = frozenset({"stream_delta", "thinking_delta", "autowake_delta"})
 
@@ -381,6 +396,7 @@ class StreamWebSocketBridge:
         # callable(incoming_msg) -> bool: True means the message was slipped
         # into the RUNNING turn and must not be queued as a separate one.
         self.inject_hook = None
+        self.stamp: dict[str, Any] | None = None
 
     async def send(self, data: dict[str, Any]) -> None:
         """Send to the websocket if it is still alive.
@@ -390,6 +406,8 @@ class StreamWebSocketBridge:
         """
         if not self.ws_alive:
             return
+        if self.stamp:
+            data = {**self.stamp, **data}
         from services.connection_registry import send_json_locked
         ok = await send_json_locked(self.ws, data)
         if not ok:

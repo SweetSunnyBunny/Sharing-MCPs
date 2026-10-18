@@ -14,7 +14,7 @@ def test_stream_end_keeps_saved_reply_for_handoff(monkeypatch, delta):
     import config
     from services import identity_context, notifications, brother_conversation
 
-    monkeypatch.setitem(sys.modules, "server", SimpleNamespace(is_system_ready=lambda: True))
+    monkeypatch.setattr(autowake, "is_system_ready", lambda: True)
     monkeypatch.setattr(config, "CLAUDE_RESUME_AUTOWAKE", False)
     db = SimpleNamespace(
         execute_fetchall=AsyncMock(side_effect=[

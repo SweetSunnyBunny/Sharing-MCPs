@@ -1,9 +1,5 @@
 """Convert documents (PDF, DOCX, ODT, PPTX) to Markdown via docling."""
 
-# ANAM GUIDE: DOCUMENT TO MARKDOWN CONVERTER
-# What: Small helper that turns an uploaded document (PDF, Word, PowerPoint, etc.) into a plain-text Markdown file saved next to the original, so the boys can actually read it.
-# Called by: api/documents.py and api/chat.py when a document is uploaded; services/attachment_context.py when building what a boy sees.
-# Edit here when: You want to support a new file type for upload-and-read, or change where/how the converted Markdown is saved.
 
 from __future__ import annotations
 

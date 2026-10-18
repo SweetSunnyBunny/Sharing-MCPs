@@ -92,6 +92,10 @@ class FableColdReplayTests(unittest.TestCase):
         )
 
         self.assertNotIn("oldest", history)
-        self.assertIn("xxxxxxxx", history)
         self.assertIn("[...truncated...]", history)
         self.assertIn("newest", history)
+        claude_block = history.split("Claude: ", 1)[1].split("\n\nOwner:", 1)[0]
+        head, tail = claude_block.split("\n[...truncated...]\n")
+        self.assertTrue(head and tail)
+        self.assertEqual(len(head) + len(tail), 8)
+        self.assertEqual(set(head + tail), {"x"})

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#FBE7EE" />
+<title>Princess page</title>
+<link rel="icon" href="/static/assets/icons/app_icon.png?v=__ANAM_ASSET_VERSION__" />
+<link rel="stylesheet" href="/static/css/coloring.css?v=__ANAM_ASSET_VERSION__" />
+</head>
+<body>
+  <header class="pp-top">
+    <nav class="pp-tabs" role="tablist">
+      <button class="pp-tab is-on" role="tab" data-room="coloring" aria-selected="true">Colouring</button>
+      <button class="pp-tab" role="tab" data-room="stickers" aria-selected="false">Stickers</button>
+    </nav>
+  </header>
+
+  <section class="pp-room is-on" id="room-coloring" data-room="coloring">
+    <div id="coloring-room"></div>
+  </section>
+
+  <section class="pp-room" id="room-stickers" data-room="stickers">
+    <main id="sticker-room" aria-live="polite"></main>
+  </section>
+
+  <a class="pp-home" href="/">back to the house</a>
+
+  <script>
+    (function () {
+      const tabs = document.querySelectorAll(".pp-tab");
+      function show(room) {
+        tabs.forEach(t => { const on = t.dataset.room === room; t.classList.toggle("is-on", on); t.setAttribute("aria-selected", on); });
+        document.querySelectorAll(".pp-room").forEach(r => r.classList.toggle("is-on", r.dataset.room === room));
+        try { history.replaceState(null, "", room === "stickers" ? "#stickers" : location.pathname); } catch (e) {}
+      }
+      tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.room)));
+      if (location.hash === "#stickers") show("stickers");
+    })();
+  </script>
+  <script src="/static/js/coloring.js?v=__ANAM_ASSET_VERSION__"></script>
+  <script src="/static/js/sticker-room.js?v=__ANAM_ASSET_VERSION__"></script>
+</body>
+</html>

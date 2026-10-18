@@ -164,8 +164,8 @@ def build_document_note(doc: dict) -> str:
                     f"[Owner shared a document: {original_name}]\n"
                     f"```\n{content}\n```"
                 )
-        except Exception:
-            pass
+        except Exception as exc:
+            log.debug("Inline read of %s failed; falling back to a note: %s", original_name, exc)
     # Check for docling-converted markdown companion (PDF, DOCX, ODT, etc.)
     companion = _try_inline_companion_markdown(doc_path, original_name)
     if companion:

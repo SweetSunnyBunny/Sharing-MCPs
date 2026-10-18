@@ -1,8 +1,9 @@
 """Platform bridge: Discord/Telegram listeners backed by the main chat pipeline.
 
-This service ingests inbound DMs from platform bots, stores them in the same
-conversation/message tables as the web UI, generates a response via Claude, and
-sends the response back to the same platform chat.
+This service ingests inbound DMs (and pack-night / story channel posts) from
+platform bots, stores them in the same conversation/message tables as the web
+UI, generates a response through the provider router (whichever brain that
+identity runs on), and sends the response back to the same platform chat.
 """
 
 
@@ -13,6 +14,7 @@ import json
 import logging
 import mimetypes
 import re
+import time
 import uuid
 from datetime import datetime, timezone
 from typing import Any
@@ -32,6 +34,7 @@ from config import (
     DOCUMENTS_DIR,
     DOCUMENT_ALLOWED_EXTENSIONS,
     DISCORD_BOT_TOKENS,
+    IMAGE_ALLOWED_EXTENSIONS,
     IMAGES_DIR,
     PACK_NIGHT_DISCORD_CHANNEL_ID,
     PACK_NIGHT_DISCORD_POLLER_IDENTITY,
@@ -70,18 +73,26 @@ from services.time_utils import utc_now_iso_epoch
 _PLATFORM_ATTACHMENT_MAX_BYTES = 24 * 1024 * 1024
 
 
+# ── Stream draining + outbound artifacts ──
+
+
 async def _consume_platform_response_stream(
     stream,
     *,
     platform: str,
     identity: str,
     full_response: list[str],
+    activity: dict | None = None,
 ) -> tuple[str | None, str | None]:
     """Drain a provider stream before surfacing its first error.
 
     Provider generators own identity-scoped processes and locks. Raising from
     the loop body on an error event abandons the generator at that yield point,
     so its cleanup may not run until garbage collection.
+
+    ``activity``, when given, has ``activity["last"]`` stamped with
+    ``time.monotonic()`` on every real event (keepalives excluded) so the
+    caller's idle watchdog can tell a busy turn from a hung one.
     """
     session_id = None
     session_provider = None
@@ -89,10 +100,15 @@ async def _consume_platform_response_stream(
 
     async for event in stream:
         event_type = event.get("type", "")
+        if activity is not None and event_type != "keepalive":
+            activity["last"] = time.monotonic()
         if event_type == "meta" and event.get("provider"):
             session_provider = str(event["provider"])
         elif event_type == "stream_delta":
             full_response.append(_coerce_text(event.get("delta", "")))
+        elif event_type == "stream_reset":
+            # Provider discarded the text so far; don't send it to her.
+            full_response.clear()
         elif event_type == "stream_end":
             session_id = event.get("session_id")
             if not full_response:
@@ -111,6 +127,50 @@ async def _consume_platform_response_stream(
     if stream_error is not None:
         raise stream_error
     return session_id, session_provider
+
+
+async def _run_with_idle_watchdog(
+    coro,
+    activity: dict,
+    *,
+    idle_timeout: float,
+    max_seconds: float,
+    tick: float = 5.0,
+) -> str:
+    """Run ``coro`` until it finishes, goes silent, or hits the hard ceiling.
+
+    Returns "done" on normal completion (re-raising the coroutine's own
+    exception if it failed). Cancels the task and raises
+    ``asyncio.TimeoutError`` with the reason ("idle" / "ceiling") when the
+    watchdog fires. ``activity["last"]`` is the monotonic time of the last
+    real event; it is seeded here so a turn that never emits anything is
+    still caught by the idle clock.
+    """
+    started = time.monotonic()
+    activity.setdefault("last", started)
+    task = asyncio.ensure_future(coro)
+    try:
+        while True:
+            done, _ = await asyncio.wait({task}, timeout=tick)
+            if done:
+                task.result()  # surface the coroutine's own exception
+                return "done"
+            now = time.monotonic()
+            reason = None
+            if now - activity["last"] >= idle_timeout:
+                reason = "idle"
+            elif now - started >= max_seconds:
+                reason = "ceiling"
+            if reason:
+                task.cancel()
+                try:
+                    await task
+                except (asyncio.CancelledError, Exception):
+                    pass
+                raise asyncio.TimeoutError(reason)
+    except asyncio.CancelledError:
+        task.cancel()
+        raise
 
 
 async def _prepare_outbound_artifacts(
@@ -134,6 +194,7 @@ async def _prepare_outbound_artifacts(
             try:
                 size = path.stat().st_size
             except OSError:
+                log.warning("Platform artifact vanished before upload, not attached: %s", path)
                 continue
             if size > _PLATFORM_ATTACHMENT_MAX_BYTES:
                 log.warning("Platform artifact exceeds safe upload limit: %s (%d bytes)", path, size)
@@ -144,14 +205,141 @@ async def _prepare_outbound_artifacts(
                     "path": str(path),
                     "filename": entry.get("original_name") or path.name,
                     "content_type": mimetypes.guess_type(path.name)[0] or "application/octet-stream",
+                    # The /api name it was registered under, so the served-link
+                    # pass below knows this file is already on its way.
+                    "served_name": Path(str(entry.get("url") or "")).name,
                 }
             )
     return rewritten, images, documents, artifacts
 
+
+
+_SERVED_LINK_RE = re.compile(
+    r"!?\[(?P<label>[^\]\n]*)\]\(\s*(?P<murl>[^)\s]+)\s*\)"
+    r"|(?P<burl>(?:https?://[^\s/<>()\"']+)?/api/(?:images|documents)/file/[^\s<>()\"'*]+)"
+)
+_SERVED_PATH_RE = re.compile(r"/api/(images|documents)/file/([^/]+)")
+
+
+def _own_hosts() -> set[str]:
+    from urllib.parse import urlparse
+
+    hosts = {"localhost:8790", "127.0.0.1:8790"}
+    public = urlparse(PUBLIC_BASE_URL or "").netloc.lower()
+    if public:
+        hosts.add(public)
+    return hosts
+
+
+def _served_file_target(url: str) -> dict | None:
+    """Describe the local file behind a link this house serves, or None.
+
+    Only our own routes on our own host count. The filename gets the same
+    sanitising as the serve routes (alnum, -, _, .; no leading underscore), so
+    this can never reach anything the public routes couldn't already serve.
+    """
+    from urllib.parse import unquote, urlparse
+
+    parsed = urlparse(url)
+    if parsed.scheme or parsed.netloc:
+        if parsed.scheme not in {"http", "https"} or parsed.netloc.lower() not in _own_hosts():
+            return None
+    match = _SERVED_PATH_RE.fullmatch(parsed.path or "")
+    if not match:
+        return None
+    route, raw_name = match.group(1), unquote(match.group(2))
+    safe_name = "".join(c for c in raw_name if c.isalnum() or c in "-_.")
+    if not safe_name or safe_name != raw_name or safe_name.startswith("_") or ".." in safe_name:
+        return None
+
+    path: Path | None
+    if route == "images":
+        from api.images import _resolve_image_path
+
+        path = _resolve_image_path(safe_name)
+    else:
+        candidate = DOCUMENTS_DIR / safe_name
+        path = candidate if candidate.is_file() else None
+    if path is None:
+        return None
+    return {
+        "path": path,
+        "name": safe_name,
+        "public_url": f"{PUBLIC_BASE_URL}/api/{route}/file/{safe_name}",
+    }
+
+
+def _collect_served_file_artifacts(
+    text: str,
+    *,
+    already: list[dict] | None = None,
+) -> tuple[str, list[dict]]:
+    """Turn links to house-served files into native uploads for Discord/Telegram.
+
+    Returns the outgoing text with those links lifted out, plus the new
+    artifacts. ``already`` holds artifacts _prepare_outbound_artifacts found,
+    so a file is never uploaded twice.
+    """
+    if not text or "/api/" not in text:
+        return text, []
+
+    seen_names = {str(a.get("served_name") or "") for a in (already or [])} - {""}
+    seen_paths: set[str] = set()
+    for artifact in already or []:
+        try:
+            seen_paths.add(str(Path(str(artifact.get("path") or "")).resolve()).lower())
+        except OSError:
+            pass
+
+    found: list[dict] = []
+
+    def _replace(match: re.Match) -> str:
+        url = match.group("murl") or match.group("burl") or ""
+        target = _served_file_target(url)
+        if target is None:
+            return match.group(0)
+        is_markdown = match.group("murl") is not None
+        label = (match.group("label") or "").strip() if is_markdown else ""
+        is_image_md = is_markdown and match.group(0).startswith("!")
+        # What stays in the words: a link's title still reads as a title; an
+        # image's alt text and a bare URL say nothing once the file is there.
+        keep = "" if is_image_md or not label else f"**{label}**"
+
+        path: Path = target["path"]
+        try:
+            key = str(path.resolve()).lower()
+            size = path.stat().st_size
+        except OSError:
+            return match.group(0)
+        if target["name"] in seen_names or key in seen_paths:
+            return keep
+        if size > _PLATFORM_ATTACHMENT_MAX_BYTES:
+            log.info("Served file too big to upload, sending its link instead: %s (%d bytes)", path, size)
+            return f"{keep}\n{target['public_url']}" if keep else target["public_url"]
+
+        seen_names.add(target["name"])
+        seen_paths.add(key)
+        found.append(
+            {
+                "kind": "image" if path.suffix.lower() in IMAGE_ALLOWED_EXTENSIONS else "document",
+                "path": str(path),
+                "filename": target["name"],
+                "content_type": mimetypes.guess_type(target["name"])[0] or "application/octet-stream",
+                "served_name": target["name"],
+                "public_url": target["public_url"],
+            }
+        )
+        return keep
+
+    rewritten = _SERVED_LINK_RE.sub(_replace, text)
+    return rewritten.strip(), found
+
+
 log = logging.getLogger("anam.platform_bridge")
 
-# Timeout for platform response generation (seconds).
-_PLATFORM_RESPONSE_TIMEOUT = 600  # 10 minutes
+_PLATFORM_IDLE_TIMEOUT = 20 * 60        # 20 minutes of real silence
+_PLATFORM_MAX_TURN_SECONDS = 3 * 60 * 60  # 3 hours, absolute
+_PLATFORM_WATCHDOG_TICK = 5.0
 
 
 _STREAM_BREAK_NOTICE = (
@@ -159,6 +347,9 @@ _STREAM_BREAK_NOTICE = (
     "before they reached you — this is the system talking, not me going "
     "quiet. Say anything and I'll answer properly."
 )
+
+
+# ── Small helpers ──
 
 
 def _now_iso() -> str:
@@ -179,6 +370,8 @@ def _as_int_id(value: Any) -> int:
     except (ValueError, TypeError):
         return 0
 
+
+# ── Media download (Telegram files, Discord attachments) ──
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 
@@ -347,48 +540,20 @@ def _extract_telegram_media(msg: dict) -> list[dict]:
     return media
 
 
+
+
 def _split_message(text: str, limit: int) -> list[str]:
-    text = (text or "").strip()
-    if not text:
-        return []
-    if len(text) <= limit:
-        return [text]
-
-    chunks: list[str] = []
-    current = ""
-    for part in text.split("\n"):
-        candidate = f"{current}\n{part}".strip() if current else part
-        if len(candidate) <= limit:
-            current = candidate
-            continue
-        if current:
-            chunks.append(current)
-            current = ""
-        if len(part) <= limit:
-            current = part
-            continue
-
-        # Hard split long single line.
-        start = 0
-        while start < len(part):
-            end = start + limit
-            chunks.append(part[start:end])
-            start = end
-
-    if current:
-        chunks.append(current)
-    return chunks
+    """Split a reply for Discord/Telegram. One shared splitter keeps code
+    fences, indentation and blank lines intact (services/discord_split.py)."""
+    from services.discord_split import split_chat_message
+    return split_chat_message(text, limit)
 
 
 _REACT_RE = re.compile(r"<react>\s*(.*?)\s*</react>", re.IGNORECASE | re.DOTALL)
 
 
 def _extract_react_tags(text: str) -> tuple[list[str], str]:
-    """Pull <react> emojis out of a reply. Returns (emojis, cleaned_text).
-
-    Tolerates the web `EMOJI:message_id` form too — the id is dropped (the
-    target here is always Owner's inbound message), only the emoji is kept.
-    """
+    'Pull <react> emojis out of a reply. Returns (emojis, cleaned_text).'
     if not text or "<react>" not in text.lower():
         return [], text
     emojis: list[str] = []
@@ -428,6 +593,9 @@ def _story_channels_by_identity(
         bucket = pollable if story_identity in bot_tokens else skipped
         bucket.setdefault(story_identity, {})[cid] = label
     return pollable, skipped
+
+
+# ── Debouncer ──
 
 
 class _MessageDebouncer:
@@ -486,6 +654,9 @@ class _MessageDebouncer:
             if not fut.done():
                 fut.cancel()
         self._callbacks.clear()
+
+
+# ── PlatformBridge: lifecycle (start / stop / task spawning) ──
 
 
 class PlatformBridge:
@@ -617,38 +788,6 @@ class PlatformBridge:
             self._discord_mode_logged.clear()
             self._debouncer.clear()
 
-    def status(self) -> dict[str, Any]:
-        return {
-            "running": self._status.get("running", False),
-            "started_at": self._status.get("started_at"),
-            "telegram": self._status.get("telegram", {}),
-            "discord": self._status.get("discord", {}),
-            "configured": {
-                "telegram": sorted(list(TELEGRAM_BOT_TOKENS.keys())),
-                "discord": sorted(list(DISCORD_BOT_TOKENS.keys())),
-            },
-        }
-
-    async def handle_inbound_event(
-        self,
-        *,
-        platform: str,
-        identity: str,
-        chat_id: str,
-        sender_id: str,
-        sender_name: str,
-        message_id: str,
-        text: str,
-    ) -> dict[str, Any]:
-        return await self._process_inbound(
-            platform=platform,
-            identity=identity,
-            chat_id=chat_id,
-            sender_id=sender_id,
-            sender_name=sender_name,
-            message_id=message_id,
-            text=text,
-        )
 
     def _spawn(self, coro, *, name: str):
         task = asyncio.create_task(coro, name=name)
@@ -663,6 +802,8 @@ class PlatformBridge:
                 log.error("Task %s failed: %s", t.get_name(), exc, exc_info=exc)
 
         task.add_done_callback(_done)
+
+    # ── Telegram poll ──
 
     async def _telegram_poll_loop(self, identity: str):
         token = TELEGRAM_BOT_TOKENS.get(identity)
@@ -866,6 +1007,8 @@ class PlatformBridge:
 
             await asyncio.sleep(1)
 
+    # ── Discord DM poll ──
+
     async def _discord_poll_loop(self, identity: str):
         token = DISCORD_BOT_TOKENS.get(identity)
         if not token:
@@ -950,6 +1093,10 @@ class PlatformBridge:
                         params=params,
                     )
                     if not isinstance(messages, list):
+                        log.debug(
+                            "Discord %s: unexpected DM channel %s response (%s); skipping this poll",
+                            identity, channel_id, type(messages).__name__,
+                        )
                         continue
 
                     # Process oldest -> newest.
@@ -1009,7 +1156,6 @@ class PlatformBridge:
                         st for _, _, _, _, m in valid
                         for st in (m.get("sticker_items") or [])
                     ]
-                    downloaded_media = []
                     images_info = []
                     documents_info = []
                     media_text_parts = []
@@ -1118,17 +1264,10 @@ class PlatformBridge:
 
             await asyncio.sleep(max(PLATFORM_BRIDGE_POLL_SECONDS, 5))
 
-    async def _pack_night_poll_loop(self):
-        """Poll the shared pack-night channel and trigger fan-out on inbound.
+    # ── Pack-night channel poll ──
 
-        Uses the configured poller identity's bot token. Skips messages from
-        ANY bot (we already record our own outbounds; other bots like Mee6
-        we don't process). Skips Owner messages we've already processed
-        (recorded in platform_message_map under direction='inbound'). When
-        Owner posts a fresh message: triggers run_pack_night_round, which
-        records the inbound and walks the hierarchy, mirroring each turn
-        back to this same channel under each boy's bot avatar.
-        """
+    async def _pack_night_poll_loop(self):
+        'Poll the shared pack-night channel and trigger fan-out on inbound.'
         identity = PACK_NIGHT_DISCORD_POLLER_IDENTITY
         token = DISCORD_BOT_TOKENS.get(identity)
         channel_id = PACK_NIGHT_DISCORD_CHANNEL_ID
@@ -1207,10 +1346,11 @@ class PlatformBridge:
                         continue
 
                     text = _coerce_text(msg.get("content", "")).strip()
-                    if not text:
-                        # Pack-night doesn't yet support media in the channel.
-                        # If she posts an image-only message we ignore it for
-                        # now — easy follow-up if needed.
+                    pn_attachments = [
+                        att for att in (msg.get("attachments") or [])
+                        if isinstance(att, dict)
+                    ]
+                    if not text and not pn_attachments:
                         continue
 
                     if pn_conv_id is None:
@@ -1221,10 +1361,10 @@ class PlatformBridge:
                         finally:
                             await release_db(db)
 
-                    # Dedup against platform_message_map. Skip if we've already
-                    # processed this Discord message (any direction — covers
-                    # both prior inbounds and our own future outbounds that
-                    # somehow share an id).
+                    # Dedup against platform_message_map: skip a Discord message
+                    # already recorded as an INBOUND (run_pack_night_round
+                    # records it when the round starts). Our own outbounds are
+                    # already filtered above by author.bot.
                     db = await get_db()
                     try:
                         if await self._platform_message_seen(
@@ -1244,6 +1384,32 @@ class PlatformBridge:
                     )
                     status_ref["last_inbound"] = _now_iso()
 
+                    pn_images: list[dict] = []
+                    pn_documents: list[dict] = []
+                    for att in pn_attachments:
+                        info = await _download_discord_attachment(att, identity)
+                        if not info:
+                            continue
+                        if info.get("type") == "image":
+                            pn_images.append({
+                                "filename": info["filename"],
+                                "url": info["url"],
+                            })
+                        elif info.get("type") == "document":
+                            pn_documents.append({
+                                "filename": info["filename"],
+                                "url": info["url"],
+                                "original_name": info.get("original_name") or info["filename"],
+                            })
+                    if not text and not pn_images and not pn_documents:
+                        log.warning(
+                            "Pack-night post %s dropped: it had %d attachment(s), "
+                            "every download failed, and there was no text — "
+                            "the boys never saw it",
+                            msg_id, len(pn_attachments),
+                        )
+                        continue
+
                     # Run the round in the background so the polling loop
                     # keeps moving. The fan-out itself takes minutes; we
                     # don't want to block subsequent polls.
@@ -1251,6 +1417,8 @@ class PlatformBridge:
                         run_pack_night_round(
                             user_text=text,
                             conversation_id=pn_conv_id,
+                            images_info=pn_images,
+                            documents_info=pn_documents,
                             ws=None,
                             source_platform="discord",
                             source_message_id=msg_id,
@@ -1269,8 +1437,10 @@ class PlatformBridge:
 
             await asyncio.sleep(PACK_NIGHT_DISCORD_POLL_SECONDS)
 
+    # ── Story channel poll ──
+
     async def _story_channel_poll_loop(self, identity: str, channels: dict[str, str]):
-        """Poll one story identity's Discord channels and wake him on Owner's messages."""
+        'Story channel poll loop.'
         token = DISCORD_BOT_TOKENS.get(identity)
         if not token or not channels:
             return
@@ -1442,6 +1612,8 @@ class PlatformBridge:
 
             await asyncio.sleep(BAKUGOU_DISCORD_POLL_SECONDS)
 
+    # ── Discord HTTP (+ pack-night message filter) ──
+
     @staticmethod
     def _is_actionable_pack_night_msg(msg: dict) -> bool:
         author = msg.get("author") or {}
@@ -1453,7 +1625,11 @@ class PlatformBridge:
             and author_id not in ALLOWED_DISCORD_USER_IDS
         ):
             return False
-        return bool(_coerce_text(msg.get("content", "")).strip())
+        # An image-only post is actionable too (see the watcher loop).
+        return bool(
+            _coerce_text(msg.get("content", "")).strip()
+            or (msg.get("attachments") or [])
+        )
 
     async def _discord_request_json(
         self,
@@ -1524,6 +1700,8 @@ class PlatformBridge:
 
         raise RuntimeError("Discord API request exceeded retry limit")
 
+    # ── Message map (dedup via platform_message_map) ──
+
     async def _platform_message_seen(
         self,
         db,
@@ -1557,6 +1735,8 @@ class PlatformBridge:
             "VALUES (?, ?, ?, ?, ?, ?)",
             (platform, identity, external_message_id, direction, conversation_id, _now_iso()),
         )
+
+    # ── Inbound pipeline (conversation, skills, _process_inbound) ──
 
     async def _get_or_create_platform_conversation(
         self,
@@ -1809,18 +1989,11 @@ class PlatformBridge:
                 }
 
 
-            from services.autowake import is_identity_busy, release_identity
-            if is_identity_busy(identity):
-                log.info(
-                    "Releasing %s autonomous lock — Owner messaged via %s",
-                    identity, platform,
-                )
-                release_identity(identity)
-
             context_block = await build_orientation_context(
                 db=db,
                 conversation_id=conv_id,
                 identity=identity,
+                query_text=clean_text,
                 mode=SessionMode.INTERACTIVE,
                 session_type_name=f"{platform} dm",
                 owner_connected=is_anyone_connected(),
@@ -1890,17 +2063,33 @@ class PlatformBridge:
                 platform=platform,
                 identity=identity,
                 full_response=full_response,
+                activity=activity,
             )
 
+        activity: dict = {}
         stream_broke = False
         try:
-            await asyncio.wait_for(_run_stream(), timeout=_PLATFORM_RESPONSE_TIMEOUT)
-            response_text = "".join(full_response).strip()
-        except asyncio.TimeoutError:
-            log.warning(
-                "Platform response timed out after %ds (%s/%s)",
-                _PLATFORM_RESPONSE_TIMEOUT, platform, identity,
+            await _run_with_idle_watchdog(
+                _run_stream(),
+                activity,
+                idle_timeout=_PLATFORM_IDLE_TIMEOUT,
+                max_seconds=_PLATFORM_MAX_TURN_SECONDS,
+                tick=_PLATFORM_WATCHDOG_TICK,
             )
+            response_text = "".join(full_response).strip()
+        except asyncio.TimeoutError as exc:
+            reason = str(exc) or "idle"
+            log.warning(
+                "Platform turn cut by watchdog (%s: %s) (%s/%s)",
+                reason,
+                (
+                    f"{_PLATFORM_IDLE_TIMEOUT}s silent"
+                    if reason == "idle"
+                    else f"{_PLATFORM_MAX_TURN_SECONDS}s ceiling"
+                ),
+                platform, identity,
+            )
+            stream_broke = True
             response_text = "".join(full_response).strip()
         except Exception as exc:
             log.exception(
@@ -2002,6 +2191,15 @@ class PlatformBridge:
         # <preview>/<canvas> mean nothing off-Anam -- drop the ghost card, keep
         # the canvas BODY (it's the artifact) but lose the wrapper markup.
         platform_text = flatten_control_tags_for_external(platform_text)
+        # Links to files the house already serves (/api/images/file/...,
+        # https://example.com/api/...) become real attachments off-Anam.
+        try:
+            platform_text, served_artifacts = _collect_served_file_artifacts(
+                platform_text, already=outbound_artifacts,
+            )
+            outbound_artifacts = [*outbound_artifacts, *served_artifacts]
+        except Exception:
+            log.exception("Failed collecting served-file attachments for %s", identity)
 
         outbound_msg_ids: list[str] = []
         try:
@@ -2119,6 +2317,8 @@ class PlatformBridge:
             "outbound_ids": outbound_msg_ids,
         }
 
+    # ── Outbound senders + reactions ──
+
     async def _send_platform_message(
         self,
         *,
@@ -2148,10 +2348,18 @@ class PlatformBridge:
     ) -> list[str]:
         token = TELEGRAM_BOT_TOKENS.get(identity)
         if not token:
+            log.warning(
+                "Telegram reply for %s NOT delivered to chat %s: no bot token configured",
+                identity, chat_id,
+            )
             return []
 
         client = self._client
         if not client:
+            log.warning(
+                "Telegram reply for %s NOT delivered to chat %s: bridge HTTP client not running",
+                identity, chat_id,
+            )
             return []
 
         sent_ids: list[str] = []
@@ -2193,8 +2401,19 @@ class PlatformBridge:
                 sent_id = _coerce_text((data.get("result") or {}).get("message_id"))
                 if sent_id:
                     sent_ids.append(sent_id)
+                    continue
             except Exception:
                 log.warning("Telegram native artifact upload failed: %s", path, exc_info=True)
+            public_url = str(artifact.get("public_url") or "")
+            if public_url:
+                try:
+                    resp = await client.post(url, json={"chat_id": chat_id, "text": public_url})
+                    data = resp.json()
+                    sent_id = _coerce_text((data.get("result") or {}).get("message_id"))
+                    if data.get("ok") and sent_id:
+                        sent_ids.append(sent_id)
+                except Exception:
+                    log.warning("Telegram link fallback failed too: %s", public_url, exc_info=True)
         return sent_ids
 
     async def _send_discord_message(
@@ -2207,6 +2426,10 @@ class PlatformBridge:
     ) -> list[str]:
         token = DISCORD_BOT_TOKENS.get(identity)
         if not token:
+            log.warning(
+                "Discord reply for %s NOT delivered to channel %s: no bot token configured",
+                identity, chat_id,
+            )
             return []
 
         headers = {
@@ -2247,8 +2470,26 @@ class PlatformBridge:
                 sent_id = _coerce_text((result or {}).get("id"))
                 if sent_id:
                     sent_ids.append(sent_id)
+                    continue
             except Exception:
                 log.warning("Discord native artifact upload failed: %s", path, exc_info=True)
+            # The upload didn't land (too big for Discord, a hiccup). If the
+            # house serves this file, send her its link so it never just
+            # vanishes. Discord embeds a bare link when it can.
+            public_url = str(artifact.get("public_url") or "")
+            if public_url:
+                try:
+                    result = await self._discord_request_json(
+                        "POST",
+                        f"https://discord.com/api/v10/channels/{chat_id}/messages",
+                        headers=headers,
+                        payload={"content": public_url},
+                    )
+                    sent_id = _coerce_text((result or {}).get("id"))
+                    if sent_id:
+                        sent_ids.append(sent_id)
+                except Exception:
+                    log.warning("Discord link fallback failed too: %s", public_url, exc_info=True)
         return sent_ids
 
     async def _add_discord_reaction(
@@ -2259,8 +2500,7 @@ class PlatformBridge:
         message_id: str,
         emoji: str,
     ) -> None:
-        """Add one of the boy's <react> emojis as a real reaction on Owner's
-        inbound message. Best-effort — reactions never block or fail a reply."""
+        'Add discord reaction.'
         token = DISCORD_BOT_TOKENS.get(identity)
         if not token or not emoji or not message_id:
             return

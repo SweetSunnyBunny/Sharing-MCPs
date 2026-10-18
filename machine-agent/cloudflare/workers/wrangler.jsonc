@@ -1,9 +1,9 @@
 ﻿{
-  "name": "filesystem-mcp",
+  "name": "obsidian-mcp",
   "main": "mcp-worker.js",
   "compatibility_date": "2025-01-01",
   "vars": {
-    "SERVER_NAME": "filesystem",
+    "SERVER_NAME": "obsidian",
     "MACHINE_AGENT_URL": "https://machine-agent.example.com"
   }
 }

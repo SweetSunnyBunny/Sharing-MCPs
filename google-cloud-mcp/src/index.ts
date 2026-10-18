@@ -57,10 +57,19 @@ function extractMcpPath(pathname: string): { isMcp: boolean; token: string | nul
   return { isMcp: false, token: null };
 }
 
+function safeEqual(a: string, b: string): boolean {
+  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 function checkAuth(request: Request, env: Env, pathToken?: string | null): boolean {
-  if (pathToken && pathToken === env.MCP_SECRET_PATH) return true;
+  const secret = env.MCP_SECRET_PATH;
+  if (!secret || secret.length < 8) return false;   // fail closed if unset (2026-09-28)
+  if (pathToken && safeEqual(pathToken, secret)) return true;
   const auth = request.headers.get("Authorization") || "";
-  return auth === `Bearer ${env.MCP_SECRET_PATH}` || auth === env.MCP_SECRET_PATH;
+  return safeEqual(auth, `Bearer ${secret}`) || safeEqual(auth, secret);
 }
 
 function parseAllowedTools(raw: string | undefined): string[] {

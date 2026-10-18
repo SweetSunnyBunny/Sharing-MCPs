@@ -70,7 +70,7 @@ def adapt(root: Path, projects: set[str]) -> None:
         text = re.sub(r"Voice: a pack name .*?Default: claude\.", "Voice: a configured voice label or raw ElevenLabs voice ID. Default: avery.", text)
         text = text.replace("the pack's available", "your configured").replace("Returns the audio inline.", "Returns an expiring hosted audio URL.")
         text = text.replace("inline base64 audio — keep clips short. Longer = hosted output (future).", "keep clips short; output is hosted in KV.")
-        text = text.replace("      const model = String(args.model_id", "      if (voiceId === 'YOUR-VOICE-ID') throw new Error('Configure a voice ID before generating speech.');\n      const model = String(args.model_id")
+        text = text.replace("  if (VOICES[key]) return { voiceId: VOICES[key].id, s: VOICES[key] };", "  if (VOICES[key]) {\n    if (VOICES[key].id === 'YOUR-VOICE-ID') throw new Error('Configure a voice ID before generating speech.');\n    return { voiceId: VOICES[key].id, s: VOICES[key] };\n  }")
         return text
     edit("elevenlabs-mcp", "src/index.ts", elevenlabs)
 
@@ -144,8 +144,12 @@ def adapt(root: Path, projects: set[str]) -> None:
         text = text.replace("is_lycanthrope", "is_lunar_sensitive")
         text = re.sub(r'(function normalizeIdentity\(value: unknown, fallback = ")[^"]+', r'\1default', text)
         text = re.sub(r'// The state-language ladders.*?(?=function classifySafeword)', '// Generic stage vocabulary. Unknown phrases request a full stop.\nconst SAFEWORD_GREEN = ["green"];\nconst SAFEWORD_YELLOW = ["yellow"];\n', text, flags=re.S)
-        text = re.sub(r'if \(SAFEWORD_GREEN.*?return "green";', 'if (SAFEWORD_GREEN.includes(p)) return "green";', text)
-        text = re.sub(r'if \(SAFEWORD_YELLOW.*?return "yellow";', 'if (SAFEWORD_YELLOW.includes(p)) return "yellow";', text)
+        text = re.sub(r'function classifySafeword\([^\n]*\n.*?\n\}', lambda _: '''function classifySafeword(identity: string, phrase: string): "green" | "yellow" | "red" {
+  const p = phrase.toLowerCase().replace(/[^\\p{L}\\p{N}\\s]/gu, " ").replace(/\\s+/g, " ").trim();
+  if (SAFEWORD_GREEN.includes(p)) return "green";
+  if (SAFEWORD_YELLOW.includes(p)) return "yellow";
+  return "red";
+}''', text, flags=re.S)
         text = re.sub(r'const phrase = normalizeText\(args.phrase\) \|\| "[^"]+";', 'const phrase = normalizeText(args.phrase) || "red";', text)
         text = re.sub(r'return `"\$\{phrase\}"[^\n]*Caution[^\n]*;', 'return `"${phrase}" — caution. Pause and check in; drive levels are unchanged.`;', text)
         text = re.sub(r'"The state-language ladder[^\n]+', '"Stage input: green logs an all-clear; yellow requests a pause and check-in; red, missing, or unknown phrases dampen drives to floor.",', text)
@@ -208,7 +212,7 @@ const TOUCH_KINDS: Record<string, { deltas: Record<string, number>; note: string
         text = re.sub(r'This is your anatomy chart\. Every lobe[^"\n]+', 'This chart groups the available memory tools by their purpose.', text)
         return text
     edit("mind-backend", "src/index.ts", configurable_mind)
-    edit("mind-backend", "src/anam-reader.ts", lambda t: re.sub(r"valid\.filter\(r=>\[[^\n]+\]\.includes\(r\.id\)\)", "valid", t))
+    edit("mind-backend", "src/anam-reader.ts", lambda t: re.sub(r"valid\.filter\(\s*r\s*=>\s*\[[^\n]+?\]\.includes\(r\.id\)\)", "valid", t))
     edit("mind-backend", "src/query-signals.ts", lambda t: t.replace("|river|quinn", ""))
     edit("mind-backend", "src/life-story.ts", lambda t: re.sub(r"evidence-backed, in the [^\"\n]+ way", "grounded in stored evidence", t))
     def test_script(text):

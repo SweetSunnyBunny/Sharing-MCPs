@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "watch": {
+      "command": "C:/MCP-Starter/Sharing-MCPs/watch-mcp/.venv/Scripts/python.exe",
+      "args": [
+        "C:/MCP-Starter/Sharing-MCPs/watch-mcp/server.py"
+      ],
+      "env": {
+        "ANAM_URL": "http://127.0.0.1:8790",
+        "ANAM_API_KEY": "YOUR-ANAM-KEY",
+        "ANAM_TIMEZONE": "UTC"
+      }
+    }
+  }
+}

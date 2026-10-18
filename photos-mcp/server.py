@@ -110,11 +110,20 @@ def _request_image(key: str, payload: dict, references: list) -> bytes:
         raise ValueError("Provider returned no valid PNG image") from exc
 
 
+def _subscription_road():
+    """Load the optional provider by path; importing never reads credentials."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("photos_subscription", ROOT / "subscription_road.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 @mcp.tool()
 def photo_generate(prompt: str, to: str = "chat", subject: str = "",
                    identity: str = "Image", size: str = "square", quality: str = "high",
-                   reference_paths: list[str] | None = None) -> str:
-    """Generate one image using your configured OpenAI API account (billable).
+                   reference_paths: list[str] | None = None, road: str = "api") -> str:
+    """Generate one image through the chosen account. road=api is billable; road=subscription uses your separate image login. No automatic fallback.
 
     to: chat, file, or an explicitly configured frame folder. size: square,
     landscape or portrait. quality: low, medium, high, xhigh, max or auto;
@@ -134,18 +143,32 @@ def photo_generate(prompt: str, to: str = "chat", subject: str = "",
         references = _reference_images(reference_paths or [])
         if out.exists():
             return "Refused: this identity/subject/date filename already exists. Inspect it or choose a new subject; no request was made."
+        if road not in {"api", "subscription"}:
+            raise ValueError("road must be api or subscription")
         key, model = _setting("OPENAI_API_KEY"), _setting("OPENAI_IMAGE_MODEL")
-        if not _configured(key) or not _configured(model):
+        if road == "api" and (not _configured(key) or not _configured(model)):
             return "Refused: set your own OPENAI_API_KEY and OPENAI_IMAGE_MODEL in the MCP process environment. See README.md."
         dest.mkdir(parents=True, exist_ok=True)
     except (OSError, ValueError) as exc:
         return f"Refused: {exc}"
     payload = {"model": model, "prompt": prompt, "size": SIZES[size],
                "quality": quality, "n": 1, "output_format": "png"}
-    if references and model != "gpt-image-2":
+    if references and model.startswith("gpt-image-1"):
         payload["input_fidelity"] = "high"
     try:
-        raw = _request_image(key, payload, references)
+        if road == "subscription":
+            provider = _subscription_road()
+            refs = [{"image_url": "data:" + item[1][2] + ";base64," + base64.b64encode(item[1][1]).decode("ascii")} for item in references]
+            try:
+                raw, info = provider.generate(prompt, SIZES[size], quality, refs or None)
+            except Exception:
+                return "Subscription image request unavailable. Check your separate image login and account access. It may have completed remotely; no API fallback or generation retry was attempted."
+            with Image.open(io.BytesIO(raw)) as image:
+                if image.format != "PNG":
+                    raise ValueError("Provider did not return a PNG")
+                image.verify()
+        else:
+            raw = _request_image(key, payload, references)
     except httpx.HTTPStatusError as exc:
         return f"Image provider refused (HTTP {exc.response.status_code}). Check your model, key, account access, request and usage limits. Not retried."
     except httpx.TimeoutException:

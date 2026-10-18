@@ -6,10 +6,6 @@ Runs every 60 seconds via APScheduler. For each due pulse:
 3. Marks the pulse as fired
 """
 
-# ANAM GUIDE: PULSE FIRING ENGINE
-# What: Every minute, checks which pulses (short recurring check-ins) are due and fires their action — a notification, a broadcast, or a mini autowake.
-# Called by: the scheduler set up in services/autowake.py (runs every 60 seconds).
-# Edit here when: changing what happens when a pulse fires or how its condition is checked. (Pulse definitions themselves live in services/pulse_service.py.)
 
 import logging
 
@@ -49,7 +45,8 @@ async def _evaluate_and_fire(pulse: dict):
         except ImportError:
             log.debug("trigger_engine not available for pulse condition evaluation")
         except Exception as e:
-            log.debug("Pulse %s condition eval failed: %s", pulse["name"], e)
+            # warning, not debug: a broken condition silently stops the pulse forever.
+            log.warning("Pulse %s condition eval failed (pulse skipped): %s", pulse["name"], e)
             return
 
     action_type = pulse.get("action_type", "notify")

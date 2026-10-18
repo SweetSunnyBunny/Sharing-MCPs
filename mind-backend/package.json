@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test:sketchbook": "node --test scripts/sketchbook.test.mjs",
     "test:cognition": "node --test scripts/cognition.test.mjs",
-    "test": "node --test scripts/anam-reader.test.mjs scripts/cognition.test.mjs scripts/sketchbook.test.mjs scripts/public-starter.test.mjs"
+    "test": "node --test scripts/anam-reader.test.mjs scripts/cognition.test.mjs scripts/sketchbook.test.mjs scripts/redolence.test.mjs scripts/public-starter.test.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250214.0",

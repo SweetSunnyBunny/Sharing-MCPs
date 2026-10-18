@@ -16,8 +16,15 @@ if (-not (Test-Path $python)) {
 & $python -m pip install --upgrade pip
 & $python -m pip install --no-build-isolation -e ".[dev]"
 
-if (-not (Test-Path ".env") -and (Test-Path ".env.example")) {
-    Copy-Item ".env.example" ".env"
+# The only tracked env template is .env.paths.example (machine path overrides).
+# Secrets have no template: config.py documents every variable in .env.
+if (-not (Test-Path ".env.paths.local") -and (Test-Path ".env.paths.example")) {
+    Copy-Item ".env.paths.example" ".env.paths.local"
+    Write-Host "Created .env.paths.local from .env.paths.example; edit the paths for this machine."
+}
+if (-not (Test-Path ".env")) {
+    New-Item -ItemType File ".env" | Out-Null
+    Write-Host "Created an empty .env; fill in keys by hand (config.py documents every variable)."
 }
 
 if (-not $ForceApiMode) {

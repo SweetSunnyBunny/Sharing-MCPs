@@ -20,8 +20,8 @@ android {
         applicationId = "org.example.anam.companion"
         minSdk = 26
         targetSdk = 34
-        versionCode = 5
-        versionName = "0.5-watch-only"
+        versionCode = 6
+        versionName = "0.6-pack-line"
 
         buildConfigField("String", "ANAM_API_KEY", javaString(anamApiKey))
         buildConfigField("String", "ANAM_BASE_URL", javaString(anamBaseUrl))

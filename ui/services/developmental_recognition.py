@@ -5,9 +5,13 @@ retrieval and prompt admission so a typed classifier (Jev or another judge)
 can be evaluated without silently becoming a second store or a new source of
 truth.
 
-There is deliberately no network client here.  A provider adapter must be a
-separate, explicit layer with its own privacy review and configuration.
+The gate itself (evaluate_packet / apply_recognition) is provider-neutral and
+never touches the network.  The one network adapter, TypeSafeJevProvider
+below, POSTs to api.typesafe.ai; it refuses non-synthetic input unless
+explicitly constructed with allow_private_input=True, and nothing in the app
+constructs it yet (tested-but-unwired experiment).
 """
+
 
 from __future__ import annotations
 
@@ -127,6 +131,9 @@ class FixtureRecognitionProvider:
 
 class TypeSafeJevProvider:
     """Typed Jev adapter with a hard synthetic-only default.
+
+    TESTED-BUT-UNWIRED EXPERIMENT: only tests construct this; qualia_context's
+    ``_recognition_provider`` is None in production.
 
     TypeSafe's privacy policy says Input is not used to train or fine-tune
     models, but it is still processed and retained under their service terms.

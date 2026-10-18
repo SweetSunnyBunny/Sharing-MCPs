@@ -1,9 +1,5 @@
 """Read-only process diagnostics for logs and health endpoints."""
 
-# ANAM GUIDE: SERVER HEALTH SNAPSHOT
-# What: Takes a quick reading of the running server — memory used, uptime, thread count — for logs and the health/diagnostics endpoints.
-# Called by: core/lifespan.py (periodic logging) and server.py (health endpoint).
-# Edit here when: adding another number to the health readout.
 
 from __future__ import annotations
 

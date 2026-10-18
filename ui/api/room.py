@@ -1,8 +1,10 @@
-"""REST: Room presence — where Owner is in her own house, fed by NFC doorframe tags."""
+'Application module.'
 
 
 import asyncio
+import html
 import json
+import re
 import logging
 import threading
 from datetime import datetime, timezone
@@ -29,6 +31,11 @@ _LATEST_FILE = _DATA_DIR / "room_latest.json"
 _STALE_AFTER_SECONDS = 3 * 60 * 60
 
 _write_lock = threading.Lock()
+
+# The ONLY slugs the public /tap/ route accepts. Real tags: nest, bathroom, office, kitchen,
+# dining_room (data/room_trail.jsonl + data/room_actions.json keys). Anything else is 404 and
+# is never written anywhere — the internet can't put words on her context card.
+_TAP_SLUG_RE = re.compile(r"[a-z0-9_-]{1,64}")
 
 
 class RoomTap(BaseModel):
@@ -133,11 +140,14 @@ async def _update_context_card_room(room: str) -> bool:
 
 @router.get("/tap/{room}", response_class=HTMLResponse)
 async def tap_room(room: str):
-    """The NO-APP path: a doorframe tag written as a plain URL."""
-    slug = (room or "").strip()[:64] or "unknown"
+    'The NO-APP path: a doorframe tag written as a plain URL.'
+    slug = (room or "").strip().lower()
+    if not _TAP_SLUG_RE.fullmatch(slug):
+        # Public route: reject rather than record. Returns 404 so a probe learns nothing.
+        return HTMLResponse("Not found", status_code=404)
     await record_room(RoomTap(room=slug, source="nfc-url"))
     label = slug.replace("-", " ").replace("_", " ")
-    safe = label.encode("ascii", "xmlcharrefreplace").decode()
+    safe = html.escape(label)
     return HTMLResponse(
         "<!doctype html><meta charset=utf-8>"
         "<meta name=viewport content='width=device-width,initial-scale=1'>"

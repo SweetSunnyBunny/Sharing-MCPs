@@ -7,6 +7,14 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!-- The Pack line (2026-10-17): send and catch texts on the pack's own SIM ONLY.
+         PackSmsReceiver drops anything that arrives on Owner's own line unread. -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+
     <application
         android:allowBackup="true"
         android:icon="@android:mipmap/sym_def_app_icon"
@@ -25,6 +33,19 @@
 
                 <receiver
             android:name=".ReplyReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".PackSmsReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".PackSmsSentReceiver"
             android:exported="false" />
 
         <receiver
