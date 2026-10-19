@@ -1,0 +1,138 @@
+{
+  "gathers_per_day": 6,
+  "grounds": {
+    "the wood floor": [
+      "blackberries",
+      "hazelnuts",
+      "sloes",
+      "wood sorrel",
+      "chanterelles",
+      "elderflower",
+      "wild garlic",
+      "rosehips",
+      "a good stick",
+      "a grey feather"
+    ],
+    "the hedgerow": [
+      "blackberries",
+      "sloes",
+      "rosehips",
+      "elderflower",
+      "hazelnuts",
+      "a good stick"
+    ]
+  },
+  "finds": {
+    "blackberries": {
+      "weight": 10,
+      "when": "any",
+      "months": [
+        8,
+        9,
+        10
+      ],
+      "yields": "berries",
+      "colour": "#3d2247",
+      "line": "thumb stained purple before the third one is in the basket"
+    },
+    "hazelnuts": {
+      "weight": 8,
+      "when": "any",
+      "months": [
+        9,
+        10,
+        11
+      ],
+      "yields": "nuts",
+      "colour": "#7a5a33",
+      "line": "still in their green cups, and the squirrels have already had the best of them"
+    },
+    "sloes": {
+      "weight": 6,
+      "when": "any",
+      "months": [
+        10,
+        11
+      ],
+      "yields": "berries",
+      "colour": "#1f2b4a",
+      "line": "bitter as a held grudge until the first frost has had them"
+    },
+    "wood sorrel": {
+      "weight": 9,
+      "when": "day",
+      "months": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "yields": "herbs",
+      "colour": "#4e7c46",
+      "line": "sharp and green on the tongue, growing where the light comes through"
+    },
+    "chanterelles": {
+      "weight": 4,
+      "when": "dawn",
+      "months": [
+        8,
+        9,
+        10
+      ],
+      "yields": "mushrooms",
+      "colour": "#c98b2e",
+      "line": "apricot-coloured and smelling of it, tucked under the leaf litter"
+    },
+    "elderflower": {
+      "weight": 6,
+      "when": "day",
+      "months": [
+        5,
+        6
+      ],
+      "yields": "flowers",
+      "colour": "#e8e4d2",
+      "line": "creamy plates of it, heavy with that heady summer smell"
+    },
+    "wild garlic": {
+      "weight": 7,
+      "when": "any",
+      "months": [
+        3,
+        4,
+        5
+      ],
+      "yields": "herbs",
+      "colour": "#5f8a4b",
+      "line": "you smell the patch a good ten strides before you see it"
+    },
+    "rosehips": {
+      "weight": 7,
+      "when": "any",
+      "months": [
+        9,
+        10,
+        11
+      ],
+      "yields": "fruit",
+      "colour": "#a83226",
+      "line": "hard scarlet beads left over from a summer of roses"
+    },
+    "a good stick": {
+      "weight": 5,
+      "when": "any",
+      "yields": "wood",
+      "colour": "#6b5238",
+      "line": "hazel, straight, about the right heft - no reason needed"
+    },
+    "a grey feather": {
+      "weight": 3,
+      "when": "any",
+      "yields": "feather",
+      "colour": "#9aa3a8",
+      "line": "heron, most likely. Blair will want to see it."
+    }
+  }
+}

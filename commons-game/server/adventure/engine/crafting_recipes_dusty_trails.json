@@ -1,0 +1,271 @@
+{
+  "arrows_bundle": {
+    "name": "Arrows (20)",
+    "type": "ammunition",
+    "world": "dusty_trails",
+    "description": "A bundle of hunting arrows, crafted from arrowheads and feathers.",
+    "materials": {
+      "arrowheads": 2,
+      "Hawk Feathers": 2,
+      "firewood": 1
+    },
+    "produces": 20,
+    "benefit": {
+      "type": "consumable",
+      "description": "Ammunition for bows"
+    }
+  },
+
+  "cured_leather": {
+    "name": "Cured Leather",
+    "type": "material",
+    "world": "dusty_trails",
+    "description": "Properly tanned leather, ready for crafting.",
+    "materials": {
+      "Rabbit Pelt": 3,
+      "salt": 1
+    },
+    "produces": 1,
+    "benefit": {
+      "type": "crafting_material",
+      "description": "Used for crafting leather goods"
+    }
+  },
+
+  "fine_leather": {
+    "name": "Fine Leather",
+    "type": "material",
+    "world": "dusty_trails",
+    "description": "High-quality leather from larger game.",
+    "materials": {
+      "Pronghorn Hide": 1,
+      "salt": 2
+    },
+    "produces": 2,
+    "benefit": {
+      "type": "crafting_material",
+      "description": "Premium leather for quality goods"
+    }
+  },
+
+  "bison_leather": {
+    "name": "Bison Leather",
+    "type": "material",
+    "world": "dusty_trails",
+    "description": "Thick, durable leather from bison hide.",
+    "materials": {
+      "Bison Hide": 1,
+      "salt": 3
+    },
+    "produces": 3,
+    "benefit": {
+      "type": "crafting_material",
+      "description": "Strongest leather available"
+    }
+  },
+
+  "antivenom": {
+    "name": "Antivenom",
+    "type": "medicine",
+    "world": "dusty_trails",
+    "description": "A life-saving remedy made from snake venom.",
+    "materials": {
+      "Snake Venom": 1,
+      "wild herbs": 2,
+      "Whiskey (Medicinal)": 1
+    },
+    "produces": 2,
+    "benefit": {
+      "type": "healing",
+      "value": "full",
+      "description": "Cures snake bite poison completely"
+    }
+  },
+
+  "healing_poultice": {
+    "name": "Healing Poultice",
+    "type": "medicine",
+    "world": "dusty_trails",
+    "description": "A frontier remedy for wounds and ailments.",
+    "materials": {
+      "sage": 2,
+      "wild herbs": 2,
+      "Bandages": 1
+    },
+    "produces": 2,
+    "benefit": {
+      "type": "healing",
+      "value": 10,
+      "description": "Restores 10 HP"
+    }
+  },
+
+  "trail_rations_bulk": {
+    "name": "Trail Rations (5 days)",
+    "type": "food",
+    "world": "dusty_trails",
+    "description": "Preserved food for long journeys.",
+    "materials": {
+      "Rabbit Meat": 2,
+      "salt": 1,
+      "cactus fruit": 2
+    },
+    "produces": 5,
+    "benefit": {
+      "type": "consumable",
+      "description": "5 days of travel rations"
+    }
+  },
+
+  "premium_jerky": {
+    "name": "Premium Jerky",
+    "type": "food",
+    "world": "dusty_trails",
+    "description": "High-quality dried meat that lasts for weeks.",
+    "materials": {
+      "Pronghorn Meat": 2,
+      "salt": 2,
+      "sage": 1
+    },
+    "produces": 5,
+    "benefit": {
+      "type": "consumable",
+      "description": "Restores stamina, long shelf life"
+    }
+  },
+
+  "bison_feast": {
+    "name": "Bison Feast",
+    "type": "food",
+    "world": "dusty_trails",
+    "description": "A massive meal fit for a celebration.",
+    "materials": {
+      "Bison Meat": 1,
+      "wild herbs": 2,
+      "Coffee (1lb)": 1
+    },
+    "produces": 1,
+    "benefit": {
+      "type": "buff",
+      "value": 2,
+      "description": "+2 to all rolls for 1 hour"
+    }
+  },
+
+  "horn_trophy": {
+    "name": "Mounted Horn Trophy",
+    "type": "decoration",
+    "world": "dusty_trails",
+    "description": "A mounted set of horns, proof of a great hunt.",
+    "materials": {
+      "Bison Horns": 1,
+      "firewood": 2
+    },
+    "produces": 1,
+    "benefit": {
+      "type": "prestige",
+      "description": "A trophy to display your hunting prowess"
+    }
+  },
+
+  "wolf_pelt_cloak": {
+    "name": "Wolf Pelt Cloak",
+    "type": "armor",
+    "world": "dusty_trails",
+    "description": "A warm cloak made from wolf pelts.",
+    "materials": {
+      "Wolf Pelt": 2,
+      "Cured Leather": 1
+    },
+    "produces": 1,
+    "benefit": {
+      "type": "defense",
+      "value": 1,
+      "description": "+1 AC, protection from cold"
+    }
+  },
+
+  "snakeskin_boots": {
+    "name": "Snakeskin Boots",
+    "type": "armor",
+    "world": "dusty_trails",
+    "description": "Stylish boots made from rattlesnake skin.",
+    "materials": {
+      "Rattlesnake Skin": 3,
+      "Cured Leather": 1
+    },
+    "produces": 1,
+    "benefit": {
+      "type": "agility",
+      "value": 1,
+      "description": "+1 to stealth and agility rolls"
+    }
+  },
+
+  "dynamite_bundle": {
+    "name": "Dynamite Bundle",
+    "type": "explosive",
+    "world": "dusty_trails",
+    "description": "A bundle of dynamite sticks, handle with care!",
+    "materials": {
+      "dynamite": 3
+    },
+    "produces": 1,
+    "benefit": {
+      "type": "damage",
+      "value": 20,
+      "description": "Massive area damage, can clear obstacles"
+    }
+  },
+
+  "silver_bullet": {
+    "name": "Silver Bullets (6)",
+    "type": "ammunition",
+    "world": "dusty_trails",
+    "description": "Bullets made with silver ore. For when you need something special.",
+    "materials": {
+      "silver ore": 2,
+      "coal": 1
+    },
+    "produces": 6,
+    "benefit": {
+      "type": "damage",
+      "value": 2,
+      "description": "+2 damage, effective against supernatural"
+    }
+  },
+
+  "copper_jewelry": {
+    "name": "Copper Trinket",
+    "type": "accessory",
+    "world": "dusty_trails",
+    "description": "A simple piece of frontier jewelry.",
+    "materials": {
+      "copper ore": 3,
+      "coal": 1
+    },
+    "produces": 1,
+    "benefit": {
+      "type": "trade",
+      "value": 15,
+      "description": "Worth $15 to traders"
+    }
+  },
+
+  "gold_nugget_ring": {
+    "name": "Gold Ring",
+    "type": "accessory",
+    "world": "dusty_trails",
+    "description": "A valuable gold ring.",
+    "materials": {
+      "gold nuggets": 3,
+      "coal": 2
+    },
+    "produces": 1,
+    "benefit": {
+      "type": "trade",
+      "value": 50,
+      "description": "Worth $50 to traders, or a fine gift"
+    }
+  }
+}

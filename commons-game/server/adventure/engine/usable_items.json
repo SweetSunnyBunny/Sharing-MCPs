@@ -1,0 +1,507 @@
+{
+  "usable_items": {
+    "healing": {
+      "Lesser Healing Potion": {
+        "effect": "heal",
+        "value": 25,
+        "description": "Restores 25 HP",
+        "flavor": "The potion glows faintly as you drink it. Warmth spreads through your body."
+      },
+      "Healing Potion": {
+        "effect": "heal",
+        "value": 50,
+        "description": "Restores 50 HP",
+        "flavor": "A rush of energy flows through you as the potion takes effect."
+      },
+      "Health Potion": {
+        "effect": "heal",
+        "value": 30,
+        "description": "Restores 30 HP",
+        "flavor": "The bitter liquid works quickly, mending your wounds."
+      },
+      "Healing Salve": {
+        "effect": "heal",
+        "value": 15,
+        "description": "Restores 15 HP when applied",
+        "flavor": "You apply the herbal salve. It stings at first, then soothes."
+      },
+      "Berry Tonic": {
+        "effect": "heal",
+        "value": 15,
+        "description": "Restores 15 HP",
+        "flavor": "Sweet and refreshing! The berry tonic revitalizes you."
+      },
+      "Antitoxin": {
+        "effect": "cure_poison",
+        "value": 1,
+        "description": "Cures poison effects",
+        "flavor": "The antitoxin burns going down, but you feel the poison neutralizing."
+      },
+      "Berry Antidote": {
+        "effect": "cure_poison_heal",
+        "value": 10,
+        "description": "Cures poison and restores 10 HP",
+        "flavor": "The sweet antidote cleanses your system and restores some vitality."
+      },
+      "Potion of Minor Healing": {
+        "effect": "heal",
+        "value": 20,
+        "description": "Restores 20 HP",
+        "flavor": "A soft rosy glow and a warm taste of cinnamon. Elowen's handiwork."
+      },
+      "Elixir of Focus": {
+        "effect": "buff",
+        "buff": "focus",
+        "buff_value": 3,
+        "duration": 60,
+        "description": "+3 to mental/magic rolls for 1 hour",
+        "flavor": "Your mind clears like fog lifting from a valley. Every thought is crisp and sharp."
+      },
+      "Potion of Invisibility (Short)": {
+        "effect": "buff",
+        "buff": "invisibility",
+        "buff_value": 1,
+        "duration": 1,
+        "description": "Invisible for 30 seconds",
+        "flavor": "You watch your hands fade from view... then your arms... then everything. Quite unsettling, actually."
+      },
+      "Greater Healing Potion": {
+        "effect": "heal",
+        "value": 75,
+        "description": "Restores 75 HP",
+        "flavor": "The potion blazes with healing light as it restores your strength. Victor's ranger contacts know their craft."
+      }
+    },
+    "food": {
+      "Hearty Stew": {
+        "effect": "heal_buff",
+        "heal": 20,
+        "buff": "all_rolls",
+        "buff_value": 1,
+        "duration": 60,
+        "description": "Restores 20 HP, +1 to all rolls for 1 hour",
+        "flavor": "The warm stew fills your belly and lifts your spirits."
+      },
+      "Hearty Rabbit Stew": {
+        "effect": "heal_buff",
+        "heal": 15,
+        "buff": "all_rolls",
+        "buff_value": 1,
+        "duration": 60,
+        "description": "Restores 15 HP, +1 to all rolls for 1 hour",
+        "flavor": "Rich and savory! The rabbit stew warms you from the inside."
+      },
+      "Roasted Chicken": {
+        "effect": "heal",
+        "value": 25,
+        "description": "Restores 25 HP",
+        "flavor": "Perfectly roasted! The tender meat restores your strength."
+      },
+      "Shepherd's Pie": {
+        "effect": "heal",
+        "value": 20,
+        "description": "Restores 20 HP",
+        "flavor": "Comfort food at its finest. You feel reinvigorated."
+      },
+      "Fish and Chips": {
+        "effect": "heal",
+        "value": 18,
+        "description": "Restores 18 HP",
+        "flavor": "Crispy and delicious! A satisfying meal."
+      },
+      "Full Breakfast": {
+        "effect": "heal_buff",
+        "heal": 15,
+        "buff": "morning_energy",
+        "buff_value": 2,
+        "duration": 120,
+        "description": "Restores 15 HP, +2 to gathering for 2 hours",
+        "flavor": "A hearty breakfast to start the day right!"
+      },
+      "Venison Roast": {
+        "effect": "buff",
+        "buff": "strength",
+        "buff_value": 3,
+        "duration": 120,
+        "description": "+3 to Strength rolls for 2 hours",
+        "flavor": "The rich venison fills you with vigor and strength."
+      },
+      "Apple Pie": {
+        "effect": "heal_buff",
+        "heal": 10,
+        "buff": "morale",
+        "buff_value": 1,
+        "duration": 30,
+        "description": "Restores 10 HP, +1 morale for 30 min",
+        "flavor": "Sweet and warm! The pie lifts your spirits."
+      },
+      "Apple Tart": {
+        "effect": "heal",
+        "value": 8,
+        "description": "Restores 8 HP",
+        "flavor": "A delightful treat that refreshes you."
+      },
+      "Meat Pie": {
+        "effect": "heal",
+        "value": 12,
+        "description": "Restores 12 HP",
+        "flavor": "Savory and filling! Just what you needed."
+      },
+      "Bread and Cheese": {
+        "effect": "heal",
+        "value": 8,
+        "description": "Restores 8 HP",
+        "flavor": "Simple but satisfying. A classic combination."
+      },
+      "Honeycakes": {
+        "effect": "heal",
+        "value": 6,
+        "description": "Restores 6 HP",
+        "flavor": "Sweet honey drips down as you enjoy the treat."
+      },
+      "Bowl of Soup": {
+        "effect": "heal",
+        "value": 8,
+        "description": "Restores 8 HP",
+        "flavor": "The warm soup soothes and comforts you."
+      },
+      "Mushroom Soup": {
+        "effect": "heal_buff",
+        "heal": 10,
+        "buff": "gathering",
+        "buff_value": 1,
+        "duration": 60,
+        "description": "Restores 10 HP, +1 to gathering for 1 hour",
+        "flavor": "Earthy and delicious! You feel attuned to the forest."
+      },
+      "Dried Meat": {
+        "effect": "heal",
+        "value": 5,
+        "description": "Restores 5 HP",
+        "flavor": "Tough but nourishing. Trail food at its finest."
+      },
+      "Dried Venison": {
+        "effect": "heal",
+        "value": 8,
+        "description": "Restores 8 HP",
+        "flavor": "The preserved venison restores some energy."
+      },
+      "Smoked Boar Meat": {
+        "effect": "heal",
+        "value": 12,
+        "description": "Restores 12 HP",
+        "flavor": "Rich and smoky! Quite satisfying."
+      },
+      "Trail Rations": {
+        "effect": "heal",
+        "value": 10,
+        "description": "Restores 10 HP",
+        "flavor": "Not gourmet, but it keeps you going."
+      },
+      "Dried Fruit and Nuts": {
+        "effect": "heal",
+        "value": 5,
+        "description": "Restores 5 HP",
+        "flavor": "A light snack that takes the edge off your hunger."
+      },
+      "Roasted Boar": {
+        "effect": "heal_buff",
+        "heal": 30,
+        "buff": "strength",
+        "buff_value": 2,
+        "duration": 60,
+        "description": "Restores 30 HP, +2 Strength for 1 hour",
+        "flavor": "A feast fit for a warrior! You feel incredibly powerful."
+      }
+    },
+    "drinks": {
+      "Standard Ale": {
+        "effect": "buff",
+        "buff": "social",
+        "buff_value": 1,
+        "duration": 30,
+        "description": "+1 to social rolls for 30 min",
+        "flavor": "Ahh, refreshing! The ale loosens you up."
+      },
+      "Bran's House Ale": {
+        "effect": "buff",
+        "buff": "social",
+        "buff_value": 2,
+        "duration": 45,
+        "description": "+2 to social rolls for 45 min",
+        "flavor": "Smooth and rich! Bran's finest work."
+      },
+      "Dark Ale": {
+        "effect": "buff",
+        "buff": "courage",
+        "buff_value": 1,
+        "duration": 30,
+        "description": "+1 to courage/fear saves for 30 min",
+        "flavor": "Bold and strong! Liquid courage indeed."
+      },
+      "Apple Cider": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 3,
+        "duration": 30,
+        "description": "+3 to taming rolls for 30 min",
+        "flavor": "Sweet and crisp! The natural sweetness makes animals trust you more."
+      },
+      "Mulled Wine": {
+        "effect": "heal_buff",
+        "heal": 5,
+        "buff": "warmth",
+        "buff_value": 1,
+        "duration": 60,
+        "description": "Restores 5 HP, resistance to cold for 1 hour",
+        "flavor": "Warm spices fill your senses. The chill melts away."
+      },
+      "Fine Wine": {
+        "effect": "buff",
+        "buff": "social",
+        "buff_value": 3,
+        "duration": 60,
+        "description": "+3 to social rolls for 1 hour",
+        "flavor": "Exquisite! You feel sophisticated and charming."
+      },
+      "Milk": {
+        "effect": "heal",
+        "value": 2,
+        "description": "Restores 2 HP",
+        "flavor": "Fresh and wholesome. Simple but good."
+      },
+      "Water": {
+        "effect": "refresh",
+        "value": 1,
+        "description": "Quenches thirst",
+        "flavor": "Clean and refreshing. Essential for survival."
+      }
+    },
+    "potions": {
+      "Stamina Tonic": {
+        "effect": "cooldown_reduction",
+        "value": 50,
+        "duration": 30,
+        "description": "Reduces all cooldowns by 50% for 30 min",
+        "flavor": "Energy surges through you! You feel ready for anything."
+      },
+      "Forest Brew": {
+        "effect": "buff",
+        "buff": "gathering",
+        "buff_value": 2,
+        "duration": 60,
+        "description": "+2 to gathering rolls for 1 hour",
+        "flavor": "The magical brew heightens your senses to the forest."
+      }
+    },
+    "ranger_supplies": {
+      "Tracking Map": {
+        "effect": "buff",
+        "buff": "tracking",
+        "buff_value": 3,
+        "duration": 60,
+        "description": "+3 to tracking and hunting rolls for 1 hour",
+        "flavor": "Victor's hand-drawn map marks trails, dens, and animal signs. Your prey won't escape."
+      },
+      "Healing Herbs": {
+        "effect": "heal",
+        "value": 8,
+        "description": "Restores 8 HP when applied",
+        "flavor": "You apply the fresh herbs to your wounds. The natural remedy eases the pain."
+      }
+    },
+    "special": {
+      "Lucky Coin": {
+        "effect": "luck",
+        "value": 1,
+        "duration": 60,
+        "uses": 3,
+        "description": "Reroll one failed roll (3 uses, lasts 1 hour)",
+        "flavor": "The coin glints mysteriously. Fortune favors you today."
+      },
+      "Bundle of Torches": {
+        "effect": "light",
+        "value": 5,
+        "description": "Provides light in dark areas (5 uses)",
+        "flavor": "You light a torch. Shadows flee from its warm glow."
+      },
+      "Sparkbeam Scroll": {
+        "effect": "combat_buff",
+        "buff": "sparkbeam",
+        "buff_value": 15,
+        "duration": 1,
+        "description": "+15 damage on your next hunt",
+        "flavor": "You read the fey incantation aloud. Starlight gathers around your weapon, ready to strike!"
+      },
+      "Fey Blessing": {
+        "effect": "daily_buff",
+        "buff": "fey_gathering",
+        "buff_value": 2,
+        "duration": 1440,
+        "daily_use": true,
+        "description": "+2 gathering bonus and chance for rare fey items (once per day)",
+        "flavor": "You invoke the fey blessing. Nature shimmers around you, eager to share its bounty."
+      },
+      "Animal Treats": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 2,
+        "duration": 30,
+        "description": "+2 to taming rolls for 30 min",
+        "flavor": "You pull out some tasty treats. Nearby animals perk up with interest..."
+      },
+      "Beast Whistle": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 5,
+        "duration": 5,
+        "description": "+5 to your next taming attempt (5 min)",
+        "flavor": "You blow the whistle. It makes no sound you can hear, but animals seem drawn to you."
+      },
+      "Calming Incense": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 4,
+        "duration": 15,
+        "description": "+4 to taming rolls for 15 min - soothes wild creatures",
+        "flavor": "Sweet smoke curls through the air. Wild creatures seem less skittish, more curious."
+      },
+      "Beastmaster's Charm": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 3,
+        "duration": 60,
+        "description": "+3 to taming rolls for 1 hour",
+        "flavor": "The charm glows warmly. You feel a deep connection to the natural world."
+      }
+    },
+    "taming": {
+      "Raw Meat": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 3,
+        "duration": 10,
+        "description": "+3 to taming carnivores for 10 min",
+        "flavor": "You hold out the raw meat. Predators eye you with hungry interest..."
+      },
+      "Honey Cake": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 3,
+        "duration": 10,
+        "description": "+3 to taming bears and small critters for 10 min",
+        "flavor": "The sweet scent of honey wafts through the air. Something rustles nearby..."
+      },
+      "Shiny Trinket": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 4,
+        "duration": 10,
+        "description": "+4 to taming ravens and magpies for 10 min",
+        "flavor": "You hold up the glittering bauble. Corvids are notoriously attracted to shiny things..."
+      },
+      "Catnip Pouch": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 5,
+        "duration": 15,
+        "description": "+5 to taming cats and felines for 15 min",
+        "flavor": "You open the pouch. The intoxicating scent drives cats absolutely wild!"
+      },
+      "Wolf Bane Antidote": {
+        "effect": "buff",
+        "buff": "taming",
+        "buff_value": 4,
+        "duration": 20,
+        "description": "+4 to taming wolves - masks your scent as non-threatening",
+        "flavor": "You apply the mixture. Your scent changes subtly - wolves no longer see you as prey or rival."
+      }
+    },
+    "western": {
+      "Whiskey": {
+        "effect": "buff",
+        "buff": "courage",
+        "buff_value": 2,
+        "duration": 30,
+        "description": "+2 to courage for 30 min, -1 to precision",
+        "flavor": "Burns going down! You feel bold and fearless."
+      },
+      "Sarsaparilla": {
+        "effect": "heal",
+        "value": 5,
+        "description": "Restores 5 HP",
+        "flavor": "Sweet and fizzy! A refreshing frontier drink."
+      },
+      "Beef Jerky": {
+        "effect": "heal",
+        "value": 8,
+        "description": "Restores 8 HP",
+        "flavor": "Tough and chewy, but it keeps you going on the trail."
+      },
+      "Hardtack": {
+        "effect": "heal",
+        "value": 4,
+        "description": "Restores 4 HP",
+        "flavor": "Hard as a rock, but it fills the belly."
+      },
+      "Snake Oil": {
+        "effect": "heal",
+        "value": 20,
+        "description": "Restores 20 HP",
+        "flavor": "You swallow the sharp, herbal mix. Somehow it works."
+      }
+    },
+    "scifi": {
+      "Stim Pack": {
+        "effect": "heal",
+        "value": 30,
+        "description": "Restores 30 HP",
+        "flavor": "The stim pack hisses as it injects. Instant relief."
+      },
+      "Energy Bar": {
+        "effect": "heal",
+        "value": 10,
+        "description": "Restores 10 HP",
+        "flavor": "Compact nutrition. Tastes like cardboard, works like magic."
+      },
+      "Synth-Coffee": {
+        "effect": "buff",
+        "buff": "focus",
+        "buff_value": 2,
+        "duration": 60,
+        "description": "+2 to technical rolls for 1 hour",
+        "flavor": "Not quite like the real thing, but it sharpens your mind."
+      },
+      "Nano-Med": {
+        "effect": "heal",
+        "value": 50,
+        "description": "Restores 50 HP via nanobots",
+        "flavor": "Millions of tiny machines go to work repairing your body."
+      },
+      "Healing Spray": {
+        "effect": "heal",
+        "value": 25,
+        "description": "Restores 25 HP",
+        "flavor": "The fine mist seals wounds and calms the pain."
+      },
+      "Nano-Med Gel": {
+        "effect": "heal",
+        "value": 40,
+        "description": "Restores 40 HP via nanogel",
+        "flavor": "The gel hums softly as it knits tissue back together."
+      }
+    }
+  },
+  "effect_descriptions": {
+    "heal": "Restores HP",
+    "buff": "Temporary stat bonus",
+    "heal_buff": "Heals and provides a buff",
+    "cure_poison": "Removes poison status",
+    "cure_poison_heal": "Cures poison and heals",
+    "cooldown_reduction": "Reduces ability cooldowns",
+    "luck": "Allows rerolling failed rolls",
+    "light": "Illuminates dark areas",
+    "refresh": "Basic sustenance",
+    "random": "Unknown/random effect"
+  }
+}

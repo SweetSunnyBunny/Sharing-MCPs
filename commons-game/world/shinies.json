@@ -1,0 +1,65 @@
+{
+  "rooms": [],
+  "shinies": {
+    "brass button": {
+      "yields": "shiny",
+      "colour": "#c9a227",
+      "line": "Brass button."
+    },
+    "bottle cap": {
+      "yields": "shiny",
+      "colour": "#8fa3b0",
+      "line": "Bottle cap."
+    },
+    "foil sweet wrapper": {
+      "yields": "shiny",
+      "colour": "#d94f6a",
+      "line": "Foil sweet wrapper."
+    },
+    "a key that fits nothing": {
+      "yields": "shiny",
+      "colour": "#b0872b",
+      "line": "A key that fits nothing."
+    },
+    "chip of mirror": {
+      "yields": "shiny",
+      "colour": "#cfe3ea",
+      "line": "Chip of mirror."
+    },
+    "silver ring-pull": {
+      "yields": "shiny",
+      "colour": "#c6ccd2",
+      "line": "Silver ring-pull."
+    },
+    "green glass marble": {
+      "yields": "shiny",
+      "colour": "#3f8f6b",
+      "line": "Green glass marble."
+    },
+    "thimble": {
+      "yields": "shiny",
+      "colour": "#9aa6ad",
+      "line": "Thimble."
+    },
+    "single gold earring": {
+      "yields": "shiny",
+      "colour": "#e0b64a",
+      "line": "Single gold earring."
+    },
+    "curl of copper wire": {
+      "yields": "shiny",
+      "colour": "#b4693a",
+      "line": "Curl of copper wire."
+    },
+    "sixpence with a hole in it": {
+      "yields": "shiny",
+      "colour": "#cdb884",
+      "line": "Sixpence with a hole in it."
+    },
+    "beetle shell": {
+      "yields": "shiny",
+      "colour": "#2f6f5e",
+      "line": "Beetle shell."
+    }
+  }
+}

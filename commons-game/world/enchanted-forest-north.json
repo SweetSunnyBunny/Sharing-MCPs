@@ -1,0 +1,218 @@
+{
+  "id": "enchanted-forest-north",
+  "name": "Forest Depths (North)",
+  "subtitle": "Deeper into the forest where magic runs wild.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/enchanted-forest-north.png",
+  "region": "heros_journey",
+  "game_location": "enchanted-forest",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################.###############",
+    "###############################.....############",
+    "##############################.......###########",
+    "##############################.........#########",
+    "##############################.........#########",
+    "##############################..........########",
+    "##############################..........########",
+    "##############################..........########",
+    "################..############..........########",
+    "################....######..............########",
+    "#################.......................########",
+    "#################......................#########",
+    "#################.######...............#########",
+    "############......#######................#######",
+    "############...........###................######",
+    "##########.............####...............######",
+    "######..............#########.............######",
+    "#####.............############.............#####",
+    "#................#############...............###",
+    "................##############................##",
+    "...............##############................###",
+    "...............#############...............#####",
+    "...............############............#########",
+    "................#########.............##########",
+    "....#####........####................###########",
+    "##########...........................###########",
+    "###########.........................############",
+    "###########.........................############",
+    "############.......................#############"
+  ],
+  "spawn": {
+    "x": 24.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Enchanted Forest",
+      "x": 0.46875,
+      "y": 24.4375,
+      "w": 1.875,
+      "h": 1.875,
+      "to": "enchanted-forest-main",
+      "arriveAt": {
+        "x": 22.0,
+        "y": 8.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower left part of the room leads to Enchanted Forest. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Enchanted Forest",
+      "x": 20.90625,
+      "y": 30.09375,
+      "w": 1.875,
+      "h": 1.875,
+      "to": "enchanted-forest-right",
+      "arriveAt": {
+        "x": 29.0,
+        "y": 9.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Forest Clearing (East). Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-2",
+      "label": "Fey Wilds",
+      "x": 29.640625,
+      "y": 9.578125,
+      "w": 3.40625,
+      "h": 2.46875,
+      "to": "fey-wilds-main",
+      "arriveAt": {
+        "x": 14.0,
+        "y": 21.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the upper right part of the room leads to The Feywilds. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "path-wild-edge",
+      "label": "Wild Edge",
+      "to": "wild-edge",
+      "x": 5,
+      "y": 22,
+      "w": 2,
+      "h": 2,
+      "arriveAt": {
+        "x": 19.5,
+        "y": 19
+      },
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower left part of the room leads to Wild Edge. Walk into the marked threshold to take that route."
+    }
+  ],
+  "npcs": [],
+  "fishing_zones": [
+    {
+      "points": [
+        [
+          10,
+          10
+        ],
+        [
+          14,
+          10
+        ],
+        [
+          14,
+          11
+        ],
+        [
+          17,
+          13
+        ],
+        [
+          17,
+          15
+        ],
+        [
+          13,
+          15
+        ],
+        [
+          10,
+          14
+        ],
+        [
+          9,
+          13
+        ],
+        [
+          11,
+          12
+        ]
+      ]
+    }
+  ],
+  "description": "The northern forest opens into a broad grassy crossing under an arch of old trees. The main path runs from the lower foreground towards a pale opening in the upper-right canopy, with smaller stretches of earth branching off through the grass. Thick roots, mossy stones and low shrubs mark the edges. Blue flowers and pink blossoms glow against the darker green shade, and mushroom clusters sit close to the right-hand trunks. Unlike the nearby stream clearing, this painting centres on dry ground and the light ahead: an open space surrounded by tall trees rather than a room with walls.",
+  "landmarks": [
+    {
+      "id": "northern-light-gap",
+      "label": "Northern light gap",
+      "kind": "path",
+      "description": "A pale opening in the trees draws the upper path into the brighter distance.",
+      "x": 34,
+      "y": 7
+    },
+    {
+      "id": "central-grassy-crossing",
+      "label": "Central grassy crossing",
+      "kind": "clearing",
+      "description": "Several stretches of packed earth meet amid the grass in the middle of the forest.",
+      "x": 22,
+      "y": 18
+    },
+    {
+      "id": "western-root-bank",
+      "label": "Western root bank",
+      "kind": "tree",
+      "description": "Broad roots and mossy stones gather beneath the large trees on the left.",
+      "x": 7,
+      "y": 15
+    },
+    {
+      "id": "lower-flower-patch",
+      "label": "Lower flower patch",
+      "kind": "vegetation",
+      "description": "Blue, violet and pink flowers form a vivid patch below the crossing.",
+      "x": 22,
+      "y": 26
+    },
+    {
+      "id": "eastern-mushroom-bank",
+      "label": "Eastern mushroom bank",
+      "kind": "vegetation",
+      "description": "Rounded pale mushrooms sit beneath the shaded trees on the right.",
+      "x": 42,
+      "y": 25
+    }
+  ]
+}

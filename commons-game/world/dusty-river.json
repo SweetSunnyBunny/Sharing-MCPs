@@ -1,0 +1,205 @@
+{
+  "id": "dusty-river",
+  "name": "Dusty River",
+  "subtitle": "A path through dusty trails",
+  "view": "top",
+  "tile": 32,
+  "region": "dusty_trails",
+  "game_location": "dusty-river",
+  "sky": "#101925",
+  "legend": {
+    ".": {
+      "name": "floor",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "wall",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.5,
+    "y": 19
+  },
+  "props": [
+    {
+      "id": "return-path",
+      "label": "Return to dt open plains",
+      "to": "dt-open-plains",
+      "x": 18,
+      "y": 26,
+      "w": 4,
+      "h": 2,
+      "arriveAt": {
+        "x": 23.0,
+        "y": 14.5
+      },
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Open Plains. Walk into the marked threshold to take that route."
+    }
+  ],
+  "npcs": [],
+  "backdrop": "/assets/adventure/decks/dusty-river.svg",
+  "fishing_zones": [
+    {
+      "points": [
+        [
+          26.25,
+          14.38
+        ],
+        [
+          25.94,
+          15.24
+        ],
+        [
+          25.06,
+          16.03
+        ],
+        [
+          23.67,
+          16.65
+        ],
+        [
+          21.93,
+          17.05
+        ],
+        [
+          20.0,
+          17.19
+        ],
+        [
+          18.07,
+          17.05
+        ],
+        [
+          16.33,
+          16.65
+        ],
+        [
+          14.94,
+          16.03
+        ],
+        [
+          14.06,
+          15.24
+        ],
+        [
+          13.75,
+          14.38
+        ],
+        [
+          14.06,
+          13.51
+        ],
+        [
+          14.94,
+          12.72
+        ],
+        [
+          16.33,
+          12.1
+        ],
+        [
+          18.07,
+          11.7
+        ],
+        [
+          20.0,
+          11.56
+        ],
+        [
+          21.93,
+          11.7
+        ],
+        [
+          23.67,
+          12.1
+        ],
+        [
+          25.06,
+          12.72
+        ],
+        [
+          25.94,
+          13.51
+        ]
+      ]
+    }
+  ],
+  "description": "Dusty River uses a simple slate-blue schematic for its room painting. A large title panel spans the upper part of the map, and a turquoise oval represents the water in the centre. Four small dark panels sit in pairs along the left and right edges, surrounded by a faint square grid and a thin ochre border. A pale marked threshold appears at the lower centre. This is an abstract river-location map rather than a detailed view of canyon banks, trees or buildings; the central water symbol and the marked return route are its clearest visual landmarks.",
+  "landmarks": [
+    {
+      "id": "central-water-symbol",
+      "label": "Central water symbol",
+      "kind": "water",
+      "description": "A turquoise oval represents the water in the middle of the schematic.",
+      "x": 20,
+      "y": 14.4
+    },
+    {
+      "id": "dusty-river-title-panel",
+      "label": "Dusty River title panel",
+      "kind": "sign",
+      "description": "A wide dark panel at the top carries the Dusty River title.",
+      "x": 20,
+      "y": 5.4
+    },
+    {
+      "id": "western-schematic-panels",
+      "label": "Western schematic panels",
+      "kind": "scenery",
+      "description": "Two small outlined panels sit along the left side of the grid.",
+      "x": 5.5,
+      "y": 14
+    },
+    {
+      "id": "eastern-schematic-panels",
+      "label": "Eastern schematic panels",
+      "kind": "scenery",
+      "description": "Two matching outlined panels sit along the right side of the grid.",
+      "x": 34.5,
+      "y": 14
+    },
+    {
+      "id": "ochre-boundary-line",
+      "label": "Ochre boundary line",
+      "kind": "scenery",
+      "description": "A thin ochre border encloses the slate-blue grid.",
+      "x": 20,
+      "y": 26.5
+    }
+  ]
+}

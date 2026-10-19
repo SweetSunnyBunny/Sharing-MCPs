@@ -1,0 +1,921 @@
+{
+  "id": "neural-jack-lounge",
+  "name": "Neural Jack Lounge",
+  "subtitle": "The Black Serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "neural-jack-lounge",
+  "music": {
+    "region": "black_serenity"
+  },
+  "sky": "#111625",
+  "legend": {
+    ".": {
+      "name": "deck",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "bulkhead",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.0,
+    "y": 18.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "The Forge",
+      "x": 3,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "the-forge",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower left part of the room leads to The Forge. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Terraforming Station",
+      "x": 15,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "terraforming-station",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Terraforming Station. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-2",
+      "label": "The Crossroads",
+      "x": 27,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "the-crossroads",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower right part of the room leads to The Crossroads. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "npc-cipher",
+      "label": "Cipher",
+      "game_npc": "cipher",
+      "x": 19.5,
+      "y": 14.0,
+      "w": 1.2,
+      "h": 2,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Cipher.",
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "lounge seat",
+      "x": 12.9,
+      "y": 6.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 14.0,
+            "y": 6.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the upper middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "lounge seat",
+      "x": 14.9,
+      "y": 6.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 16.0,
+            "y": 6.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the upper middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-3",
+      "label": "lounge seat",
+      "x": 17.3,
+      "y": 6.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 18.4,
+            "y": 6.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the upper middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-4",
+      "label": "lounge seat",
+      "x": 19.3,
+      "y": 6.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 20.4,
+            "y": 6.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the upper middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-5",
+      "label": "lounge seat",
+      "x": 21.7,
+      "y": 6.74,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 22.8,
+            "y": 7.24,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the upper middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-6",
+      "label": "lounge seat",
+      "x": 10.9,
+      "y": 7.02,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 12.0,
+            "y": 7.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the upper left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-7",
+      "label": "lounge seat",
+      "x": 8.9,
+      "y": 9.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 10.0,
+            "y": 10.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the upper left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-8",
+      "label": "lounge seat",
+      "x": 6.9,
+      "y": 10.94,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 8.0,
+            "y": 11.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-9",
+      "label": "lounge seat",
+      "x": 11.7,
+      "y": 10.94,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 12.8,
+            "y": 11.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-10",
+      "label": "lounge seat",
+      "x": 10.1,
+      "y": 12.34,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 11.2,
+            "y": 12.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-11",
+      "label": "lounge seat",
+      "x": 26.1,
+      "y": 9.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 27.2,
+            "y": 9.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the upper right part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-12",
+      "label": "lounge seat",
+      "x": 28.1,
+      "y": 9.82,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.2,
+            "y": 10.32,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the upper right part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-13",
+      "label": "lounge seat",
+      "x": 29.3,
+      "y": 11.22,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 30.4,
+            "y": 11.72,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central right part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-14",
+      "label": "lounge seat",
+      "x": 26.5,
+      "y": 12.06,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 27.6,
+            "y": 12.56,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central right part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-15",
+      "label": "lounge seat",
+      "x": 3.3,
+      "y": 14.58,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 4.4,
+            "y": 15.08,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-16",
+      "label": "lounge seat",
+      "x": 5.3,
+      "y": 13.74,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 6.4,
+            "y": 14.24,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-17",
+      "label": "lounge seat",
+      "x": 8.1,
+      "y": 14.58,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 9.2,
+            "y": 15.08,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-18",
+      "label": "lounge seat",
+      "x": 8.9,
+      "y": 15.7,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 10.0,
+            "y": 16.2,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-19",
+      "label": "lounge seat",
+      "x": 6.9,
+      "y": 16.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 8.0,
+            "y": 16.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-20",
+      "label": "lounge seat",
+      "x": 4.9,
+      "y": 16.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 6.0,
+            "y": 16.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-21",
+      "label": "lounge seat",
+      "x": 24.5,
+      "y": 14.3,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 25.6,
+            "y": 14.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-22",
+      "label": "lounge seat",
+      "x": 27.3,
+      "y": 13.74,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 28.4,
+            "y": 14.24,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central right part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-23",
+      "label": "lounge seat",
+      "x": 28.5,
+      "y": 14.86,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.6,
+            "y": 15.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central right part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-24",
+      "label": "lounge seat",
+      "x": 27.7,
+      "y": 16.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 28.8,
+            "y": 16.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central right part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-25",
+      "label": "lounge seat",
+      "x": 24.9,
+      "y": 16.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.0,
+            "y": 16.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the central middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-26",
+      "label": "lounge seat",
+      "x": 10.5,
+      "y": 21.02,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 11.6,
+            "y": 21.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the lower left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-27",
+      "label": "lounge seat",
+      "x": 12.5,
+      "y": 21.58,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 13.6,
+            "y": 22.08,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the lower left part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-28",
+      "label": "lounge seat",
+      "x": 14.9,
+      "y": 21.86,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 16.0,
+            "y": 22.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the lower middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-29",
+      "label": "lounge seat",
+      "x": 17.3,
+      "y": 21.86,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 18.4,
+            "y": 22.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the lower middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-30",
+      "label": "lounge seat",
+      "x": 19.3,
+      "y": 21.3,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 20.4,
+            "y": 21.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the lower middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-31",
+      "label": "lounge seat",
+      "x": 22.5,
+      "y": 21.3,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 23.6,
+            "y": 21.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the lower middle part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-32",
+      "label": "lounge seat",
+      "x": 28.1,
+      "y": 24.38,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.2,
+            "y": 24.88,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the lower right part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-33",
+      "label": "lounge seat",
+      "x": 30.5,
+      "y": 24.1,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 31.6,
+            "y": 24.6,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge seat, in the lower right part of the room, beside the glowing lounge displays and curved seating bays. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "terminal-eastern-display-alcoves",
+      "label": "Eastern display alcoves",
+      "kind": "terminal",
+      "x": 32,
+      "y": 14,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "game_terminal": "Dream Server",
+      "note": "Bright screens and illuminated columns occupy the right-hand alcoves. This console connects to the Dream Server network. Open it to recover cached data, read character dossiers, or transfer credits."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "cipher",
+      "name": "Cipher",
+      "role": "Bartender"
+    }
+  ],
+  "backdrop": "/assets/adventure/backgrounds/neural-jack-lounge.png?v=9ca2f9d533",
+  "description": "The Neural Jack Lounge is a circular arrangement of padded seating, drinks tables and luminous displays. A round blue transport platform stands in the middle, surrounded by purple pools of light and curving rows of lounge seats. The upper wall carries a Neural Jack Lounge sign between tall illuminated columns. A long bar curves across the lower half, with stools beneath it and shelves of glowing bottles behind. Transparent-looking display columns, bright screens and small potted plants fill the outer alcoves. A marked entrance is visible on the right; the rich violet lighting and the repeated circular forms distinguish this lounge from the ship's plainer metal decks.",
+  "landmarks": [
+    {
+      "id": "central-transport-platform",
+      "label": "Central transport platform",
+      "kind": "transport platform",
+      "description": "A blue circular platform glows between the curved seating areas.",
+      "x": 20,
+      "y": 14
+    },
+    {
+      "id": "upper-lounge-sign",
+      "label": "Upper lounge sign",
+      "kind": "sign",
+      "description": "A large Neural Jack Lounge sign hangs between luminous display columns.",
+      "x": 20,
+      "y": 4
+    },
+    {
+      "id": "curved-lower-bar",
+      "label": "Curved lower bar",
+      "kind": "counter",
+      "description": "A curved bar with stools and illuminated bottles spans the lower half of the room.",
+      "x": 20,
+      "y": 22
+    },
+    {
+      "id": "western-circular-seating",
+      "label": "Western circular seating",
+      "kind": "seating area",
+      "description": "Padded lounge seats gather around small blue-lit tables on the left.",
+      "x": 8,
+      "y": 15
+    },
+    {
+      "id": "eastern-display-alcoves",
+      "label": "Eastern display alcoves",
+      "kind": "terminal",
+      "description": "Bright screens and illuminated columns occupy the right-hand alcoves.",
+      "x": 33,
+      "y": 14
+    },
+    {
+      "id": "tall-violet-light-columns",
+      "label": "Tall violet light columns",
+      "kind": "scenery",
+      "description": "Tall luminous columns frame the upper lounge seating.",
+      "x": 12,
+      "y": 5
+    }
+  ]
+}

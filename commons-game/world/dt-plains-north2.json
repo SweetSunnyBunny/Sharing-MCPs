@@ -1,0 +1,202 @@
+{
+  "id": "dt-plains-north2",
+  "name": "Far Northern Plains",
+  "subtitle": "The edge of the frontier. Few venture this far.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/open_plains_north2.png",
+  "region": "dusty_trails",
+  "game_location": "open-plains",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "......#.........................................",
+    "..#########.....................................",
+    "################................................",
+    "#################...............................",
+    "###################.............................",
+    "####################............................",
+    "####################............................",
+    "####################..........................##",
+    "###################.........................####",
+    "#################.......................########",
+    ".......##............................###########",
+    "....................................############",
+    "...................................#############",
+    "...................................#############",
+    "....................................##..########",
+    "..........................................######",
+    "........................######.............###..",
+    ".............##################.................",
+    "...........####################.................",
+    "........#######################................."
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Open Plains North",
+      "x": 31.56,
+      "y": 28.48,
+      "w": 4.81,
+      "h": 3.78,
+      "to": "dt-plains-north",
+      "arriveAt": {
+        "x": 12.0,
+        "y": 13.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the lower right part of the room leads to Northern Plains. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "path-canyon-overlook",
+      "label": "Canyon Overlook",
+      "to": "canyon-overlook",
+      "x": 25.25,
+      "y": 12.25,
+      "w": 2.0,
+      "h": 4.0,
+      "arriveAt": {
+        "x": 34.5,
+        "y": 23.0
+      },
+      "invisible": true,
+      "note": "This passage in the central middle part of the room leads to Canyon Overlook. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "x": 7.25,
+      "y": 30.0,
+      "w": 5.0,
+      "h": 7.0,
+      "id": "door-muj5li8e",
+      "label": "Abandoned Mine",
+      "note": "This passage in the lower left part of the room leads to Abandoned Mine. Walk into the marked threshold to take that route.",
+      "invisible": true,
+      "to": "dt-abandoned-mine",
+      "arriveAt": {
+        "x": 39.5,
+        "y": 11.0
+      },
+      "kind": "door"
+    }
+  ],
+  "npcs": [],
+  "fishing_zones": [
+    {
+      "id": "water-1",
+      "points": [
+        [
+          0.0,
+          16.0
+        ],
+        [
+          4.8,
+          15.36
+        ],
+        [
+          11.04,
+          16.0
+        ],
+        [
+          15.84,
+          17.6
+        ],
+        [
+          18.24,
+          19.2
+        ],
+        [
+          14.4,
+          20.48
+        ],
+        [
+          7.2,
+          19.84
+        ],
+        [
+          2.88,
+          18.88
+        ],
+        [
+          0.0,
+          18.56
+        ]
+      ]
+    }
+  ],
+  "fishing_pool": "dusty-river",
+  "description": "The far northern plains are a wide, sunlit stretch of dry grass, low shrubs and red rock. A pond occupies the left middle ground, rimmed with stones and reeds. Dirt paths fork across the foreground, weaving around boulders and patches of flowers. Tall cactus-like plants rise on the right, with a small tree farther back. The horizon is lined with broad ochre mesas separated by a long open valley. The water offers a clear point of orientation among the otherwise similar grasses and rocks, while the branching tracks connect the foreground to the distant reaches of the plain.",
+  "landmarks": [
+    {
+      "id": "western-frontier-pond",
+      "label": "Western frontier pond",
+      "kind": "water",
+      "description": "A blue pond rests between low rocks and reeds on the left.",
+      "x": 10,
+      "y": 19
+    },
+    {
+      "id": "forking-plains-paths",
+      "label": "Forking plains paths",
+      "kind": "path",
+      "description": "Several pale dirt tracks divide around the foreground rocks and scrub.",
+      "x": 27,
+      "y": 23
+    },
+    {
+      "id": "eastern-tall-cacti",
+      "label": "Eastern tall cacti",
+      "kind": "vegetation",
+      "description": "Tall branching cactus-like plants stand among rocks on the right.",
+      "x": 40,
+      "y": 22
+    },
+    {
+      "id": "open-mesa-valley",
+      "label": "Open mesa valley",
+      "kind": "rock",
+      "description": "Ochre mesas frame a long open valley across the upper distance.",
+      "x": 26,
+      "y": 6
+    },
+    {
+      "id": "foreground-flowers-and-stones",
+      "label": "Foreground flowers and stones",
+      "kind": "vegetation",
+      "description": "Low flowering plants and rounded stones break up the dry ground near the viewer.",
+      "x": 16,
+      "y": 28
+    }
+  ]
+}

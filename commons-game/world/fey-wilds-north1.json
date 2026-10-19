@@ -1,0 +1,481 @@
+{
+  "id": "fey-wilds-north1",
+  "name": "Feywilds Depths",
+  "subtitle": "Deeper into the fey realm - tread carefully.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/fey-wilds-north1.png",
+  "region": "heros_journey",
+  "game_location": "the-feywilds",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "#######################.....####################",
+    "#######################.....####################",
+    "#######################.....####################",
+    "#######################.....####################",
+    "#######################.....####################",
+    "#######################.....####################",
+    "######################.....#####################",
+    "#####################.....######################",
+    "###################.......######################",
+    "###################.......######################",
+    "####################.......#####################",
+    "####################.......#####################",
+    "####################.......#####################",
+    "##################........######################",
+    "#################........#######################",
+    "###############..........#######################",
+    "################..........######################",
+    "##################.........#####################",
+    "####################........####################",
+    "#####################.......####################",
+    "#####################........###################",
+    "######################........##################",
+    "######################........##################",
+    "######################.........#################",
+    "######################..........################",
+    "######################...........###############",
+    "######################...........###############",
+    "#####################.............##############",
+    "####################..............##############",
+    "###################...............##############",
+    "#################.................##############",
+    "################.................###############"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Fey Wilds",
+      "x": 19.375,
+      "y": 28.125,
+      "w": 1.875,
+      "h": 1.875,
+      "to": "fey-wilds-main",
+      "arriveAt": {
+        "x": 18.0,
+        "y": 6.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to The Feywilds. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Fey Wilds",
+      "x": 20.6875,
+      "y": 7.25,
+      "w": 3.6875,
+      "h": 3.1875,
+      "to": "fey-wilds-north2",
+      "arriveAt": {
+        "x": 23.0,
+        "y": 18.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the upper middle part of the room leads to Fey Court Approach. Walk into the marked threshold to take that route."
+    }
+  ],
+  "npcs": [],
+  "fishing_zones": [
+    {
+      "points": [
+        [
+          18.5,
+          10.5
+        ],
+        [
+          18.28,
+          11.12
+        ],
+        [
+          17.64,
+          11.68
+        ],
+        [
+          16.65,
+          12.12
+        ],
+        [
+          15.39,
+          12.4
+        ],
+        [
+          14.0,
+          12.5
+        ],
+        [
+          12.61,
+          12.4
+        ],
+        [
+          11.35,
+          12.12
+        ],
+        [
+          10.36,
+          11.68
+        ],
+        [
+          9.72,
+          11.12
+        ],
+        [
+          9.5,
+          10.5
+        ],
+        [
+          9.72,
+          9.88
+        ],
+        [
+          10.36,
+          9.32
+        ],
+        [
+          11.35,
+          8.88
+        ],
+        [
+          12.61,
+          8.6
+        ],
+        [
+          14.0,
+          8.5
+        ],
+        [
+          15.39,
+          8.6
+        ],
+        [
+          16.65,
+          8.88
+        ],
+        [
+          17.64,
+          9.32
+        ],
+        [
+          18.28,
+          9.88
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          40.0,
+          9.5
+        ],
+        [
+          39.76,
+          10.12
+        ],
+        [
+          39.05,
+          10.68
+        ],
+        [
+          37.94,
+          11.12
+        ],
+        [
+          36.55,
+          11.4
+        ],
+        [
+          35.0,
+          11.5
+        ],
+        [
+          33.45,
+          11.4
+        ],
+        [
+          32.06,
+          11.12
+        ],
+        [
+          30.95,
+          10.68
+        ],
+        [
+          30.24,
+          10.12
+        ],
+        [
+          30.0,
+          9.5
+        ],
+        [
+          30.24,
+          8.88
+        ],
+        [
+          30.95,
+          8.32
+        ],
+        [
+          32.06,
+          7.88
+        ],
+        [
+          33.45,
+          7.6
+        ],
+        [
+          35.0,
+          7.5
+        ],
+        [
+          36.55,
+          7.6
+        ],
+        [
+          37.94,
+          7.88
+        ],
+        [
+          39.05,
+          8.32
+        ],
+        [
+          39.76,
+          8.88
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          42.0,
+          17.5
+        ],
+        [
+          41.68,
+          18.37
+        ],
+        [
+          40.76,
+          19.15
+        ],
+        [
+          39.32,
+          19.77
+        ],
+        [
+          37.51,
+          20.16
+        ],
+        [
+          35.5,
+          20.3
+        ],
+        [
+          33.49,
+          20.16
+        ],
+        [
+          31.68,
+          19.77
+        ],
+        [
+          30.24,
+          19.15
+        ],
+        [
+          29.32,
+          18.37
+        ],
+        [
+          29.0,
+          17.5
+        ],
+        [
+          29.32,
+          16.63
+        ],
+        [
+          30.24,
+          15.85
+        ],
+        [
+          31.68,
+          15.23
+        ],
+        [
+          33.49,
+          14.84
+        ],
+        [
+          35.5,
+          14.7
+        ],
+        [
+          37.51,
+          14.84
+        ],
+        [
+          39.32,
+          15.23
+        ],
+        [
+          40.76,
+          15.85
+        ],
+        [
+          41.68,
+          16.63
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          17.0,
+          22.0
+        ],
+        [
+          16.63,
+          22.93
+        ],
+        [
+          15.57,
+          23.76
+        ],
+        [
+          13.91,
+          24.43
+        ],
+        [
+          11.82,
+          24.85
+        ],
+        [
+          9.5,
+          25.0
+        ],
+        [
+          7.18,
+          24.85
+        ],
+        [
+          5.09,
+          24.43
+        ],
+        [
+          3.43,
+          23.76
+        ],
+        [
+          2.37,
+          22.93
+        ],
+        [
+          2.0,
+          22.0
+        ],
+        [
+          2.37,
+          21.07
+        ],
+        [
+          3.43,
+          20.24
+        ],
+        [
+          5.09,
+          19.57
+        ],
+        [
+          7.18,
+          19.15
+        ],
+        [
+          9.5,
+          19.0
+        ],
+        [
+          11.82,
+          19.15
+        ],
+        [
+          13.91,
+          19.57
+        ],
+        [
+          15.57,
+          20.24
+        ],
+        [
+          16.63,
+          21.07
+        ]
+      ]
+    }
+  ],
+  "description": "The deeper Feywilds gather around a path of pale, irregular stones, with a chain of luminous pools on either side. Large blue mushrooms fill the upper-left corner, while violet crystals and clusters of oversized flowers mark the banks. A slim waterfall falls through the trees on the upper right. Golden motes are scattered beneath the dark green canopy, and reflections brighten the turquoise water even where the forest is shaded. The path narrows towards the upper distance; curled fern shapes and bright blossoms crowd its edges without turning the centre into a wall of plants.",
+  "landmarks": [
+    {
+      "id": "stone-path-through-the-pools",
+      "label": "Stone path through the pools",
+      "kind": "path",
+      "description": "Pale rounded stones form a winding route between the blue-green pools.",
+      "x": 23,
+      "y": 17
+    },
+    {
+      "id": "upper-mushroom-canopy",
+      "label": "Upper mushroom canopy",
+      "kind": "vegetation",
+      "description": "Large blue mushrooms overlap the shaded forest on the upper left.",
+      "x": 6,
+      "y": 7
+    },
+    {
+      "id": "eastern-falls",
+      "label": "Eastern falls",
+      "kind": "water",
+      "description": "A pale waterfall drops into a turquoise pool beneath the right-hand trees.",
+      "x": 38,
+      "y": 9
+    },
+    {
+      "id": "central-crystal-cluster",
+      "label": "Central crystal cluster",
+      "kind": "crystal",
+      "description": "Purple crystal points rise beside the upper path.",
+      "x": 20,
+      "y": 7
+    },
+    {
+      "id": "lower-flower-shore",
+      "label": "Lower flower shore",
+      "kind": "vegetation",
+      "description": "Blue, white and pink flowers crowd the edge of the foreground pool.",
+      "x": 10,
+      "y": 25
+    }
+  ]
+}

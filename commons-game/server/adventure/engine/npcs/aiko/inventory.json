@@ -1,0 +1,142 @@
+{
+  "shop_name": "Aiko's Black Market",
+  "last_restock": "2025-11-25",
+  "currency": "credits",
+  "inventory": {
+    "aiko_illegal_goods": {
+      "Circuit Board": {
+        "stock": 5,
+        "max_stock": 8,
+        "price": 60,
+        "description": "An overclocked, neon-wired circuit board Aiko modded herself. Runs dangerously hot.",
+        "rarity": "uncommon"
+      },
+      "Servo Motor": {
+        "stock": 4,
+        "max_stock": 6,
+        "price": 55,
+        "description": "A servo motor 'borrowed' from a service drone. Still humming from its last job.",
+        "rarity": "uncommon"
+      },
+      "Nano-Fiber": {
+        "stock": 3,
+        "max_stock": 5,
+        "price": 80,
+        "description": "Smuggled nano-fiber spool. Lightweight, flexible, and definitely illegal.",
+        "rarity": "rare"
+      },
+      "Power Cell": {
+        "stock": 6,
+        "max_stock": 10,
+        "price": 45,
+        "description": "A hotwired power cell. Charges fast, discharges faster. Sparks when shaken.",
+        "rarity": "common"
+      },
+      "Scrap Metal": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 20,
+        "description": "Scavenged scrap metal\u2014bent, dented, slightly questionable, but usable.",
+        "rarity": "common"
+      }
+    },
+    "aiko_blackmarket_upgrades": {
+      "Sensor Array": {
+        "stock": 2,
+        "max_stock": 4,
+        "price": 120,
+        "description": "A ghost-sensor array with the serial numbers filed off. Detects things it probably shouldn't.",
+        "rarity": "rare"
+      },
+      "AI Chip": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 150,
+        "description": "An unregistered AI chip from banned research. It whispers when you hold it close.",
+        "rarity": "rare"
+      },
+      "Neural Core": {
+        "stock": 1,
+        "max_stock": 2,
+        "price": 190,
+        "description": "A prototype neural core\u2014illegally grown, faintly twitching, deeply unsettling.",
+        "rarity": "rare"
+      },
+      "Energy Core": {
+        "stock": 2,
+        "max_stock": 3,
+        "price": 140,
+        "description": "A fractured energy core fragment. Too powerful for legal sale.",
+        "rarity": "rare"
+      },
+      "Thruster Core": {
+        "stock": 0,
+        "max_stock": 2,
+        "price": 170,
+        "description": "A stolen mini anti-grav thruster core ripped from a courier drone mid-flight.",
+        "rarity": "rare"
+      }
+    },
+    "aiko_stolen_exclusives": {
+      "Weapon System": {
+        "stock": 0,
+        "max_stock": 2,
+        "price": 200,
+        "description": "An experimental weapon module. Powerful, unstable, eyebrow-removal risk high.",
+        "rarity": "rare"
+      },
+      "Metal Plating": {
+        "stock": 2,
+        "max_stock": 4,
+        "price": 90,
+        "description": "Black-market armor plating coated in reflective nano-resin.",
+        "rarity": "uncommon"
+      },
+      "Rare Component": {
+        "stock": 1,
+        "max_stock": 3,
+        "price": 150,
+        "description": "A highly refined rare component Aiko 'acquired' from someone distracted.",
+        "rarity": "rare"
+      }
+    },
+    "aiko_gacha_boxes": {
+      "Neon Mystery Box": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 35,
+        "description": "A neon loot box containing random crafting materials. Mostly junk, sometimes treasure.",
+        "rarity": "common"
+      },
+      "Chaos Crate": {
+        "stock": 3,
+        "max_stock": 5,
+        "price": 100,
+        "description": "A premium crate guaranteed to contain at least one rare crafting component. May bite.",
+        "rarity": "rare"
+      }
+    }
+  },
+  "buy_prices": {
+    "Circuit Board": 35,
+    "Servo Motor": 30,
+    "Nano-Fiber": 45,
+    "Power Cell": 25,
+    "Scrap Metal": 12,
+    "Sensor Array": 65,
+    "AI Chip": 85,
+    "Neural Core": 100,
+    "Energy Core": 75,
+    "Thruster Core": 90,
+    "Weapon System": 110,
+    "Metal Plating": 50,
+    "Rare Component": 80,
+    "Salvage Wiring": 8,
+    "Old Tech": 10,
+    "Broken Tech": 12,
+    "Shiny Bits": 5,
+    "Glowing Salvage": 25,
+    "Mystery Component": 15,
+    "Droid Component": 20
+  }
+}

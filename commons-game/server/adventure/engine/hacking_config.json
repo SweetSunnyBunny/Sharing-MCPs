@@ -1,0 +1,363 @@
+{
+  "description": "Hacking system configuration for Black Serenity",
+
+  "hacking_areas": {
+    "black_serenity": {
+      "data-nexus": {
+        "name": "The Data Nexus",
+        "description": "A sprawling underground server farm filled with humming terminals and flickering holoscreens",
+        "systems": [
+          {
+            "name": "Public Terminal",
+            "difficulty": 8,
+            "rewards": {
+              "credits": [10, 30],
+              "items": ["encrypted_data_chip"],
+              "item_chance": 0.3
+            },
+            "failure_effect": "logged",
+            "flavor": "A basic public access terminal. Easy pickings."
+          },
+          {
+            "name": "Corporate Database",
+            "difficulty": 12,
+            "rewards": {
+              "credits": [30, 75],
+              "items": ["encrypted_data_chip", "memory_fragment"],
+              "item_chance": 0.5
+            },
+            "failure_effect": "alarm",
+            "flavor": "Corporate secrets behind decent encryption. Worth the risk."
+          },
+          {
+            "name": "Secure Server",
+            "difficulty": 15,
+            "rewards": {
+              "credits": [75, 150],
+              "items": ["encrypted_data_chip", "memory_fragment", "ai_chip"],
+              "item_chance": 0.6
+            },
+            "failure_effect": "trace",
+            "flavor": "Military-grade encryption. Big rewards if you can crack it."
+          },
+          {
+            "name": "Black ICE Node",
+            "difficulty": 18,
+            "rewards": {
+              "credits": [150, 300],
+              "items": ["ai_chip", "rare_component", "data_whisper"],
+              "item_chance": 0.8
+            },
+            "failure_effect": "damage",
+            "flavor": "WARNING: Intrusion Countermeasures detected. Lethal."
+          },
+          {
+            "name": "Ghost Server",
+            "difficulty": 22,
+            "rewards": {
+              "credits": [300, 500],
+              "items": ["ai_chip", "rare_component", "neural_core"],
+              "item_chance": 1.0
+            },
+            "failure_effect": "massive_damage",
+            "flavor": "A server that doesn't exist. The kind of data that changes everything."
+          }
+        ]
+      },
+      "neon-underground": {
+        "name": "Neon Underground",
+        "description": "The criminal underbelly where data brokers and hackers trade secrets",
+        "systems": [
+          {
+            "name": "Gang Terminal",
+            "difficulty": 10,
+            "rewards": {
+              "credits": [20, 50],
+              "items": ["stolen_id_tag", "encrypted_data_chip"],
+              "item_chance": 0.4
+            },
+            "failure_effect": "alarm",
+            "flavor": "Gang communications. They won't be happy if they catch you."
+          },
+          {
+            "name": "Black Market Ledger",
+            "difficulty": 14,
+            "rewards": {
+              "credits": [50, 120],
+              "items": ["shiny_bits", "mystery_package", "transponder_id"],
+              "item_chance": 0.6
+            },
+            "failure_effect": "bounty",
+            "flavor": "Financial records of illegal dealings. Very valuable intel."
+          },
+          {
+            "name": "Syndicate Vault",
+            "difficulty": 17,
+            "rewards": {
+              "credits": [120, 250],
+              "items": ["rare_component", "weapon_system", "illegal_holo_projector"],
+              "item_chance": 0.7
+            },
+            "failure_effect": "damage",
+            "flavor": "The Syndicate's digital vault. They kill for less."
+          }
+        ]
+      },
+      "the-forge": {
+        "name": "The Forge",
+        "description": "Industrial manufacturing zone with automated systems",
+        "systems": [
+          {
+            "name": "Factory Control",
+            "difficulty": 11,
+            "rewards": {
+              "credits": [25, 60],
+              "items": ["circuit_board", "servo_motor", "scrap_metal"],
+              "item_chance": 0.5
+            },
+            "failure_effect": "alarm",
+            "flavor": "Factory automation controls. Useful schematics inside."
+          },
+          {
+            "name": "R&D Database",
+            "difficulty": 15,
+            "rewards": {
+              "credits": [60, 140],
+              "items": ["circuit_board", "sensor_array", "rare_component"],
+              "item_chance": 0.6
+            },
+            "failure_effect": "trace",
+            "flavor": "Research and development secrets. Cutting edge tech."
+          },
+          {
+            "name": "Prototype Archive",
+            "difficulty": 19,
+            "rewards": {
+              "credits": [140, 280],
+              "items": ["ai_chip", "rare_component", "weapon_system"],
+              "item_chance": 0.8
+            },
+            "failure_effect": "damage",
+            "flavor": "Classified prototype designs. Worth a fortune."
+          }
+        ]
+      },
+      "ships-bridge": {
+        "name": "Ship's Bridge",
+        "description": "The nerve center of spacecraft with navigation and comm systems. Special: !hack databanks to view crew data!",
+        "systems": [
+          {
+            "name": "Navigation Log",
+            "difficulty": 9,
+            "rewards": {
+              "credits": [15, 40],
+              "items": ["encrypted_data_chip", "signal_echo"],
+              "item_chance": 0.3
+            },
+            "failure_effect": "logged",
+            "flavor": "Ship navigation records. Trade routes and coordinates."
+          },
+          {
+            "name": "Comm Array",
+            "difficulty": 13,
+            "rewards": {
+              "credits": [40, 100],
+              "items": ["sensor_array", "transponder_id", "signal_echo"],
+              "item_chance": 0.5
+            },
+            "failure_effect": "alarm",
+            "flavor": "Encrypted communications. Who's talking to who?"
+          },
+          {
+            "name": "Captain's Terminal",
+            "difficulty": 16,
+            "rewards": {
+              "credits": [100, 200],
+              "items": ["encrypted_data_chip", "rare_component", "data_whisper"],
+              "item_chance": 0.7
+            },
+            "failure_effect": "trace",
+            "flavor": "The captain's private terminal. Secrets and orders."
+          }
+        ]
+      },
+      "scavengers-reach": {
+        "name": "Scavenger's Reach",
+        "description": "A planet of moving trash with buried tech. Special: !hack speeder/hoverboard/jumppack to steal vehicles!",
+        "systems": [
+          {
+            "name": "Derelict Console",
+            "difficulty": 10,
+            "rewards": {
+              "credits": [15, 45],
+              "items": ["broken_tech", "old_tech", "circuit_board"],
+              "item_chance": 0.5
+            },
+            "failure_effect": "none",
+            "flavor": "An ancient console half-buried in debris. Who knows what's on it?"
+          },
+          {
+            "name": "Crashed Ship Core",
+            "difficulty": 14,
+            "rewards": {
+              "credits": [45, 110],
+              "items": ["power_cell", "thruster_core", "memory_fragment"],
+              "item_chance": 0.6
+            },
+            "failure_effect": "damage",
+            "flavor": "A ship's data core. Damaged but potentially valuable."
+          },
+          {
+            "name": "Military Wreck",
+            "difficulty": 18,
+            "rewards": {
+              "credits": [110, 220],
+              "items": ["weapon_system", "ai_chip", "energy_core"],
+              "item_chance": 0.8
+            },
+            "failure_effect": "massive_damage",
+            "flavor": "Military vessel remains. Security is still active."
+          },
+          {
+            "name": "Ancient Archive",
+            "difficulty": 21,
+            "rewards": {
+              "credits": [200, 400],
+              "items": ["neural_core", "rare_component", "glitch_shard"],
+              "item_chance": 0.9
+            },
+            "failure_effect": "massive_damage",
+            "flavor": "Pre-war data storage. Priceless if you survive."
+          }
+        ]
+      },
+      "neural-jack-lounge": {
+        "name": "Neural Jack Lounge",
+        "description": "Cipher's domain of dreams and secrets. Special: !hack cipher to uncover her hidden data... if you dare.",
+        "systems": [
+          {
+            "name": "Dream Server",
+            "difficulty": 12,
+            "rewards": {
+              "credits": [30, 70],
+              "items": ["memory_fragment", "glitch_shard"],
+              "item_chance": 0.5
+            },
+            "failure_effect": "damage",
+            "flavor": "Access stored dreamscapes. Fragments of other minds."
+          },
+          {
+            "name": "Customer Database",
+            "difficulty": 15,
+            "rewards": {
+              "credits": [70, 150],
+              "items": ["encrypted_data_chip", "data_whisper"],
+              "item_chance": 0.6
+            },
+            "failure_effect": "alarm",
+            "flavor": "Client records and preferences. Blackmail material."
+          }
+        ]
+      },
+      "terraforming-station": {
+        "name": "Terraforming Station",
+        "description": "Mara's biodomes and life support. Special: !hack plants to sabotage or !hack credits to steal funds!",
+        "systems": [
+          {
+            "name": "Environmental Controls",
+            "difficulty": 11,
+            "rewards": {
+              "credits": [25, 55],
+              "items": ["seedpods", "bio_sample"],
+              "item_chance": 0.4
+            },
+            "failure_effect": "alarm",
+            "flavor": "Climate and atmosphere regulators. Delicate systems."
+          },
+          {
+            "name": "Research Database",
+            "difficulty": 14,
+            "rewards": {
+              "credits": [55, 120],
+              "items": ["rare_component", "bio_sample", "neural_booster"],
+              "item_chance": 0.6
+            },
+            "failure_effect": "trace",
+            "flavor": "Botanical research and genetic modifications."
+          }
+        ]
+      }
+    }
+  },
+
+  "failure_effects": {
+    "none": {
+      "description": "The hack fails but nothing happens.",
+      "message": "Connection lost. No harm done."
+    },
+    "logged": {
+      "description": "Your intrusion attempt was logged.",
+      "message": "⚠️ Intrusion logged. Someone might come looking..."
+    },
+    "alarm": {
+      "description": "You triggered an alarm! Cooldown increased.",
+      "message": "🚨 ALARM TRIGGERED! Security is alerted. Lay low for a while.",
+      "cooldown_multiplier": 2.0
+    },
+    "trace": {
+      "description": "They're tracing your signal!",
+      "message": "📡 TRACE DETECTED! They're trying to find you. You need to move.",
+      "cooldown_multiplier": 1.5
+    },
+    "bounty": {
+      "description": "A bounty has been placed on you.",
+      "message": "💀 Someone noticed. Word on the street is there's credits for your head now."
+    },
+    "damage": {
+      "description": "ICE countermeasures hit you!",
+      "message": "⚡ BLACK ICE! Neural feedback burns through your system!",
+      "damage_range": [10, 25]
+    },
+    "massive_damage": {
+      "description": "Lethal countermeasures nearly kill you!",
+      "message": "💀 LETHAL ICE! Your brain feels like it's on fire!",
+      "damage_range": [25, 50]
+    }
+  },
+
+  "hacking_messages": {
+    "attempt": [
+      "Jacking in...",
+      "Initiating neural handshake...",
+      "Bypassing firewall...",
+      "Running exploit...",
+      "Cracking encryption..."
+    ],
+    "success": [
+      "You're in. Data flows like water.",
+      "ACCESS GRANTED. The system opens up to you.",
+      "Encryption crumbles. The data is yours.",
+      "Clean break. No traces left behind.",
+      "Like a ghost in the machine."
+    ],
+    "critical": [
+      "PERFECT BREACH! You own this system now.",
+      "Flawless execution. They'll never know you were here.",
+      "You dance through their security like it's nothing.",
+      "The code bends to your will. Magnificent.",
+      "Zero detection. Maximum extraction. Beautiful."
+    ],
+    "failure": [
+      "Connection terminated. You're out.",
+      "Security protocols kick in. You're locked out.",
+      "The system fights back. You have to bail.",
+      "Firewall holds. Not this time.",
+      "ICE blocks your path. Retreat!"
+    ]
+  },
+
+  "cooldowns": {
+    "base_cooldown": 120,
+    "tool_reduction": 0.25
+  }
+}

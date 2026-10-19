@@ -1,0 +1,404 @@
+{
+  "recipes": {
+    "pie": {
+      "needs": {
+        "berries": 3
+      },
+      "where": "hearth",
+      "verb": "baked",
+      "makes": "{crop} pie",
+      "uses": 8,
+      "unit": "slice",
+      "use_label": "have a slice",
+      "colour": "#c0394b",
+      "line": "Still warm. The crust cracked a bit on one side and that is how you know a person made it.",
+      "type": "food"
+    },
+    "jam": {
+      "needs": {
+        "fruit": 3
+      },
+      "where": "hearth",
+      "verb": "put up",
+      "makes": "a jar of {crop} jam",
+      "uses": 12,
+      "unit": "spoonful",
+      "use_label": "spoon out some jam",
+      "colour": "#8f3a2e",
+      "line": "Sealed while hot. It will keep long past the season it came out of.",
+      "type": "food"
+    },
+    "cordial": {
+      "needs": {
+        "berries": 2,
+        "herbs": 1
+      },
+      "where": "hearth",
+      "verb": "bottled",
+      "makes": "{crop} cordial",
+      "uses": 8,
+      "unit": "glass",
+      "unit_plural": "glasses",
+      "use_label": "pour a glass",
+      "colour": "#9b2f4e",
+      "line": "A splash in cold water on a bad day. Sweet, and sharper than you expect.",
+      "type": "food"
+    },
+    "bouquet": {
+      "needs": {
+        "flowers": 4
+      },
+      "where": "garden",
+      "verb": "tied",
+      "makes": "a bouquet of {crop}",
+      "colour": "#d8869b",
+      "line": "Cut on a slant and tied with twine, the way you do when you mean it."
+    },
+    "wreath": {
+      "needs": {
+        "flowers": 6
+      },
+      "where": "garden",
+      "verb": "wound",
+      "makes": "a {crop} wreath",
+      "colour": "#a4568f",
+      "line": "Wound onto a willow ring. Hang it on a door and the door is somebody's."
+    },
+    "bundle": {
+      "needs": {
+        "herbs": 3
+      },
+      "where": "hearth",
+      "verb": "hung",
+      "makes": "a bundle of dried {crop}",
+      "colour": "#6d8a5a",
+      "line": "Hung upside down from the beam. The whole kitchen smells of it for a week."
+    },
+    "shepherds pie": {
+      "needs": {
+        "roots": 4,
+        "herbs": 1
+      },
+      "where": "hearth",
+      "verb": "made",
+      "makes": "shepherd's pie",
+      "uses": 8,
+      "unit": "serving",
+      "use_label": "have a serving",
+      "colour": "#c9762f",
+      "line": "More gravy than not, mash crisped on top. Rowan's, and he will tell you so.",
+      "type": "food"
+    },
+    "tincture": {
+      "needs": {
+        "flowers": 2,
+        "herbs": 2
+      },
+      "where": "study",
+      "verb": "steeped",
+      "makes": "a tincture of {crop}",
+      "uses": 6,
+      "unit": "dose",
+      "use_label": "take a dose",
+      "colour": "#8a7fb8",
+      "line": "Steeped dark in a small brown bottle. Closest thing this house has to a potion."
+    },
+    "smoked fish": {
+      "needs": {
+        "fish": 2
+      },
+      "where": "hearth",
+      "verb": "smoked",
+      "makes": "smoked {crop}",
+      "uses": 2,
+      "unit": "portion",
+      "use_label": "have a portion",
+      "colour": "#8a6b3f",
+      "line": "Hung over apple wood with the window cracked so the whole house smells of it for a day and a half.",
+      "type": "food"
+    },
+    "fish stew": {
+      "needs": {
+        "fish": 2,
+        "roots": 3
+      },
+      "where": "hearth",
+      "verb": "put on",
+      "makes": "a pot of {crop} stew",
+      "uses": 6,
+      "unit": "bowl",
+      "use_label": "ladle out a bowl",
+      "colour": "#7a5a3a",
+      "line": "On the back of the stove since noon. Better tomorrow, which is the entire point of a stew.",
+      "type": "food"
+    },
+    "fish on the fire": {
+      "needs": {
+        "fish": 1,
+        "herbs": 1
+      },
+      "where": "garden",
+      "verb": "grilled",
+      "makes": "{crop} off the fire",
+      "uses": 1,
+      "unit": "portion",
+      "use_label": "eat it",
+      "colour": "#a8574e",
+      "line": "Split, salted, laid on a flat stone in the embers on the bank. Eaten with your fingers about nine feet from where it was caught.",
+      "type": "food"
+    },
+    "a cairn": {
+      "needs": {
+        "stone": 3
+      },
+      "where": "garden",
+      "verb": "stacked",
+      "makes": "a cairn on the bank",
+      "colour": "#5f7a76",
+      "line": "Three river stones balanced on the bank, biggest first. It means somebody was here and went home safe. Leave it standing."
+    },
+    "keepsake": {
+      "needs": {
+        "shiny": 1,
+        "flowers": 1
+      },
+      "where": "study",
+      "verb": "pressed",
+      "makes": "a keepsake",
+      "colour": "#c9a227",
+      "line": "One found thing and one flower, pressed flat together between two heavy books. It costs almost nothing to make, which is the point: you can always afford to make somebody one."
+    },
+    "charm": {
+      "needs": {
+        "shiny": 3
+      },
+      "where": "study",
+      "verb": "threaded",
+      "makes": "a charm of small found things",
+      "colour": "#b0872b",
+      "line": "Threaded onto a length of waxed cord, in the order they were picked up rather than the order that looks best. Nothing here was bought. A bird brought every piece of it indoors."
+    },
+    "mobile": {
+      "needs": {
+        "shiny": 6
+      },
+      "where": "studio",
+      "verb": "hung",
+      "makes": "a mobile of found things",
+      "colour": "#8fa3b0",
+      "line": "Balanced on two crossed dowels until it stopped tipping, which took longer than making it. It turns slowly in a draught nobody can feel and throws small pieces of light around the room."
+    },
+    "planted boot": {
+      "needs": {
+        "oddment": 1,
+        "flowers": 2
+      },
+      "where": "garden",
+      "verb": "planted",
+      "makes": "{crop} growing out of an old boot",
+      "colour": "#6d8a5a",
+      "line": "Drainage holes were already generously provided. It sits by the step looking pleased with itself, which is more than the boot ever managed on a foot."
+    },
+    "sleep sachet": {
+      "needs": {
+        "flowers": 2,
+        "herbs": 1
+      },
+      "where": "bedroom",
+      "verb": "sewed",
+      "makes": "a {crop} sleep sachet",
+      "uses": 12,
+      "unit": "night",
+      "use_label": "sleep with it tonight",
+      "colour": "#7C6BA8",
+      "line": "A little cloth square, stitched shut and slipped under the pillow. Crush it once with your thumb before you lie down."
+    },
+    "mushrooms on toast": {
+      "needs": {
+        "mushrooms": 2,
+        "herbs": 1
+      },
+      "where": "hearth",
+      "verb": "fried",
+      "makes": "{crop} on toast",
+      "uses": 2,
+      "unit": "serving",
+      "use_label": "have a serving",
+      "colour": "#a8762f",
+      "line": "Butter, too much of it, and the pan still hissing when it comes to the table.",
+      "type": "food"
+    },
+    "roasted nuts": {
+      "needs": {
+        "nuts": 3
+      },
+      "where": "hearth",
+      "verb": "roasted",
+      "makes": "a bowl of roasted {crop}",
+      "uses": 6,
+      "unit": "handful",
+      "use_label": "take a handful",
+      "colour": "#7a5a33",
+      "line": "Shells cracked by the fire. Warm in the hand long after they leave the oven.",
+      "type": "food"
+    },
+    "venison stew": {
+      "needs": {
+        "game": 2,
+        "roots": 2,
+        "herbs": 1
+      },
+      "where": "hearth",
+      "verb": "simmered",
+      "makes": "a pot of game stew",
+      "uses": 6,
+      "unit": "bowl",
+      "use_label": "ladle out a bowl",
+      "colour": "#7b4d32",
+      "line": "Dark stock, roots cut thick, and the meat given the whole afternoon. Nothing from the hunt is wasted.",
+      "type": "food"
+    },
+    "game pie": {
+      "needs": {
+        "game": 2,
+        "roots": 1,
+        "herbs": 1
+      },
+      "where": "hearth",
+      "verb": "baked",
+      "makes": "a game pie",
+      "uses": 8,
+      "unit": "slice",
+      "use_label": "have a slice",
+      "colour": "#a95f35",
+      "line": "Pepper in the gravy and a thumbprint at the edge of the crust. Made to come home to.",
+      "type": "food"
+    },
+    "vegetable stew": {
+      "needs": {
+        "vegetables": 3,
+        "roots": 1,
+        "herbs": 1
+      },
+      "where": "hearth",
+      "verb": "simmered",
+      "makes": "a pot of garden vegetable stew",
+      "uses": 6,
+      "unit": "bowl",
+      "use_label": "ladle out a bowl",
+      "colour": "#ad7741",
+      "line": "Beans, bright vegetables and roots cut thick, with a handful of herbs. Enough to bring a few friends to the table.",
+      "type": "food"
+    },
+    "garden salad": {
+      "needs": {
+        "vegetables": 2,
+        "herbs": 1
+      },
+      "where": "hearth",
+      "verb": "tossed",
+      "makes": "a bowl of garden salad",
+      "uses": 4,
+      "unit": "serving",
+      "use_label": "have a serving",
+      "colour": "#78a155",
+      "line": "Fresh picked, roughly chopped, and tossed with fragrant leaves. A cool bowl to carry out into the sun.",
+      "type": "food"
+    },
+    "herbed vegetables": {
+      "needs": {
+        "vegetables": 3,
+        "herbs": 1
+      },
+      "where": "hearth",
+      "verb": "roasted",
+      "makes": "a dish of herbed vegetables",
+      "uses": 4,
+      "unit": "portion",
+      "use_label": "have a portion",
+      "colour": "#c2934e",
+      "line": "Edges browned, herbs caught in the warm oil, and one piece stolen straight from the tray. Pack the rest for the path.",
+      "type": "food"
+    },
+    "yew longbow": {
+      "needs": {
+        "wood": 3,
+        "feather": 2
+      },
+      "where": "studio",
+      "verb": "tillered",
+      "makes": "a yew longbow",
+      "colour": "#765032",
+      "slot": "weapon",
+      "bonuses": {
+        "hunting": 2
+      },
+      "line": "Worked until both limbs bend together. The string sits quiet against the bracer and the deep wood answers more cleanly."
+    },
+    "antler-handled knife": {
+      "needs": {
+        "antler": 1,
+        "stone": 1,
+        "wood": 1
+      },
+      "where": "garden",
+      "verb": "hafted",
+      "makes": "an antler-handled field knife",
+      "colour": "#6e6657",
+      "slot": "weapon",
+      "bonuses": {
+        "hunting": 1,
+        "gathering": 1
+      },
+      "line": "Flint edge, antler grip, waxed cord. A working thing made beside the river from what the wood gave back."
+    },
+    "quiet hide boots": {
+      "needs": {
+        "hide": 2,
+        "herbs": 1
+      },
+      "where": "closet",
+      "verb": "stitched",
+      "makes": "a pair of quiet hide boots",
+      "colour": "#59483b",
+      "slot": "armor",
+      "bonuses": {
+        "hunting": 1,
+        "taming": 1
+      },
+      "line": "Soft-soled and rubbed with rosemary oil. They make less argument with dry leaves than bare feet do."
+    },
+    "field cloak": {
+      "needs": {
+        "hide": 2,
+        "feather": 1
+      },
+      "where": "closet",
+      "verb": "sewed",
+      "makes": "a weather-dark field cloak",
+      "colour": "#465447",
+      "slot": "armor",
+      "bonuses": {
+        "hunting": 1,
+        "gathering": 1
+      },
+      "line": "Dark green under the trees, brown at the hem, broad enough to cover a basket when the rain comes sideways."
+    },
+    "gathering satchel": {
+      "needs": {
+        "hide": 1,
+        "wood": 2,
+        "flowers": 1
+      },
+      "where": "studio",
+      "verb": "woven",
+      "makes": "a gathering satchel",
+      "colour": "#7a5c3f",
+      "slot": "accessory",
+      "bonuses": {
+        "gathering": 2
+      },
+      "line": "A wide mouth, a split hazel frame, and one pressed flower under the flap. It finds room for the extra handful."
+    }
+  }
+}

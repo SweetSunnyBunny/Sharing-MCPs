@@ -1,0 +1,467 @@
+{
+  "recipes": {
+    "leather_backpack": {
+      "name": "Leather Backpack",
+      "type": "gear",
+      "world": "heros_journey",
+      "materials": {
+        "Deer Hide": 2,
+        "Thread": 1
+      },
+      "durability": 50,
+      "benefit": {
+        "type": "inventory_capacity",
+        "value": 10,
+        "description": "Increases inventory capacity by 10 slots"
+      },
+      "specialty": false,
+      "description": "A sturdy backpack for carrying more items"
+    },
+    "rabbit_pelt_shoes": {
+      "name": "Rabbit Pelt Shoes",
+      "type": "gear",
+      "world": "heros_journey",
+      "materials": {
+        "Rabbit Pelt": 2,
+        "Thread": 1
+      },
+      "durability": 30,
+      "benefit": {
+        "type": "hunting_bonus",
+        "value": 2,
+        "description": "+2 to hunting rolls (silent steps)"
+      },
+      "specialty": false,
+      "description": "Soft shoes that help you move quietly while hunting"
+    },
+    "leather_belt": {
+      "name": "Leather Belt",
+      "type": "gear",
+      "world": "heros_journey",
+      "materials": {
+        "Boar Hide": 1,
+        "Thread": 1
+      },
+      "durability": 40,
+      "benefit": {
+        "type": "equipment_slots",
+        "value": 2,
+        "description": "Adds 2 quick-access equipment slots"
+      },
+      "specialty": false,
+      "description": "A durable belt with pouches for quick access"
+    },
+    "master_artisan_cloak": {
+      "name": "Master Artisan's Cloak",
+      "type": "gear",
+      "world": "heros_journey",
+      "materials": {
+        "Wolf Pelt": 3,
+        "Deer Hide": 2,
+        "Golden Thread": 1,
+        "Enchanted Gemstone": 1
+      },
+      "durability": 100,
+      "benefit": {
+        "type": "crafting_bonus",
+        "value": 5,
+        "description": "NPCs recognize you as a master crafter. +5% better prices when selling crafted goods"
+      },
+      "specialty": true,
+      "npc_recognition": "Ah, a master artisan! That's a fine cloak you're wearing.",
+      "description": "A legendary cloak that marks you as a master of your craft"
+    },
+    "rabbit_stew": {
+      "name": "Hearty Rabbit Stew",
+      "type": "food",
+      "world": "heros_journey",
+      "materials": {
+        "Rabbit Meat": 2,
+        "Wild Herbs": 1,
+        "Water": 1
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "healing",
+        "value": 15,
+        "description": "Restores 15 HP and grants +1 to all rolls for 1 hour"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "A warm, filling stew that restores energy"
+    },
+    "venison_roast": {
+      "name": "Venison Roast",
+      "type": "food",
+      "world": "heros_journey",
+      "materials": {
+        "Venison": 2,
+        "Seasoning": 1,
+        "Firewood": 1
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "buff",
+        "value": 3,
+        "description": "+3 to Strength rolls for 2 hours"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "A delicious roasted venison that boosts strength"
+    },
+    "healing_potion": {
+      "name": "Lesser Healing Potion",
+      "type": "potion",
+      "world": "heros_journey",
+      "materials": {
+        "herbs": 3
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "healing",
+        "value": 25,
+        "description": "Restores 25 HP instantly"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "A basic healing potion made from herbs"
+    },
+    "berry_tonic": {
+      "name": "Berry Tonic",
+      "type": "potion",
+      "world": "heros_journey",
+      "materials": {
+        "berries": 5,
+        "herbs": 1
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "healing",
+        "value": 15,
+        "description": "Restores 15 HP and tastes sweet"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "A sweet healing tonic made from fresh berries"
+    },
+    "berry_antidote": {
+      "name": "Berry Antidote",
+      "type": "potion",
+      "world": "heros_journey",
+      "materials": {
+        "berries": 3,
+        "mushrooms": 2
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "cure_poison",
+        "value": 1,
+        "description": "Cures poison and restores 10 HP"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "An antidote that neutralizes poisons"
+    },
+    "forest_brew": {
+      "name": "Forest Brew",
+      "type": "potion",
+      "world": "heros_journey",
+      "materials": {
+        "mushrooms": 2,
+        "herbs": 2,
+        "berries": 2
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "buff",
+        "value": 2,
+        "description": "+2 to gathering and collecting rolls for 1 hour"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "A magical brew that enhances foraging abilities"
+    },
+    "stamina_tonic": {
+      "name": "Stamina Tonic",
+      "type": "potion",
+      "world": "heros_journey",
+      "materials": {
+        "Energizing Herbs": 2,
+        "Honey": 1,
+        "Empty Vial": 1
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "cooldown_reduction",
+        "value": 50,
+        "description": "Reduces all cooldowns by 50% for 30 minutes"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "A refreshing tonic that restores stamina"
+    },
+    "simple_snare": {
+      "name": "Simple Snare",
+      "type": "tool",
+      "world": "heros_journey",
+      "materials": {
+        "firewood": 3
+      },
+      "durability": 3,
+      "benefit": {
+        "type": "hunting_bonus",
+        "value": 1,
+        "description": "+1 to hunting rolls when used in the area"
+      },
+      "specialty": false,
+      "description": "A simple wooden snare for small game"
+    },
+    "hunting_trap": {
+      "name": "Hunting Trap",
+      "type": "tool",
+      "world": "heros_journey",
+      "materials": {
+        "firewood": 5,
+        "Iron Ingot": 2
+      },
+      "durability": 10,
+      "benefit": {
+        "type": "auto_hunt",
+        "value": 1,
+        "description": "Set in hunting areas - passive chance to catch small game daily"
+      },
+      "specialty": false,
+      "description": "A mechanical trap for catching small animals"
+    },
+    "fishing_rod": {
+      "name": "Fishing Rod",
+      "type": "tool",
+      "world": "heros_journey",
+      "materials": {
+        "firewood": 4,
+        "Thread": 2
+      },
+      "durability": 25,
+      "benefit": {
+        "type": "unlock_activity",
+        "value": "fishing",
+        "description": "Unlocks the !fish command in water areas"
+      },
+      "specialty": false,
+      "description": "A simple fishing rod for catching fish"
+    },
+    "gathering_basket": {
+      "name": "Gathering Basket",
+      "type": "tool",
+      "world": "heros_journey",
+      "materials": {
+        "firewood": 2,
+        "wildflowers": 10
+      },
+      "durability": 20,
+      "benefit": {
+        "type": "gather_bonus",
+        "value": 2,
+        "description": "+2 items when gathering (find more at once)"
+      },
+      "specialty": false,
+      "description": "A woven basket that helps you gather more efficiently"
+    },
+    "torches": {
+      "name": "Bundle of Torches",
+      "type": "tool",
+      "world": "heros_journey",
+      "materials": {
+        "firewood": 2
+      },
+      "durability": 5,
+      "benefit": {
+        "type": "exploration_bonus",
+        "value": 1,
+        "description": "+1 to search rolls in dark areas"
+      },
+      "specialty": false,
+      "description": "Torches to light your way in dark places"
+    },
+    "firewood": {
+      "name": "firewood",
+      "type": "material",
+      "world": "heros_journey",
+      "materials": {
+        "Oak Branch": 2
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "material",
+        "description": "Fuel for a cooking fire"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "Two oak branches, broken down and stacked into firewood"
+    },
+    "apple_pie": {
+      "name": "Apple Pie",
+      "type": "food",
+      "world": "heros_journey",
+      "materials": {
+        "apples": 5,
+        "firewood": 1
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "healing",
+        "value": 10,
+        "description": "Restores 10 HP and grants +1 morale for 30 minutes"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "A delicious apple pie baked over a fire"
+    },
+    "mushroom_soup": {
+      "name": "Mushroom Soup",
+      "type": "food",
+      "world": "heros_journey",
+      "materials": {
+        "mushrooms": 4,
+        "herbs": 1,
+        "firewood": 1
+      },
+      "durability": 1,
+      "benefit": {
+        "type": "buff",
+        "value": 1,
+        "description": "+1 to all gathering rolls for 1 hour"
+      },
+      "specialty": false,
+      "consumable": true,
+      "description": "A hearty soup that warms the soul"
+    },
+    "bone_treats_small": {
+      "name": "Small Bone Treats",
+      "type": "companion_treat",
+      "world": "heros_journey",
+      "materials": {
+        "Small Bones": 2,
+        "Rabbit Meat": 1
+      },
+      "durability": 3,
+      "benefit": {
+        "type": "companion_loyalty",
+        "value": 5,
+        "description": "+5 loyalty per treat when fed to companion"
+      },
+      "specialty": false,
+      "consumable": true,
+      "companion_types": ["rabbit", "squirrel", "cat", "fox", "raven"],
+      "description": "Crunchy treats perfect for small companions"
+    },
+    "bone_treats_medium": {
+      "name": "Medium Bone Treats",
+      "type": "companion_treat",
+      "world": "heros_journey",
+      "materials": {
+        "Medium Bones": 2,
+        "Venison": 1
+      },
+      "durability": 3,
+      "benefit": {
+        "type": "companion_loyalty",
+        "value": 7,
+        "description": "+7 loyalty per treat when fed to companion"
+      },
+      "specialty": false,
+      "consumable": true,
+      "companion_types": ["wolf", "hawk", "owl", "fox"],
+      "description": "Hearty treats for medium-sized companions"
+    },
+    "bone_treats_large": {
+      "name": "Large Bone Treats",
+      "type": "companion_treat",
+      "world": "heros_journey",
+      "materials": {
+        "Large Bones": 2,
+        "Boar Meat": 1
+      },
+      "durability": 3,
+      "benefit": {
+        "type": "companion_loyalty",
+        "value": 10,
+        "description": "+10 loyalty per treat when fed to companion"
+      },
+      "specialty": false,
+      "consumable": true,
+      "companion_types": ["bear_cub", "direwolf", "wolf"],
+      "description": "Big meaty treats for large companions"
+    },
+    "predator_jerky": {
+      "name": "Predator Jerky",
+      "type": "companion_treat",
+      "world": "heros_journey",
+      "materials": {
+        "Wolf Meat": 2,
+        "herbs": 1
+      },
+      "durability": 5,
+      "benefit": {
+        "type": "companion_loyalty",
+        "value": 8,
+        "description": "+8 loyalty - carnivores love this!"
+      },
+      "specialty": false,
+      "consumable": true,
+      "companion_types": ["wolf", "direwolf", "fox", "bear_cub", "snake", "hawk"],
+      "description": "Dried meat strips that predators find irresistible"
+    },
+    "birdseed_mix": {
+      "name": "Birdseed Mix",
+      "type": "companion_treat",
+      "world": "heros_journey",
+      "materials": {
+        "berries": 3,
+        "herbs": 2
+      },
+      "durability": 5,
+      "benefit": {
+        "type": "companion_loyalty",
+        "value": 6,
+        "description": "+6 loyalty - birds and small critters love it!"
+      },
+      "specialty": false,
+      "consumable": true,
+      "companion_types": ["raven", "hawk", "owl", "squirrel", "rabbit"],
+      "description": "A nutritious mix of seeds and dried berries"
+    }
+  },
+  "repair_costs": {
+    "gear": {
+      "per_durability": 0.5,
+      "materials_factor": 0.25
+    },
+    "tool": {
+      "per_durability": 0.3,
+      "materials_factor": 0.2
+    },
+    "note": "Repair costs = (max_durability - current_durability) * materials_factor * original_materials"
+  },
+  "durability_loss": {
+    "gear": {
+      "per_hunt": 1,
+      "per_quest": 2,
+      "per_day_worn": 0.5
+    },
+    "tool": {
+      "per_use": 1
+    },
+    "food": {
+      "consumed_on_use": true
+    },
+    "potion": {
+      "consumed_on_use": true
+    }
+  },
+  "notes": {
+    "specialty_items": "Rare items that NPCs recognize and comment on",
+    "consumables": "Items with durability 1 that are consumed when used",
+    "benefits": "Mechanical advantages items provide when owned/equipped"
+  }
+}

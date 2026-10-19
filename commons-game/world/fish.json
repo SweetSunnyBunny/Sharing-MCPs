@@ -1,0 +1,159 @@
+{
+  "growth_per_release": 0.02,
+  "growth_cap": 0.6,
+  "casts_per_day": 6,
+  "waters": {
+    "the river": [
+      "brown trout",
+      "perch",
+      "roach",
+      "rudd",
+      "gudgeon",
+      "eel",
+      "pike",
+      "salmon",
+      "a river stone",
+      "an old boot",
+      "something silver"
+    ],
+    "the pond": [
+      "brown trout",
+      "perch",
+      "roach",
+      "rudd",
+      "gudgeon",
+      "eel",
+      "pike",
+      "salmon",
+      "a river stone",
+      "an old boot",
+      "something silver"
+    ]
+  },
+  "fish": {
+    "brown trout": {
+      "weight": 22,
+      "lb": [
+        0.6,
+        3.4
+      ],
+      "when": "any",
+      "yields": "fish",
+      "colour": "#8a6b3f",
+      "line": "Speckled gold and red, hard as a fist in the hand. He fought the whole way in."
+    },
+    "perch": {
+      "weight": 20,
+      "lb": [
+        0.3,
+        2.1
+      ],
+      "when": "day",
+      "yields": "fish",
+      "colour": "#3f6b4a",
+      "line": "Barred green with that spiked dorsal up like a raised hackle. Handsome and furious."
+    },
+    "roach": {
+      "weight": 20,
+      "lb": [
+        0.2,
+        1.4
+      ],
+      "when": "any",
+      "yields": "fish",
+      "colour": "#8d9aa6",
+      "line": "Silver with red fins, the commonest fish in the water and none the worse for it."
+    },
+    "rudd": {
+      "weight": 14,
+      "lb": [
+        0.2,
+        1.6
+      ],
+      "when": "dusk",
+      "yields": "fish",
+      "colour": "#b08a4a",
+      "line": "Brassy gold, feeding right at the surface in the last of the light."
+    },
+    "gudgeon": {
+      "weight": 12,
+      "lb": [
+        0.05,
+        0.3
+      ],
+      "when": "any",
+      "yields": "fish",
+      "colour": "#7a7060",
+      "line": "Tiny, whiskered, entirely unbothered. The smallest catch in the river and somehow the most pleased with itself."
+    },
+    "eel": {
+      "weight": 8,
+      "lb": [
+        0.8,
+        5.5
+      ],
+      "when": "night",
+      "yields": "fish",
+      "colour": "#2e3b30",
+      "line": "All muscle and no manners. Came out of the dark under the bank and made a knot of the line."
+    },
+    "pike": {
+      "weight": 5,
+      "lb": [
+        4.0,
+        22.0
+      ],
+      "when": "dawn",
+      "yields": "fish",
+      "colour": "#4a5f3a",
+      "line": "The wolf of the river. Green-barred, ancient-eyed, and it looked at you before it went back down."
+    },
+    "salmon": {
+      "weight": 2,
+      "lb": [
+        6.0,
+        28.0
+      ],
+      "when": "dawn",
+      "yields": "fish",
+      "colour": "#a8574e",
+      "line": "Came up out of the deep pool under the willow like something coming home. Sea-bright. A long way from where it started."
+    },
+    "a river stone": {
+      "weight": 9,
+      "lb": [
+        0.1,
+        1.2
+      ],
+      "when": "any",
+      "yields": "stone",
+      "colour": "#5f7a76",
+      "line": "Not a fish. A stone, greenish-blue and worn perfectly round, the exact colour of Blair. Worth keeping anyway."
+    },
+    "an old boot": {
+      "weight": 7,
+      "lb": [
+        1.0,
+        2.0
+      ],
+      "when": "any",
+      "yields": "oddment",
+      "colour": "#4a3a2c",
+      "line": "One boot. Left foot. Full of river. There is no story attached and that is somehow worse."
+    },
+    "something silver": {
+      "weight": 1,
+      "lb": [
+        0.02,
+        0.2
+      ],
+      "when": "night",
+      "yields": "oddment",
+      "colour": "#c9cdd4",
+      "line": "It caught the moon on the way up and you have not been able to name it since. It is warm, which river things are not."
+    }
+  },
+  "junk_categories": [
+    "oddment"
+  ]
+}

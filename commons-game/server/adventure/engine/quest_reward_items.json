@@ -1,0 +1,268 @@
+{
+  "description": "Unique quest reward items that cannot be crafted - earned only through completing storylines",
+
+  "unique_items": {
+    "heros_journey": {
+      "wolf_fang_necklace": {
+        "name": "Wolf Fang Necklace",
+        "type": "accessory",
+        "slot": "accessory",
+        "description": "A necklace of wolf fangs that marks you as a proven wolf hunter",
+        "flavor": "The fangs clatter softly as you move. Wolves sense your prowess and think twice before attacking.",
+        "source": "Victor's Wolf Menace storyline (Quest 3)",
+        "bonuses": {
+          "wolf_hunting": 3,
+          "intimidation": 2
+        },
+        "special_effects": {
+          "wolf_fear": "Wolves have a 20% chance to flee when you encounter them"
+        },
+        "rarity": "rare",
+        "tradeable": false,
+        "sellable": false
+      },
+
+      "alpha_wolf_pelt": {
+        "name": "Alpha Wolf Pelt",
+        "type": "trophy",
+        "slot": null,
+        "description": "The magnificent pelt of an alpha wolf - proof of your victory over the pack leader",
+        "flavor": "This thick, silver-streaked fur is unmistakable. Victor and other rangers recognize it immediately.",
+        "source": "Victor's Wolf Menace storyline (Quest 3)",
+        "bonuses": {},
+        "special_effects": {
+          "ranger_recognition": "Rangers and hunters treat you with immediate respect",
+          "victor_friendship": true
+        },
+        "grants_title": "wolf_slayer",
+        "rarity": "epic",
+        "tradeable": false,
+        "sellable": false
+      },
+
+      "hunters_cloak": {
+        "name": "Hunter's Cloak",
+        "type": "armor",
+        "slot": "armor",
+        "description": "A masterwork cloak made from alpha wolf fur - the mark of a true ranger",
+        "flavor": "The cloak seems to blend with shadows and undergrowth. You move like a predator.",
+        "source": "Victor's Wolf Menace storyline (Chain Completion)",
+        "bonuses": {
+          "stealth": 3,
+          "hunting_bonus": 2,
+          "tracking": 2
+        },
+        "special_effects": {
+          "blend_in": "+15% chance to avoid random encounters in wilderness"
+        },
+        "rarity": "epic",
+        "tradeable": false,
+        "sellable": false
+      },
+
+      "rangers_quiver": {
+        "name": "Ranger's Quiver",
+        "type": "gear",
+        "slot": null,
+        "description": "A finely crafted quiver given only to those Victor trusts",
+        "flavor": "The quiver's design steadies your aim. Victor's mark is burned into the leather.",
+        "source": "Victor's Wolf Menace storyline (Chain Completion)",
+        "bonuses": {
+          "ranged_bonus": 2,
+          "arrow_capacity": 30
+        },
+        "special_effects": {
+          "steady_aim": "Critical hit chance +5% with ranged weapons"
+        },
+        "rarity": "rare",
+        "tradeable": false,
+        "sellable": false
+      },
+
+      "tracking_map": {
+        "name": "Tracking Map",
+        "type": "consumable",
+        "slot": null,
+        "description": "Victor's hand-drawn map marking wolf trails and dens",
+        "flavor": "The map shows hidden paths and animal signs only a ranger would notice.",
+        "source": "Victor's Wolf Menace storyline (Quest 2)",
+        "bonuses": {},
+        "consumable": true,
+        "effect": {
+          "type": "buff",
+          "buff": "tracking",
+          "buff_value": 3,
+          "duration": 60,
+          "description": "+3 to tracking and hunting rolls for 1 hour"
+        },
+        "rarity": "uncommon",
+        "tradeable": true,
+        "sellable": true,
+        "sell_value": 5
+      },
+
+      "greater_healing_potion": {
+        "name": "Greater Healing Potion",
+        "type": "consumable",
+        "slot": null,
+        "description": "A powerful healing potion from Victor's ranger contacts",
+        "flavor": "The potion blazes with golden light. This is no simple apothecary's brew.",
+        "source": "Victor's Wolf Menace storyline (Quest 3)",
+        "consumable": true,
+        "effect": {
+          "type": "heal",
+          "value": 75,
+          "description": "Restores 75 HP"
+        },
+        "rarity": "rare",
+        "tradeable": true,
+        "sellable": true,
+        "sell_value": 25
+      },
+
+      "tavern_hero_badge": {
+        "name": "Tavern Hero Badge",
+        "type": "accessory",
+        "slot": "accessory",
+        "description": "A badge showing you saved The Prancing Pony from various troubles",
+        "flavor": "Bran made this himself. The regulars recognize it and buy you drinks.",
+        "source": "Bran's Tavern Troubles storyline (Chain Completion)",
+        "bonuses": {
+          "social": 2,
+          "charisma": 1
+        },
+        "special_effects": {
+          "free_ale_daily": "Free ale once per day at The Prancing Pony",
+          "tavern_recognition": "NPCs at the tavern greet you warmly"
+        },
+        "grants_title": "tavern_hero",
+        "rarity": "rare",
+        "tradeable": false,
+        "sellable": false
+      },
+
+      "enchanted_focus_crystal": {
+        "name": "Enchanted Focus Crystal",
+        "type": "accessory",
+        "slot": "accessory",
+        "description": "A crystal attuned to magical energies by Elowen herself",
+        "flavor": "The crystal pulses with soft light, responding to your thoughts.",
+        "source": "Elowen's Arcane Mysteries storyline (Chain Completion)",
+        "bonuses": {
+          "magic_rolls": 3,
+          "focus": 2
+        },
+        "special_effects": {
+          "potion_boost": "Potions are 25% more effective",
+          "mana_sense": "Can detect magical items and creatures"
+        },
+        "grants_title": "apprentice_mage",
+        "rarity": "epic",
+        "tradeable": false,
+        "sellable": false
+      },
+
+      "fey_blessing": {
+        "name": "Fey Blessing",
+        "type": "passive",
+        "slot": null,
+        "description": "A blessing bestowed by the fey themselves - nature responds to your presence",
+        "flavor": "An otherworldly shimmer surrounds you. Plants seem to lean toward you, and small creatures show no fear.",
+        "source": "Elowen's Fey Mystery storyline (Chain Completion)",
+        "passive": true,
+        "passive_bonuses": {
+          "gathering_bonus": 2,
+          "fey_daily_gift": true
+        },
+        "special_effects": {
+          "fey_daily_gift": "Once per day, receive a bonus rare item when gathering in the Feywilds",
+          "nature_affinity": "Animals are friendlier and easier to tame"
+        },
+        "rarity": "epic",
+        "tradeable": false,
+        "sellable": false
+      },
+
+      "fey_touched_ring": {
+        "name": "Fey Touched Ring",
+        "type": "accessory",
+        "slot": "accessory",
+        "description": "A ring infused with fey magic - it glimmers with an inner light",
+        "flavor": "The ring changes color with your mood. Sometimes it whispers secrets of the forest.",
+        "source": "Elowen's Fey Mystery storyline (Chain Completion)",
+        "bonuses": {
+          "gathering": 3,
+          "magic_rolls": 1
+        },
+        "special_effects": {
+          "fey_sight": "Can see hidden fey creatures and paths",
+          "gathering_luck": "+10% chance to find rare items when gathering"
+        },
+        "rarity": "rare",
+        "tradeable": false,
+        "sellable": false
+      },
+
+      "sparkbeam_scroll": {
+        "name": "Sparkbeam Scroll",
+        "type": "consumable",
+        "slot": null,
+        "description": "A scroll containing the Sparkbeam spell - deals extra damage to your next hunt target",
+        "flavor": "Fey writing dances across the parchment. When read aloud, a beam of concentrated starlight streaks forth.",
+        "source": "Elowen's Fey Mystery storyline (Quest 2)",
+        "consumable": true,
+        "effect": {
+          "type": "combat_buff",
+          "buff": "sparkbeam",
+          "buff_value": 15,
+          "duration": 1,
+          "description": "+15 damage on your next hunt"
+        },
+        "rarity": "uncommon",
+        "tradeable": true,
+        "sellable": true,
+        "sell_value": 10
+      },
+
+      "vip_tavern_pass": {
+        "name": "VIP Tavern Pass",
+        "type": "passive",
+        "slot": null,
+        "description": "A special pass marking you as a VIP at The Prancing Pony",
+        "flavor": "Bran's signature is on the back. 'For service above and beyond - drinks on the house!'",
+        "source": "Bran's Tavern Troubles storyline (Chain Completion)",
+        "passive": true,
+        "passive_bonuses": {
+          "bran_discount": 15,
+          "free_meal_daily": true
+        },
+        "special_effects": {
+          "bran_discount": "15% discount on all purchases from Bran",
+          "free_meal_daily": "One free meal per day at The Prancing Pony",
+          "vip_seating": "Access to the best table in the tavern"
+        },
+        "rarity": "rare",
+        "tradeable": false,
+        "sellable": false
+      }
+    }
+  },
+
+  "item_recognition": {
+    "description": "When NPCs see players with these items, they may comment on them",
+    "wolf_fang_necklace": {
+      "victor": "That necklace... you earned every fang on it. I'm proud of you.",
+      "bran": "Is that a wolf fang necklace? You've been busy out in the wilds!",
+      "elowen": "Interesting trophies. The wolves must have put up quite a fight."
+    },
+    "hunters_cloak": {
+      "victor": "Wearing that cloak marks you as one of us. Welcome, ranger-friend.",
+      "bran": "That's quite the cloak! Victor doesn't give those out lightly.",
+      "cassian": "A hunter's cloak! I'll give you a fair price on anything you bring in."
+    },
+    "alpha_wolf_pelt": {
+      "victor": "You kept the pelt. Good. It's a reminder of what you accomplished.",
+      "any": "Is that... an alpha wolf pelt? You must be quite the hunter."
+    }
+  }
+}

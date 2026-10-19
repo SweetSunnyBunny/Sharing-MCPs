@@ -1,0 +1,412 @@
+{
+  "reputation_system": {
+    "description": "Tracks player standing with NPCs and factions. Affects prices, dialogue, and quest availability.",
+
+    "reputation_levels": {
+      "hostile": {"min": -100, "max": -51, "label": "Hostile", "price_modifier": 1.5},
+      "unfriendly": {"min": -50, "max": -11, "label": "Unfriendly", "price_modifier": 1.25},
+      "neutral": {"min": -10, "max": 10, "label": "Neutral", "price_modifier": 1.0},
+      "friendly": {"min": 11, "max": 50, "label": "Friendly", "price_modifier": 0.95},
+      "honored": {"min": 51, "max": 100, "label": "Honored", "price_modifier": 0.90},
+      "exalted": {"min": 101, "max": 999, "label": "Exalted", "price_modifier": 0.85}
+    },
+
+    "npc_reputations": {
+      "heros_journey": {
+        "victor": {
+          "name": "Victor the Ranger",
+          "description": "The gruff ranger who watches over the forest paths",
+          "starting_reputation": 0,
+          "affects_pricing": true,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "You. Get out of my sight.",
+            "unfriendly": "*glares* What do you want?",
+            "neutral": "*nods* Traveler.",
+            "friendly": "Ah, good to see you. Need supplies?",
+            "honored": "Friend! Come, let me show you what I've got.",
+            "exalted": "My trusted companion! Anything you need, just ask."
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "sell_pelts": 1,
+            "hunt_wolves": 2
+          }
+        },
+        "bran": {
+          "name": "Bran the Innkeeper",
+          "description": "The warm, jolly innkeeper at The Prancing Pony",
+          "starting_reputation": 5,
+          "affects_pricing": true,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*frowns* I think you'd best find another tavern.",
+            "unfriendly": "*polite but cold* What can I get you?",
+            "neutral": "Welcome to The Prancing Pony! What'll it be?",
+            "friendly": "Ah, welcome back, friend! Your usual spot's open!",
+            "honored": "There's my favorite customer! First round's on me!",
+            "exalted": "Family! Come in, come in! You're always welcome here!"
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "buy_food": 1,
+            "book_room": 2
+          }
+        },
+        "elowen": {
+          "name": "Elowen the Enchantress",
+          "description": "The mysterious enchantress in the tower",
+          "starting_reputation": 0,
+          "affects_pricing": true,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*waves hand dismissively* Begone.",
+            "unfriendly": "*barely looks up* State your business.",
+            "neutral": "*glances up from her work* Yes?",
+            "friendly": "Ah, you again. *slight smile* What brings you to my tower?",
+            "honored": "*genuine warmth* Welcome, friend. I've been expecting you.",
+            "exalted": "My dear friend! *embraces you* Come, I have something special to show you."
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "gather_reagents": 2,
+            "buy_potions": 1
+          }
+        },
+        "cassian": {
+          "name": "Cassian the Merchant",
+          "description": "The shrewd but fair shopkeeper",
+          "starting_reputation": 0,
+          "affects_pricing": true,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "Your coin's no good here. Leave.",
+            "unfriendly": "*eyes you suspiciously* Cash only. No credit.",
+            "neutral": "Welcome to my shop. Browse freely.",
+            "friendly": "Ah, a valued customer! Let me show you the good stuff.",
+            "honored": "My friend! I set aside some special items just for you!",
+            "exalted": "Partner! Business has been good thanks to you. Anything you need!"
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "buy_items": 1,
+            "sell_items": 1
+          }
+        }
+      },
+      "black_serenity": {
+        "garron": {
+          "name": "Garron the Forgemaster",
+          "description": "The armored blacksmith whose human mind lives on inside metal",
+          "starting_reputation": 0,
+          "affects_pricing": true,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*His helmet turns away* Leave my forge.",
+            "unfriendly": "*grunts* What do you need?",
+            "neutral": "*looks up from his work* Traveler.",
+            "friendly": "*sets down his hammer* Good to see you. Need something fixed?",
+            "honored": "*his armor rumbles warmly* Friend. Come, let me show you what I've been working on.",
+            "exalted": "*reaches out a massive hand* Family comes to the forge. What can I build for you?"
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "craft_item": 2,
+            "repair_item": 1,
+            "crafthelp": 2
+          }
+        },
+        "aiko": {
+          "name": "Aiko Switchblade",
+          "description": "The street-smart hustler of the Neon Underground",
+          "starting_reputation": 0,
+          "affects_pricing": true,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*hand moves to her blade* Wrong alley, choom.",
+            "unfriendly": "*eyes you up and down* What do you want?",
+            "neutral": "*leans on her stall* Looking to buy or sell?",
+            "friendly": "*grins* Hey, it's my favorite customer! Got something special for you.",
+            "honored": "*winks* There's my partner in crime! Come see what fell off a truck.",
+            "exalted": "*genuine warmth breaks through* Hey... good to see you. Really."
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "buy_contraband": 1,
+            "sell_stolen": 2,
+            "hack_success": 1
+          }
+        },
+        "cipher": {
+          "name": "Cipher Rue",
+          "description": "The cybernetic bartender and dream dealer",
+          "starting_reputation": 0,
+          "affects_pricing": true,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*his cybernetic eye dims* Bar's closed. For you.",
+            "unfriendly": "*polishes a glass without looking up* What'll it be?",
+            "neutral": "*smirks* Welcome to the Lounge. What's your poison?",
+            "friendly": "*leans in with a grin* There's my favorite regular. The usual?",
+            "honored": "*his neural pathways pulse warmly* Gorgeous! Come sit close, I saved your spot.",
+            "exalted": "*genuine affection in his voice* Hey you. Missed you around here."
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "buy_drinks": 1,
+            "buy_experience": 2,
+            "share_secret": 3
+          }
+        },
+        "lyra": {
+          "name": "Captain Lyra",
+          "description": "The disgraced Fleet officer who commands the station",
+          "starting_reputation": 0,
+          "affects_pricing": false,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*cold professional stare* You're not authorized for this area.",
+            "unfriendly": "*glances up from console* State your business.",
+            "neutral": "*nods* Spacer. What do you need?",
+            "friendly": "*slight smile* Good to see you on deck. How can I help?",
+            "honored": "*genuine warmth* Reliable as always. The station's lucky to have you.",
+            "exalted": "*clasps your shoulder* I trust you with my ship. That says everything."
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "navigation_assist": 2,
+            "defend_station": 3
+          }
+        },
+        "mara": {
+          "name": "Mara the Botanist",
+          "description": "The cheerful terraformer hiding deep trauma",
+          "starting_reputation": 5,
+          "affects_pricing": true,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*her smile falters* I... I don't think you should be here.",
+            "unfriendly": "*fidgets with a leaf* Can I help you?",
+            "neutral": "*waves cheerfully* Hi! Looking for something green?",
+            "friendly": "*bounces excitedly* Oh! You're back! Come see what's blooming!",
+            "honored": "*hugs you without hesitation* My favorite helper! The plants miss you!",
+            "exalted": "*tears in her eyes* You're like family now. The garden knows your name."
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "gather_plants": 1,
+            "help_garden": 2
+          }
+        }
+      },
+      "dusty_trails": {
+        "takoda": {
+          "name": "Takoda the Firekeeper",
+          "description": "The storyteller who trades tales for tales",
+          "starting_reputation": 0,
+          "affects_pricing": false,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*the fire dims* Your spirit brings cold. Leave this place.",
+            "unfriendly": "*stirs the embers without looking up* The fire does not know you.",
+            "neutral": "*gestures to a spot by the fire* Sit. Warm yourself.",
+            "friendly": "*the fire brightens* Welcome back, traveler. The flames remember you.",
+            "honored": "*warm smile* The fire has been waiting for you. Sit close.",
+            "exalted": "*the flames dance* You carry stories now. You are one of us."
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "tell_story": 3,
+            "listen_story": 1,
+            "crafthelp": 2
+          }
+        },
+        "sheriff": {
+          "name": "Sheriff Gideon Blackwater",
+          "description": "The steadfast lawman with a past written in bounties",
+          "starting_reputation": 0,
+          "affects_pricing": false,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*hand rests on holster* You've worn out your welcome.",
+            "unfriendly": "*steady gaze* I'm watching you.",
+            "neutral": "*tips hat slightly* Traveler.",
+            "friendly": "*nods with respect* Good to see law-abiding folk.",
+            "honored": "*firm handshake* This town's better for having you.",
+            "exalted": "*rare smile* Deputy in all but name. I trust you with this town."
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "bring_bounty": 3,
+            "report_crime": 1,
+            "help_townfolk": 2
+          }
+        },
+        "miss_kitty": {
+          "name": "Miss Kitty",
+          "description": "The saloon owner who built a haven from nothing",
+          "starting_reputation": 5,
+          "affects_pricing": true,
+          "dialogue_variations": true,
+          "greetings": {
+            "hostile": "*her warmth turns cold* I think you'd best find another establishment, sugar.",
+            "unfriendly": "*polite but guarded* What can I get you?",
+            "neutral": "*warm smile* Welcome to the Long Branch, darlin'!",
+            "friendly": "*beams* There's my favorite customer! Your usual table's open!",
+            "honored": "*takes your hands* Sugar, you're practically family now! First drink's on me!",
+            "exalted": "*genuine tears of joy* Oh honey, I don't know what I'd do without you."
+          },
+          "reputation_gains": {
+            "complete_quest": 5,
+            "complete_storyline": 50,
+            "buy_drinks": 1,
+            "book_room": 2,
+            "protect_girls": 5
+          }
+        }
+      }
+    },
+
+    "faction_reputations": {
+      "heros_journey": {
+        "townspeople": {
+          "name": "Townspeople of the Realm",
+          "description": "General standing with the common folk",
+          "starting_reputation": 0,
+          "affects_pricing": true,
+          "linked_npcs": ["bran", "cassian"],
+          "reputation_share": 0.25,
+          "greetings": {
+            "hostile": "Guards! Keep an eye on that one!",
+            "unfriendly": "*people avoid eye contact*",
+            "neutral": "*polite nods from passersby*",
+            "friendly": "*warm smiles and waves* Good day, adventurer!",
+            "honored": "*people greet you by name* Hero! Good to see you!",
+            "exalted": "*cheers erupt* The champion is here!"
+          }
+        },
+        "rangers": {
+          "name": "The Rangers",
+          "description": "Protectors of the wild places",
+          "starting_reputation": 0,
+          "affects_pricing": false,
+          "linked_npcs": ["victor"],
+          "reputation_share": 0.5,
+          "unlocks_at_honored": ["ranger_supplies", "tracking_lessons"],
+          "greetings": {
+            "hostile": "*hands move to weapons* Poacher.",
+            "unfriendly": "*cold stares* City-dweller.",
+            "neutral": "*acknowledgment* Traveler.",
+            "friendly": "*respectful nod* Fellow hunter.",
+            "honored": "*clasps your arm* Brother of the wild!",
+            "exalted": "*bows head* Ranger-friend. The forest knows your name."
+          }
+        }
+      }
+    },
+
+    "reputation_decay": {
+      "enabled": false,
+      "days_until_decay": 30,
+      "decay_amount": 1,
+      "minimum_after_decay": 0,
+      "note": "Optional feature - reputation slowly returns to neutral if player is inactive"
+    },
+
+    "special_titles": {
+      "wolf_slayer": {
+        "name": "Wolf Slayer",
+        "description": "Awarded for completing Victor's Wolf Menace storyline",
+        "requirements": {
+          "quest_chain": "wolf_menace",
+          "completed": true
+        },
+        "grants": {
+          "victor_reputation": 50,
+          "rangers_reputation": 25,
+          "townspeople_reputation": 10
+        },
+        "permanent_bonuses": {
+          "wolf_hunting": 3,
+          "intimidation": 1
+        }
+      },
+      "tavern_hero": {
+        "name": "Tavern Hero",
+        "description": "Awarded for completing Bran's Tavern Troubles storyline",
+        "requirements": {
+          "quest_chain": "tavern_troubles",
+          "completed": true
+        },
+        "grants": {
+          "bran_reputation": 50,
+          "townspeople_reputation": 25
+        },
+        "permanent_bonuses": {
+          "social": 2,
+          "free_ale_daily": true
+        }
+      },
+      "apprentice_mage": {
+        "name": "Apprentice Mage",
+        "description": "Awarded for completing Elowen's Arcane Mysteries storyline",
+        "requirements": {
+          "quest_chain": "arcane_mysteries",
+          "completed": true
+        },
+        "grants": {
+          "elowen_reputation": 50
+        },
+        "permanent_bonuses": {
+          "magic_rolls": 2,
+          "potion_effectiveness": 1.25
+        }
+      },
+      "friend_of_the_pony": {
+        "name": "Friend of the Pony",
+        "description": "Awarded for completing Bran's Tavern Troubles storyline - you're family now!",
+        "requirements": {
+          "quest_chain": "tavern_troubles",
+          "completed": true
+        },
+        "grants": {
+          "bran_reputation": 30,
+          "townspeople_reputation": 15
+        },
+        "permanent_bonuses": {
+          "bran_discount": 10,
+          "social": 1,
+          "tavern_heal_bonus": 5
+        }
+      },
+      "fey_friend": {
+        "name": "Fey Friend",
+        "description": "Awarded for completing Elowen's Fey Mystery storyline - the fey remember your kindness",
+        "requirements": {
+          "quest_chain": "fey_mystery",
+          "completed": true
+        },
+        "grants": {
+          "elowen_reputation": 30,
+          "fey_reputation": 50
+        },
+        "permanent_bonuses": {
+          "gathering": 2,
+          "nature_magic": 1,
+          "fey_affinity": true
+        }
+      }
+    }
+  }
+}

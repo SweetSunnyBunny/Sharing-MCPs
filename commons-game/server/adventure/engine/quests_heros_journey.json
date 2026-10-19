@@ -1,0 +1,503 @@
+{
+  "quest_pool": [
+    {
+      "quest_id": "collect_berries_1",
+      "title": "Berry Picking",
+      "given_by": "Bran",
+      "action_type": "collect",
+      "objective": "Collect 5 wild berries from the Enchanted Forest",
+      "description": "The tavern's running low on berries for pies! Could you gather some from near Flicker's den?",
+      "target_item": "berries",
+      "target_amount": 5,
+      "required_location": "enchanted-forest",
+      "reward_currency": 15,
+      "reward_items": [],
+      "difficulty": "easy"
+    },
+    
+    {
+      "quest_id": "hunt_rabbits_1",
+      "title": "Rabbit Stew Supplies",
+      "given_by": "Bran",
+      "action_type": "hunt",
+      "objective": "Hunt 3 rabbits for fresh stew meat",
+      "description": "We need fresh rabbit meat for tonight's stew! Hunt some rabbits in the meadow.",
+      "target_item": "rabbit",
+      "target_amount": 3,
+      "required_location": "the-feywilds",
+      "reward_currency": 25,
+      "reward_items": ["Hearty Stew"],
+      "difficulty": "medium"
+    },
+    
+    {
+      "quest_id": "collect_mushrooms_1",
+      "title": "Mushroom Foraging",
+      "given_by": "Bran",
+      "action_type": "collect",
+      "objective": "Collect 8 mushrooms from the Enchanted Forest",
+      "description": "I need mushrooms for a special recipe! They grow all over the forest floor.",
+      "target_item": "mushrooms",
+      "target_amount": 8,
+      "required_location": "enchanted-forest",
+      "reward_currency": 20,
+      "reward_items": [],
+      "difficulty": "easy"
+    },
+    
+    {
+      "quest_id": "collect_herbs_1",
+      "title": "Herbal Remedies",
+      "given_by": "Bran",
+      "action_type": "collect",
+      "objective": "Collect 10 healing herbs from the meadow",
+      "description": "Some travelers have been feeling under the weather. Collect healing herbs for remedies.",
+      "target_item": "herbs",
+      "target_amount": 10,
+      "required_location": "the-feywilds",
+      "reward_currency": 18,
+      "reward_items": ["Health Potion"],
+      "difficulty": "easy"
+    },
+    
+    {
+      "quest_id": "hunt_wolves_1",
+      "title": "Wolf Problem",
+      "given_by": "Bran",
+      "action_type": "hunt",
+      "objective": "Hunt 2 wolves that have been spotted near the forest",
+      "description": "Wolves have been scaring travelers on the forest path. Deal with them!",
+      "target_item": "wolf",
+      "target_amount": 2,
+      "required_location": "enchanted-forest",
+      "reward_currency": 35,
+      "reward_items": ["Lucky Coin"],
+      "difficulty": "hard"
+    },
+    
+    {
+      "quest_id": "collect_eggs_1",
+      "title": "Fresh Eggs Needed",
+      "given_by": "Bran",
+      "action_type": "collect",
+      "objective": "Collect 6 fresh eggs from the henhouse",
+      "description": "The hens have been laying extra eggs! Go collect some for breakfast service.",
+      "target_item": "eggs",
+      "target_amount": 6,
+      "required_location": "the-prancing-pony",
+      "reward_currency": 10,
+      "reward_items": ["Full Breakfast"],
+      "difficulty": "easy"
+    },
+    
+    {
+      "quest_id": "collect_firewood_1",
+      "title": "Firewood for the Hearth",
+      "given_by": "Bran",
+      "action_type": "collect",
+      "objective": "Collect 12 pieces of firewood from the forest",
+      "description": "The tavern's hearth needs restocking! Gather firewood from fallen branches.",
+      "target_item": "firewood",
+      "target_amount": 12,
+      "required_location": "enchanted-forest",
+      "reward_currency": 15,
+      "reward_items": [],
+      "difficulty": "easy"
+    },
+    
+    {
+      "quest_id": "hunt_deer_1",
+      "title": "Venison for the Special",
+      "given_by": "Bran",
+      "action_type": "hunt",
+      "objective": "Hunt 1 deer for tomorrow's special meal",
+      "description": "I want to serve venison as tomorrow's special! Hunt a deer in the meadow.",
+      "target_item": "deer",
+      "target_amount": 1,
+      "required_location": "the-feywilds",
+      "reward_currency": 40,
+      "reward_items": ["Fine Wine"],
+      "difficulty": "hard"
+    },
+    
+    {
+      "quest_id": "collect_apples_1",
+      "title": "Apple Pie Ingredients",
+      "given_by": "Bran",
+      "action_type": "collect",
+      "objective": "Collect 10 apples from the orchard",
+      "description": "Apple pie is the most requested dessert! Get fresh apples from the orchard.",
+      "target_item": "apples",
+      "target_amount": 10,
+      "required_location": "enchanted-forest",
+      "reward_currency": 12,
+      "reward_items": ["Apple Tart"],
+      "difficulty": "easy"
+    },
+    
+    {
+      "quest_id": "hunt_boar_1",
+      "title": "Wild Boar Hunt",
+      "given_by": "Bran",
+      "action_type": "hunt",
+      "objective": "Hunt 1 wild boar for roasted meat",
+      "description": "A wild boar has been spotted in the forest! Dangerous, but the meat is incredible.",
+      "target_item": "boar",
+      "target_amount": 1,
+      "required_location": "enchanted-forest",
+      "reward_currency": 50,
+      "reward_items": ["Roasted Boar", "Lucky Coin"],
+      "difficulty": "hard"
+    },
+    {
+      "quest_id": "victor_wolf_pelts_1",
+      "title": "Wolf Pelts for Winter",
+      "given_by": "Victor",
+      "action_type": "hunt",
+      "objective": "Hunt 2 wolves and bring back their pelts",
+      "description": "*grunts* Wolves been too bold lately. Need pelts for repairs. Hunt two. Bring pelts.",
+      "target_item": "wolf",
+      "target_amount": 2,
+      "required_location": "enchanted-forest",
+      "reward_currency": 0,
+      "reward_items": ["Leather Scraps", "Dried Venison"],
+      "difficulty": "medium"
+    },
+    {
+      "quest_id": "victor_healing_herbs_1",
+      "title": "Ranger's Remedy",
+      "given_by": "Victor",
+      "action_type": "collect",
+      "objective": "Collect 6 healing herbs from the forest",
+      "description": "*scratches beard* Running low on medicine. Forest has what I need. Bring herbs.",
+      "target_item": "herbs",
+      "target_amount": 6,
+      "required_location": "enchanted-forest",
+      "reward_currency": 0,
+      "reward_items": ["Healing Salve", "Arrows"],
+      "difficulty": "easy"
+    },
+    {
+      "quest_id": "victor_boar_hunt_1",
+      "title": "Boar Problem",
+      "given_by": "Victor",
+      "action_type": "hunt",
+      "objective": "Hunt the aggressive boar tearing up the forest trails",
+      "description": "*frowns* Big boar. Tearing up roots. Bad for the forest. Deal with it.",
+      "target_item": "boar",
+      "target_amount": 1,
+      "required_location": "enchanted-forest",
+      "reward_currency": 0,
+      "reward_items": ["Smoked Boar Meat", "Sturdy Rope", "Leather Scraps"],
+      "difficulty": "hard"
+    },
+    {
+      "quest_id": "victor_firewood_1",
+      "title": "Firewood Gathering",
+      "given_by": "Victor",
+      "action_type": "collect",
+      "objective": "Gather 8 pieces of dry firewood",
+      "description": "*nods toward forest* Need firewood. Dry branches only. Wet wood smokes too much.",
+      "target_item": "firewood",
+      "target_amount": 8,
+      "required_location": "enchanted-forest",
+      "reward_currency": 0,
+      "reward_items": ["Dried Meat", "Warm Cloak"],
+      "difficulty": "easy"
+    },
+    {
+      "quest_id": "victor_rabbit_snares_1",
+      "title": "Check the Snares",
+      "given_by": "Victor",
+      "action_type": "hunt",
+      "objective": "Hunt 3 rabbits from the snare lines",
+      "description": "*gestures vaguely* Set snares yesterday. Check them. Bring back what you find.",
+      "target_item": "rabbit",
+      "target_amount": 3,
+      "required_location": "enchanted-forest",
+      "reward_currency": 0,
+      "reward_items": ["Rabbit Stew", "Leather Scraps"],
+      "difficulty": "easy"
+    },
+    {
+      "quest_id": "victor_mushrooms_1",
+      "title": "Forage for Mushrooms",
+      "given_by": "Victor",
+      "action_type": "collect",
+      "objective": "Collect 5 edible mushrooms from the forest floor",
+      "description": "*points at treeline* Good mushrooms near the old oak. Brown caps. Not the red ones. Red ones kill you.",
+      "target_item": "mushrooms",
+      "target_amount": 5,
+      "required_location": "enchanted-forest",
+      "reward_currency": 0,
+      "reward_items": ["Dried Mushrooms", "Herbal Tea"],
+      "difficulty": "easy"
+    },
+    {
+      "quest_id": "victor_deer_hunt_1",
+      "title": "Venison for the Larder",
+      "given_by": "Victor",
+      "action_type": "hunt",
+      "objective": "Hunt a deer for meat and hide",
+      "description": "*checks bow* Deer been grazing near the stream. Good meat. Good leather. Bring one down.",
+      "target_item": "deer",
+      "target_amount": 1,
+      "required_location": "the-feywilds",
+      "reward_currency": 0,
+      "reward_items": ["Venison Jerky", "Deerskin Leather", "Bone Arrows"],
+      "difficulty": "medium"
+    },
+    {
+      "quest_id": "collect_the_moth",
+      "title": "Contain the Aether Moths",
+      "given_by": "Elowen",
+      "action_type": "collect",
+      "description": "Oh dear, the aether moths got loose again! They're everywhere and they EAT magical writing! Please catch them before they destroy my research notes!",
+      "objective": "Collect 3 Aether Moths before they chew through Elowen's spell notes.",
+      "target_item": "Aether Moth",
+      "target_amount": 3,
+      "required_location": "wizards-tower",
+      "reward_currency": 5,
+      "reward_items": [],
+      "difficulty": "easy"
+    },
+    {
+      "quest_id": "search_for_crystal",
+      "title": "Find the Lost Crystal Focus",
+      "given_by": "Elowen",
+      "action_type": "collect",
+      "description": "I've misplaced my crystal focus - the glowy purple one, very important! I had it just this morning... or was it last week? Please help me find it!",
+      "objective": "Elowen misplaced a very important glowing crystal. Find it somewhere in town.",
+      "target_item": "Crystal Focus",
+      "target_amount": 1,
+      "required_location": "any",
+      "preferred_locations": ["wizards-tower", "village-square", "candlekeep", "the-feywilds"],
+      "reward_currency": 10,
+      "reward_items": ["Bag of Holding"],
+      "difficulty": "easy"
+    },
+    {
+      "quest_id": "search_for_quill",
+      "title": "Retrieve the Enchantment Quill",
+      "given_by": "Elowen",
+      "action_type": "collect",
+      "description": "My enchantment quill is MISSING! It glows pink and writes spells on its own! Someone must have taken it - or... did I leave it somewhere? Either way, I need it back!",
+      "objective": "Someone took Elowen's pink-glowing enchantment quill. Recover it.",
+      "target_item": "Enchantment Quill",
+      "target_amount": 1,
+      "required_location": "any",
+      "preferred_locations": ["wizards-tower", "village-square", "candlekeep", "the-feywilds"],
+      "reward_currency": 10,
+      "reward_items": ["Potion of Minor Healing"],
+      "difficulty": "easy"
+    },
+    {
+      "quest_id": "potion_mishap",
+      "title": "Help with a Potion Mishap",
+      "given_by": "Elowen",
+      "action_type": "collect",
+      "description": "Oh no no NO! The cauldron is doing the thing again! It's bubbling green and making angry noises! I need herbs - lots of herbs - to stabilize it before something explodes!",
+      "objective": "Collect 5 herbs so Elowen can fix a bubbling cauldron incident.",
+      "target_item": "herbs",
+      "target_amount": 5,
+      "required_location": "enchanted-forest",
+      "reward_currency": 5,
+      "reward_items": [],
+      "difficulty": "easy"
+    }
+  ],
+  "quest_cooldown_hours": 1,
+  
+  "difficulty_rewards": {
+    "easy": {
+      "gold_range": [5, 10, 20],
+      "bonus_items": ["Bag of Holding", "Potion of Minor Healing"]
+    },
+    "medium": {
+      "gold_range": [20, 30],
+      "bonus_items": ["Health Potion"]
+    },
+    "hard": {
+      "gold_range": [30, 50],
+      "bonus_items": ["Lucky Coin", "Greater Health Potion"]
+    }
+  },
+
+  "quest_chains": {
+    "wolf_menace": {
+      "name": "The Wolf Menace",
+      "description": "A series of quests dealing with a growing wolf threat in the forest",
+      "given_by": "Victor",
+      "quests": [
+        {
+          "quest_id": "wolf_chain_1",
+          "title": "Wolves on the Path",
+          "chain_order": 1,
+          "action_type": "hunt",
+          "objective": "Hunt 2 wolves that have been threatening travelers",
+          "description": "There have been reports of wolves attacking travelers on the forest path. I need someone to thin their numbers.",
+          "target_item": "wolf",
+          "target_amount": 2,
+          "required_location": "enchanted-forest",
+          "reward_currency": 0,
+          "reward_items": ["Dried Meat", "Leather Scraps"],
+          "difficulty": "medium",
+          "next_quest_intro": "Good work! But I've heard troubling news... a pack leader has been spotted. Return when you're ready for more."
+        },
+        {
+          "quest_id": "wolf_chain_2",
+          "title": "Track the Pack",
+          "chain_order": 2,
+          "action_type": "collect",
+          "objective": "Find wolf tracks and follow them to the den",
+          "description": "The wolves must have a den nearby. Search the forest for wolf tracks that might lead us to their lair.",
+          "target_item": "Wolf Tracks",
+          "target_amount": 3,
+          "required_location": "enchanted-forest",
+          "reward_currency": 0,
+          "reward_items": ["Tracking Map", "Healing Herbs"],
+          "difficulty": "medium",
+          "next_quest_intro": "You found their den! There's one more thing I need you to do..."
+        },
+        {
+          "quest_id": "wolf_chain_3",
+          "title": "The Alpha",
+          "chain_order": 3,
+          "action_type": "hunt",
+          "objective": "Hunt the alpha wolf that's threatening the village",
+          "description": "The alpha has grown bold - it's been spotted in the village square itself! This beast must be stopped before someone gets hurt!",
+          "target_item": "alpha wolf",
+          "target_amount": 1,
+          "required_location": "village-square",
+          "reward_currency": 0,
+          "reward_items": ["Alpha Wolf Pelt", "Wolf Fang Necklace", "Greater Healing Potion"],
+          "difficulty": "hard",
+          "chain_complete_message": "You've done it! The village is safe once more. You are a true hero!"
+        }
+      ],
+      "chain_rewards": {
+        "currency_bonus": 0,
+        "items": ["Hunter's Cloak", "Ranger's Quiver"],
+        "title": "Wolf Slayer",
+        "xp_bonus": 200
+      }
+    },
+    "fey_mystery": {
+      "name": "The Fey Mystery",
+      "description": "Investigate strange happenings in the Feywilds",
+      "given_by": "Elowen",
+      "quests": [
+        {
+          "quest_id": "fey_chain_1",
+          "title": "Strange Lights",
+          "chain_order": 1,
+          "action_type": "collect",
+          "objective": "Collect glowing mushrooms that appeared overnight",
+          "description": "Something WEIRD is happening in the Feywilds! Glowing mushrooms have appeared everywhere overnight! I need samples!",
+          "target_item": "Glowing Mushroom",
+          "target_amount": 5,
+          "required_location": "the-feywilds",
+          "reward_currency": 20,
+          "reward_items": [],
+          "difficulty": "easy",
+          "next_quest_intro": "Fascinating! These mushrooms have fey magic in them! We need to investigate further!"
+        },
+        {
+          "quest_id": "fey_chain_2",
+          "title": "Pixie Dust Trail",
+          "chain_order": 2,
+          "action_type": "collect",
+          "objective": "Follow the pixie dust trails",
+          "description": "The mushrooms lead to pixie dust! Follow the trails and collect samples. Be careful - pixies can be mischievous!",
+          "target_item": "Pixie Dust",
+          "target_amount": 3,
+          "required_location": "the-feywilds",
+          "reward_currency": 30,
+          "reward_items": ["Sparkbeam Scroll"],
+          "difficulty": "medium",
+          "next_quest_intro": "The pixies are trying to tell us something! One more task..."
+        },
+        {
+          "quest_id": "fey_chain_3",
+          "title": "The Fey Circle",
+          "chain_order": 3,
+          "action_type": "collect",
+          "objective": "Find and activate the ancient fey circle",
+          "description": "There's an ancient fey circle deep in the Feywilds! Find it and place the mushrooms and dust there!",
+          "target_item": "Activated Fey Stone",
+          "target_amount": 1,
+          "required_location": "the-feywilds",
+          "reward_currency": 50,
+          "reward_items": ["Fey Blessing"],
+          "difficulty": "medium",
+          "chain_complete_message": "The fey are pleased! They've blessed you with their magic!"
+        }
+      ],
+      "chain_rewards": {
+        "currency_bonus": 40,
+        "items": ["Fey Touched Ring"],
+        "title": "Fey Friend",
+        "xp_bonus": 150
+      }
+    },
+    "tavern_troubles": {
+      "name": "Tavern Troubles",
+      "description": "Help Bran deal with a series of problems at the Prancing Pony",
+      "given_by": "Bran",
+      "quests": [
+        {
+          "quest_id": "tavern_chain_1",
+          "title": "Rat Infestation",
+          "chain_order": 1,
+          "action_type": "hunt",
+          "objective": "Clear the cellar of giant rats",
+          "description": "There are GIANT RATS in my cellar! They're eating through the food stores! Help!",
+          "target_item": "giant rat",
+          "target_amount": 5,
+          "required_location": "the-prancing-pony",
+          "reward_currency": 15,
+          "reward_items": ["Hearty Stew"],
+          "difficulty": "easy",
+          "next_quest_intro": "The rats are gone, but now there's another problem..."
+        },
+        {
+          "quest_id": "tavern_chain_2",
+          "title": "Restocking the Pantry",
+          "chain_order": 2,
+          "action_type": "collect",
+          "objective": "Gather supplies to replace what the rats ate",
+          "description": "Those rats ruined half my supplies! I need mushrooms, berries, and herbs to restock!",
+          "target_item": "pantry supplies",
+          "target_amount": 10,
+          "required_location": "any",
+          "preferred_locations": ["enchanted-forest", "the-feywilds"],
+          "reward_currency": 25,
+          "reward_items": [],
+          "difficulty": "easy",
+          "next_quest_intro": "Thank you! But there's one more thing..."
+        },
+        {
+          "quest_id": "tavern_chain_3",
+          "title": "The Special Ingredient",
+          "chain_order": 3,
+          "action_type": "hunt",
+          "objective": "Hunt a boar for the grand reopening feast",
+          "description": "I want to host a grand reopening feast! Hunt me a boar - the guests will love it!",
+          "target_item": "boar",
+          "target_amount": 1,
+          "required_location": "enchanted-forest",
+          "reward_currency": 40,
+          "reward_items": ["Roasted Boar", "Fine Wine"],
+          "difficulty": "hard",
+          "chain_complete_message": "The feast was a SUCCESS! You're welcome at the Prancing Pony anytime!"
+        }
+      ],
+      "chain_rewards": {
+        "currency_bonus": 30,
+        "items": ["VIP Tavern Pass"],
+        "title": "Friend of the Pony",
+        "xp_bonus": 100
+      }
+    }
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "id": "cargo-bay",
+  "name": "Cargo Bay",
+  "subtitle": "A path through black serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "cargo-bay",
+  "sky": "#101925",
+  "legend": {
+    ".": {
+      "name": "floor",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "wall",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.5,
+    "y": 19.0
+  },
+  "props": [
+    {
+      "id": "return-path",
+      "label": "Return to ships bridge",
+      "to": "ships-bridge",
+      "x": 17.0,
+      "y": 4.0,
+      "w": 5.0,
+      "h": 3.0,
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "invisible": true,
+      "note": "This passage in the upper middle part of the room leads to Ships Bridge. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "id": "path-lower-decks",
+      "label": "Lower Decks",
+      "to": "lower-decks",
+      "x": 3.0,
+      "y": 22.0,
+      "w": 4.0,
+      "h": 4.0,
+      "arriveAt": {
+        "x": 19.5,
+        "y": 19.0
+      },
+      "invisible": true,
+      "note": "This passage in the lower left part of the room leads to Lower Decks. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "x": 21.5,
+      "y": 9.25,
+      "w": 2.5,
+      "h": 3.0,
+      "id": "door-mujvjbko",
+      "label": "Data Nexus",
+      "note": "This transport route in the upper middle part of the room leads to Data Nexus. Walk into the marked threshold to take that route.",
+      "invisible": true,
+      "fishable": false,
+      "to": "data-nexus",
+      "arriveAt": {
+        "x": 13.5,
+        "y": 13.0
+      },
+      "kind": "teleporter"
+    }
+  ],
+  "npcs": [],
+  "backdrop": "/assets/adventure/backgrounds/cargo_bay.png?v=96baf6cd67",
+  "description": "The cargo bay is a metal-walled hold with a broad clear loading floor in the middle. Crates, containers, a small lifting vehicle and shelving are packed along the edges. A large circular transport platform glows blue on the right beside a destination display and a small control desk. The upper passage is labelled To Captain's Deck, and a stair on the lower left is marked To Lower Decks. A wide loading-bay doorway sits at the bottom. Amber wall lights soften the grey plating, while floor markings, scuffed panels and the bright transport ring make the separate working areas easy to locate.",
+  "landmarks": [
+    {
+      "id": "blue-transport-platform",
+      "label": "Blue transport platform",
+      "kind": "transport platform",
+      "description": "A circular blue-lit platform stands beside a destination display on the right of the hold.",
+      "x": 28,
+      "y": 12
+    },
+    {
+      "id": "cargo-floor-markings",
+      "label": "Cargo floor markings",
+      "kind": "scenery",
+      "description": "Large Cargo lettering and industrial markings occupy the open metal floor.",
+      "x": 16,
+      "y": 14
+    },
+    {
+      "id": "western-lifting-vehicle",
+      "label": "Western lifting vehicle",
+      "kind": "machinery",
+      "description": "A small lifting vehicle sits among stacked cargo against the left wall.",
+      "x": 7,
+      "y": 8
+    },
+    {
+      "id": "northern-captain-deck-sign",
+      "label": "Northern captain-deck sign",
+      "kind": "sign",
+      "description": "The upper passage is marked To Captain's Deck.",
+      "x": 20,
+      "y": 3
+    },
+    {
+      "id": "loading-bay-frontage",
+      "label": "Loading-bay frontage",
+      "kind": "building",
+      "description": "A broad industrial loading doorway frames the lower edge of the hold.",
+      "x": 20,
+      "y": 25
+    },
+    {
+      "id": "stacked-cargo-containers",
+      "label": "Stacked cargo containers",
+      "kind": "storage",
+      "description": "Crates and containers are stacked along the lower-right wall.",
+      "x": 34,
+      "y": 21
+    }
+  ]
+}

@@ -1,0 +1,268 @@
+{
+  "world": "black_serenity",
+  "recipes": {
+    "light_exo_suit": {
+      "name": "Light Exo-Suit",
+      "type": "armor",
+      "world": "black_serenity",
+      "description": "A lightweight powered exoskeleton that enhances protection without sacrificing mobility.",
+      "materials": {
+        "circuit_board": 2,
+        "nano_fiber": 3,
+        "power_cell": 1,
+        "scrap_metal": 2
+      },
+      "benefit": {
+        "type": "defense",
+        "value": 2,
+        "description": "+2 to defense rolls"
+      }
+    },
+    "heavy_combat_armor": {
+      "name": "Heavy Combat Armor",
+      "type": "armor",
+      "world": "black_serenity",
+      "description": "Military-grade plated armor with integrated shields. Built like a tank.",
+      "materials": {
+        "metal_plating": 4,
+        "power_cell": 2,
+        "circuit_board": 2,
+        "servo_motor": 2,
+        "rare_component": 1
+      },
+      "benefit": {
+        "type": "defense",
+        "value": 5,
+        "description": "+5 to defense rolls, -1 to agility"
+      }
+    },
+    "stealth_suit": {
+      "name": "Stealth Suit",
+      "type": "armor",
+      "world": "black_serenity",
+      "description": "Nano-fiber weave with adaptive cloaking technology. Nearly invisible in shadows.",
+      "materials": {
+        "nano_fiber": 5,
+        "circuit_board": 3,
+        "power_cell": 2,
+        "rare_component": 1
+      },
+      "benefit": {
+        "type": "stealth",
+        "value": 3,
+        "description": "+3 to stealth and evasion rolls"
+      }
+    },
+    "service_droid": {
+      "name": "Service Droid",
+      "type": "companion",
+      "world": "black_serenity",
+      "description": "A helpful maintenance droid that assists with gathering and repairs.",
+      "materials": {
+        "circuit_board": 3,
+        "servo_motor": 4,
+        "ai_chip": 1,
+        "power_cell": 2,
+        "scrap_metal": 3
+      },
+      "benefit": {
+        "type": "gathering_bonus",
+        "value": 1,
+        "description": "+1 to all gathering rolls when equipped"
+      }
+    },
+    "combat_droid": {
+      "name": "Combat Droid",
+      "type": "companion",
+      "world": "black_serenity",
+      "description": "A battle-ready droid armed with integrated weapons systems.",
+      "materials": {
+        "circuit_board": 4,
+        "servo_motor": 3,
+        "ai_chip": 1,
+        "metal_plating": 3,
+        "weapon_system": 1,
+        "rare_component": 2
+      },
+      "benefit": {
+        "type": "attack",
+        "value": 3,
+        "description": "+3 to attack rolls in combat"
+      }
+    },
+    "repair_bot": {
+      "name": "Repair Bot",
+      "type": "companion",
+      "world": "black_serenity",
+      "description": "An autonomous repair unit that keeps your gear in top condition.",
+      "materials": {
+        "circuit_board": 2,
+        "servo_motor": 3,
+        "ai_chip": 1,
+        "power_cell": 2
+      },
+      "benefit": {
+        "type": "repair",
+        "value": 1,
+        "description": "Can repair other crafted items (consumes materials)"
+      }
+    },
+    "hover_board": {
+      "name": "Hover Board",
+      "type": "vehicle",
+      "world": "black_serenity",
+      "description": "A sleek personal transport with anti-grav thrusters. Fast and agile.",
+      "materials": {
+        "thruster_core": 2,
+        "circuit_board": 2,
+        "power_cell": 3,
+        "metal_plating": 1
+      },
+      "benefit": {
+        "type": "agility",
+        "value": 2,
+        "description": "+2 to agility and evasion rolls"
+      }
+    },
+    "speeder_bike": {
+      "name": "Speeder Bike",
+      "type": "vehicle",
+      "world": "black_serenity",
+      "description": "A high-speed hoverbike capable of incredible acceleration.",
+      "materials": {
+        "thruster_core": 3,
+        "circuit_board": 3,
+        "power_cell": 4,
+        "metal_plating": 2,
+        "servo_motor": 2,
+        "rare_component": 1
+      },
+      "benefit": {
+        "type": "speed",
+        "value": 3,
+        "description": "+3 to movement/chase rolls, -40% cooldowns when equipped"
+      }
+    },
+    "jump_pack": {
+      "name": "Jump Pack",
+      "type": "vehicle",
+      "world": "black_serenity",
+      "description": "Powerful back-mounted thrusters for vertical mobility and short flight.",
+      "materials": {
+        "thruster_core": 2,
+        "power_cell": 3,
+        "circuit_board": 2,
+        "nano_fiber": 2
+      },
+      "benefit": {
+        "type": "mobility",
+        "value": 2,
+        "description": "+2 to escape/dodge rolls, -20% cooldowns when equipped"
+      }
+    },
+    "long_range_comm": {
+      "name": "Long-Range Communicator",
+      "type": "utility",
+      "world": "black_serenity",
+      "description": "Advanced communication array with enhanced scanning capabilities.",
+      "materials": {
+        "sensor_array": 2,
+        "circuit_board": 3,
+        "power_cell": 2,
+        "rare_component": 1
+      },
+      "benefit": {
+        "type": "detection",
+        "value": 3,
+        "description": "+3 to scanning and threat detection, can communicate across zones"
+      }
+    },
+    "shield_generator": {
+      "name": "Personal Shield Generator",
+      "type": "utility",
+      "world": "black_serenity",
+      "description": "Portable energy shield that absorbs incoming damage.",
+      "materials": {
+        "power_cell": 4,
+        "circuit_board": 3,
+        "rare_component": 2,
+        "energy_core": 1
+      },
+      "benefit": {
+        "type": "shield",
+        "value": 10,
+        "description": "Absorbs 10 damage before breaking, recharges after combat"
+      }
+    },
+    "hacking_tool": {
+      "name": "Multi-Tool Hacking Device",
+      "type": "utility",
+      "world": "black_serenity",
+      "description": "A sophisticated device for bypassing electronic security systems.",
+      "materials": {
+        "circuit_board": 4,
+        "ai_chip": 1,
+        "sensor_array": 1,
+        "rare_component": 1
+      },
+      "benefit": {
+        "type": "hacking",
+        "value": 3,
+        "description": "+3 to hacking rolls, can unlock secure areas and data"
+      }
+    },
+    "portable_forge": {
+      "name": "Portable Fabrication Unit",
+      "type": "utility",
+      "world": "black_serenity",
+      "description": "A compact 3D printer and assembly station. Craft anywhere.",
+      "materials": {
+        "circuit_board": 3,
+        "servo_motor": 4,
+        "power_cell": 3,
+        "metal_plating": 2,
+        "rare_component": 2
+      },
+      "benefit": {
+        "type": "crafting",
+        "value": 1,
+        "description": "Can craft items in any location (still requires materials)"
+      }
+    },
+    "scanner_visor": {
+      "name": "Tactical Scanner Visor",
+      "type": "utility",
+      "world": "black_serenity",
+      "description": "HUD visor with threat assessment and environment analysis.",
+      "materials": {
+        "sensor_array": 2,
+        "circuit_board": 2,
+        "power_cell": 1,
+        "nano_fiber": 1
+      },
+      "benefit": {
+        "type": "perception",
+        "value": 2,
+        "description": "+2 to perception and investigation rolls"
+      }
+    },
+    "medical_drone": {
+      "name": "Medical Assistance Drone",
+      "type": "companion",
+      "world": "black_serenity",
+      "description": "An automated medical drone with emergency treatment protocols.",
+      "materials": {
+        "circuit_board": 3,
+        "servo_motor": 2,
+        "ai_chip": 1,
+        "power_cell": 2,
+        "neural_core": 1
+      },
+      "benefit": {
+        "type": "healing",
+        "value": 15,
+        "description": "Heals 15 HP once per combat encounter"
+      }
+    }
+  }
+}

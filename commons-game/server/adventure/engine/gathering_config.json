@@ -1,0 +1,302 @@
+{
+  "gathering_areas": {
+    "heros_journey": {
+      "enchanted-forest": {
+        "resources": [
+          {
+            "name": "Wildflower",
+            "difficulty": 8,
+            "yield": {"min": 1, "max": 3},
+            "cooldown": 30,
+            "category": "herb"
+          },
+          {
+            "name": "Healing Herb",
+            "difficulty": 10,
+            "yield": {"min": 1, "max": 2},
+            "cooldown": 45,
+            "category": "herb"
+          },
+          {
+            "name": "Forest Mushroom",
+            "difficulty": 9,
+            "yield": {"min": 1, "max": 4},
+            "cooldown": 30,
+            "category": "mushroom"
+          },
+          {
+            "name": "Oak Branch",
+            "difficulty": 7,
+            "yield": {"min": 1, "max": 2},
+            "cooldown": 60,
+            "category": "wood"
+          }
+        ]
+      },
+      "the-feywilds": {
+        "resources": [
+          {
+            "name": "Fey Blossom",
+            "difficulty": 12,
+            "yield": {"min": 1, "max": 2},
+            "cooldown": 60,
+            "category": "herb",
+            "rare": true
+          },
+          {
+            "name": "Glowing Mushroom",
+            "difficulty": 11,
+            "yield": {"min": 1, "max": 3},
+            "cooldown": 45,
+            "category": "mushroom"
+          },
+          {
+            "name": "Moonpetal",
+            "difficulty": 13,
+            "yield": {"min": 1, "max": 1},
+            "cooldown": 90,
+            "category": "herb",
+            "rare": true
+          },
+          {
+            "name": "Enchanted Acorn",
+            "difficulty": 10,
+            "yield": {"min": 1, "max": 2},
+            "cooldown": 45,
+            "category": "seed"
+          }
+        ]
+      },
+      "wizards-tower-outside": {
+        "resources": [
+          {
+            "name": "Mana Crystal",
+            "difficulty": 14,
+            "yield": {"min": 1, "max": 1},
+            "cooldown": 120,
+            "category": "mineral",
+            "rare": true
+          },
+          {
+            "name": "Arcane Moss",
+            "difficulty": 11,
+            "yield": {"min": 1, "max": 3},
+            "cooldown": 45,
+            "category": "herb"
+          }
+        ]
+      }
+    },
+    "dusty_trails": {
+      "open-plains": {
+        "resources": [
+          {
+            "name": "Sage",
+            "description": "Pick medicinal sage from the dry prairie. Supplies Herbal Remedies.",
+            "difficulty": 8,
+            "yield": {"min": 1, "max": 3},
+            "cooldown": 30,
+            "category": "herb"
+          },
+          {
+            "name": "Wild Herbs",
+            "description": "Gather the useful plants growing along the trail. Supplies Trail Medicine.",
+            "difficulty": 9,
+            "yield": {"min": 1, "max": 3},
+            "cooldown": 30,
+            "category": "herb"
+          }
+        ]
+      },
+      "abandoned-mine": {
+        "resources": [
+          {
+            "name": "Silver Ore",
+            "description": "Work the exposed silver veins for Silver Strike.",
+            "difficulty": 12,
+            "yield": {"min": 1, "max": 2},
+            "cooldown": 30,
+            "category": "mineral"
+          },
+          {
+            "name": "Coal",
+            "description": "Gather loose coal for Fuel for the Forge.",
+            "difficulty": 8,
+            "yield": {"min": 2, "max": 4},
+            "cooldown": 30,
+            "category": "mineral"
+          },
+          {
+            "name": "Dynamite",
+            "description": "Carefully recover a stick from the abandoned supply caches. Repeat after the gathering cooldown to finish Explosive Situation.",
+            "difficulty": 14,
+            "yield": {"min": 1, "max": 1},
+            "cooldown": 30,
+            "category": "salvage",
+            "emoji": "🧨"
+          }
+        ]
+      }
+    },
+    "black_serenity": {
+      "scavengers-reach": {
+        "description": "Pick through the wreck piles for real robot parts. Common scrap can patch an injured robot; recovered circuitry, motors and cores supply the existing robot recipes.",
+        "resources": [
+          {
+            "name": "Scrap Metal",
+            "description": "Loose hull offcuts and brackets from the foreground wreckage. Build a Service Droid or spend a piece to repair a robot.",
+            "difficulty": 8,
+            "yield": {"min": 2, "max": 4},
+            "cooldown": 30,
+            "category": "salvage",
+            "emoji": "🔩"
+          },
+          {
+            "name": "Shiny Bits",
+            "description": "Small polished fittings among the dust and scrap. Each bit can restore 8 HP to an injured robot.",
+            "difficulty": 8,
+            "yield": {"min": 1, "max": 4},
+            "cooldown": 30,
+            "category": "salvage",
+            "emoji": "✨"
+          },
+          {
+            "name": "Salvage Wiring",
+            "description": "Usable cable pulled from a broken chassis. Spare wiring can repair an injured robot or other mechanical gear.",
+            "difficulty": 9,
+            "yield": {"min": 1, "max": 3},
+            "cooldown": 30,
+            "category": "electronics",
+            "emoji": "🔌"
+          },
+          {
+            "name": "Droid Component",
+            "description": "A serviceable mechanism recovered from a discarded droid. Keep it as a spare part for robot repairs.",
+            "difficulty": 10,
+            "yield": {"min": 1, "max": 2},
+            "cooldown": 45,
+            "category": "electronics",
+            "emoji": "⚙️"
+          },
+          {
+            "name": "Circuit Board",
+            "description": "Intact circuitry inside a ruined control box. Every robot recipe needs boards, and a board can restore 16 HP to an injured robot.",
+            "difficulty": 10,
+            "yield": {"min": 1, "max": 3},
+            "cooldown": 45,
+            "category": "electronics",
+            "emoji": "💾"
+          },
+          {
+            "name": "Servo Motor",
+            "description": "A working joint motor salvaged from a frame. Used by all four robot recipes and accepted as a repair part.",
+            "difficulty": 11,
+            "yield": {"min": 1, "max": 3},
+            "cooldown": 45,
+            "category": "electronics",
+            "emoji": "⚙️"
+          },
+          {
+            "name": "Power Cell",
+            "description": "An intact rechargeable cell from the ship debris. Powers Service Droids, Repair Bots and Medical Assistance Drones.",
+            "difficulty": 10,
+            "yield": {"min": 1, "max": 2},
+            "cooldown": 45,
+            "category": "electronics",
+            "emoji": "🔋"
+          },
+          {
+            "name": "Metal Plating",
+            "description": "A recoverable protective panel from a wrecked hull. Armor a Combat Droid or use the plating for robot repairs.",
+            "difficulty": 11,
+            "yield": {"min": 1, "max": 2},
+            "cooldown": 45,
+            "category": "salvage",
+            "emoji": "🔩"
+          },
+          {
+            "name": "AI Chip",
+            "description": "A rare intact controller found in the deeper machinery. One chip is required to build each of the four robot companions.",
+            "difficulty": 14,
+            "yield": {"min": 1, "max": 1},
+            "cooldown": 90,
+            "category": "electronics",
+            "emoji": "💾",
+            "rare": true
+          },
+          {
+            "name": "Neural Core",
+            "description": "A delicate processing core protected inside an old chassis. It completes the Medical Assistance Drone recipe.",
+            "difficulty": 15,
+            "yield": {"min": 1, "max": 1},
+            "cooldown": 90,
+            "category": "electronics",
+            "emoji": "🧠",
+            "rare": true
+          },
+          {
+            "name": "Weapon System",
+            "description": "A surviving integrated weapons assembly from a military wreck. Needed for a Combat Droid; it is a crafting part, not a usable weapon by itself.",
+            "difficulty": 16,
+            "yield": {"min": 1, "max": 1},
+            "cooldown": 120,
+            "category": "electronics",
+            "emoji": "⚙️",
+            "rare": true
+          },
+          {
+            "name": "Rare Component",
+            "description": "An uncommon precision part tucked inside the wreckage. Two are needed for a Combat Droid, and other advanced recipes also use them.",
+            "difficulty": 16,
+            "yield": {"min": 1, "max": 1},
+            "cooldown": 120,
+            "category": "electronics",
+            "emoji": "⚙️",
+            "rare": true
+          }
+        ]
+      }
+    }
+  },
+  "resource_nodes": {
+    "salvage": {
+      "color": "#b88452",
+      "icon": "🔩"
+    },
+    "electronics": {
+      "color": "#69b9ce",
+      "icon": "⚙️"
+    },
+    "herb": {
+      "color": "#4CAF50",
+      "icon": "🌿",
+      "tool_bonus": "Gathering Basket"
+    },
+    "mushroom": {
+      "color": "#9C27B0",
+      "icon": "🍄",
+      "tool_bonus": "Gathering Basket"
+    },
+    "wood": {
+      "color": "#795548",
+      "icon": "🪵",
+      "tool_bonus": "Hatchet"
+    },
+    "mineral": {
+      "color": "#607D8B",
+      "icon": "💎",
+      "tool_bonus": "Pickaxe"
+    },
+    "seed": {
+      "color": "#8BC34A",
+      "icon": "🌰",
+      "tool_bonus": "Gathering Basket"
+    }
+  },
+  "notes": {
+    "difficulty": "DC for gathering check (d20 + modifiers)",
+    "yield": "Range of items gathered on success",
+    "cooldown": "Seconds before resource respawns",
+    "tool_bonus": "Item that gives +2 to gathering checks for this category"
+  }
+}

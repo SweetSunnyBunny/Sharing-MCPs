@@ -1,0 +1,20 @@
+{
+  "cooldown_seconds": 12,
+  "model_name": "Phi-3.5-mini-instruct",
+  "base_url": "http://localhost:1234/v1",
+  "renown_channel_id": 1459419576637853810,
+  "dungeon_channels": {
+    "heros_journey": {
+      "channel_id": 1459413078729953311,
+      "channel_name": "dungeon"
+    },
+    "black_serenity": {
+      "channel_id": 1459413149336862760,
+      "channel_name": "dungeon"
+    },
+    "dusty_trails": {
+      "channel_id": 1459413116814098668,
+      "channel_name": "dungeon"
+    }
+  }
+}

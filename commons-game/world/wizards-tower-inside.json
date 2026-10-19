@@ -1,0 +1,168 @@
+{
+  "id": "wizards-tower-inside",
+  "name": "Wizard's Tower (Inside)",
+  "subtitle": "Filled with magical artifacts and ancient tomes.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/wizards-tower-inside.png",
+  "region": "heros_journey",
+  "game_location": "wizards-tower",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "########..######################################",
+    "#######...######################################",
+    "#######...######################################",
+    "#######..#######################################",
+    "#######..#######################################",
+    "#######.############..##########################",
+    "######.###########.......#######################",
+    "#####..#########..........######################",
+    "####....#######...#######....###################",
+    "###.....#####....##########...##################",
+    "###.....####....############....################",
+    "###............#############......#.############",
+    "###.............############........############",
+    "#####...........############.........#...#######",
+    "######..........############...........#########",
+    "#######............########...........##########",
+    "########.............##...............##########",
+    "########..............................##########",
+    "########............................############",
+    "########..........................#.############",
+    "######.#........................################",
+    "#####...........................################",
+    "#######.......................##################",
+    "#########.....................##################",
+    "##########...................###################",
+    "##########..................####################",
+    "##########..................####################"
+  ],
+  "spawn": {
+    "x": 24.25,
+    "y": 24.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Wizard's Tower",
+      "x": 14.72,
+      "y": 31.0,
+      "w": 5.44,
+      "h": 4.5,
+      "to": "wizards-tower-outside",
+      "arriveAt": {
+        "x": 20.0,
+        "y": 18.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the lower middle part of the room leads to Wizard's Tower (Outside). Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "npc-elowen",
+      "label": "Elowen",
+      "game_npc": "elowen",
+      "x": 15.12,
+      "y": 12.5,
+      "w": 1.2,
+      "h": 2.0,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Elowen.",
+      "npc_sheet": "assets/adventure/sprites/conversational NPCs/elowen sprite.png",
+      "npc_frame": 64,
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "writing stool",
+      "x": 36.34,
+      "y": 16.62,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 37.44,
+            "y": 17.12,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Writing stool, in the central right part of the room, beside the book-filled magical study. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "elowen",
+      "name": "Elowen",
+      "role": "Wizard"
+    }
+  ],
+  "description": "The wizard's tower interior is a crowded, warmly lit study beneath heavy timber beams. A round worktable in the centre carries open books, loose papers, bottles and a violet crystal sphere. More books and glassware fill the shelves and side tables around the walls. A stone fireplace burns on the upper right, and a spiral stair curves upwards on the left. Candles, wall flames and luminous butterfly shapes brighten the room; scattered parchment sheets spill across the plank floor around the central table. The familiar hearth and wood sit alongside coloured potions and arcane objects, making this a working magical study rather than an empty tower chamber.",
+  "landmarks": [
+    {
+      "id": "round-arcane-worktable",
+      "label": "Round arcane worktable",
+      "kind": "workbench",
+      "description": "Open books, papers, bottles and a violet sphere cover the central round table.",
+      "x": 23,
+      "y": 18
+    },
+    {
+      "id": "tower-fireplace",
+      "label": "Tower fireplace",
+      "kind": "fireplace",
+      "description": "A lit stone fireplace sits beneath shelves of books and glassware.",
+      "x": 35,
+      "y": 11
+    },
+    {
+      "id": "spiral-tower-stair",
+      "label": "Spiral tower stair",
+      "kind": "staircase",
+      "description": "A wooden spiral stair curves upwards along the left side of the room.",
+      "x": 9,
+      "y": 10
+    },
+    {
+      "id": "book-and-potion-shelves",
+      "label": "Book and potion shelves",
+      "kind": "bookshelves",
+      "description": "Books, jars and coloured bottles fill the shelves above the study.",
+      "x": 24,
+      "y": 6
+    },
+    {
+      "id": "loose-parchment-floor",
+      "label": "Loose parchment floor",
+      "kind": "scenery",
+      "description": "Many parchment sheets lie scattered on the boards around the worktable.",
+      "x": 28,
+      "y": 26
+    }
+  ]
+}

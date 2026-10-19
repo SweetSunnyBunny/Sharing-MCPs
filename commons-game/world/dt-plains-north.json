@@ -1,0 +1,203 @@
+{
+  "id": "dt-plains-north",
+  "name": "Northern Plains",
+  "subtitle": "The plains grow wilder as you head north.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/open_plains_north.png",
+  "region": "dusty_trails",
+  "game_location": "open-plains",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "............................................##.#",
+    ".....................................###########",
+    "....................................############",
+    "..................................##############",
+    "#...........................####################",
+    "#####.....................######################",
+    "#######................#########################",
+    "#########............###########################",
+    "##########..........###########################.",
+    "##########...........####################.......",
+    "###########............###..#.........#.........",
+    "#############.............................######",
+    "##############.........................#########",
+    "##############.................#################",
+    "###############................#################",
+    "##############............######################",
+    "#############.............######################",
+    "###########...............######################",
+    "##########................######################",
+    "#........................#######################",
+    "........................########################"
+  ],
+  "spawn": {
+    "x": 19.75,
+    "y": 13.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Open Plains",
+      "x": 7.0,
+      "y": 31.25,
+      "w": 12.0,
+      "h": 3.0,
+      "to": "dt-open-plains",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 17.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the lower left part of the room leads to Open Plains. Walk into the marked threshold to take that route.",
+      "kind": "door",
+      "fishable": false
+    },
+    {
+      "id": "travel-1",
+      "label": "Open Plains Further North",
+      "x": 12.25,
+      "y": 11.75,
+      "w": 3.22,
+      "h": 2.06,
+      "to": "dt-plains-north2",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 23.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central left part of the room leads to Far Northern Plains. Walk into the marked threshold to take that route.",
+      "kind": "door",
+      "fishable": false
+    },
+    {
+      "id": "travel-2",
+      "label": "Abandoned Mine",
+      "x": 23.5,
+      "y": 14.0,
+      "w": 2.66,
+      "h": 1.97,
+      "to": "dt-abandoned-mine",
+      "arriveAt": {
+        "x": 26.5,
+        "y": 26.0
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central middle part of the room leads to Abandoned Mine. Walk into the marked threshold to take that route.",
+      "kind": "door",
+      "fishable": false
+    }
+  ],
+  "npcs": [],
+  "fishing_zones": [
+    {
+      "id": "water-1",
+      "points": [
+        [
+          26.4,
+          17.6
+        ],
+        [
+          29.28,
+          16.64
+        ],
+        [
+          33.6,
+          16.64
+        ],
+        [
+          37.44,
+          17.92
+        ],
+        [
+          37.92,
+          19.84
+        ],
+        [
+          33.6,
+          20.8
+        ],
+        [
+          28.32,
+          20.8
+        ],
+        [
+          25.44,
+          19.52
+        ]
+      ]
+    }
+  ],
+  "fishing_pool": "dusty-river",
+  "description": "The northern plains open into a broad yellow-green valley, with red mesas standing on the distant horizon. A blue pool sits on the right between rounded boulders and trees. The pale dirt track curves past it through low scrub and stretches towards the central distance. Wooden fence sections cross the grass, and a small windmill is visible farther to the right. Flowers and hardy plants cluster near the foreground rocks. The painted water and scattered trees soften the otherwise dry ground, while the large open sky and long view keep this part of the frontier feeling exposed.",
+  "landmarks": [
+    {
+      "id": "eastern-plains-pool",
+      "label": "Eastern plains pool",
+      "kind": "water",
+      "description": "A blue pool is bordered by pale rocks and a few small trees on the right.",
+      "x": 36,
+      "y": 21
+    },
+    {
+      "id": "central-frontier-track",
+      "label": "Central frontier track",
+      "kind": "path",
+      "description": "A pale dirt path winds through grass and low scrub towards the distant valley.",
+      "x": 25,
+      "y": 21
+    },
+    {
+      "id": "small-frontier-windmill",
+      "label": "Small frontier windmill",
+      "kind": "machinery",
+      "description": "A windmill stands beyond the right-hand pool near the edge of the open plain.",
+      "x": 43,
+      "y": 10
+    },
+    {
+      "id": "foreground-fence",
+      "label": "Foreground fence",
+      "kind": "scenery",
+      "description": "A short wooden fence crosses the ground close to the pool.",
+      "x": 31,
+      "y": 26
+    },
+    {
+      "id": "red-mesa-horizon",
+      "label": "Red mesa horizon",
+      "kind": "rock",
+      "description": "Broad red mesas frame the distant valley beneath a clouded blue sky.",
+      "x": 26,
+      "y": 5
+    }
+  ]
+}

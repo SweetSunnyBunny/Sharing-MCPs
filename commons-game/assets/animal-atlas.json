@@ -1,0 +1,2627 @@
+{
+  "animal-cat": {
+    "tilesTall": 0.82,
+    "width": 28,
+    "height": 29,
+    "directions": {
+      "down": [
+        {
+          "rect": [
+            9,
+            5,
+            14,
+            27
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            9,
+            5,
+            14,
+            27
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            41,
+            3,
+            14,
+            29
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            73,
+            5,
+            14,
+            27
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            41,
+            3,
+            14,
+            29
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            9,
+            5,
+            14,
+            27
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            41,
+            3,
+            14,
+            29
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            73,
+            5,
+            14,
+            27
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            41,
+            3,
+            14,
+            29
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        }
+      ],
+      "left": [
+        {
+          "rect": [
+            2,
+            43,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            2,
+            43,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            34,
+            41,
+            25,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            66,
+            43,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            34,
+            41,
+            25,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            2,
+            43,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            34,
+            41,
+            25,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            66,
+            43,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            34,
+            41,
+            25,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        }
+      ],
+      "right": [
+        {
+          "rect": [
+            2,
+            75,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            2,
+            75,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            37,
+            73,
+            25,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            66,
+            75,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            37,
+            73,
+            25,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            2,
+            75,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            37,
+            73,
+            25,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            66,
+            75,
+            28,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            37,
+            73,
+            25,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        }
+      ],
+      "up": [
+        {
+          "rect": [
+            9,
+            105,
+            14,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            9,
+            105,
+            14,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            41,
+            104,
+            14,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            73,
+            105,
+            14,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            41,
+            104,
+            14,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            9,
+            105,
+            14,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            41,
+            104,
+            14,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            73,
+            105,
+            14,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        },
+        {
+          "rect": [
+            41,
+            104,
+            14,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/cat.png?v=2c8602c983"
+        }
+      ]
+    }
+  },
+  "animal-black-wolf": {
+    "tilesTall": 1.42,
+    "width": 23,
+    "height": 20,
+    "directions": {
+      "down": [
+        {
+          "rect": [
+            234,
+            12,
+            12,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            10,
+            15,
+            12,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            42,
+            14,
+            12,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            74,
+            15,
+            12,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            42,
+            14,
+            12,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            10,
+            15,
+            12,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            42,
+            14,
+            12,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            74,
+            15,
+            12,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            42,
+            14,
+            12,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        }
+      ],
+      "left": [
+        {
+          "rect": [
+            229,
+            44,
+            22,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            3,
+            46,
+            23,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            35,
+            45,
+            23,
+            18
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            67,
+            46,
+            23,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            35,
+            45,
+            23,
+            18
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            3,
+            46,
+            23,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            35,
+            45,
+            23,
+            18
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            67,
+            46,
+            23,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            35,
+            45,
+            23,
+            18
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        }
+      ],
+      "right": [
+        {
+          "rect": [
+            229,
+            76,
+            22,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            6,
+            78,
+            23,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            38,
+            77,
+            23,
+            18
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            70,
+            78,
+            23,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            38,
+            77,
+            23,
+            18
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            6,
+            78,
+            23,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            38,
+            77,
+            23,
+            18
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            70,
+            78,
+            23,
+            17
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            38,
+            77,
+            23,
+            18
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        }
+      ],
+      "up": [
+        {
+          "rect": [
+            234,
+            108,
+            12,
+            20
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            10,
+            109,
+            12,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            42,
+            108,
+            12,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            74,
+            109,
+            12,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            42,
+            108,
+            12,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            10,
+            109,
+            12,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            42,
+            108,
+            12,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            74,
+            109,
+            12,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        },
+        {
+          "rect": [
+            42,
+            108,
+            12,
+            19
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/wolfpack_9.27.21/full_color/wolf_black_full.png?v=b9bb340030"
+        }
+      ]
+    }
+  },
+  "animal-fox": {
+    "tilesTall": 0.9,
+    "width": 31,
+    "height": 24,
+    "directions": {
+      "down": [
+        {
+          "rect": [
+            8,
+            8,
+            16,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_idle.png?v=67cdf0b267"
+        },
+        {
+          "rect": [
+            8,
+            7,
+            16,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            40,
+            8,
+            17,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            72,
+            8,
+            16,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            104,
+            7,
+            16,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            135,
+            8,
+            17,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            168,
+            8,
+            16,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            135,
+            8,
+            17,
+            21
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            104,
+            7,
+            16,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        }
+      ],
+      "up": [
+        {
+          "rect": [
+            8,
+            39,
+            16,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_idle.png?v=67cdf0b267"
+        },
+        {
+          "rect": [
+            8,
+            39,
+            16,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            40,
+            40,
+            16,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            72,
+            40,
+            16,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            104,
+            39,
+            17,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            136,
+            40,
+            16,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            168,
+            40,
+            16,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            136,
+            40,
+            16,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            104,
+            39,
+            17,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        }
+      ],
+      "left": [
+        {
+          "rect": [
+            1,
+            69,
+            31,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_idle.png?v=67cdf0b267"
+        },
+        {
+          "rect": [
+            1,
+            70,
+            29,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            33,
+            69,
+            29,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            65,
+            71,
+            30,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            97,
+            71,
+            31,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            129,
+            69,
+            31,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            161,
+            71,
+            30,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            129,
+            69,
+            31,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            97,
+            71,
+            31,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        }
+      ],
+      "right": [
+        {
+          "rect": [
+            0,
+            101,
+            31,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_idle.png?v=67cdf0b267"
+        },
+        {
+          "rect": [
+            2,
+            102,
+            29,
+            23
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            34,
+            101,
+            29,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            65,
+            103,
+            30,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            96,
+            103,
+            31,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            128,
+            101,
+            31,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            161,
+            103,
+            30,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            128,
+            101,
+            31,
+            24
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        },
+        {
+          "rect": [
+            96,
+            103,
+            31,
+            22
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/fox/fox_walk.png?v=c144784bbc"
+        }
+      ]
+    }
+  },
+  "animal-bear": {
+    "tilesTall": 1.38,
+    "width": 56,
+    "height": 55,
+    "directions": {
+      "down": [
+        {
+          "rect": [
+            515,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            515,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            3,
+            32,
+            53
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            627,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            3,
+            32,
+            53
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            515,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            3,
+            32,
+            53
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            627,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            3,
+            32,
+            53
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        }
+      ],
+      "left": [
+        {
+          "rect": [
+            505,
+            71,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            505,
+            71,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            71,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            616,
+            71,
+            56,
+            37
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            71,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            505,
+            71,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            71,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            616,
+            71,
+            56,
+            37
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            71,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        }
+      ],
+      "right": [
+        {
+          "rect": [
+            504,
+            127,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            504,
+            127,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            127,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            616,
+            127,
+            56,
+            37
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            127,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            504,
+            127,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            127,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            616,
+            127,
+            56,
+            37
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            127,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        }
+      ],
+      "up": [
+        {
+          "rect": [
+            515,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            515,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            171,
+            33,
+            55
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            627,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            171,
+            33,
+            55
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            515,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            171,
+            33,
+            55
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            627,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            171,
+            33,
+            55
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        }
+      ]
+    }
+  },
+  "animal-bear-cub": {
+    "tilesTall": 0.95,
+    "width": 56,
+    "height": 55,
+    "directions": {
+      "down": [
+        {
+          "rect": [
+            515,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            515,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            3,
+            32,
+            53
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            627,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            3,
+            32,
+            53
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            515,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            3,
+            32,
+            53
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            627,
+            3,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            3,
+            32,
+            53
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        }
+      ],
+      "left": [
+        {
+          "rect": [
+            505,
+            71,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            505,
+            71,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            71,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            616,
+            71,
+            56,
+            37
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            71,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            505,
+            71,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            71,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            616,
+            71,
+            56,
+            37
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            71,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        }
+      ],
+      "right": [
+        {
+          "rect": [
+            504,
+            127,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            504,
+            127,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            127,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            616,
+            127,
+            56,
+            37
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            127,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            504,
+            127,
+            55,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            127,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            616,
+            127,
+            56,
+            37
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            560,
+            127,
+            56,
+            39
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        }
+      ],
+      "up": [
+        {
+          "rect": [
+            515,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            515,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            171,
+            33,
+            55
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            627,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            171,
+            33,
+            55
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            515,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            171,
+            33,
+            55
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            627,
+            170,
+            33,
+            52
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        },
+        {
+          "rect": [
+            571,
+            171,
+            33,
+            55
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/bears.png?v=0469abb63d"
+        }
+      ]
+    }
+  },
+  "animal-owl": {
+    "tilesTall": 0.95,
+    "width": 66,
+    "height": 76,
+    "directions": {
+      "down": [
+        {
+          "rect": [
+            303,
+            15,
+            30,
+            47
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            17,
+            0,
+            33,
+            76
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            107,
+            0,
+            42,
+            74
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            195,
+            8,
+            56,
+            62
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            577,
+            18,
+            52,
+            41
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            195,
+            8,
+            56,
+            62
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            107,
+            0,
+            42,
+            74
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            17,
+            0,
+            33,
+            76
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            107,
+            0,
+            42,
+            74
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        }
+      ],
+      "left": [
+        {
+          "rect": [
+            297,
+            214,
+            44,
+            47
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            12,
+            204,
+            41,
+            69
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            106,
+            207,
+            44,
+            64
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            201,
+            207,
+            45,
+            63
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            586,
+            216,
+            35,
+            46
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            201,
+            207,
+            45,
+            63
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            106,
+            207,
+            44,
+            64
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            12,
+            204,
+            41,
+            69
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            106,
+            207,
+            44,
+            64
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        }
+      ],
+      "right": [
+        {
+          "rect": [
+            297,
+            214,
+            44,
+            47
+          ],
+          "flip": true,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            12,
+            204,
+            41,
+            69
+          ],
+          "flip": true,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            106,
+            207,
+            44,
+            64
+          ],
+          "flip": true,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            201,
+            207,
+            45,
+            63
+          ],
+          "flip": true,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            586,
+            216,
+            35,
+            46
+          ],
+          "flip": true,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            201,
+            207,
+            45,
+            63
+          ],
+          "flip": true,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            106,
+            207,
+            44,
+            64
+          ],
+          "flip": true,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            12,
+            204,
+            41,
+            69
+          ],
+          "flip": true,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            106,
+            207,
+            44,
+            64
+          ],
+          "flip": true,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        }
+      ],
+      "up": [
+        {
+          "rect": [
+            302,
+            418,
+            32,
+            40
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            21,
+            403,
+            24,
+            71
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            109,
+            405,
+            38,
+            69
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            196,
+            413,
+            55,
+            51
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            576,
+            418,
+            66,
+            41
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            196,
+            413,
+            55,
+            51
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            109,
+            405,
+            38,
+            69
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            21,
+            403,
+            24,
+            71
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        },
+        {
+          "rect": [
+            109,
+            405,
+            38,
+            69
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/owl.png?v=b6b38504fe"
+        }
+      ]
+    }
+  },
+  "animal-snake": {
+    "tilesTall": 0.72,
+    "width": 168,
+    "height": 112,
+    "directions": {
+      "right": [
+        {
+          "rect": [
+            54,
+            50,
+            168,
+            41
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            54,
+            50,
+            168,
+            41
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            229,
+            35,
+            132,
+            64
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            417,
+            28,
+            112,
+            77
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            549,
+            35,
+            132,
+            64
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            417,
+            28,
+            112,
+            77
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            229,
+            35,
+            132,
+            64
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            54,
+            50,
+            168,
+            41
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            229,
+            35,
+            132,
+            64
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        }
+      ],
+      "left": [
+        {
+          "rect": [
+            47,
+            216,
+            167,
+            42
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            47,
+            216,
+            167,
+            42
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            229,
+            203,
+            132,
+            63
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            382,
+            196,
+            111,
+            76
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            549,
+            203,
+            132,
+            63
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            382,
+            196,
+            111,
+            76
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            229,
+            203,
+            132,
+            63
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            47,
+            216,
+            167,
+            42
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            229,
+            203,
+            132,
+            63
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        }
+      ],
+      "up": [
+        {
+          "rect": [
+            110,
+            335,
+            48,
+            112
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            110,
+            335,
+            48,
+            112
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            263,
+            342,
+            49,
+            112
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            424,
+            349,
+            69,
+            91
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            584,
+            343,
+            50,
+            111
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            424,
+            349,
+            69,
+            91
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            263,
+            342,
+            49,
+            112
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            110,
+            335,
+            48,
+            112
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            263,
+            342,
+            49,
+            112
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        }
+      ],
+      "down": [
+        {
+          "rect": [
+            110,
+            496,
+            48,
+            112
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            110,
+            496,
+            48,
+            112
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            270,
+            503,
+            56,
+            105
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            424,
+            524,
+            76,
+            84
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            592,
+            503,
+            55,
+            105
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            424,
+            524,
+            76,
+            84
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            270,
+            503,
+            56,
+            105
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            110,
+            496,
+            48,
+            112
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        },
+        {
+          "rect": [
+            270,
+            503,
+            56,
+            105
+          ],
+          "flip": false,
+          "url": "/assets/adventure/sprites/snake.png?v=10edfefcbe"
+        }
+      ]
+    }
+  }
+}

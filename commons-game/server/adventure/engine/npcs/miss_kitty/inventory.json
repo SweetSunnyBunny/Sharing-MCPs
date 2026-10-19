@@ -1,0 +1,206 @@
+{
+  "shop_name": "The Long Branch Saloon",
+  "last_restock": "2025-11-25",
+  "currency": "dollars",
+  "inventory": {
+    "drink": {
+      "Whiskey": {
+        "stock": 25,
+        "max_stock": 40,
+        "price": 1.50,
+        "description": "Frontier whiskey. Burns going down.",
+        "rarity": "common"
+      },
+      "Rye Whiskey": {
+        "stock": 15,
+        "max_stock": 25,
+        "price": 2.00,
+        "description": "Smoother than the regular stuff.",
+        "rarity": "common"
+      },
+      "Fine Bourbon": {
+        "stock": 8,
+        "max_stock": 12,
+        "price": 4.00,
+        "description": "Imported from Kentucky. Worth every penny.",
+        "rarity": "uncommon"
+      },
+      "Beer": {
+        "stock": 40,
+        "max_stock": 60,
+        "price": 0.75,
+        "description": "Cold beer from the cellar.",
+        "rarity": "common"
+      },
+      "Sarsaparilla": {
+        "stock": 20,
+        "max_stock": 30,
+        "price": 0.50,
+        "description": "Sweet root beer. Good for those who don't drink.",
+        "rarity": "common"
+      },
+      "Coffee": {
+        "stock": 30,
+        "max_stock": 50,
+        "price": 0.25,
+        "description": "Hot and strong. Just how the frontier likes it.",
+        "rarity": "common"
+      },
+      "Hot Tea": {
+        "stock": 15,
+        "max_stock": 25,
+        "price": 0.25,
+        "description": "Imported tea for the refined folk.",
+        "rarity": "common"
+      },
+      "Lemonade": {
+        "stock": 12,
+        "max_stock": 20,
+        "price": 0.50,
+        "description": "Fresh squeezed. Refreshing on hot days.",
+        "rarity": "common"
+      }
+    },
+    "food": {
+      "Steak Dinner": {
+        "stock": 15,
+        "max_stock": 20,
+        "price": 3.00,
+        "description": "Thick-cut beef steak with potatoes and beans.",
+        "rarity": "common"
+      },
+      "Fried Chicken": {
+        "stock": 12,
+        "max_stock": 18,
+        "price": 2.50,
+        "description": "Crispy fried chicken with biscuits.",
+        "rarity": "common"
+      },
+      "Beef Stew": {
+        "stock": 20,
+        "max_stock": 30,
+        "price": 1.50,
+        "description": "Hearty stew with vegetables. Warms the bones.",
+        "rarity": "common"
+      },
+      "Beans and Cornbread": {
+        "stock": 25,
+        "max_stock": 35,
+        "price": 1.00,
+        "description": "Simple frontier fare. Fills the belly.",
+        "rarity": "common"
+      },
+      "Bacon and Eggs": {
+        "stock": 18,
+        "max_stock": 25,
+        "price": 1.50,
+        "description": "Breakfast any time of day.",
+        "rarity": "common"
+      },
+      "Apple Pie": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 1.00,
+        "description": "Fresh-baked apple pie. Kitty's specialty.",
+        "rarity": "common"
+      },
+      "Biscuits and Gravy": {
+        "stock": 15,
+        "max_stock": 20,
+        "price": 1.25,
+        "description": "Fluffy biscuits smothered in sausage gravy.",
+        "rarity": "common"
+      },
+      "Chili": {
+        "stock": 15,
+        "max_stock": 25,
+        "price": 1.25,
+        "description": "Spicy beef chili. Not for the faint of heart.",
+        "rarity": "common"
+      }
+    },
+    "lodging": {
+      "Bunk (shared room)": {
+        "stock": 8,
+        "max_stock": 8,
+        "price": 2.00,
+        "description": "A bed in the shared bunkroom. Basic but clean.",
+        "rarity": "common"
+      },
+      "Private Room": {
+        "stock": 4,
+        "max_stock": 4,
+        "price": 5.00,
+        "description": "Your own room with a real bed and washbasin.",
+        "rarity": "common"
+      },
+      "Deluxe Suite": {
+        "stock": 1,
+        "max_stock": 1,
+        "price": 12.00,
+        "description": "The finest room in the house. Feather bed, private bath.",
+        "rarity": "uncommon"
+      },
+      "Stable Space": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 1.00,
+        "description": "A stall for your horse with hay and water.",
+        "rarity": "common"
+      }
+    },
+    "entertainment": {
+      "Poker Buy-in": {
+        "stock": 99,
+        "max_stock": 99,
+        "price": 5.00,
+        "description": "Join the poker game in the back room.",
+        "rarity": "common"
+      },
+      "Piano Song Request": {
+        "stock": 99,
+        "max_stock": 99,
+        "price": 0.50,
+        "description": "Request a song from the piano player.",
+        "rarity": "common"
+      },
+      "Fine Cigar": {
+        "stock": 15,
+        "max_stock": 20,
+        "price": 2.00,
+        "description": "Imported cigar. Smells of money and success.",
+        "rarity": "uncommon"
+      },
+      "Cigarettes (pack)": {
+        "stock": 20,
+        "max_stock": 30,
+        "price": 0.75,
+        "description": "Roll-your-own tobacco in paper.",
+        "rarity": "common"
+      }
+    }
+  },
+  "buy_prices": {
+    "Whiskey": 0.75,
+    "Rye Whiskey": 1.00,
+    "Fine Bourbon": 2.00,
+    "Beer": 0.40,
+    "Sarsaparilla": 0.25,
+    "Coffee": 0.10,
+    "Steak Dinner": 1.50,
+    "Fried Chicken": 1.25,
+    "Beef Stew": 0.75,
+    "Apple Pie": 0.50,
+    "Fine Cigar": 1.00,
+    "Cigarettes (pack)": 0.35,
+    "gold nuggets": 8.00,
+    "silver ore": 4.00,
+    "Rabbit Pelt": 1.50,
+    "Wolf Pelt": 5.00,
+    "Coyote Pelt": 4.00,
+    "Pronghorn Hide": 6.00,
+    "Rattlesnake Skin": 5.00,
+    "Bandit Bounty": 20.00,
+    "Stolen Goods": 8.00
+  }
+}

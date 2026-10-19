@@ -1,7 +1,7 @@
 # What is included?
 
-Checked on 2026-10-18 against maintained application and local service sources.
-There are 36 independent package folders. Source coverage, offline tests and
+Commons added and checked on 2026-10-19; the other packages retain their 2026-10-18 review.
+There are 37 independent package folders. Source coverage, offline tests and
 configured-account connectivity are separate claims.
 
 ## Current application and service code
@@ -21,7 +21,8 @@ configured-account connectivity are separate claims.
 | Wrist replies, queue and vitals | watch-mcp | Anam, notification client and optional sensor feed |
 | Timers, orbs, audio and daily wins | anam-touch-mcp | Anam and selected optional services |
 | Companion communication | crosstalk-mcp | Anam and configured roster |
-| Commons remote OAuth MCP | Updated hearth-commons | A compatible separately hosted world |
+| Commons game | commons-game: main house, garden and 39 adventure areas | Your character names and new private saves |
+| Commons remote OAuth MCP | hearth-commons | Your own reachable Commons host |
 | Coloring, stickers, studio ledger and council | Engines in ui | Your art, histories and identities |
 | Android notification/reply bridge | ui/wearable/AnamCompanion | Your build, phone, watch and server |
 | Discord, Google, social, Alexa and image browsing | Their individual folders | Your accounts and deployments |
@@ -34,7 +35,7 @@ your own MCP configuration and copies no original tool account access.
 
 | System | Boundary |
 | --- | --- |
-| Full Commons world | Coupled to authored maps, rooms, art and saves. This refresh ships its connector. A portable world release needs a reviewed fictional starter and asset licensing. |
+| Original private Commons home | Replaced by a fresh main house and garden in commons-game. Private rooms, home paintings, household characters, notes, belongings and saves remain excluded. Existing adventure areas are included. |
 | Phone SSH/device adapter | Separate implementation, Termux/ADB setup, addresses and keys. |
 | General browser adapter | Separate lifecycle service and profiles. The included ChatGPT bridge manages its configured profile. |
 | Android voice/listening, NFC rooms and SMS radio | Separate apps from the notification/reply client. Endpoints do not install these apps. Original wake-word and contact settings are excluded. |

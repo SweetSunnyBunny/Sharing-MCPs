@@ -1,0 +1,143 @@
+{
+  "id": "dt-mine-inside",
+  "name": "Mine Interior",
+  "subtitle": "Dark tunnels supported by rotting timbers.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/abandoned_mine_inside.png",
+  "region": "dusty_trails",
+  "game_location": "abandoned-mine",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "##########################..####################",
+    "##########################...###################",
+    "#########################....###################",
+    "#########################....###################",
+    "########################.....###################",
+    "#######################.....####################",
+    "#####################.......####################",
+    "####################......######################",
+    "################..........######################",
+    "##############...........#######################",
+    "############.............#######################",
+    "##########..............########################",
+    "##########..............########################",
+    "###########............#########################",
+    "###########............#########################",
+    "##########.............#########################",
+    "#####.###................#######################",
+    "#####......................#####################",
+    "######......................####################",
+    "######..........................################",
+    "####............................################",
+    "####.##......................###################",
+    "########....................####################",
+    "##########..................####################",
+    "##########..................####################",
+    "##########...................###################",
+    "##########...................###################",
+    "########....................####################",
+    "#######...................######################",
+    "#######..................#######################",
+    "#######.................########################",
+    "#######.................########################"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 15.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Mine Entrance",
+      "x": 8.203125,
+      "y": 29.203125,
+      "w": 5.21875,
+      "h": 3.90625,
+      "to": "dt-mine-entrance",
+      "arriveAt": {
+        "x": 18.0,
+        "y": 15.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower left part of the room leads to Mine Entrance. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Mine Depths",
+      "x": 20.375,
+      "y": 5.890625,
+      "w": 3.1875,
+      "h": 4.21875,
+      "to": "dt-mine-north",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 23.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the upper middle part of the room leads to Mine Depths. Walk into the marked threshold to take that route."
+    }
+  ],
+  "npcs": [],
+  "description": "Inside the mine, a wider curving track passes between timber-framed rock walls. The rails enter from the lower left, bend through the middle and continue into the upper distance. Warm lanterns hang along the roof supports. A timber platform and barrels line the right side, with buckets, loose tools and a heap of broken rock on the floor below. More mine equipment sits on the left beneath the posts. The exposed rock has many orange and brown facets, and the wooden framing divides the tunnel into successive lit bays rather than one open cavern.",
+  "landmarks": [
+    {
+      "id": "interior-rail-bend",
+      "label": "Interior rail bend",
+      "kind": "path",
+      "description": "A broad curve in the rails carries the visual route through the middle of the chamber.",
+      "x": 25,
+      "y": 18
+    },
+    {
+      "id": "eastern-timber-platform",
+      "label": "Eastern timber platform",
+      "kind": "scenery",
+      "description": "A raised timber platform and posts stand along the right-hand wall.",
+      "x": 39,
+      "y": 15
+    },
+    {
+      "id": "rock-heap",
+      "label": "Rock heap",
+      "kind": "rock",
+      "description": "A mound of rough broken stone lies beside the lower-right rail.",
+      "x": 36,
+      "y": 26
+    },
+    {
+      "id": "mine-lantern-row",
+      "label": "Mine lantern row",
+      "kind": "lighting",
+      "description": "Lanterns mark successive timber-framed sections of the tunnel.",
+      "x": 29,
+      "y": 6
+    },
+    {
+      "id": "barrels-and-buckets",
+      "label": "Barrels and buckets",
+      "kind": "storage",
+      "description": "Barrels, buckets and working equipment are clustered beside the left-hand supports.",
+      "x": 10,
+      "y": 18
+    }
+  ]
+}

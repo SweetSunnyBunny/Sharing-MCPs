@@ -1,0 +1,226 @@
+{
+  "description": "Stealing system configuration - steal from NPCs or players with social consequences",
+
+  "mechanics": {
+    "base_roll": "d20",
+    "stat_bonus": {
+      "dusty_trails": "dexterity",
+      "black_serenity": "tech",
+      "heros_journey": "dexterity"
+    },
+    "level_modifier": 2,
+    "cooldown_seconds": 180
+  },
+
+  "worlds": {
+    "dusty_trails": {
+      "steal_command_flavor": "You eye the place, looking for an opportunity...",
+      "currency_name": "dollars",
+      "currency_symbol": "$",
+      "targets": {
+        "general-store": {
+          "npc": "Katie",
+          "difficulty": 12,
+          "currency_range": [5, 20],
+          "items": ["bandages", "rope", "lantern", "matches", "coffee_beans", "flour", "sugar", "tobacco"],
+          "caught_message": "Katie spots your hand in the till! \"What in tarnation do you think you're doing?!\"",
+          "success_message": "You pocket some goods while Katie's back is turned. Smooth as butter.",
+          "witnesses": ["Sheriff", "Miss_Kitty", "Takoda"]
+        },
+        "long-branch-saloon": {
+          "npc": "Miss_Kitty",
+          "difficulty": 14,
+          "currency_range": [10, 35],
+          "items": ["whiskey", "playing_cards", "cigars", "saloon_token", "fancy_hat"],
+          "caught_message": "Miss Kitty catches your wrist in an iron grip. \"Honey, that was a mistake.\"",
+          "success_message": "The saloon's busy enough that nobody notices your light fingers.",
+          "witnesses": ["Sheriff", "Katie", "Takoda"]
+        },
+        "sheriffs-office": {
+          "npc": "Sheriff",
+          "difficulty": 18,
+          "currency_range": [25, 75],
+          "items": ["handcuffs", "wanted_poster", "badge", "ammunition", "lockpick"],
+          "caught_message": "The Sheriff's hand drops to his holster. \"Now that was mighty stupid, partner.\"",
+          "success_message": "You slip something out of the evidence locker. The Sheriff never even looked up.",
+          "witnesses": ["Miss_Kitty", "Katie"]
+        }
+      },
+      "player_theft": {
+        "enabled": true,
+        "difficulty_base": 10,
+        "steal_percent_range": [0.05, 0.15],
+        "caught_message": "They catch you red-handed! \"What do you think you're doing, you varmint?!\"",
+        "success_message": "You slip some coins from their pocket. They're none the wiser."
+      },
+      "gossip_network": {
+        "description": "Word travels fast in a small frontier town",
+        "all_npcs": ["Sheriff", "Miss_Kitty", "Katie", "Takoda"],
+        "isolated_npcs": []
+      }
+    },
+
+    "heros_journey": {
+      "steal_command_flavor": "You look around for valuables, keeping to the shadows...",
+      "currency_name": "gold",
+      "currency_symbol": "g",
+      "targets": {
+        "the-prancing-pony": {
+          "npc": "Bran",
+          "difficulty": 11,
+          "currency_range": [5, 25],
+          "items": ["ale", "bread", "cheese", "room_key", "travelers_cloak"],
+          "caught_message": "Bran's meaty hand clamps down on your shoulder. \"Thought you could rob MY inn?\"",
+          "success_message": "The common room is crowded. No one notices you helping yourself.",
+          "witnesses": ["Cassian", "Elowen"]
+        },
+        "village-square": {
+          "npc": "Cassian",
+          "difficulty": 13,
+          "currency_range": [10, 40],
+          "items": ["healing_potion", "torch", "rope", "rations", "minor_trinket", "herb_bundle"],
+          "caught_message": "Cassian's eyes go wide. \"Thief! THIEF in the market!\"",
+          "success_message": "Cassian's distracted by another customer. Perfect timing.",
+          "witnesses": ["Bran", "Elowen"]
+        },
+        "wizards-tower": {
+          "npc": "Elowen",
+          "difficulty": 17,
+          "currency_range": [25, 80],
+          "items": ["spell_scroll", "magic_dust", "crystal_shard", "enchanted_quill", "potion_ingredients"],
+          "caught_message": "Elowen's eyes flash with arcane light. \"You DARE steal from a wizard?!\"",
+          "success_message": "The wizard is deep in research. You carefully extract something valuable.",
+          "witnesses": ["Bran", "Cassian"]
+        },
+        "enchanted-forest": {
+          "npc": "Victor",
+          "difficulty": 15,
+          "currency_range": [15, 50],
+          "items": ["forest_herbs", "fairy_dust", "enchanted_acorn", "moonpetal", "beast_fang"],
+          "caught_message": "Victor emerges from the shadows. \"I saw everything, friend. Everything.\"",
+          "success_message": "Victor's camp is unguarded. You help yourself to some supplies.",
+          "witnesses": []
+        }
+      },
+      "player_theft": {
+        "enabled": true,
+        "difficulty_base": 10,
+        "steal_percent_range": [0.05, 0.15],
+        "caught_message": "They spin around and catch you! \"Thief! You dare?!\"",
+        "success_message": "Your fingers find their coin purse. They never felt a thing."
+      },
+      "gossip_network": {
+        "description": "The village is tight-knit. Word spreads quickly.",
+        "all_npcs": ["Bran", "Cassian", "Elowen", "Flicker"],
+        "isolated_npcs": ["Victor"]
+      }
+    },
+
+    "black_serenity": {
+      "steal_command_flavor": "You scan the area for security gaps and valuable targets...",
+      "currency_name": "credits",
+      "currency_symbol": "cr",
+      "targets": {
+        "mos-eisley-cantina": {
+          "npc": "Merchant",
+          "difficulty": 13,
+          "currency_range": [20, 60],
+          "items": ["shiny_bits", "mystery_package", "droid_component", "salvage_wiring", "cantina_junk"],
+          "caught_message": "*Merchant squeals in alarm* \"EEE-CHOO! Utinni utinni!\" *points accusingly*",
+          "success_message": "The little merchant is distracted haggling. You help yourself to the cart.",
+          "witnesses": ["Lyra", "Aiko", "Cipher"]
+        },
+        "the-forge": {
+          "npc": "Garron",
+          "difficulty": 14,
+          "currency_range": [30, 80],
+          "items": ["scrap_metal", "circuit_board", "servo_motor", "power_cell", "rare_component"],
+          "caught_message": "Garron's welding torch swings toward you. \"Stealing from MY forge?!\"",
+          "success_message": "Sparks fly everywhere. Perfect cover for lifting some components.",
+          "witnesses": ["Mara", "Lyra"]
+        },
+        "terraforming-station": {
+          "npc": "Mara",
+          "difficulty": 12,
+          "currency_range": [25, 65],
+          "items": ["seedpods", "bio_sample", "nutrient_paste", "growth_hormone", "rare_plant"],
+          "caught_message": "Mara gasps, hand over her heart. \"How COULD you?! These are living things!\"",
+          "success_message": "Mara's absorbed in her plants. She doesn't notice you pocketing samples.",
+          "witnesses": ["Garron", "Lyra", "Cipher"]
+        },
+        "neural-jack-lounge": {
+          "npc": "Cipher",
+          "difficulty": 16,
+          "currency_range": [40, 100],
+          "items": ["memory_fragment", "glitch_shard", "neural_booster", "dream_seed", "data_whisper"],
+          "caught_message": "Cipher's eyes snap open. \"Bad move, sweetheart. Very bad move.\"",
+          "success_message": "Cipher's lost in the dreamscape. You grab what you can and slip away.",
+          "witnesses": ["Aiko", "Mara"]
+        },
+        "neon-underground": {
+          "npc": "Aiko",
+          "difficulty": 15,
+          "currency_range": [35, 90],
+          "items": ["stolen_id_tag", "illegal_holo_projector", "encrypted_data_chip", "mystery_package", "neon_shard"],
+          "caught_message": "Aiko's knife appears at your throat. \"Wrong target, choom. Very wrong.\"",
+          "success_message": "Aiko's busy with a deal. You lift something from her stash.",
+          "witnesses": ["Cipher", "Merchant"]
+        },
+        "ships-bridge": {
+          "npc": "Lyra",
+          "difficulty": 14,
+          "currency_range": [30, 75],
+          "items": ["transponder_id", "signal_echo", "navigation_chip", "encrypted_data_chip", "sensor_array"],
+          "caught_message": "Lyra's hand slams down on the console. \"Security to the bridge. NOW.\"",
+          "success_message": "Lyra's focused on navigation. You pocket some valuable tech.",
+          "witnesses": ["Mara", "Garron", "Cipher"]
+        }
+      },
+      "player_theft": {
+        "enabled": true,
+        "difficulty_base": 10,
+        "steal_percent_range": [0.05, 0.15],
+        "caught_message": "They whirl around! \"Hey! What do you think you're doing?!\"",
+        "success_message": "Credits transferred. They won't notice until they check their balance."
+      },
+      "gossip_network": {
+        "description": "On a space station, everyone talks. Especially about thieves.",
+        "all_npcs": ["Lyra", "Mara", "Cipher", "Merchant", "Garron", "Aiko"],
+        "isolated_npcs": []
+      }
+    }
+  },
+
+  "reputation_penalties": {
+    "caught_by_victim": {
+      "min": -30,
+      "max": -50,
+      "description": "The NPC you tried to steal from loses significant trust in you"
+    },
+    "caught_witnesses": {
+      "min": -15,
+      "max": -30,
+      "description": "Word spreads to connected NPCs who also lose trust"
+    },
+    "caught_gossip_network": {
+      "min": -10,
+      "max": -20,
+      "description": "The whole community hears about it eventually"
+    }
+  },
+
+  "player_theft_penalties": {
+    "caught": {
+      "currency_loss_percent": [0.05, 0.10],
+      "description": "When caught stealing from a player, you lose some of your own money"
+    }
+  },
+
+  "messages": {
+    "cooldown": "You need to lay low for a while. Wait {seconds} seconds.",
+    "no_target": "There's nothing worth stealing here. Try a shop or another player.",
+    "target_broke": "{target} doesn't have anything worth stealing right now.",
+    "self_steal": "You can't steal from yourself. That's not how this works.",
+    "help": "**Stealing Commands:**\n`!steal` - See what you can steal in this location\n`!steal items` - Steal items from the local NPC\n`!steal gold/dollars/credits` - Steal currency\n`!steal @player` - Attempt to pickpocket another player"
+  }
+}

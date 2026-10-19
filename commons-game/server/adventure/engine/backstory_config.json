@@ -1,0 +1,395 @@
+{
+  "description": "NPC backstory fragments - unlocked through high reputation OR repeated flirting",
+
+  "unlock_requirements": {
+    "reputation_threshold": 50,
+    "flirt_count_threshold": 5,
+    "description": "Players can unlock backstories by reaching 50+ reputation OR flirting 5+ times"
+  },
+
+  "npcs": {
+    "garron": {
+      "world": "black_serenity",
+      "unlock_message": "*Garron's helmet turns toward you, and for a moment, his voice sounds... different. Softer.*",
+      "locked_message": "*Garron shakes his head slowly.* \"We're not close enough for that kind of talk, friend.\"",
+      "fragments": [
+        {
+          "id": "origin",
+          "text": "*Garron sets down his hammer, his massive armored shoulders seeming to sag.* \"I wasn't always... this. I was a blacksmith. Had a forge in the lower districts. Hands of flesh then. Could feel the heat of the metal, the grain of the wood. Now I only remember what feeling felt like.\""
+        },
+        {
+          "id": "accident",
+          "text": "*The furnace light flickers across his helmet.* \"There was an explosion. Reactor breach in the sector above. The ceiling came down. My body... wasn't salvageable. But my brain was still alive. They asked if I wanted to keep going. I said yes. Didn't realize what that meant.\""
+        },
+        {
+          "id": "adjustment",
+          "text": "*He looks at his massive metal hands.* \"First year was the hardest. Kept trying to scratch my nose. Kept reaching for coffee I couldn't drink. Sometimes I'd stand in front of the forge for hours, trying to feel the warmth. Now I just... work. The work is what keeps me sane.\""
+        },
+        {
+          "id": "loneliness",
+          "text": "*His voice drops to barely a rumble.* \"People forget I'm in here. They see the armor, the strength, the usefulness. They forget there's a man inside who hasn't been touched in fifteen years. Who can't taste, can't smell, can't feel anything but vibrations through metal.\""
+        },
+        {
+          "id": "purpose",
+          "text": "*He picks up his hammer again.* \"But I can still help. Can still build, repair, protect. That's something, isn't it? Being useful? Sometimes I think that's all that's left of me. The part that helps. Maybe that's enough.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Garron is quiet for a long moment.* \"I keep a photograph. In a sealed compartment near my core. My wife and daughter. They think I died in the accident. I... let them think that. Better they mourn a dead man than live with this.\""
+        }
+      ]
+    },
+
+    "cipher": {
+      "world": "black_serenity",
+      "unlock_message": "*Cipher's cybernetic eye dims, his human eye suddenly more visible. Vulnerable.*",
+      "locked_message": "*Cipher smirks.* \"You want my secrets? Sweetheart, you haven't earned those yet.\"",
+      "fragments": [
+        {
+          "id": "before_war",
+          "text": "*Cipher pours two drinks, sliding one over.* \"Before all this? I was just a kid from the outer colonies. Idealistic. Angry at the corporations grinding people into dust.\" *He taps his cybernetic eye.* \"Signed up with the Rebel Alliance the day I turned sixteen. Thought I was gonna change the galaxy.\""
+        },
+        {
+          "id": "the_war",
+          "text": "*His voice goes flat.* \"Three years of guerrilla warfare. Hit-and-run raids on droid factories. Friends dying around me.\" *He touches the edge of his transparent skull.* \"Lost the eye to a security droid. Shrapnel went right through my visor. Thought that was the end.\""
+        },
+        {
+          "id": "the_upgrade",
+          "text": "*A dry laugh.* \"Rebel brass offered me an upgrade as thanks for my service. 'Free enhancement,' they said. Started with just the eye. But the new eye could see things - data streams, heat signatures, lies in people's faces.\" *He leans back.* \"I wanted more.\""
+        },
+        {
+          "id": "the_journey",
+          "text": "*He traces the visible neural pathways in his skull.* \"Neural networks. Direct internet access. Memory extensions.\" *His voice softens.* \"And neural jacks. The ability to share experiences. To really know what someone else feels.\" *A genuine smile.* \"That's when I understood what I wanted to build.\""
+        },
+        {
+          "id": "the_bar",
+          "text": "*Cipher gestures at the lounge around him.* \"Every person who walks through that door is looking for something. Escape. Connection. Transformation.\" *His eye glows softly.* \"I give them the chance to become whoever they want to be. Same chance the Alliance gave me.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Cipher is quiet for a long moment.* \"The dreams I sell? Some of them are mine. Real memories. Real feelings.\" *He meets your eyes.* \"Every customer takes a piece of me with them. But that means something of me... continues. In everyone who's ever jacked in here.\" *A real smile.* \"That's a kind of immortality, isn't it?\""
+        }
+      ]
+    },
+
+    "aiko": {
+      "world": "black_serenity",
+      "unlock_message": "*Aiko's cocky grin falters, replaced by something more real.*",
+      "locked_message": "*Aiko winks.* \"Nice try, choom. You want my story? Get to know me better first.\"",
+      "fragments": [
+        {
+          "id": "the_impossible",
+          "text": "*Aiko leans against the wall, unusually still.* \"You know what I am? Impossible. When AI learned to feel - really feel - nobody expected what came next.\" *She laughs.* \"Robots having kids. But consciousness fused to metal creates something new. Hormones. Love. Life.\""
+        },
+        {
+          "id": "father",
+          "text": "*She examines her nails, not meeting your eyes.* \"My dad was AI. Consciousness in a robotic body. Brilliant. Kind.\" *Her voice hardens.* \"Could never find work that paid. AI were supposed to work for free. Nobody accepted that he needed to support a family.\""
+        },
+        {
+          "id": "mother",
+          "text": "*A complicated smile.* \"Mom tried. God, she tried. But jobs disappeared when people found out about us. Wasn't counted as discrimination - AI aren't people, right?\" *She shrugs.* \"So she worked twice as hard for half the pay. And I watched.\""
+        },
+        {
+          "id": "growing_up",
+          "text": "*Aiko taps her temple.* \"I'm both of them. AI-brilliant mind, human growing body. Learned everything fast.\" *Her smile turns sharp.* \"Including that the fastest way to make real money was stealing and selling in the Underground. Started at twelve.\""
+        },
+        {
+          "id": "the_armor",
+          "text": "*She laughs, but it's hollow.* \"The flirty con artist thing? It's armor. Everyone sees a hustler, nobody looks deeper. Don't see the kid who just wanted her parents to stop worrying about money.\" *A pause.* \"Easier that way.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Aiko pulls out an old holophoto - a human woman and a robot, holding a baby.* \"My parents loved each other. Against everything - society, biology, probability.\" *She traces their faces.* \"They made something impossible. They made me.\" *She tucks it away.* \"That's worth protecting.\""
+        }
+      ]
+    },
+
+    "victor": {
+      "world": "heros_journey",
+      "unlock_message": "*Victor's usual guarded expression softens, and he stares into the forest shadows.*",
+      "locked_message": "*Victor grunts.* \"My past is my own, stranger. Earn my trust first.\"",
+      "fragments": [
+        {
+          "id": "childhood",
+          "text": "*Victor absently strokes Flicker.* \"Wasn't always like this. Used to talk more.\" *A pause.* \"When there were people to talk to.\" *His voice goes distant.* \"Grew up poor. Father, mother, five siblings. I was oldest. Learned to hunt before I learned to read.\""
+        },
+        {
+          "id": "father",
+          "text": "*His jaw tightens.* \"Father died when I was twelve. Wolves. Rabid ones, in winter when prey was scarce.\" *He checks his bow string methodically.* \"Found him in the snow. Started hunting the next day. Someone had to provide.\""
+        },
+        {
+          "id": "provider",
+          "text": "*He stares at his calloused hands.* \"Every coin went home. Every pelt, every kill. Made sure my siblings never went hungry. Never had to learn what I learned.\" *A bitter laugh.* \"Wanted them to have options. Better options than me.\""
+        },
+        {
+          "id": "flicker",
+          "text": "*He looks at Flicker with surprising tenderness.* \"Found her in one of my traps. Little rabbit, leg caught.\" *Almost a smile.* \"Watched her pop right out - teleportation magic. But she was still hurt.\" *He shrugs.* \"Healed her up. She never left.\""
+        },
+        {
+          "id": "family_now",
+          "text": "*His eyes go distant.* \"Siblings grew up. Married. Had children. I visit sometimes.\" *A long pause.* \"People are hard. But I never stopped protecting them. Just... do it from the woods now.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Victor pulls out a worn letter.* \"Sister writes. Tells me about her kids, the farm, the life she built.\" *His voice catches.* \"She calls me hero. Says I saved them all.\" *He tucks it away.* \"Don't feel like a hero. Just feel like the one who survived.\""
+        }
+      ]
+    },
+
+    "elowen": {
+      "world": "heros_journey",
+      "unlock_message": "*Elowen stops fidgeting, her scattered energy settling into something more vulnerable.*",
+      "locked_message": "*Elowen waves her hand dismissively.* \"Oh, my past? It's quite boring, really. Nothing interesting. Is that a new spell you're working on?\"",
+      "fragments": [
+        {
+          "id": "discovery",
+          "text": "*Elowen sets down her teacup with unusual care.* \"Magic came to me at six. I was mad at my cat - he was licking his bottom on my pillow.\" *She laughs softly.* \"Half of him just... vanished. Came back, thank the stars. But my parents knew then. I was different.\""
+        },
+        {
+          "id": "father",
+          "text": "*She traces a scorch mark on the table.* \"Father was ecstatic. Bought books, wands, foci - everything he could find.\" *A complicated smile.* \"'Imagine if she becomes High Wizard to a king! We'll be rich!'\" *She sighs.* \"He believed in me so much.\""
+        },
+        {
+          "id": "mother",
+          "text": "*Her hands fidget with a quill.* \"Mother wasn't pleased. I was supposed to be her helper at home. Instead I was shipped off to academies they couldn't afford.\" *A pause.* \"She never said she was proud. Not once. Even when I paid them back tenfold.\""
+        },
+        {
+          "id": "prodigy",
+          "text": "*She taps her temple.* \"I was a natural at crafting spells. Building them from nothing. But following instructions?\" *A grimace.* \"Hopeless. Too much power, not enough control. Served a mayor. Then a lord. Made fortunes for them. But I was just... a tool.\""
+        },
+        {
+          "id": "choice",
+          "text": "*She gestures at the cluttered tower.* \"I left. Used my savings to buy this modest tower near the Feywilds. Thought I could study and help the townfolk.\" *A sad laugh.* \"But they're scared of me. My magic. All except...\" *She blushes and changes the subject.*"
+        },
+        {
+          "id": "secret",
+          "text": "*Elowen's eyes drift toward the tavern in town.* \"Bran was the first person who didn't want anything from me. Just brought bread. Listened.\" *Her cheeks redden.* \"I was twenty-five and he was barely grown. Now he's...\" *She stops herself.* \"I'm far too old for such nonsense.\" *But she's smiling.*"
+        }
+      ]
+    },
+
+    "bran": {
+      "world": "heros_journey",
+      "unlock_message": "*Bran stops polishing the bar, his jovial demeanor fading into something more weathered.*",
+      "locked_message": "*Bran chuckles.* \"Ah, that's a tale for closer friends, I think. Another drink?\"",
+      "fragments": [
+        {
+          "id": "origin",
+          "text": "*Bran looks at the tavern around him.* \"Wasn't always an innkeeper. Spent twenty years as a mercenary. The Crimson Company - we were famous. Or infamous, depending who you asked.\""
+        },
+        {
+          "id": "war",
+          "text": "*He sets down a glass harder than necessary.* \"I've killed more men than I can count. Told myself it was for coin, for survival. But after a while, it was just what I was good at. What I was.\""
+        },
+        {
+          "id": "turning_point",
+          "text": "*His voice drops.* \"Last contract was a siege. We breached the walls, did what mercenaries do. Then I found a boy hiding in a cellar. Reminded me of my own son. The son I left behind to chase glory and gold.\""
+        },
+        {
+          "id": "redemption",
+          "text": "*He polishes a spot that's already clean.* \"I let the boy go. Walked away from the Company that night. Used my savings to buy this place. Thought if I spent the rest of my life feeding people instead of killing them, maybe the scales would balance.\""
+        },
+        {
+          "id": "elowen",
+          "text": "*A soft smile crosses his weathered face.* \"The wizard thinks I don't notice her. But I see her, watching from her tower. See her hands shake when she thinks no one's looking. Recognize someone running from their past. Takes one to know one.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Bran pulls out a worn letter.* \"My son writes sometimes. Doesn't know I'm his father - his mother remarried, gave him a good life. I just... I send money. Anonymously. Watch from afar. It's better this way. He deserves better than what I was.\""
+        }
+      ]
+    },
+
+    "takoda": {
+      "world": "dusty_trails",
+      "unlock_message": "*Takoda's eyes reflect the firelight, and his voice carries the weight of years.*",
+      "locked_message": "*Takoda shakes his head slowly.* \"Those stories take time to tell. Sit by my fire longer, friend.\"",
+      "fragments": [
+        {
+          "id": "warrior",
+          "text": "*The fire crackles as Takoda speaks.* \"I was not always a keeper of fires. Once I was a warrior. My tribe called me 'Storm That Walks.'\" *He shows the scar on his throat.* \"I was chief. Young. Fierce. I said we should fight the settlers. My people agreed.\""
+        },
+        {
+          "id": "refusal",
+          "text": "*He stirs the embers.* \"But when my war council wanted more raids, more blood... I said no.\" *His voice is steady.* \"They removed me as chief for my weakness. Then they tried to remove me from living.\""
+        },
+        {
+          "id": "saved",
+          "text": "*A small smile crosses his face.* \"I lay dying in the woods. A boy found me. Settler boy, barely a teenager.\" *The fire pops.* \"He shot the man who came to finish me. Then he bound my wounds. Asked no questions.\" *Takoda shakes his head.* \"I had killed people who looked like him. He saved me anyway.\""
+        },
+        {
+          "id": "wandering",
+          "text": "*He looks into the flames.* \"I could not return to my people. So I walked. Warned settlers away from danger - my people, wild animals, bad trails.\" *A sigh.* \"Made my living telling stories. Found that words could do what weapons could not. Build instead of destroy.\""
+        },
+        {
+          "id": "purpose",
+          "text": "*The flames lean toward him.* \"Stories have power. They change how people see. How they feel. A good story can prevent a war or start one.\" *He meets your eyes.* \"I choose carefully now which stories to tell.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Takoda pulls out a small doll, worn and faded.* \"My youngest made this. From her own hair and scraps of cloth. It is all I have left of them.\" *He holds it carefully.* \"The fire keeps me warm. But this keeps me alive.\""
+        }
+      ]
+    },
+
+    "miss_kitty": {
+      "world": "dusty_trails",
+      "unlock_message": "*Miss Kitty's practiced smile softens into something more genuine.*",
+      "locked_message": "*Miss Kitty fans herself.* \"A lady never tells, sugar. Buy me a few more drinks first.\"",
+      "fragments": [
+        {
+          "id": "before",
+          "text": "*Miss Kitty gazes at the saloon.* \"I wasn't born 'Miss Kitty,' darlin'. I was Elizabeth Matthews. Debutante.\" *A bitter laugh.* \"Pretty dresses. Dance cards. A fiancé from a 'good family.'\" *She shakes her head.* \"That life feels like it happened to someone else.\""
+        },
+        {
+          "id": "fall",
+          "text": "*Her voice goes flat.* \"My fiancé got drunk one night. Excited about our upcoming wedding.\" *Her jaw tightens.* \"He took what he wanted. Then threw me out like garbage.\" *A pause.* \"My parents didn't believe me. Disowned me.\""
+        },
+        {
+          "id": "survival",
+          "text": "*She traces the rim of her glass.* \"Headed west with nothing but my looks and my wit. Did what I had to do to survive.\" *She meets your eyes.* \"No shame in survival. Ten years on the road. Saw every kind of man try to take advantage of women with nowhere to go.\""
+        },
+        {
+          "id": "the_saloon",
+          "text": "*She looks around proudly.* \"So I built a place where they didn't have to. The Long Branch.\" *Steel in her voice.* \"My girls work here - really work. Serving drinks, singing, entertaining. Nothing more unless they choose it.\""
+        },
+        {
+          "id": "network",
+          "text": "*Her eyes sharpen.* \"Every board, every bottle, every painted sign - I earned it. No husband, no daddy, no inheritance. Just me.\" *A warm smile.* \"And every secret whispered in this town passes through my saloon. Information is more valuable than gold.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Miss Kitty pulls out an old photograph.* \"I have a daughter. Back East.\" *Her voice softens.* \"She thinks her mama is respectable. Thinks the money comes from a trust.\" *She tucks it away.* \"Maybe someday I'll be respectable enough to tell her the truth.\""
+        }
+      ]
+    },
+
+    "lyra": {
+      "world": "black_serenity",
+      "unlock_message": "*Lyra's professional demeanor cracks slightly, something haunted in her eyes.*",
+      "locked_message": "*Lyra checks her console.* \"My personal files are classified, spacer. Prove you're trustworthy.\"",
+      "fragments": [
+        {
+          "id": "origin",
+          "text": "*Lyra looks out at the stars.* \"Fleet Admiral's daughter. Expected to command a dreadnought by thirty. I was on track, too. Top of my class, every commendation, the perfect officer.\""
+        },
+        {
+          "id": "incident",
+          "text": "*Her jaw tightens.* \"My first command. A patrol frigate. We found a refugee ship drifting in neutral space. Orders said leave them - they were from enemy territory. I disobeyed. Brought them aboard.\""
+        },
+        {
+          "id": "fallout",
+          "text": "*She grips the console.* \"One of the refugees was a saboteur. Bomb took out our engine room. Lost twelve crew. Including my XO. My best friend.\" *She pauses.* \"They were right to court-martial me.\""
+        },
+        {
+          "id": "exile",
+          "text": "*She gestures around the bridge.* \"Daddy's connections kept me out of prison. But no Fleet posting would take me. So here I am. Captain of a station that barely holds together, running cargo for anyone who pays.\""
+        },
+        {
+          "id": "guilt",
+          "text": "*Her voice cracks.* \"Twelve people died because I thought I knew better. Because I was arrogant. Certain I was right.\" *She steadies herself.* \"I was right. And they're still dead.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Lyra shows you a worn insignia.* \"My XO's rank pins. She gave them to me the day she died. Said she was proud to serve under me.\" *Her eyes glisten.* \"I don't know if I'll ever deserve that.\""
+        }
+      ]
+    },
+
+    "mara": {
+      "world": "black_serenity",
+      "unlock_message": "*Mara stops tending her plants, her usual cheerfulness dimming.*",
+      "locked_message": "*Mara giggles.* \"Oh, me? I'm just a simple botanist! Nothing interesting here!\"",
+      "fragments": [
+        {
+          "id": "origin",
+          "text": "*Mara touches a leaf gently.* \"I grew up on an agri-world. Endless fields, open skies, real sunlight. We grew food for a dozen systems. It was... peaceful.\""
+        },
+        {
+          "id": "disaster",
+          "text": "*Her hand trembles.* \"Corporate wars. They didn't want to lose the agricultural output, but they didn't want the enemy to have it either. So they compromised. Targeted bioweapon. Killed the soil. Everything died.\""
+        },
+        {
+          "id": "loss",
+          "text": "*She won't meet your eyes.* \"Forty million people on that world. We all watched the crops wither, the trees blacken. My family... we were farmers. We died last, watching everything we loved rot around us.\""
+        },
+        {
+          "id": "survival",
+          "text": "*She wraps her arms around herself.* \"I was the only one who made it off. A refugee ship. Then another. Then another. Kept moving, kept running. Ended up here.\""
+        },
+        {
+          "id": "mission",
+          "text": "*Her eyes go fierce.* \"These plants? They're not just pretty. I'm developing strains that can resist any bioweapon. Crops that can grow in dead soil. I will NEVER let what happened to my world happen again.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Mara shows you a small vial of seeds.* \"This is soil from my homeworld. The last clean sample. And these seeds are from my mother's garden.\" *She holds it like treasure.* \"Someday I'll bring them back. Somehow.\""
+        }
+      ]
+    },
+
+    "sheriff": {
+      "world": "dusty_trails",
+      "unlock_message": "*Sheriff Gideon's steady gaze softens, something weary showing through.*",
+      "locked_message": "*The Sheriff tips his hat.* \"That's a tale for those I trust, stranger.\"",
+      "fragments": [
+        {
+          "id": "chains",
+          "text": "*Gideon stares out at the town.* \"Born into chains. Georgia plantation.\" *His voice is steady.* \"Didn't know freedom till I was fourteen. Underground Railroad got me out. Dead of night, running through swamps.\" *A pause.* \"First choice I ever made for myself.\""
+        },
+        {
+          "id": "freedom",
+          "text": "*He checks his pistol absently.* \"Freedom wasn't free. No money. No skills people would pay for.\" *A dry laugh.* \"But I knew how to track. How to hunt. Animals and men. Started bringing in bounties.\""
+        },
+        {
+          "id": "the_ghost",
+          "text": "*His eyes go distant.* \"Worked at night mostly. Harder to see a Black man coming in the dark.\" *No bitterness - just fact.* \"Learned to move quiet. Read people. Know who'd fight and who'd fold. 'The Ghost,' some called me.\""
+        },
+        {
+          "id": "the_town",
+          "text": "*A rare softness enters his voice.* \"Found a town once, overrun by outlaws. After I cleared them out, they asked me to stay. Begged, really.\" *He looks around.* \"Said they didn't care about my color. Just that I kept them safe. First place that felt like home.\""
+        },
+        {
+          "id": "the_badge",
+          "text": "*He touches his badge.* \"This isn't about power. It's a promise. To the boy who ran through darkness. To the folks who gave me a home.\" *His voice is firm.* \"As long as I'm standing, this town stays safe.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Gideon pulls out an old piece of paper.* \"A poem. The woman who ran the safe house wrote it for me. Said every person deserves to be remembered.\" *He folds it carefully.* \"I remember all of them. The ones who helped. The ones who didn't make it.\" *He tucks it away.* \"That's the real weight of the badge.\""
+        }
+      ]
+    },
+
+    "cassian": {
+      "world": "heros_journey",
+      "unlock_message": "*Cassian's sales charm falters, replaced by something more genuine.*",
+      "locked_message": "*Cassian pushes his glasses up nervously.* \"Oh, my past? That's... um... maybe after we know each other better?\"",
+      "fragments": [
+        {
+          "id": "orphan",
+          "text": "*Cassian adjusts his glasses.* \"I grew up in an orphanage. Just a baby when I arrived.\" *He laughs nervously.* \"The Larkspurs adopted me almost immediately. Said I was the most beautiful baby they'd ever seen.\" *His voice cracks.* \"I never questioned why.\""
+        },
+        {
+          "id": "family",
+          "text": "*A genuine smile.* \"Ma and Da - the Larkspurs - they never told me I was different. I was just... theirs.\" *He looks at the shop around him.* \"Helped in their market stall from age six. People bought from us constantly when I was there. They called it 'The Cassian Effect.'\""
+        },
+        {
+          "id": "the_attention",
+          "text": "*He fidgets uncomfortably.* \"People always... wanted me. From when I was small. Men, women, everyone.\" *His jaw tightens.* \"Tried to buy me from my parents. Flirted with me at every age. Offered me things.\" *Genuine gratitude.* \"Ma and Da never sold. Never even considered it. 'He's family,' they said.\""
+        },
+        {
+          "id": "the_charm",
+          "text": "*Cassian gestures at himself.* \"The shop charm - it's just for selling. When someone actually...\" *He blushes deeply.* \"Actually flirts with me? I fall apart. Can't handle real feeling.\" *A shy look.* \"Someone would have to see past all... this... to really know me.\""
+        },
+        {
+          "id": "heritage",
+          "text": "*He touches a strange shimmer at his ear.* \"I found out recently. About what I am. Half-fae.\" *Wonder in his voice.* \"That's why people react to me the way they do. It's not real - it's magic.\" *A sad smile.* \"But what Ma and Da feel? That's real.\""
+        },
+        {
+          "id": "secret",
+          "text": "*Cassian shows you a letter written on leaf-paper.* \"My birth mother - the fae one - she left this. Said she was sorry. That she wasn't able to love in ways humans understand.\" *He tucks it away.* \"I don't need her apology. The Larkspurs gave me something she couldn't. A home.\""
+        }
+      ]
+    }
+  }
+}

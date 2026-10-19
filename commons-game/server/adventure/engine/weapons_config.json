@@ -1,0 +1,246 @@
+{
+  "weapons": {
+    "fists": {
+      "name": "Bare Hands",
+      "type": "unarmed",
+      "attack_bonus": 0,
+      "damage_die": "1d4",
+      "damage_bonus": 0,
+      "crit_range": 20,
+      "effects": [],
+      "description": "Your bare fists",
+      "price": 0,
+      "rarity": "common",
+      "requires_ammo": false
+    },
+    "stick": {
+      "name": "Wooden Stick",
+      "type": "club",
+      "attack_bonus": 0,
+      "damage_die": "1d4",
+      "damage_bonus": 1,
+      "crit_range": 20,
+      "effects": [],
+      "description": "A simple stick from the forest - barely better than your fists",
+      "price": 1,
+      "rarity": "common",
+      "collectible": true,
+      "requires_ammo": false
+    },
+    "dagger": {
+      "name": "Iron Dagger",
+      "type": "light_blade",
+      "attack_bonus": 1,
+      "damage_die": "1d6",
+      "damage_bonus": 0,
+      "crit_range": 19,
+      "effects": [],
+      "description": "A sharp dagger good for quick strikes",
+      "price": 15,
+      "rarity": "common",
+      "requires_ammo": false
+    },
+    "shortsword": {
+      "name": "Shortsword",
+      "type": "blade",
+      "attack_bonus": 2,
+      "damage_die": "1d6",
+      "damage_bonus": 1,
+      "crit_range": 20,
+      "effects": [],
+      "description": "A reliable blade for combat",
+      "price": 35,
+      "rarity": "common",
+      "requires_ammo": false
+    },
+    "longsword": {
+      "name": "Longsword",
+      "type": "blade",
+      "attack_bonus": 2,
+      "damage_die": "1d8",
+      "damage_bonus": 2,
+      "crit_range": 20,
+      "effects": [],
+      "description": "A well-balanced weapon favored by warriors",
+      "price": 60,
+      "rarity": "uncommon",
+      "requires_ammo": false
+    },
+    "shortbow": {
+      "name": "Shortbow",
+      "type": "ranged",
+      "attack_bonus": 2,
+      "damage_die": "1d6",
+      "damage_bonus": 0,
+      "crit_range": 20,
+      "effects": ["range", "piercing"],
+      "description": "A light bow for hunting at range",
+      "price": 25,
+      "rarity": "common",
+      "requires_ammo": true,
+      "ammo_type": "arrows"
+    },
+    "longbow": {
+      "name": "Longbow",
+      "type": "ranged",
+      "attack_bonus": 3,
+      "damage_die": "1d8",
+      "damage_bonus": 2,
+      "crit_range": 20,
+      "effects": ["range", "piercing", "bleeding"],
+      "description": "A powerful bow with long range and deadly accuracy - can cause bleeding wounds",
+      "price": 55,
+      "rarity": "uncommon",
+      "requires_ammo": true,
+      "ammo_type": "arrows"
+    },
+    "hunting_spear": {
+      "name": "Hunting Spear",
+      "type": "spear",
+      "attack_bonus": 2,
+      "damage_die": "1d8",
+      "damage_bonus": 1,
+      "crit_range": 20,
+      "effects": ["reach"],
+      "description": "A spear designed for hunting large game",
+      "price": 30,
+      "rarity": "common",
+      "requires_ammo": false
+    },
+    "greataxe": {
+      "name": "Greataxe",
+      "type": "heavy",
+      "attack_bonus": 1,
+      "damage_die": "1d12",
+      "damage_bonus": 3,
+      "crit_range": 20,
+      "effects": ["cleave"],
+      "description": "A massive axe that deals devastating damage",
+      "price": 80,
+      "rarity": "uncommon",
+      "requires_ammo": false
+    },
+    "faoladh_blade": {
+      "name": "Faoladh Blade",
+      "type": "magic_blade",
+      "attack_bonus": 4,
+      "damage_die": "1d10",
+      "damage_bonus": 3,
+      "crit_range": 19,
+      "effects": ["magical", "cleave"],
+      "description": "A moonlit blade rumored to be forged for a wolf guardian",
+      "price": 280,
+      "rarity": "rare",
+      "requires_ammo": false
+    },
+    "double_barrel": {
+      "name": "Double Barrel Shotgun",
+      "type": "ranged",
+      "attack_bonus": 3,
+      "damage_die": "1d10",
+      "damage_bonus": 2,
+      "crit_range": 20,
+      "effects": ["range", "cleave"],
+      "description": "An old high-power shotgun built for close-range chaos",
+      "price": 220,
+      "rarity": "rare",
+      "requires_ammo": false
+    },
+    "plasma_cutter": {
+      "name": "Plasma Cutter",
+      "type": "tech_blade",
+      "attack_bonus": 4,
+      "damage_die": "1d10",
+      "damage_bonus": 3,
+      "crit_range": 19,
+      "effects": ["magical", "piercing"],
+      "description": "A focused plasma edge that cuts through armor",
+      "price": 320,
+      "rarity": "rare",
+      "requires_ammo": false
+    },
+    "plasma_blade": {
+      "name": "Plasma Blade",
+      "type": "tech_blade",
+      "attack_bonus": 5,
+      "damage_die": "1d12",
+      "damage_bonus": 3,
+      "crit_range": 19,
+      "effects": ["magical", "cleave"],
+      "description": "A humming blade of contained plasma, impossibly sharp",
+      "price": 420,
+      "rarity": "epic",
+      "requires_ammo": false
+    },
+    "enchanted_blade": {
+      "name": "Enchanted Silver Blade",
+      "type": "magic_blade",
+      "attack_bonus": 4,
+      "damage_die": "1d8",
+      "damage_bonus": 3,
+      "crit_range": 19,
+      "effects": ["magical", "silver"],
+      "description": "A magically enhanced blade that glows faintly - especially effective against lycanthropes and undead",
+      "price": 250,
+      "rarity": "rare",
+      "requires_ammo": false
+    }
+  },
+  "weapon_effects": {
+    "range": {
+      "name": "Ranged Attack",
+      "description": "+2 to attack rolls when hunting (distance advantage)"
+    },
+    "piercing": {
+      "name": "Piercing",
+      "description": "+1 damage against armored targets"
+    },
+    "bleeding": {
+      "name": "Bleeding Wound",
+      "description": "On crit: target takes 1d4 additional bleeding damage"
+    },
+    "reach": {
+      "name": "Extended Reach",
+      "description": "+1 to attack rolls (can strike from safer distance)"
+    },
+    "cleave": {
+      "name": "Cleaving Strike",
+      "description": "On kill: 50% chance to damage another nearby creature"
+    },
+    "magical": {
+      "name": "Magical Weapon",
+      "description": "Bypasses non-magical resistance"
+    },
+    "silver": {
+      "name": "Silver",
+      "description": "+2d6 damage against lycanthropes and undead"
+    }
+  },
+  "ammo": {
+    "arrows": {
+      "name": "Arrows (20)",
+      "inventory_name": "Arrow",
+      "price": 5,
+      "quantity": 20,
+      "rarity": "common",
+      "damage_bonus": 0,
+      "description": "A bundle of 20 wooden arrows with iron tips"
+    },
+    "bone_arrows": {
+      "name": "Bone Arrows",
+      "inventory_name": "Bone Arrows",
+      "price": 8,
+      "quantity": 1,
+      "rarity": "uncommon",
+      "damage_bonus": 2,
+      "description": "Arrows tipped with sharpened bone - deal +2 damage per shot"
+    }
+  },
+  "notes": {
+    "attack_bonus": "Added to attack rolls (to-hit)",
+    "damage_die": "Base damage die rolled on hit",
+    "damage_bonus": "Added to damage rolls",
+    "crit_range": "Roll this or higher for critical hit (20 = nat 20 only, 19 = 19-20)",
+    "auto_equip": "System automatically uses best weapon based on total attack+damage bonuses"
+  }
+}

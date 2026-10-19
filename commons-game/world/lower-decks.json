@@ -1,0 +1,237 @@
+{
+  "id": "lower-decks",
+  "name": "Lower Decks",
+  "subtitle": "A path through black serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "lower-decks",
+  "sky": "#101925",
+  "legend": {
+    ".": {
+      "name": "floor",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "wall",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.5,
+    "y": 19
+  },
+  "props": [
+    {
+      "id": "return-path",
+      "label": "Return to cargo bay",
+      "to": "cargo-bay",
+      "x": 17,
+      "y": 4,
+      "w": 5,
+      "h": 3,
+      "arriveAt": {
+        "x": 19.5,
+        "y": 19
+      },
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the upper middle part of the room leads to Cargo Bay. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "seat-1",
+      "label": "lounge sofa",
+      "x": 16.5,
+      "y": 14.3,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 17.6,
+            "y": 14.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge sofa, in the central middle part of the room, beside the shared lounge between the numbered bunk corridors. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "lounge sofa",
+      "x": 19.3,
+      "y": 14.3,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 20.4,
+            "y": 14.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge sofa, in the central middle part of the room, beside the shared lounge between the numbered bunk corridors. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-3",
+      "label": "lounge chair",
+      "x": 20.1,
+      "y": 16.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 21.2,
+            "y": 17.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Lounge chair, in the central middle part of the room, beside the shared lounge between the numbered bunk corridors. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-4",
+      "label": "mess chair",
+      "x": 15.3,
+      "y": 18.5,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 16.4,
+            "y": 19.0,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Mess chair, in the lower middle part of the room, beside the shared lounge between the numbered bunk corridors. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-5",
+      "label": "mess bench",
+      "x": 16.9,
+      "y": 20.18,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 18.0,
+            "y": 20.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Mess bench, in the lower middle part of the room, beside the shared lounge between the numbered bunk corridors. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [],
+  "backdrop": "/assets/adventure/backgrounds/lower_decks.png?v=719761fd01",
+  "description": "The lower decks form a compact residential and utility level aboard the ship. Numbered bunk compartments line both side corridors, while a shared lounge with sofas, chairs and a low table occupies the centre. A blue screen hangs above the lounge, and a darker table area sits below it. The upper stair is labelled To Cargo Hold. Medical/utility lockers lie on the lower left, equipment lockers on the lower right, and an Engineering Access sign marks the bottom. The dark metal panels and warm strip lights frame an orderly grid of small private bays around the shared central space.",
+  "landmarks": [
+    {
+      "id": "shared-lower-deck-lounge",
+      "label": "Shared lower-deck lounge",
+      "kind": "seating area",
+      "description": "Sofas, chairs and a low table form a communal seating area in the centre.",
+      "x": 20,
+      "y": 14
+    },
+    {
+      "id": "western-bunk-compartments",
+      "label": "Western bunk compartments",
+      "kind": "sleeping area",
+      "description": "Numbered bunk bays are stacked down the left-hand corridor.",
+      "x": 8,
+      "y": 13
+    },
+    {
+      "id": "eastern-bunk-compartments",
+      "label": "Eastern bunk compartments",
+      "kind": "sleeping area",
+      "description": "More numbered bunks line the corridor on the right.",
+      "x": 32,
+      "y": 13
+    },
+    {
+      "id": "cargo-hold-stair-sign",
+      "label": "Cargo-hold stair sign",
+      "kind": "sign",
+      "description": "The upper staircase is marked To Cargo Hold.",
+      "x": 20,
+      "y": 3
+    },
+    {
+      "id": "medical-and-utility-lockers",
+      "label": "Medical and utility lockers",
+      "kind": "storage",
+      "description": "The lower-left painted compartment is labelled Medical/Utility.",
+      "x": 8,
+      "y": 23
+    },
+    {
+      "id": "equipment-lockers",
+      "label": "Equipment lockers",
+      "kind": "storage",
+      "description": "A bank of Equipment Lockers occupies the lower-right painted compartment.",
+      "x": 31,
+      "y": 23
+    }
+  ]
+}

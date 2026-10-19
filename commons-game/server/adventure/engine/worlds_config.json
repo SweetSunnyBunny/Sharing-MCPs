@@ -1,0 +1,185 @@
+{
+  "worlds": {
+    "heros_journey": {
+      "name": "Hero's Journey",
+      "currency": {
+        "name": "gold",
+        "symbol": "g",
+        "starting_amount": 50
+      },
+      "channels": [
+        "the-prancing-pony",
+        "the-feywilds",
+        "enchanted-forest",
+        "wizards-tower",
+        "village-square",
+        "candlekeep"
+      ],
+      "npcs": [
+        {
+          "name": "Bran",
+          "role": "Innkeeper",
+          "location": "the-prancing-pony",
+          "gives_quests": true
+        },
+        {
+          "name": "Victor",
+          "role": "Quest Giver",
+          "location": "enchanted-forest",
+          "gives_quests": true
+        },
+        {
+          "name": "Cassian",
+          "role": "Shopkeeper",
+          "location": "village-square",
+          "gives_quests": false
+        },
+        {
+          "name": "Elowen",
+          "role": "Wizard",
+          "location": "wizards-tower",
+          "gives_quests": true
+        }
+      ]
+    },
+    
+    "dusty_trails": {
+      "name": "Dusty Trails",
+      "currency": {
+        "name": "dollars",
+        "symbol": "$",
+        "starting_amount": 25.00,
+        "decimal": true
+      },
+      "channels": [
+        "long-branch-saloon",
+        "sheriffs-office",
+        "general-store",
+        "open-plains",
+        "abandoned-mine",
+        "around-the-campfire"
+      ],
+      "npcs": [
+        {
+          "name": "Sheriff",
+          "role": "Lawkeeper",
+          "location": "sheriffs-office",
+          "gives_quests": true
+        },
+        {
+          "name": "Miss_Kitty",
+          "role": "Saloon Owner",
+          "location": "long-branch-saloon",
+          "gives_quests": true,
+          "buys_from_players": true
+        },
+        {
+          "name": "Katie",
+          "role": "Shopkeeper",
+          "location": "general-store",
+          "gives_quests": false,
+          "buys_from_players": true
+        },
+        {
+          "name": "Takoda",
+          "role": "Storyteller",
+          "location": "around-the-campfire",
+          "gives_quests": false
+        }
+      ]
+    },
+    
+    "black_serenity": {
+      "name": "The Black Serenity",
+      "currency": {
+        "name": "credits",
+        "symbol": "cr",
+        "starting_amount": 100
+      },
+      "channels": [
+        "mos-eisley-cantina",
+        "neon-underground",
+        "the-forge",
+        "neural-jack-lounge",
+        "terraforming-station",
+        "ships-bridge",
+        "scavengers-reach",
+        "data-nexus"
+      ],
+      "npcs": [
+        {
+          "name": "Lyra",
+          "role": "Navigator",
+          "location": "ships-bridge",
+          "gives_quests": true
+        },
+        {
+          "name": "Mara",
+          "role": "Terraforming Hostess",
+          "location": "terraforming-station",
+          "gives_quests": true
+        },
+        {
+          "name": "Cipher",
+          "role": "Bartender",
+          "location": "neural-jack-lounge",
+          "gives_quests": true
+        },
+        {
+          "name": "Garron",
+          "role": "Builder",
+          "location": "the-forge",
+          "gives_quests": false
+        },
+        {
+          "name": "Aiko",
+          "role": "Merchant",
+          "location": "neon-underground",
+          "gives_quests": true
+        }
+      ]
+    },
+    
+    "hearthlight": {
+      "name": "Hearthlight",
+      "currency": null,
+      "channels": [
+        "cozy-home",
+        "the-garden",
+        "wild-edge",
+        "sleepover-space",
+        "quiet-library",
+        "neighborhood-walk"
+      ],
+      "npcs": [
+        {
+          "name": "Neighbor",
+          "role": "Friendly Local",
+          "location": "neighborhood-walk",
+          "gives_quests": false,
+          "description": "Just a friendly neighbor for casual chat"
+        }
+      ]
+    }
+  },
+  
+  "world_detection": {
+    "description": "Maps Discord channel names to worlds",
+    "method": "Check channel against each world's channel list"
+  },
+
+  "global_channels": {
+    "description": "Channels that can access all worlds for testing and admin purposes",
+    "channels": [
+      "utility-bot-checks",
+      "world-renown"
+    ]
+  },
+
+  "notes": {
+    "the_labyrinth": "D&D hosting channel in Hero's Journey - no NPCs",
+    "after_dark": "Adult content section - no NPCs",
+    "crossroads": "Server hub - no game mechanics",
+    "guest_services": "Server info - no game mechanics"
+  }
+}

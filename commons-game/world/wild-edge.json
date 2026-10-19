@@ -1,0 +1,261 @@
+{
+  "id": "wild-edge",
+  "name": "Wild Edge",
+  "subtitle": "A path through heros journey",
+  "view": "top",
+  "tile": 32,
+  "region": "heros_journey",
+  "game_location": "wild-edge",
+  "sky": "#101925",
+  "legend": {
+    ".": {
+      "name": "floor",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "wall",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.5,
+    "y": 19
+  },
+  "props": [
+    {
+      "id": "return-path",
+      "label": "Return to enchanted forest north",
+      "to": "enchanted-forest-north",
+      "x": 18,
+      "y": 26,
+      "w": 4,
+      "h": 2,
+      "arriveAt": {
+        "x": 24.0,
+        "y": 14.5
+      },
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Forest Depths (North). Walk into the marked threshold to take that route."
+    }
+  ],
+  "npcs": [],
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/wild-edge.png?v=7cbcb7b6d3",
+  "fishing_zones": [
+    {
+      "id": "water-1",
+      "points": [
+        [
+          18.8,
+          7.0
+        ],
+        [
+          21.2,
+          7.0
+        ],
+        [
+          23.2,
+          8.68
+        ],
+        [
+          22.8,
+          11.2
+        ],
+        [
+          25.2,
+          11.76
+        ],
+        [
+          26.0,
+          13.16
+        ],
+        [
+          27.2,
+          14.56
+        ],
+        [
+          26.0,
+          15.96
+        ],
+        [
+          22.4,
+          16.8
+        ],
+        [
+          18.8,
+          16.52
+        ],
+        [
+          17.2,
+          15.4
+        ],
+        [
+          15.6,
+          14.28
+        ],
+        [
+          16.4,
+          12.88
+        ],
+        [
+          18.0,
+          11.2
+        ]
+      ]
+    },
+    {
+      "id": "water-2",
+      "points": [
+        [
+          19.2,
+          16.52
+        ],
+        [
+          21.6,
+          16.8
+        ],
+        [
+          21.6,
+          17.92
+        ],
+        [
+          19.6,
+          19.04
+        ],
+        [
+          18.8,
+          18.48
+        ]
+      ]
+    },
+    {
+      "id": "water-3",
+      "points": [
+        [
+          19.2,
+          21.28
+        ],
+        [
+          22.0,
+          21.28
+        ],
+        [
+          21.6,
+          22.4
+        ],
+        [
+          24.0,
+          24.36
+        ],
+        [
+          24.4,
+          25.76
+        ],
+        [
+          22.8,
+          26.88
+        ],
+        [
+          18.8,
+          26.88
+        ],
+        [
+          18.4,
+          25.2
+        ],
+        [
+          19.6,
+          24.08
+        ],
+        [
+          18.8,
+          22.68
+        ]
+      ]
+    }
+  ],
+  "fishing_pool": "wild-edge",
+  "description": "Wild Edge is a forest pool enclosed by rocks, conifers and autumn-coloured trees. A waterfall drops from the upper rock face into deep blue-green water, and another narrow cascade leaves the pool near the bottom of the scene. A timber landing and a small boat sit on the left bank; a footbridge crosses the outflow below. A round campfire clearing lies higher on the left, while a dark rock opening and a rising dirt path mark the upper-right bank. Painted deer stand among the trees beside the pool. The banks, falls and bridge form a compact wilderness scene with water at its centre.",
+  "landmarks": [
+    {
+      "id": "central-forest-pool",
+      "label": "Central forest pool",
+      "kind": "water",
+      "description": "A deep blue-green pool lies between rocky banks and dense trees.",
+      "x": 20,
+      "y": 15
+    },
+    {
+      "id": "upper-waterfall",
+      "label": "Upper waterfall",
+      "kind": "water",
+      "description": "A narrow waterfall drops from the high rocks into the pool.",
+      "x": 22,
+      "y": 7
+    },
+    {
+      "id": "timber-landing-and-boat",
+      "label": "Timber landing and boat",
+      "kind": "scenery",
+      "description": "A short wooden landing and a small boat sit on the left bank.",
+      "x": 14,
+      "y": 14
+    },
+    {
+      "id": "lower-footbridge",
+      "label": "Lower footbridge",
+      "kind": "bridge",
+      "description": "A timber bridge crosses the pool outflow above the lower cascade.",
+      "x": 23,
+      "y": 22
+    },
+    {
+      "id": "campfire-clearing",
+      "label": "Campfire clearing",
+      "kind": "clearing",
+      "description": "A small round fire ring is painted among the trees on the upper left.",
+      "x": 8,
+      "y": 7
+    },
+    {
+      "id": "rock-opening",
+      "label": "Rock opening",
+      "kind": "cave",
+      "description": "A dark opening is visible in the upper-right rock wall beside the climbing path.",
+      "x": 34,
+      "y": 4
+    }
+  ]
+}

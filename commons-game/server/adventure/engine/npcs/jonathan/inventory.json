@@ -1,0 +1,122 @@
+{
+    "shop_name": "Jonathan's General Store",
+    "shop_type": "general",
+    "description": "A well-stocked general store at The Crossroads, selling supplies useful in any world.",
+    "currency_accepted": ["gold", "credits", "coins"],
+    "items": [
+        {
+            "name": "Health Potion",
+            "description": "Restores 25 HP when consumed",
+            "price": 25,
+            "type": "consumable",
+            "effect": "heal_25",
+            "stock": -1
+        },
+        {
+            "name": "Greater Health Potion",
+            "description": "Restores 50 HP when consumed",
+            "price": 60,
+            "type": "consumable",
+            "effect": "heal_50",
+            "stock": -1
+        },
+        {
+            "name": "Rope",
+            "description": "50 feet of sturdy rope. Useful for climbing, tying, or escaping.",
+            "price": 10,
+            "type": "tool",
+            "stock": -1
+        },
+        {
+            "name": "Torch",
+            "description": "Provides light in dark places for about an hour",
+            "price": 5,
+            "type": "tool",
+            "stock": -1
+        },
+        {
+            "name": "Rations",
+            "description": "A day's worth of travel food. Keeps well.",
+            "price": 5,
+            "type": "food",
+            "stock": -1
+        },
+        {
+            "name": "Traveler's Pack",
+            "description": "A sturdy backpack with extra pockets",
+            "price": 30,
+            "type": "equipment",
+            "stock": -1
+        },
+        {
+            "name": "Small Bone Treats",
+            "description": "A bag of tasty treats for your companion. +5 loyalty",
+            "price": 15,
+            "type": "companion_treat",
+            "effect": "loyalty_5",
+            "stock": -1
+        },
+        {
+            "name": "Medium Bone Treats",
+            "description": "A bag of quality treats for your companion. +7 loyalty",
+            "price": 30,
+            "type": "companion_treat",
+            "effect": "loyalty_7",
+            "stock": -1
+        },
+        {
+            "name": "Large Bone Treats",
+            "description": "Premium treats that companions love! +10 loyalty",
+            "price": 50,
+            "type": "companion_treat",
+            "effect": "loyalty_10",
+            "stock": -1
+        },
+        {
+            "name": "Arrows",
+            "description": "A quiver of 20 arrows for hunting and combat",
+            "price": 20,
+            "type": "ammunition",
+            "quantity": 20,
+            "stock": -1
+        },
+        {
+            "name": "Antidote",
+            "description": "Cures poison effects",
+            "price": 35,
+            "type": "consumable",
+            "effect": "cure_poison",
+            "stock": -1
+        },
+        {
+            "name": "Bandages",
+            "description": "Stops bleeding and heals 10 HP over time",
+            "price": 10,
+            "type": "consumable",
+            "effect": "heal_10_slow",
+            "stock": -1
+        },
+        {
+            "name": "World Map",
+            "description": "A map showing the portals at The Crossroads and the basics of each world",
+            "price": 50,
+            "type": "tool",
+            "stock": -1
+        },
+        {
+            "name": "Campfire Kit",
+            "description": "Everything needed to start a safe campfire",
+            "price": 15,
+            "type": "tool",
+            "stock": -1
+        }
+    ],
+    "buy_rate": 0.5,
+    "special_dialogue": {
+        "browse": "Take your time looking around! I've got supplies from all corners of existence.",
+        "purchase": "Excellent choice! That'll serve you well on your adventures.",
+        "sell": "Hmm, let me take a look at what you've got... *examines item* I can give you a fair price for this.",
+        "no_gold": "Ah, a bit short on coin? No worries - come back when you've earned some on your adventures!",
+        "farewell": "Safe travels through the portals, friend! Come back anytime!"
+    }
+}

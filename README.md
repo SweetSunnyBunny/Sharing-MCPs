@@ -42,6 +42,7 @@ does not contain another copy of the cloud setups.
 | [easel-ai](easel-ai/README.md) | Image gallery and prompt workshop |
 | [elevenlabs-mcp](elevenlabs-mcp/README.md) | ElevenLabs speech MCP service |
 | [google-cloud-mcp](google-cloud-mcp/README.md) | Google account and document tools |
+| [commons-game](commons-game/README.md) | Browser world: a new main house and garden plus 39 illustrated adventure areas |
 | [hearth-commons](hearth-commons/README.md) | Remote MCP connector for a Commons server |
 | [hearth-hub](hearth-hub/README.md) | Shared state and workspace service |
 | [limbic](limbic/README.md) | Configurable advisory emotional state service |

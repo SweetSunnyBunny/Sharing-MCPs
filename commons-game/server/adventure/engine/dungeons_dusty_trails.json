@@ -1,0 +1,208 @@
+{
+  "dungeons": [
+    {
+      "dungeon_id": "red_ridge_mine",
+      "name": "Red Ridge Mine",
+      "description": "An abandoned silver mine is lit by faint lanterns and the hiss of rattlers.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "mine_entry",
+          "intro": "Loose rock and old tracks. A pair of bandits step from behind a cart.",
+          "enemies": [
+            { "name": "Mine Bandit", "hp": 26, "ac": 12, "attack_bonus": 3, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Mine Bandit", "hp": 26, "ac": 12, "attack_bonus": 3, "damage_die": "1d6", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "snake_tunnel",
+          "intro": "A narrow tunnel reeks of dust and oil. Rattles echo in the dark.",
+          "enemies": [
+            { "name": "Rattlesnake", "hp": 18, "ac": 13, "attack_bonus": 4, "damage_die": "1d4", "damage_bonus": 2 },
+            { "name": "Rattlesnake", "hp": 18, "ac": 13, "attack_bonus": 4, "damage_die": "1d4", "damage_bonus": 2 },
+            { "name": "Rattlesnake", "hp": 18, "ac": 13, "attack_bonus": 4, "damage_die": "1d4", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "foreman_den",
+          "intro": "The foreman waits with a double-barrel and a grin. This is his turf.",
+          "enemies": [
+            { "name": "Outlaw Foreman", "hp": 70, "ac": 14, "attack_bonus": 6, "damage_die": "1d8", "damage_bonus": 3, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "silver_cache",
+          "intro": "A loose plank hides a stash. Someone left a guard.",
+          "enemies": [
+            { "name": "Claim Jumper", "hp": 34, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 }
+          ],
+          "rewards": {
+            "currency": 55,
+            "xp": 35,
+            "items": ["Sarsaparilla"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 120,
+        "xp": 100,
+        "items": ["Snake Oil", "Beef Jerky"]
+      }
+    },
+    {
+      "dungeon_id": "ghost_town",
+      "name": "Ghost Town",
+      "description": "The wind whistles through empty streets. Footprints appear where no one walks.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "main_street",
+          "intro": "Swinging doors creak. Shadows peel away from the saloon.",
+          "enemies": [
+            { "name": "Dust Wraith", "hp": 28, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Dust Wraith", "hp": 28, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "church_bell",
+          "intro": "The bell rings without a pull. A chill crawls the aisles.",
+          "enemies": [
+            { "name": "Haunted Deacon", "hp": 34, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "undertaker",
+          "intro": "A black hat turns toward you. The undertaker smiles.",
+          "enemies": [
+            { "name": "Grave Undertaker", "hp": 78, "ac": 15, "attack_bonus": 6, "damage_die": "1d10", "damage_bonus": 2, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "cold_cellar",
+          "intro": "The cellar door creaks. Something hisses in the dark.",
+          "enemies": [
+            { "name": "Coldshade", "hp": 36, "ac": 13, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ],
+          "rewards": {
+            "currency": 60,
+            "xp": 40,
+            "items": ["Snake Oil"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 140,
+        "xp": 115,
+        "items": ["Snake Oil", "Hardtack"]
+      }
+    },
+    {
+      "dungeon_id": "rail_heist",
+      "name": "Midnight Rail Heist",
+      "description": "A stopped train hisses in the dark. Someone broke the line on purpose.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "boxcar",
+          "intro": "Crates rattle. Bandits fan out with revolvers drawn.",
+          "enemies": [
+            { "name": "Rail Bandit", "hp": 26, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Rail Bandit", "hp": 26, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Rail Bandit", "hp": 26, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "engine",
+          "intro": "Steam hisses over steel. The engineer fights for the throttle.",
+          "enemies": [
+            { "name": "Rail Enforcer", "hp": 38, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "cargo_lock",
+          "intro": "The vault door creaks open. The mastermind steps out.",
+          "enemies": [
+            { "name": "Midnight Marshal", "hp": 82, "ac": 15, "attack_bonus": 6, "damage_die": "1d10", "damage_bonus": 2, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "mail_car",
+          "intro": "A locked mail car rattles. A courier ghost stands guard.",
+          "enemies": [
+            { "name": "Rail Phantom", "hp": 34, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 }
+          ],
+          "rewards": {
+            "currency": 70,
+            "xp": 45,
+            "items": ["Whiskey"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 150,
+        "xp": 120,
+        "items": ["Snake Oil", "Whiskey"]
+      }
+    },
+    {
+      "dungeon_id": "canyon_hideout",
+      "name": "Canyon Hideout",
+      "description": "A narrow pass leads to a cliffside camp hidden by brush and rock.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "rim_watch",
+          "intro": "Lookouts drop from ledges, rifles leveled.",
+          "enemies": [
+            { "name": "Canyon Lookout", "hp": 24, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Canyon Lookout", "hp": 24, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "camp_fire",
+          "intro": "A ring of thieves draw blades near the fire.",
+          "enemies": [
+            { "name": "Canyon Raider", "hp": 30, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 },
+            { "name": "Canyon Raider", "hp": 30, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "cliff_boss",
+          "intro": "A rope bridge sways. The bandit chief steps onto it.",
+          "enemies": [
+            { "name": "Canyon Chief", "hp": 76, "ac": 15, "attack_bonus": 6, "damage_die": "1d10", "damage_bonus": 2, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "stash_cave",
+          "intro": "A cave cache gleams with coin. A guard watches from the shadows.",
+          "enemies": [
+            { "name": "Stash Keeper", "hp": 36, "ac": 13, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ],
+          "rewards": {
+            "currency": 65,
+            "xp": 40,
+            "items": ["Beef Jerky"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 145,
+        "xp": 118,
+        "items": ["Beef Jerky", "Sarsaparilla", "Double Barrel Shotgun"]
+      }
+    }
+  ]
+}

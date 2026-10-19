@@ -1,0 +1,246 @@
+{
+  "tavern_name": "The Prancing Pony",
+  "innkeeper": "Bran",
+  "last_restock": "2026-02-20",
+  "currency": "gold",
+  "inventory": {
+    "lodging": {
+      "Common Room Bed": {
+        "stock": 8,
+        "max_stock": 8,
+        "price": 2,
+        "description": "A simple bed in the common room with other travelers",
+        "rarity": "common"
+      },
+      "Private Room": {
+        "stock": 4,
+        "max_stock": 4,
+        "price": 8,
+        "description": "A cozy private room with a real bed and washbasin",
+        "rarity": "uncommon"
+      },
+      "Luxury Suite": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 15,
+        "description": "Spacious room with a featherbed, writing desk, and fine linens",
+        "rarity": "rare"
+      },
+      "Stable Space": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 1,
+        "description": "Safe stabling for your horse or mount",
+        "rarity": "common"
+      }
+    },
+    "drink": {
+      "Bran's House Ale": {
+        "stock": 25,
+        "max_stock": 25,
+        "price": 3,
+        "description": "Bran's signature brew - smooth, rich, and perfectly balanced",
+        "rarity": "uncommon"
+      },
+      "Standard Ale": {
+        "stock": 35,
+        "max_stock": 35,
+        "price": 2,
+        "description": "Good honest ale, perfect for quenching thirst",
+        "rarity": "common"
+      },
+      "Dark Ale": {
+        "stock": 18,
+        "max_stock": 20,
+        "price": 3,
+        "description": "Rich, malty dark ale with hints of chocolate",
+        "rarity": "common"
+      },
+      "Apple Cider": {
+        "stock": 25,
+        "max_stock": 25,
+        "price": 2,
+        "description": "Sweet and crisp, made from local apples",
+        "rarity": "common"
+      },
+      "Mulled Wine": {
+        "stock": 13,
+        "max_stock": 15,
+        "price": 4,
+        "description": "Warm spiced wine, perfect for cold nights",
+        "rarity": "uncommon"
+      },
+      "Fine Wine": {
+        "stock": 10,
+        "max_stock": 10,
+        "price": 6,
+        "description": "Quality wine from the southern vineyards",
+        "rarity": "rare"
+      },
+      "Milk": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 1,
+        "description": "Fresh from the farm this morning",
+        "rarity": "common"
+      }
+    },
+    "food": {
+      "Hearty Stew": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 4,
+        "description": "Thick stew with beef, potatoes, and vegetables",
+        "rarity": "common"
+      },
+      "Roasted Chicken": {
+        "stock": 10,
+        "max_stock": 10,
+        "price": 6,
+        "description": "Full roasted chicken with herbs and root vegetables",
+        "rarity": "uncommon"
+      },
+      "Shepherd's Pie": {
+        "stock": 12,
+        "max_stock": 12,
+        "price": 5,
+        "description": "Savory meat pie topped with creamy mashed potatoes",
+        "rarity": "common"
+      },
+      "Fish and Chips": {
+        "stock": 12,
+        "max_stock": 12,
+        "price": 5,
+        "description": "Fresh-caught fish fried golden, served with crispy potatoes",
+        "rarity": "common"
+      },
+      "Full Breakfast": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 3,
+        "description": "Eggs, bacon, sausage, toast, and fried potatoes",
+        "rarity": "common"
+      }
+    },
+    "snacks_and_treats": {
+      "Bread and Cheese": {
+        "stock": 25,
+        "max_stock": 25,
+        "price": 2,
+        "description": "Fresh bread with sharp cheddar",
+        "rarity": "common"
+      },
+      "Meat Pie": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 3,
+        "description": "Hand-sized pie filled with seasoned meat",
+        "rarity": "common"
+      },
+      "Honeycakes": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 2,
+        "description": "Sweet cakes drizzled with honey",
+        "rarity": "common"
+      },
+      "Apple Tart": {
+        "stock": 10,
+        "max_stock": 10,
+        "price": 3,
+        "description": "Warm apple tart with cinnamon",
+        "rarity": "uncommon"
+      },
+      "Dried Fruit and Nuts": {
+        "stock": 25,
+        "max_stock": 25,
+        "price": 1,
+        "description": "Mix of dried fruits and roasted nuts",
+        "rarity": "common"
+      },
+      "Bowl of Soup": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 2,
+        "description": "Warm vegetable soup, perfect for a light meal",
+        "rarity": "common"
+      }
+    },
+    "special_of_the_day": {
+      "Today's Special": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 7,
+        "description": "Ask Bran about today's special dish!",
+        "current_special": "Venison Roast with cranberry sauce",
+        "rarity": "rare"
+      }
+    },
+    "cooking_supplies": {
+      "Water": {
+        "stock": 50,
+        "max_stock": 50,
+        "price": 1,
+        "description": "Fresh, clean water from the tavern's well",
+        "rarity": "common"
+      },
+      "Wild Herbs": {
+        "stock": 30,
+        "max_stock": 30,
+        "price": 2,
+        "description": "Mixed herbs for cooking and seasoning",
+        "rarity": "common"
+      },
+      "Seasoning": {
+        "stock": 35,
+        "max_stock": 35,
+        "price": 2,
+        "description": "Salt, pepper, and common spices",
+        "rarity": "common"
+      },
+      "Honey": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 3,
+        "description": "Sweet honey from local beekeepers",
+        "rarity": "common"
+      },
+      "Energizing Herbs": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 5,
+        "description": "Special herbs known to restore energy",
+        "rarity": "uncommon"
+      }
+    }
+  },
+  "restock_schedule": {
+    "lodging": "Resets at dawn when guests check out",
+    "food_and_drink": "Restocks throughout the day as Bran cooks and brews",
+    "special": "Changes daily"
+  },
+  "buy_prices": {
+    "Rabbit Meat": 2,
+    "Venison": 4,
+    "Boar Meat": 3,
+    "Fish": 2,
+    "Wild Berries": 1,
+    "Mushrooms": 1,
+    "Honey": 2,
+    "Eggs": 1,
+    "Apples": 1,
+    "Healing Herbs": 1,
+    "Wild Herbs": 1,
+    "Firewood Bundle": 1,
+    "Standard Ale": 1,
+    "Dark Ale": 1,
+    "Apple Cider": 1,
+    "Milk": 1,
+    "Bread and Cheese": 1,
+    "Meat Pie": 2,
+    "Honeycakes": 1,
+    "Dried Fruit and Nuts": 1,
+    "Fine Wine": 3,
+    "Mulled Wine": 2
+  }
+}

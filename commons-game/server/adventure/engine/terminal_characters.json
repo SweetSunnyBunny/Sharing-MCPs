@@ -1,0 +1,29 @@
+{
+  "description": "Public fictional Black Serenity dossiers and starting NPC wallets. These are authored game records, not private conversation or profile data. One credit is 50 shared gold cents; transfers preserve both wallets.",
+  "characters": {
+    "lyra": {
+      "starting_credits": 180,
+      "description": "Navigation duty: Lyra keeps the ship's routes and telemetry in order from the bridge. The public crew record points visitors toward navigation logs, comm signals and recovered transponder tags; damaged telemetry can be brought back from adventures in the region."
+    },
+    "aiko": {
+      "starting_credits": 240,
+      "description": "Trade listing: Aiko works in the Neon Underground, among the market counters and gang terminals. Her listing recommends checking local stock for useful technology before taking a salvage run. Her credit account is connected to the market network."
+    },
+    "cipher": {
+      "starting_credits": 200,
+      "description": "Lounge listing: Cipher tends the Neural Jack Lounge. The public netrunner noticeboard offers hacking work, including proving yourself on accessible systems and visiting the Data Nexus. The dream-pod concourse is a meeting place between runs."
+    },
+    "mara": {
+      "starting_credits": 160,
+      "description": "Station listing: Mara welcomes visitors to the Terraforming Station. Biodomes, research records and environmental controls surround her workplace. The public station record mentions seedpods and bio samples as useful regional research finds."
+    },
+    "garron": {
+      "starting_credits": 320,
+      "description": "Workshop listing: Garron builds at the Forge, where robot recipes and industrial equipment are available. Salvage from Scavengers Reach supplies the scrap and components used for robot construction and repairs. Bring the actual recipe materials before commissioning or making a body."
+    },
+    "merchant": {
+      "starting_credits": 140,
+      "description": "Trader listing: the traveling Merchant stops at the Mos Eisley Cantina with scavenged goods. The public route record links the cantina's travelers to the scrap planet and workshops. Look over current stock and gather your own usable robot parts at Scavengers Reach."
+    }
+  }
+}

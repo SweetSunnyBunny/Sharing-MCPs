@@ -1,0 +1,232 @@
+{
+  "id": "dt-campfire",
+  "name": "Campfire",
+  "subtitle": "A lonely campfire under the stars.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/campfire.png",
+  "region": "dusty_trails",
+  "game_location": "around-the-campfire",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "................................................",
+    "................................................",
+    "................................................",
+    "########........................................",
+    "############........................#...........",
+    "###################.............#########.......",
+    "#################..............##########.......",
+    "########.......................##########......#",
+    "######.........##................########....###",
+    "######......######....................##....####",
+    "###......#########................##........####",
+    "........########.......###.......#####.......###",
+    ".......########....##########....#######.......#",
+    "........###.......#############...########......",
+    "....##............##############....#######.....",
+    ".######..........###############......#####.....",
+    ".######...........##############.......####.....",
+    ".########..........###########..................",
+    ".########...........##########..................",
+    ".#####...####.......................####......##",
+    ".####...########..................#######....###",
+    "........###########...........###########....###",
+    "..........##########.........#########........##",
+    "..............######.........#######......####.#",
+    "###.............####.........####........######.",
+    "#####...................................########",
+    "######..................................########",
+    "#########..............................#########",
+    "#############..........................#########",
+    "#############...................................",
+    "#############...................................",
+    "############...................................."
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 18.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Open Plains",
+      "x": 14.96875,
+      "y": 2.921875,
+      "w": 4.6875,
+      "h": 3.34375,
+      "to": "dt-open-plains",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 17.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the upper middle part of the room leads to Open Plains. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "npc-takoda",
+      "label": "Takoda",
+      "game_npc": "takoda",
+      "x": 23.5,
+      "y": 16.0,
+      "w": 1.2,
+      "h": 2,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Takoda.",
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "campfire log",
+      "x": 10.42,
+      "y": 10.86,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 11.52,
+            "y": 11.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Campfire log, in the upper left part of the room, beside the stone-ringed fire and suspended cooking pot. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "campfire log",
+      "x": 13.78,
+      "y": 23.34,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 14.88,
+            "y": 23.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Campfire log, in the lower left part of the room, beside the stone-ringed fire and suspended cooking pot. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-3",
+      "label": "campfire log",
+      "x": 33.94,
+      "y": 23.66,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 35.04,
+            "y": 24.16,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Campfire log, in the lower right part of the room, beside the stone-ringed fire and suspended cooking pot. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-4",
+      "label": "campfire log",
+      "x": 37.3,
+      "y": 14.7,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 38.4,
+            "y": 15.2,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Campfire log, in the central right part of the room, beside the stone-ringed fire and suspended cooking pot. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "takoda",
+      "name": "Takoda",
+      "role": "Storyteller"
+    }
+  ],
+  "description": "A bright campfire burns in a ring of stones on a clearing of orange earth. A black cooking pot hangs from a simple wooden frame above the flames. Four broad logs lie around the fire as seats, with a bedroll, bags, a wooden crate and small pieces of camp equipment set farther out. Rocks, flowers and low green plants border the clearing, and the dirt path continues towards the upper edge. The fire throws warm light onto the logs and ground, leaving the outer bushes in darker shade. It is a place arranged for people to sit together around the flame.",
+  "landmarks": [
+    {
+      "id": "stone-ringed-campfire",
+      "label": "Stone-ringed campfire",
+      "kind": "fireplace",
+      "description": "A vivid fire burns inside a rough circle of stones in the centre of the clearing.",
+      "x": 24,
+      "y": 18
+    },
+    {
+      "id": "suspended-cooking-pot",
+      "label": "Suspended cooking pot",
+      "kind": "scenery",
+      "description": "A black pot hangs from a wooden support directly above the fire.",
+      "x": 24,
+      "y": 13
+    },
+    {
+      "id": "outer-camp-baggage",
+      "label": "Outer camp baggage",
+      "kind": "storage",
+      "description": "Bags, a crate and small pieces of camp equipment sit beyond the upper-right log.",
+      "x": 38,
+      "y": 10
+    },
+    {
+      "id": "bedroll-and-pack",
+      "label": "Bedroll and pack",
+      "kind": "storage",
+      "description": "A rolled bed and a pack are set down beside the left edge of the clearing.",
+      "x": 5,
+      "y": 23
+    },
+    {
+      "id": "northern-dirt-path",
+      "label": "Northern dirt path",
+      "kind": "path",
+      "description": "An open dirt path leaves the firelight towards the upper part of the woodland.",
+      "x": 23,
+      "y": 5
+    }
+  ]
+}

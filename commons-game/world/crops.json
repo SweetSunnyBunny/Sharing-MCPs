@@ -1,0 +1,260 @@
+{
+  "beds": {
+    "bed-berries": [
+      "strawberry",
+      "raspberry",
+      "blackcurrant"
+    ],
+    "bed-orchard": [
+      "apple",
+      "plum",
+      "pear",
+      "grapes"
+    ],
+    "bed-flowers": [
+      "cosmos",
+      "foxglove",
+      "sweet pea",
+      "lavender",
+      "sunflower",
+      "lily",
+      "forget-me-not",
+      "chamomile",
+      "rose",
+      "marigold",
+      "tulip",
+      "daisy"
+    ],
+    "bed-kitchen": [
+      "thyme",
+      "sage",
+      "mint",
+      "carrot",
+      "potato",
+      "green beans",
+      "tomato",
+      "cucumber",
+      "lettuce",
+      "bell pepper",
+      "rosemary",
+      "basil",
+      "parsley",
+      "chives",
+      "dill"
+    ]
+  },
+  "crops": {
+    "strawberry": {
+      "days": 5,
+      "yields": "berries",
+      "colour": "#c0394b",
+      "final": "heavy with fruit"
+    },
+    "raspberry": {
+      "days": 8,
+      "yields": "berries",
+      "colour": "#9b2f4e",
+      "final": "canes bowed with fruit"
+    },
+    "blackcurrant": {
+      "days": 9,
+      "yields": "berries",
+      "colour": "#3d2b4a",
+      "final": "clustered black and glossy"
+    },
+    "apple": {
+      "days": 12,
+      "yields": "fruit",
+      "colour": "#b8402f",
+      "final": "branches down with apples"
+    },
+    "plum": {
+      "days": 11,
+      "yields": "fruit",
+      "colour": "#5b3a63",
+      "final": "dark and dusty-skinned"
+    },
+    "pear": {
+      "days": 12,
+      "yields": "fruit",
+      "colour": "#9c9440",
+      "final": "espaliered and loaded"
+    },
+    "cosmos": {
+      "days": 6,
+      "yields": "flowers",
+      "colour": "#d8869b",
+      "final": "a riot of open faces"
+    },
+    "foxglove": {
+      "days": 9,
+      "yields": "flowers",
+      "colour": "#a4568f",
+      "final": "spires up past your knee"
+    },
+    "sweet pea": {
+      "days": 7,
+      "yields": "flowers",
+      "colour": "#c98bb4",
+      "final": "climbing the canes, scented"
+    },
+    "lavender": {
+      "days": 10,
+      "yields": "flowers",
+      "colour": "#8a7fb8",
+      "final": "purple and humming with bees"
+    },
+    "sunflower": {
+      "days": 8,
+      "yields": "flowers",
+      "colour": "#e0a326",
+      "final": "taller than you, faces following the sun"
+    },
+    "lily": {
+      "days": 9,
+      "yields": "flowers",
+      "colour": "#d97f5a",
+      "final": "open trumpets, perfume down the whole path"
+    },
+    "forget-me-not": {
+      "days": 5,
+      "yields": "flowers",
+      "colour": "#7da7d9",
+      "final": "a low blue mist that remembers you"
+    },
+    "thyme": {
+      "days": 4,
+      "yields": "herbs",
+      "colour": "#6d8a5a",
+      "final": "a low green cushion"
+    },
+    "sage": {
+      "days": 5,
+      "yields": "herbs",
+      "colour": "#8a9b86",
+      "final": "soft grey-green and wide"
+    },
+    "mint": {
+      "days": 4,
+      "yields": "herbs",
+      "colour": "#4f9b6a",
+      "final": "rampant, straining the pot"
+    },
+    "carrot": {
+      "days": 7,
+      "yields": "roots",
+      "colour": "#c9762f",
+      "final": "shoulders up out of the soil"
+    },
+    "potato": {
+      "days": 9,
+      "yields": "roots",
+      "colour": "#a8925f",
+      "final": "ready to lift"
+    },
+    "grapes": {
+      "days": 10,
+      "yields": "fruit",
+      "colour": "#75518c",
+      "final": "purple bunches hanging beneath the vine leaves"
+    },
+    "green beans": {
+      "days": 7,
+      "yields": "vegetables",
+      "colour": "#6f9c47",
+      "final": "long green pods tucked between the climbing leaves"
+    },
+    "tomato": {
+      "days": 8,
+      "yields": "vegetables",
+      "colour": "#d44e3f",
+      "final": "warm red fruit heavy on the stems"
+    },
+    "cucumber": {
+      "days": 7,
+      "yields": "vegetables",
+      "colour": "#5d8c43",
+      "final": "cool green cucumbers beneath a tangle of leaves"
+    },
+    "lettuce": {
+      "days": 5,
+      "yields": "vegetables",
+      "colour": "#91b95f",
+      "final": "crisp leaves gathered into an open green heart"
+    },
+    "bell pepper": {
+      "days": 9,
+      "yields": "vegetables",
+      "colour": "#e0a13e",
+      "final": "golden peppers shining between the broad leaves"
+    },
+    "rosemary": {
+      "days": 6,
+      "yields": "herbs",
+      "colour": "#6c8975",
+      "final": "woody sprigs fragrant with narrow silver-green needles"
+    },
+    "basil": {
+      "days": 4,
+      "yields": "herbs",
+      "colour": "#6ca04f",
+      "final": "broad glossy leaves ready for the kitchen"
+    },
+    "parsley": {
+      "days": 4,
+      "yields": "herbs",
+      "colour": "#599449",
+      "final": "a full clump of bright curled leaves"
+    },
+    "chives": {
+      "days": 4,
+      "yields": "herbs",
+      "colour": "#78a16a",
+      "final": "fine green spears beneath little mauve flower heads"
+    },
+    "dill": {
+      "days": 5,
+      "yields": "herbs",
+      "colour": "#8aab60",
+      "final": "feathery fronds and yellow umbrellas above the bed"
+    },
+    "chamomile": {
+      "days": 6,
+      "yields": "flowers",
+      "colour": "#e9cd63",
+      "final": "small white petals around sunny golden centers"
+    },
+    "rose": {
+      "days": 9,
+      "yields": "flowers",
+      "colour": "#bf5874",
+      "final": "soft pink roses opening along the branching stems"
+    },
+    "marigold": {
+      "days": 5,
+      "yields": "flowers",
+      "colour": "#df9535",
+      "final": "round orange blooms glowing above the leaves"
+    },
+    "tulip": {
+      "days": 7,
+      "yields": "flowers",
+      "colour": "#cb7094",
+      "final": "pink cups held upright on sturdy green stems"
+    },
+    "daisy": {
+      "days": 5,
+      "yields": "flowers",
+      "colour": "#e6d878",
+      "final": "white faces turned toward the afternoon light"
+    }
+  },
+  "stages": [
+    "just planted",
+    "sprouting",
+    "leafing out",
+    "budding",
+    "flowering",
+    "ripe"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "description": "Mount and vehicle speed bonuses - reduces cooldowns for hunting, gathering, and travel",
+  
+  "mounts": {
+    "dusty_trails": {
+      "wild horse": {
+        "type": "mount",
+        "speed_bonus": 0.30,
+        "min_loyalty": 60,
+        "description": "A trained wild horse reduces cooldowns by 30%"
+      }
+    },
+    "black_serenity": {
+      "speeder_bike": {
+        "type": "vehicle",
+        "speed_bonus": 0.40,
+        "crafted": true,
+        "description": "A speeder bike reduces cooldowns by 40%"
+      },
+      "hover_board": {
+        "type": "vehicle",
+        "speed_bonus": 0.25,
+        "crafted": true,
+        "description": "A hover board reduces cooldowns by 25%"
+      },
+      "jump_pack": {
+        "type": "vehicle",
+        "speed_bonus": 0.20,
+        "crafted": true,
+        "description": "A jump pack reduces cooldowns by 20%"
+      }
+    },
+    "heros_journey": {
+      "horse": {
+        "type": "mount",
+        "speed_bonus": 0.25,
+        "min_loyalty": 50,
+        "description": "A loyal horse reduces cooldowns by 25%"
+      }
+    }
+  },
+  
+  "speed_messages": {
+    "dusty_trails": [
+      "Your horse gallops swiftly across the plains!",
+      "With your trusty steed, you cover ground quickly.",
+      "Your horse snorts eagerly, ready to ride!"
+    ],
+    "black_serenity": [
+      "Your speeder hums as you zip through the area!",
+      "The speeder's engines roar as you accelerate.",
+      "You navigate quickly on your hoverbike."
+    ],
+    "heros_journey": [
+      "Your horse trots along the path swiftly.",
+      "With your mount, travel is much faster!",
+      "Your loyal steed carries you with ease."
+    ]
+  }
+}

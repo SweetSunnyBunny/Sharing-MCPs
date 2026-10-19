@@ -1,0 +1,559 @@
+{
+  "id": "the-prancing-pony",
+  "name": "The Prancing Pony",
+  "subtitle": "A cozy tavern, perfect for weary travelers.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/the-prancing-pony.png",
+  "region": "heros_journey",
+  "game_location": "the-prancing-pony",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "#####################..#########################",
+    "######################...#######################",
+    "#######################..#######################",
+    "#######################...#.####################",
+    "#######################......###################",
+    "####################.###.....###################",
+    "####################.........###################",
+    "####################.......##..#################",
+    "####################....########################",
+    "####################...#########################",
+    "##################.#.#.########..###############",
+    "################......#########...#...######.#.#",
+    "################......#.######...##########.....",
+    "############..#.......#.#..###...##########.....",
+    "#############...............#....##########.#...",
+    "#########.......#...#..##.......#############...",
+    "########......##.#########......###########.#...",
+    "####...#........##########......############....",
+    "###............###########.#....#.###..####.....",
+    "#####..........#############....#.#......##.....",
+    "#####.........##############......#.............",
+    "########......############.#....................",
+    "#########.....##############....................",
+    "#########.....#.#.#..#####.#....................",
+    "#########.....#.#........#......................",
+    "#########.......#...............................",
+    "#########.......................................",
+    "#########......................................."
+  ],
+  "spawn": {
+    "x": 18.5,
+    "y": 16.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Village Square",
+      "x": 39.25,
+      "y": 31.47,
+      "w": 9.25,
+      "h": 5.0,
+      "to": "village-square",
+      "arriveAt": {
+        "x": 11.0,
+        "y": 20.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the lower right part of the room leads to Village Square. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "travel-1",
+      "label": "The Crossroads (Hub)",
+      "x": 21.81,
+      "y": 6.94,
+      "w": 2.56,
+      "h": 2.69,
+      "to": "the-crossroads",
+      "arriveAt": {
+        "x": 31.0,
+        "y": 8.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the upper middle part of the room leads to The Crossroads. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "npc-bran",
+      "label": "Bran",
+      "game_npc": "bran",
+      "x": 10.44,
+      "y": 19.38,
+      "w": 1.2,
+      "h": 2.0,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Bran.",
+      "npc_sheet": "assets/adventure/sprites/conversational NPCs/bran sprite.png",
+      "npc_frame": 64,
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "bar stool",
+      "x": 6.1,
+      "y": 19.82,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 7.2,
+            "y": 20.32,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "bar stool",
+      "x": 9.94,
+      "y": 17.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 11.04,
+            "y": 17.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-3",
+      "label": "bar stool",
+      "x": 13.3,
+      "y": 15.34,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 14.4,
+            "y": 15.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-4",
+      "label": "bar stool",
+      "x": 15.7,
+      "y": 14.06,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 16.8,
+            "y": 14.56,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-5",
+      "label": "bar stool",
+      "x": 18.1,
+      "y": 12.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 19.2,
+            "y": 12.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-6",
+      "label": "table chair",
+      "x": 13.3,
+      "y": 25.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 14.4,
+            "y": 25.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower left part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-7",
+      "label": "table chair",
+      "x": 15.22,
+      "y": 21.1,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 16.32,
+            "y": 21.6,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower left part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-8",
+      "label": "table chair",
+      "x": 23.86,
+      "y": 21.1,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 24.96,
+            "y": 21.6,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower middle part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-9",
+      "label": "table chair",
+      "x": 25.3,
+      "y": 25.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.4,
+            "y": 25.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower middle part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-10",
+      "label": "table chair",
+      "x": 18.1,
+      "y": 28.14,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 19.2,
+            "y": 28.64,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower middle part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-11",
+      "label": "table chair",
+      "x": 21.46,
+      "y": 15.66,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 22.56,
+            "y": 16.16,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central middle part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-12",
+      "label": "table chair",
+      "x": 27.7,
+      "y": 16.3,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 28.8,
+            "y": 16.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central middle part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-13",
+      "label": "table chair",
+      "x": 23.86,
+      "y": 11.82,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 24.96,
+            "y": 12.32,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central middle part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-14",
+      "label": "table chair",
+      "x": 32.02,
+      "y": 21.42,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 33.12,
+            "y": 21.92,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower right part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-15",
+      "label": "table chair",
+      "x": 33.46,
+      "y": 17.58,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 34.56,
+            "y": 18.08,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central right part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-16",
+      "label": "table chair",
+      "x": 40.66,
+      "y": 17.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 41.76,
+            "y": 17.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central right part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-17",
+      "label": "table chair",
+      "x": 42.1,
+      "y": 20.78,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 43.2,
+            "y": 21.28,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central right part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-18",
+      "label": "table chair",
+      "x": 35.86,
+      "y": 23.66,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 36.96,
+            "y": 24.16,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower right part of the room, beside the tavern bar, round tables and stone fireplace. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "bran",
+      "name": "Bran",
+      "role": "Innkeeper"
+    }
+  ],
+  "description": "The Prancing Pony is a timber tavern with a long polished bar along the upper-left wall. Bottles line the shelves behind it, and red-topped stools run beneath the counter. Round wooden tables and their chairs fill the open floor, each lit by candles or small lanterns. A stone fireplace burns on the right under a wide mantel, with barrels and stacked wood nearby. Above the bar, a timber stair climbs towards the upper landing. The plank floor and warm pools of amber light tie the room together, while the gaps between tables leave enough open ground to walk from the entrance to the hearth.",
+  "landmarks": [
+    {
+      "id": "long-tavern-bar",
+      "label": "Long tavern bar",
+      "kind": "counter",
+      "description": "A polished wooden bar sits beneath shelves crowded with bottles and glassware.",
+      "x": 16,
+      "y": 11
+    },
+    {
+      "id": "stone-tavern-hearth",
+      "label": "Stone tavern hearth",
+      "kind": "fireplace",
+      "description": "A broad fireplace burns under a heavy mantel on the right wall.",
+      "x": 38,
+      "y": 12
+    },
+    {
+      "id": "main-round-table",
+      "label": "Main round table",
+      "kind": "table",
+      "description": "A large round table with candles and chairs occupies the lower-left half of the floor.",
+      "x": 18,
+      "y": 23
+    },
+    {
+      "id": "upper-stair-and-landing",
+      "label": "Upper stair and landing",
+      "kind": "staircase",
+      "description": "A timber staircase rises above the bar towards the upper landing.",
+      "x": 26,
+      "y": 5
+    },
+    {
+      "id": "barrel-store",
+      "label": "Barrel store",
+      "kind": "storage",
+      "description": "Large barrels are stacked along the left side beneath the bar.",
+      "x": 5,
+      "y": 26
+    }
+  ]
+}

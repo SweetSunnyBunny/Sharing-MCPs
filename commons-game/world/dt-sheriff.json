@@ -1,0 +1,188 @@
+{
+  "id": "dt-sheriff",
+  "name": "Sheriff's Office",
+  "subtitle": "Law and order on the frontier.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/sheriff.png",
+  "region": "dusty_trails",
+  "game_location": "sheriffs-office",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "####################.#.#########################",
+    "##################........######################",
+    "################.........#######################",
+    "###############.........########################",
+    "###########............#########################",
+    "#########...............########################",
+    "#######.................########################",
+    "######..................########################",
+    "######....................##############.#####.#",
+    "####.##......................##########....##...",
+    "#####..........................########.....###.",
+    "######..#........................###......######",
+    "######.###................................######",
+    "##########................................######",
+    "###########..............................#######",
+    "###########............................#########",
+    "##########.............................#########",
+    "##########.............................#########",
+    "#########..............................#########",
+    "######.................................#.###.###",
+    "#####..................................#.#......",
+    ".........................................#......",
+    "................................................",
+    "................................................"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Town Square",
+      "x": 20.6875,
+      "y": 30.09375,
+      "w": 4.8125,
+      "h": 3.0,
+      "to": "dt-town-square",
+      "arriveAt": {
+        "x": 14.0,
+        "y": 21.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Town Square. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "npc-sheriff",
+      "label": "Sheriff",
+      "game_npc": "sheriff",
+      "x": 23.5,
+      "y": 16.0,
+      "w": 1.2,
+      "h": 2,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Sheriff.",
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "sheriff chair",
+      "x": 33.46,
+      "y": 10.86,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 34.56,
+            "y": 11.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Sheriff chair, in the upper right part of the room, beside the sheriff desk and open office floor. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "card table chair",
+      "x": 42.58,
+      "y": 26.86,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 43.68,
+            "y": 27.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Card table chair, in the lower right part of the room, beside the sheriff desk and open office floor. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "sheriff",
+      "name": "Sheriff",
+      "role": "Lawkeeper"
+    }
+  ],
+  "description": "The sheriff's office is a wooden room divided between a working desk and iron-barred cells. The cells occupy the left and upper-left walls, while a desk covered with papers, an open book and small objects stands to the right. A green chair sits behind it, near a window, a flag and a wall map. Rifles are mounted farther along the right wall, beside a small sideboard. A dark stove stands at the lower-left side, and a round braided rug fills the open floor. Lamps cast warm light on the boards, turning a practical frontier office into a clearly furnished interior.",
+  "landmarks": [
+    {
+      "id": "iron-barred-cells",
+      "label": "Iron-barred cells",
+      "kind": "scenery",
+      "description": "Heavy vertical bars enclose the left side of the room.",
+      "x": 11,
+      "y": 10
+    },
+    {
+      "id": "sheriff-desk",
+      "label": "Sheriff desk",
+      "kind": "desk",
+      "description": "Papers, an open book and small objects cover the desk beneath the right-hand wall.",
+      "x": 34,
+      "y": 17
+    },
+    {
+      "id": "wall-map-and-rifle-rack",
+      "label": "Wall map and rifle rack",
+      "kind": "scenery",
+      "description": "A large map and mounted rifles hang above the work area.",
+      "x": 39,
+      "y": 8
+    },
+    {
+      "id": "office-stove",
+      "label": "Office stove",
+      "kind": "scenery",
+      "description": "A dark metal stove and small stool sit near the lower-left wall.",
+      "x": 6,
+      "y": 23
+    },
+    {
+      "id": "braided-circular-rug",
+      "label": "Braided circular rug",
+      "kind": "scenery",
+      "description": "A green-and-orange braided rug marks the open space in the middle of the floor.",
+      "x": 24,
+      "y": 26
+    }
+  ]
+}

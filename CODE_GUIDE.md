@@ -21,6 +21,7 @@ chat message through the browser, API, provider and database.
 | [gdrive-mcp](gdrive-mcp/README.md) | Local Google Drive tools | [run_server.py](gdrive-mcp/run_server.py), [server.py](gdrive-mcp/server.py), [auth/](gdrive-mcp/auth/) |
 | [gmail-mcp](gmail-mcp/README.md) | Local Gmail tools | [run_server.py](gmail-mcp/run_server.py), [server.py](gmail-mcp/server.py), [auth/](gmail-mcp/auth/) |
 | [google-cloud-mcp](google-cloud-mcp/README.md) | Cloud Google account tools | [src/index.ts](google-cloud-mcp/src/index.ts), [src/oauth.ts](google-cloud-mcp/src/oauth.ts), [migrations/](google-cloud-mcp/migrations/) |
+| [commons-game](commons-game/README.md) | Browser game and local HTTP world server | [setup_commons.py](commons-game/setup_commons.py), [server/commons_server.py](commons-game/server/commons_server.py), [world/](commons-game/world/) |
 | [hearth-commons](hearth-commons/README.md) | Connector to an external Commons server | [src/index.ts](hearth-commons/src/index.ts) |
 | [hearth-hub](hearth-hub/README.md) | Shared workspace/state service | [src/index.ts](hearth-hub/src/index.ts), [src/tools/](hearth-hub/src/tools/), [migrations/](hearth-hub/migrations/) |
 | [krita-mcp](krita-mcp/README.md) | Tools for installed Krita | [run_server.py](krita-mcp/run_server.py), [server.py](krita-mcp/server.py), [plugin/](krita-mcp/plugin/) |

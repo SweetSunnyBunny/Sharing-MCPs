@@ -1,0 +1,331 @@
+{
+  "id": "neon-underground",
+  "name": "Neon Underground",
+  "subtitle": "The Black Serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "neon-underground",
+  "music": {
+    "region": "black_serenity"
+  },
+  "sky": "#111625",
+  "legend": {
+    ".": {
+      "name": "deck",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "bulkhead",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.0,
+    "y": 18.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Mos Eisley Cantina",
+      "x": 37.0,
+      "y": 9.75,
+      "w": 3.0,
+      "h": 2.0,
+      "to": "mos-eisley-cantina",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "note": "This passage in the upper right part of the room leads to Mos Eisley Cantina. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "id": "npc-aiko",
+      "label": "Aiko",
+      "game_npc": "aiko",
+      "x": 19.5,
+      "y": 14.0,
+      "w": 1.2,
+      "h": 2.0,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Aiko.",
+      "fishable": false,
+      "npc_art": "",
+      "npc_scale": 1.0,
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "market stool",
+      "x": 25.0,
+      "y": 14.3,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.0,
+            "y": 14.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Market stool, in the central middle part of the room, beside the lantern-lit market stalls and salvage. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-2",
+      "label": "market stool",
+      "x": 26.6,
+      "y": 20.18,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 27.6,
+            "y": 20.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Market stool, in the lower right part of the room, beside the lantern-lit market stalls and salvage. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-3",
+      "label": "market stool",
+      "x": 24.2,
+      "y": 19.06,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 25.2,
+            "y": 19.56,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Market stool, in the lower middle part of the room, beside the lantern-lit market stalls and salvage. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-4",
+      "label": "market stool",
+      "x": 28.2,
+      "y": 19.34,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.2,
+            "y": 19.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Market stool, in the lower right part of the room, beside the lantern-lit market stalls and salvage. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-5",
+      "label": "market stool",
+      "x": 28.6,
+      "y": 20.18,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.6,
+            "y": 20.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Market stool, in the lower right part of the room, beside the lantern-lit market stalls and salvage. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "x": 11.75,
+      "y": 17.0,
+      "w": 1.5,
+      "h": 2.0,
+      "id": "hotspot-mujvvozr",
+      "label": "Merchant",
+      "note": "Merchant stands in the central left part of the room, among the surrounding room scenery.",
+      "invisible": true,
+      "fishable": false,
+      "art": "/art/npcs/merchant/2026-09-26/Idle/rotations/south.png?v=69d8cb0d33"
+    },
+    {
+      "x": 18.5,
+      "y": 3.25,
+      "w": 3.25,
+      "h": 3.5,
+      "id": "door-mujvzp6g",
+      "label": "Data Nexus",
+      "note": "This passage in the upper middle part of the room leads to Data Nexus. Walk into the marked threshold to take that route.",
+      "invisible": true,
+      "fishable": false,
+      "to": "data-nexus",
+      "arriveAt": {
+        "x": 13.5,
+        "y": 13.0
+      },
+      "kind": "door"
+    },
+    {
+      "x": 1.25,
+      "y": 5.0,
+      "w": 2.5,
+      "h": 1.5,
+      "id": "door-mujw0y1f",
+      "label": "Neural Jack Lounge",
+      "note": "This passage in the upper left part of the room leads to Neural Jack Lounge. Walk into the marked threshold to take that route.",
+      "invisible": true,
+      "fishable": false,
+      "to": "neural-jack-lounge",
+      "arriveAt": {
+        "x": 13.5,
+        "y": 13.0
+      },
+      "kind": "door"
+    },
+    {
+      "x": 17.0,
+      "y": 26.25,
+      "w": 5.5,
+      "h": 4.0,
+      "id": "door-mujw20kp",
+      "label": "Back to Ship",
+      "note": "This passage in the lower middle part of the room leads to Ships Bridge. Walk into the marked threshold to take that route.",
+      "invisible": true,
+      "fishable": false,
+      "to": "ships-bridge",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "kind": "door"
+    }
+  ],
+  "npcs": [
+    {
+      "id": "aiko",
+      "name": "Aiko",
+      "role": "Merchant"
+    }
+  ],
+  "backdrop": "/assets/adventure/backgrounds/neon_underground.png?v=e6b7eebcb2",
+  "description": "Neon Underground is a dark metal market crossing lit by violet, blue and amber signs. A tented stall filled with bottles and small goods occupies the left side, with a crowded pile of salvage and equipment below it. A blue-lit counter and displays stand on the right. The central floor reflects some of the coloured light, and stairs rise at the upper edge beneath a To Surface sign. Smaller passages and signs open off both side walls, while a Neon Underground sign frames the lower approach. The narrow bays and stacked merchandise give the room a layered, improvised market appearance.",
+  "landmarks": [
+    {
+      "id": "western-tented-market-stall",
+      "label": "Western tented market stall",
+      "kind": "shopfront",
+      "description": "A fabric awning shelters a densely stocked stall lit by small amber lamps.",
+      "x": 11,
+      "y": 10
+    },
+    {
+      "id": "salvage-heap",
+      "label": "Salvage heap",
+      "kind": "storage",
+      "description": "A jumble of mechanical parts, crates and equipment sits below the western stall.",
+      "x": 12,
+      "y": 17
+    },
+    {
+      "id": "eastern-blue-lit-counter",
+      "label": "Eastern blue-lit counter",
+      "kind": "counter",
+      "description": "A small counter and illuminated display panels occupy the right-hand market bay.",
+      "x": 28,
+      "y": 11
+    },
+    {
+      "id": "northern-surface-stair-sign",
+      "label": "Northern surface stair sign",
+      "kind": "sign",
+      "description": "An upper stair rises beneath a To Surface sign.",
+      "x": 20,
+      "y": 3
+    },
+    {
+      "id": "reflective-market-crossing",
+      "label": "Reflective market crossing",
+      "kind": "path",
+      "description": "The central metal walkway catches blue and violet light from the surrounding signs.",
+      "x": 21,
+      "y": 15
+    },
+    {
+      "id": "lower-neon-sign",
+      "label": "Lower neon sign",
+      "kind": "sign",
+      "description": "A glowing Neon Underground sign marks the lower frontage.",
+      "x": 20,
+      "y": 24
+    }
+  ]
+}

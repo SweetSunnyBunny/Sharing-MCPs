@@ -1,0 +1,481 @@
+{
+  "id": "ships-bridge",
+  "name": "Ships Bridge",
+  "subtitle": "The Black Serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "ships-bridge",
+  "music": {
+    "region": "black_serenity"
+  },
+  "sky": "#111625",
+  "legend": {
+    ".": {
+      "name": "deck",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "bulkhead",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.0,
+    "y": 18.5
+  },
+  "props": [
+    {
+      "id": "travel-2",
+      "label": "The Crossroads",
+      "x": 4.0,
+      "y": 6.25,
+      "w": 3.0,
+      "h": 2.0,
+      "to": "the-crossroads",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "note": "This transport route in the upper left part of the room leads to The Crossroads. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "teleporter"
+    },
+    {
+      "id": "path-cargo-bay",
+      "label": "Cargo Bay",
+      "to": "cargo-bay",
+      "x": 17.0,
+      "y": 26.0,
+      "w": 6.0,
+      "h": 3.0,
+      "arriveAt": {
+        "x": 19.5,
+        "y": 19.0
+      },
+      "invisible": true,
+      "note": "This passage in the lower middle part of the room leads to Cargo Bay. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "id": "npc-lyra",
+      "label": "Lyra",
+      "game_npc": "lyra",
+      "x": 19.5,
+      "y": 14.0,
+      "w": 1.2,
+      "h": 2.0,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Lyra.",
+      "fishable": false,
+      "npc_art": "",
+      "npc_scale": 1.0,
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "captain chair",
+      "x": 18.9,
+      "y": 5.9,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 20.0,
+            "y": 6.4,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Captain chair, in the upper middle part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-2",
+      "label": "helm chair",
+      "x": 12.5,
+      "y": 7.02,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 13.6,
+            "y": 7.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Helm chair, in the upper left part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-3",
+      "label": "helm chair",
+      "x": 25.3,
+      "y": 7.02,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.4,
+            "y": 7.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Helm chair, in the upper right part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-4",
+      "label": "lounge sofa",
+      "x": 4.1,
+      "y": 13.18,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 5.2,
+            "y": 13.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Lounge sofa, in the central left part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-5",
+      "label": "lounge sofa",
+      "x": 5.3,
+      "y": 13.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 6.4,
+            "y": 13.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Lounge sofa, in the central left part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-6",
+      "label": "lounge sofa",
+      "x": 2.5,
+      "y": 15.14,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 3.6,
+            "y": 15.64,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Lounge sofa, in the central left part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-7",
+      "label": "lounge sofa",
+      "x": 2.5,
+      "y": 16.75,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 3.6,
+            "y": 17.25,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Lounge sofa, in the central left part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-8",
+      "label": "briefing chair",
+      "x": 30.75,
+      "y": 12.25,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 31.85,
+            "y": 12.75,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Briefing chair, in the central right part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-9",
+      "label": "briefing chair",
+      "x": 32.9,
+      "y": 12.62,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 34.0,
+            "y": 13.12,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Briefing chair, in the central right part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-10",
+      "label": "briefing chair",
+      "x": 34.9,
+      "y": 14.86,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 36.0,
+            "y": 15.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Briefing chair, in the central right part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-11",
+      "label": "briefing chair",
+      "x": 27.75,
+      "y": 15.0,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 28.85,
+            "y": 15.5,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Briefing chair, in the central right part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-12",
+      "label": "briefing chair",
+      "x": 30.5,
+      "y": 17.94,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 31.6,
+            "y": 18.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Briefing chair, in the central right part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-13",
+      "label": "briefing chair",
+      "x": 32.9,
+      "y": 17.94,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 34.0,
+            "y": 18.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Briefing chair, in the central right part of the room, beside the bridge consoles, lounge and briefing table. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "terminal-star-facing-window-and-helm-consoles",
+      "label": "Star-facing window and helm consoles",
+      "kind": "terminal",
+      "x": 22,
+      "y": 5,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "game_terminal": "Navigation Log",
+      "note": "Blue-green displays follow the curve of the broad upper bridge window. This console connects to the Navigation Log network. Open it to recover cached data, read character dossiers, or transfer credits."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "lyra",
+      "name": "Lyra",
+      "role": "Navigator"
+    }
+  ],
+  "backdrop": "/assets/adventure/backgrounds/ships_bridge.png?v=4121426571",
+  "description": "The ship's bridge has a wide metal floor marked with a compass-like star at the centre. The captain's chair stands on a raised platform facing a curved bank of blue-green control screens and a broad star-facing window. Smaller helm chairs sit beneath the surrounding displays. On the upper left, a cylindrical blue transport chamber glows beside the wall. A red-upholstered lounge occupies the lower-left corner, while a rectangular briefing table with a luminous blue surface and several chairs sits on the right. Warm strip lights and banners soften the industrial panels; the open middle leaves the command and social areas visibly separate.",
+  "landmarks": [
+    {
+      "id": "captain-command-platform",
+      "label": "Captain command platform",
+      "kind": "seating area",
+      "description": "A raised chair platform faces the curved bank of bridge screens.",
+      "x": 23,
+      "y": 10
+    },
+    {
+      "id": "star-facing-window-and-helm-consoles",
+      "label": "Star-facing window and helm consoles",
+      "kind": "terminal",
+      "description": "Blue-green displays follow the curve of the broad upper bridge window.",
+      "x": 23,
+      "y": 5
+    },
+    {
+      "id": "blue-transport-chamber",
+      "label": "Blue transport chamber",
+      "kind": "transport platform",
+      "description": "A luminous cylindrical transport chamber occupies the upper-left side.",
+      "x": 6,
+      "y": 7
+    },
+    {
+      "id": "compass-star-floor-marking",
+      "label": "Compass-star floor marking",
+      "kind": "scenery",
+      "description": "A large compass-like star is painted on the open central metal floor.",
+      "x": 21,
+      "y": 19
+    },
+    {
+      "id": "holographic-briefing-table",
+      "label": "Holographic briefing table",
+      "kind": "table",
+      "description": "A rectangular blue-lit table and several chairs form the right-hand briefing area.",
+      "x": 34,
+      "y": 21
+    },
+    {
+      "id": "red-bridge-lounge",
+      "label": "Red bridge lounge",
+      "kind": "seating area",
+      "description": "Red upholstered seating surrounds a low table in the lower-left corner.",
+      "x": 7,
+      "y": 22
+    }
+  ]
+}

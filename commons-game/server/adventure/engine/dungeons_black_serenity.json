@@ -1,0 +1,207 @@
+{
+  "dungeons": [
+    {
+      "dungeon_id": "derelict_frigate",
+      "name": "Derelict Frigate",
+      "description": "A dead ship drifts in the void, its hull scarred by plasma.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "airlock",
+          "intro": "The airlock seals behind you. Emergency lights flicker to life.",
+          "enemies": [
+            { "name": "Boarding Drone", "hp": 30, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 2 },
+            { "name": "Boarding Drone", "hp": 30, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "data_core",
+          "intro": "A humming core glows blue. Defense turrets swivel toward you.",
+          "enemies": [
+            { "name": "Defense Turret", "hp": 36, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 },
+            { "name": "Defense Turret", "hp": 36, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "bridge",
+          "intro": "The ship AI speaks through the speakers. The captain is not pleased.",
+          "enemies": [
+            { "name": "Corrupted Captain", "hp": 85, "ac": 15, "attack_bonus": 6, "damage_die": "1d10", "damage_bonus": 2, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "airlock_cache",
+          "intro": "A sealed locker clicks open. A defense drone lifts its head.",
+          "enemies": [
+            { "name": "Lockbox Drone", "hp": 36, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ],
+          "rewards": {
+            "currency": 70,
+            "xp": 45,
+            "items": ["Healing Spray"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 160,
+        "xp": 130,
+        "items": ["Healing Spray", "Nano-Med Gel"]
+      }
+    },
+    {
+      "dungeon_id": "signal_temple",
+      "name": "Signal Temple",
+      "description": "A silent relay spire hums with a signal that should not exist.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "antenna_ring",
+          "intro": "A ring of broken antennas crackles with static.",
+          "enemies": [
+            { "name": "Signal Wisp", "hp": 26, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Signal Wisp", "hp": 26, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "control_chamber",
+          "intro": "Panels flicker with unreadable code. Drones spill from vents.",
+          "enemies": [
+            { "name": "Pulse Drone", "hp": 32, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 },
+            { "name": "Pulse Drone", "hp": 32, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "signal_core",
+          "intro": "The core thrums like a heartbeat. The signal becomes a voice.",
+          "enemies": [
+            { "name": "Signal Oracle", "hp": 88, "ac": 15, "attack_bonus": 7, "damage_die": "1d10", "damage_bonus": 2, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "signal_cache",
+          "intro": "A hidden panel reveals a pulsing cache. It hums like a heartbeat.",
+          "enemies": [
+            { "name": "Cache Warden", "hp": 38, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ],
+          "rewards": {
+            "currency": 75,
+            "xp": 50,
+            "items": ["Energy Bar"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 170,
+        "xp": 140,
+        "items": ["Healing Spray", "Nano-Med"]
+      }
+    },
+    {
+      "dungeon_id": "cargo_sprawl",
+      "name": "Cargo Sprawl",
+      "description": "A derelict freighter is stuffed with crates and suspicious heat signatures.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "loading_bay",
+          "intro": "A heavy lift groans. Smugglers scramble for cover.",
+          "enemies": [
+            { "name": "Smuggler", "hp": 26, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Smuggler", "hp": 26, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Smuggler", "hp": 26, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "cargo_maze",
+          "intro": "Stacks of crates form a maze. Laser sights flicker in the dark.",
+          "enemies": [
+            { "name": "Crate Stalker", "hp": 34, "ac": 13, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "vault_lock",
+          "intro": "A sealed container hisses. The boss steps out, fully armored.",
+          "enemies": [
+            { "name": "Freighter Warden", "hp": 84, "ac": 15, "attack_bonus": 6, "damage_die": "1d10", "damage_bonus": 2, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "cargo_cache",
+          "intro": "A secure crate pops open. A sentry hums to life.",
+          "enemies": [
+            { "name": "Crate Sentinel", "hp": 40, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ],
+          "rewards": {
+            "currency": 70,
+            "xp": 45,
+            "items": ["Healing Spray"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 165,
+        "xp": 135,
+        "items": ["Healing Spray", "Energy Bar"]
+      }
+    },
+    {
+      "dungeon_id": "cryoship",
+      "name": "Cryoship Vault",
+      "description": "Frost crawls across the hull. The cryopods are still humming.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "frost_hall",
+          "intro": "Your breath fogs instantly. Ice cracks underfoot.",
+          "enemies": [
+            { "name": "Cryo Sentinel", "hp": 30, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 },
+            { "name": "Cryo Sentinel", "hp": 30, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "pod_bay",
+          "intro": "Pods thrum with cold light. A frozen figure wakes.",
+          "enemies": [
+            { "name": "Icebound Marauder", "hp": 36, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "core_chill",
+          "intro": "The reactor is iced over. Something huge moves inside it.",
+          "enemies": [
+            { "name": "Cryo Behemoth", "hp": 90, "ac": 15, "attack_bonus": 7, "damage_die": "1d10", "damage_bonus": 3, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "frost_cache",
+          "intro": "Frosted lockers crack open. A drone stands between you and supplies.",
+          "enemies": [
+            { "name": "Frost Drone", "hp": 38, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ],
+          "rewards": {
+            "currency": 80,
+            "xp": 55,
+            "items": ["Nano-Med Gel"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 175,
+        "xp": 145,
+        "items": ["Nano-Med Gel", "Stim Pack", "Plasma Blade"]
+      }
+    }
+  ]
+}

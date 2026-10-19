@@ -113,3 +113,10 @@ The [review record](SETUP_REVIEW.md) separates checks performed on this snapshot
 from integrations that need your own live accounts. The scripts in `scripts/`
 are for checking and packaging the clean download; they are not an installer for
 all 32 packages.
+
+## A shared browser world
+
+[Commons game](commons-game/README.md) runs independently of the chat UI. It includes
+a new main house and garden, illustrated adventures, game mechanics and optional
+AI access through [the Commons connector](hearth-commons/README.md). Start with
+its Python installation steps.

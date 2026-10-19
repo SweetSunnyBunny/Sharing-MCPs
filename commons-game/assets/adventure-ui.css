@@ -1,0 +1,60 @@
+/* A travel journal: parchment, plum ink and worn brass beside the room art. */
+#adventure-open,#pets-open{position:fixed;left:14px;top:14px;z-index:70;background:#f3e7d3;color:#513744;border:1px solid #b89a6b;border-radius:6px 14px 14px 6px;padding:10px 16px;font:600 14px Georgia,serif;cursor:pointer;box-shadow:0 3px 15px #20151f33}
+#pets-open{left:122px;border-radius:14px}
+#pet-status{position:fixed;left:14px;top:62px;z-index:90;max-width:min(420px,calc(100vw - 28px));padding:9px 13px;border-radius:9px;background:#f3e7d3;color:#513744;font:14px/1.4 system-ui;box-shadow:0 3px 15px #20151f33;pointer-events:none}
+#pet-status:empty{display:none}
+#adventure-panel{--ink:#45343e;--muted:#736253;--line:#cbb79b;--plum:#674458;position:fixed;inset:5vh max(22px,calc((100vw - 1080px)/2));z-index:120;background:linear-gradient(115deg,#fbf4e7,#efe1ca);color:var(--ink);border:1px solid #b79a6b;border-radius:16px;box-shadow:0 22px 90px #21131d80,0 0 0 6px #f5e9d226;display:none;flex-direction:column;font:15px/1.55 system-ui;overflow:hidden;color-scheme:light}
+#adventure-panel *{box-sizing:border-box}
+#adventure-panel header{display:flex;align-items:center;gap:18px;padding:22px 28px;border-bottom:1px solid var(--line);background:#fff8eb80;flex-shrink:0}
+#adventure-panel h2{margin:0;font:30px Georgia,serif;color:var(--ink)}
+#adventure-stats{font-size:13px;color:var(--muted)}
+#adventure-panel header button{margin-left:auto}
+#adventure-tabs{display:flex;gap:5px;overflow:auto;padding:12px 22px;border-bottom:1px solid var(--line);flex-shrink:0;scrollbar-width:thin}
+#adventure-panel button{font:inherit;background:#faf3e6;border:1px solid var(--line);color:var(--plum);border-radius:8px;padding:8px 13px;cursor:pointer;transition:box-shadow .12s}
+#adventure-tabs button{white-space:nowrap;border-color:transparent;background:transparent;font-size:14px}
+#adventure-tabs button[aria-selected=true]{background:var(--plum);color:#fff6e7;box-shadow:0 2px 6px #51374420}
+#adventure-panel button:disabled{opacity:.5;cursor:default}
+#adventure-panel button:hover:not(:disabled){background:#e8d8bd}
+#adventure-tabs button[aria-selected=true]:hover{background:#513744}
+#adventure-panel :focus-visible,#adventure-open:focus-visible,#pets-open:focus-visible{outline:3px solid #8b5979;outline-offset:3px}
+#adventure-content{padding:8px 28px 26px;overflow:auto;overscroll-behavior:contain;flex:1;min-height:0;scrollbar-color:#b99d85 transparent}
+#adventure-content h3{font:24px Georgia,serif;color:var(--ink);margin:24px 0 12px}
+#adventure-content p{white-space:pre-wrap;margin:8px 0 12px;color:var(--muted)}
+#adventure-content .adv-card{padding:17px 19px;margin:12px 0;border:1px solid #d6c6ae;border-radius:10px;background:#fffaf080;box-shadow:0 2px 4px #5b403506;overflow-wrap:anywhere}
+#adventure-content .adv-card strong{font:600 18px Georgia,serif;color:#513744}
+#adventure-content .adv-item-art{float:left;width:80px;height:80px;object-fit:contain;image-rendering:pixelated;margin:0 16px 10px 0}
+#adventure-content .adv-companion-icon{float:left;display:grid;place-items:center;width:80px;height:80px;margin:0 16px 10px 0;font:46px "Segoe UI Emoji",sans-serif}
+#adventure-content .adv-companion-help{clear:both;padding-top:4px;font-size:14px;color:#513744}
+#adventure-content .adv-card::after{content:"";display:block;clear:both}
+#adventure-content .adv-card>button{margin:5px 7px 0 0}
+#adventure-content .adv-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+#adventure-content .adv-meter{clear:both;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:7px 0;color:var(--ink);font-size:14px}
+#adventure-content .adv-meter span{min-width:170px}
+#adventure-content .adv-meter progress{width:min(230px,100%);height:12px;accent-color:#936849}
+#adventure-content .adv-meter-health progress{accent-color:#617844}
+#adventure-content .adv-meter[data-condition="0"] progress,#adventure-content .adv-meter[data-health="0"] progress{accent-color:#a34847}
+#adventure-content .adv-servings,#adventure-content .adv-repair-needs,#adventure-content .adv-care-note{clear:both;font-size:14px}
+#adventure-content .adv-care-choice{display:block;clear:both;margin-top:8px;font-size:14px}
+#adventure-content .adv-release-confirm{clear:both;margin-top:12px;padding:12px;border:1px solid #b18571;border-radius:8px;background:#f7e7d8}
+#adventure-content .adv-release-confirm button{margin:4px 8px 0 0}
+#adventure-content .adv-terminal-label{display:flex;flex-direction:column;align-items:flex-start;clear:both;gap:2px;margin-top:14px;font-size:14px}
+#adventure-content .adv-terminal-label select{width:100%}
+#adventure-content .adv-terminal-label input{width:180px}
+#adventure-content .adv-terminal-balance{clear:both;padding-top:6px;color:var(--ink)}
+#adventure-content .adv-terminal-intel{display:grid;grid-template-columns:minmax(100px,1fr) minmax(0,3fr);gap:7px 14px;margin:16px 0 0;font-size:14px}
+#adventure-content .adv-terminal-intel dt{font-weight:600;color:var(--ink)}
+#adventure-content .adv-terminal-intel dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted)}
+#adventure-content .adv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:12px;margin:16px 0}
+#adventure-content .adv-grid .adv-card{margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+#adventure-content .adv-grid .adv-card>button{margin-top:auto}
+#adventure-content input,#adventure-content select,#adventure-content textarea{font:inherit;background:#fffaf2;color:var(--ink);border:1px solid #bca78d;border-radius:7px;padding:9px;max-width:100%;margin:4px 5px 4px 0}
+#adventure-content input::placeholder,#adventure-content textarea::placeholder{color:#827367}
+#adventure-content textarea{width:100%;min-height:90px;resize:vertical}
+#adventure-content audio{display:block;max-width:100%;margin-top:14px}
+#adventure-status{padding:12px 28px;background:#e8d8bf;color:#593d49;max-height:120px;overflow:auto;white-space:pre-wrap;border-top:1px solid var(--line);flex-shrink:0}
+#adventure-status:empty{display:none}
+/* Keep the room name beneath the two corner controls on smaller screens. */
+@media(max-width:850px){#title{left:16px;top:62px;width:calc(100% - 180px);transform:none;line-height:1.5;letter-spacing:.12em}#bar{left:16px;top:110px;width:calc(100% - 180px);transform:none;text-align:left;line-height:1.5}}
+@media(max-width:650px){#adventure-panel{inset:54px 8px 8px;border-radius:12px}#adventure-panel header{padding:16px;gap:8px;flex-wrap:wrap}#adventure-panel h2{font-size:25px;flex:1}#adventure-stats{order:3;width:100%}#adventure-panel header button{font-size:13px}#adventure-content{padding:4px 16px 20px}#adventure-tabs{padding:9px}#adventure-open{top:8px;left:8px}#adventure-content .adv-card{padding:14px}#adventure-status{padding:10px 16px}}
+@media(prefers-reduced-motion:reduce){#adventure-panel button{transition:none}}
+@media(max-width:650px){#pets-open{top:8px;left:116px}#pet-status{left:8px;top:56px}}

@@ -1,0 +1,323 @@
+{
+  "description": "Achievement system - unlock titles and rewards for milestones",
+
+  "achievements": {
+    "first_blood": {
+      "name": "First Blood",
+      "description": "Defeat your first creature",
+      "requirement": {"type": "hunts", "count": 1},
+      "reward": {"xp": 25},
+      "title": null,
+      "hidden": false
+    },
+    "hunter": {
+      "name": "Hunter",
+      "description": "Defeat 10 creatures",
+      "requirement": {"type": "hunts", "count": 10},
+      "reward": {"xp": 100},
+      "title": "Hunter",
+      "hidden": false
+    },
+    "big_game_hunter": {
+      "name": "Big Game Hunter",
+      "description": "Defeat 50 creatures",
+      "requirement": {"type": "hunts", "count": 50},
+      "reward": {"xp": 500},
+      "title": "Big Game Hunter",
+      "hidden": false
+    },
+    "legendary_hunter": {
+      "name": "Legendary Hunter",
+      "description": "Defeat 100 creatures",
+      "requirement": {"type": "hunts", "count": 100},
+      "reward": {"xp": 1000},
+      "title": "Legendary Hunter",
+      "hidden": false
+    },
+    "errand_runner": {
+      "name": "Errand Runner",
+      "description": "Complete your first quest",
+      "requirement": {"type": "quests", "count": 1},
+      "reward": {"xp": 25},
+      "title": null,
+      "hidden": false
+    },
+    "adventurer": {
+      "name": "Adventurer",
+      "description": "Complete 10 quests",
+      "requirement": {"type": "quests", "count": 10},
+      "reward": {"xp": 150},
+      "title": "Adventurer",
+      "hidden": false
+    },
+    "veteran_adventurer": {
+      "name": "Veteran Adventurer",
+      "description": "Complete 25 quests",
+      "requirement": {"type": "quests", "count": 25},
+      "reward": {"xp": 400},
+      "title": "Veteran",
+      "hidden": false
+    },
+    "hero": {
+      "name": "Hero",
+      "description": "Complete 50 quests",
+      "requirement": {"type": "quests", "count": 50},
+      "reward": {"xp": 750},
+      "title": "Hero",
+      "hidden": false
+    },
+    "legend": {
+      "name": "Legend",
+      "description": "Complete 100 quests",
+      "requirement": {"type": "quests", "count": 100},
+      "reward": {"xp": 1500},
+      "title": "Legend",
+      "hidden": false
+    },
+    "apprentice_crafter": {
+      "name": "Apprentice Crafter",
+      "description": "Craft your first item",
+      "requirement": {"type": "crafts", "count": 1},
+      "reward": {"xp": 25},
+      "title": null,
+      "hidden": false
+    },
+    "journeyman_crafter": {
+      "name": "Journeyman Crafter",
+      "description": "Craft 10 items",
+      "requirement": {"type": "crafts", "count": 10},
+      "reward": {"xp": 100},
+      "title": "Crafter",
+      "hidden": false
+    },
+    "master_crafter": {
+      "name": "Master Crafter",
+      "description": "Craft 50 items",
+      "requirement": {"type": "crafts", "count": 50},
+      "reward": {"xp": 500},
+      "title": "Master Crafter",
+      "hidden": false
+    },
+    "gatherer": {
+      "name": "Gatherer",
+      "description": "Gather resources 25 times",
+      "requirement": {"type": "gathers", "count": 25},
+      "reward": {"xp": 100},
+      "title": "Gatherer",
+      "hidden": false
+    },
+    "forager": {
+      "name": "Expert Forager",
+      "description": "Gather resources 100 times",
+      "requirement": {"type": "gathers", "count": 100},
+      "reward": {"xp": 400},
+      "title": "Forager",
+      "hidden": false
+    },
+    "first_catch": {
+      "name": "First Catch",
+      "description": "Catch your first fish",
+      "requirement": {"type": "fish_caught", "count": 1},
+      "reward": {"xp": 25},
+      "title": null,
+      "hidden": false
+    },
+    "angler": {
+      "name": "Angler",
+      "description": "Catch 25 fish",
+      "requirement": {"type": "fish_caught", "count": 25},
+      "reward": {"xp": 150},
+      "title": "Angler",
+      "hidden": false
+    },
+    "master_angler": {
+      "name": "Master Angler",
+      "description": "Catch 100 fish",
+      "requirement": {"type": "fish_caught", "count": 100},
+      "reward": {"xp": 500},
+      "title": "Master Angler",
+      "hidden": false
+    },
+    "lucky_streak": {
+      "name": "Lucky Streak",
+      "description": "Win 10 gambles",
+      "requirement": {"type": "gambles_won", "count": 10},
+      "reward": {"xp": 100},
+      "title": "Lucky",
+      "hidden": false
+    },
+    "high_roller": {
+      "name": "High Roller",
+      "description": "Win 50 gambles",
+      "requirement": {"type": "gambles_won", "count": 50},
+      "reward": {"xp": 300},
+      "title": "High Roller",
+      "hidden": false
+    },
+    "survivor": {
+      "name": "Survivor",
+      "description": "Get knocked out and recover",
+      "requirement": {"type": "knockouts", "count": 1},
+      "reward": {"xp": 50},
+      "title": null,
+      "hidden": false
+    },
+    "resilient": {
+      "name": "Resilient",
+      "description": "Survive being knocked out 5 times",
+      "requirement": {"type": "knockouts", "count": 5},
+      "reward": {"xp": 150},
+      "title": "Resilient",
+      "hidden": false
+    },
+    "world_traveler": {
+      "name": "World Traveler",
+      "description": "Visit all three worlds",
+      "requirement": {"type": "worlds_visited", "count": 3},
+      "reward": {"xp": 200},
+      "title": "World Traveler",
+      "hidden": false
+    },
+    "night_owl": {
+      "name": "Night Owl",
+      "description": "Complete 10 actions during night time",
+      "requirement": {"type": "night_actions", "count": 10},
+      "reward": {"xp": 100},
+      "title": "Night Owl",
+      "hidden": true
+    },
+    "early_bird": {
+      "name": "Early Bird",
+      "description": "Complete 10 actions during dawn",
+      "requirement": {"type": "dawn_actions", "count": 10},
+      "reward": {"xp": 100},
+      "title": "Early Bird",
+      "hidden": true
+    },
+    "romantic": {
+      "name": "Romantic",
+      "description": "Reach 'romantic' status with an NPC",
+      "requirement": {"type": "max_relationship", "level": "romantic"},
+      "reward": {"xp": 200},
+      "title": "Romantic",
+      "hidden": true
+    },
+    "heartbreaker": {
+      "name": "Heartbreaker",
+      "description": "Reach 'smitten' status with 3 different NPCs",
+      "requirement": {"type": "smitten_count", "count": 3},
+      "reward": {"xp": 500},
+      "title": "Heartbreaker",
+      "hidden": true
+    },
+    "companion_bond": {
+      "name": "True Bond",
+      "description": "Reach 100% loyalty with a companion",
+      "requirement": {"type": "max_companion_loyalty", "count": 100},
+      "reward": {"xp": 300},
+      "title": "Beastmaster",
+      "hidden": false
+    },
+    "wealthy": {
+      "name": "Wealthy",
+      "description": "Accumulate 1000 total currency",
+      "requirement": {"type": "total_earned", "count": 1000},
+      "reward": {"xp": 200},
+      "title": "Wealthy",
+      "hidden": false
+    },
+    "tycoon": {
+      "name": "Tycoon",
+      "description": "Accumulate 10000 total currency",
+      "requirement": {"type": "total_earned", "count": 10000},
+      "reward": {"xp": 1000},
+      "title": "Tycoon",
+      "hidden": false
+    }
+  },
+
+  "level_thresholds": {
+    "1": 0, "2": 100, "3": 250, "4": 450, "5": 700,
+    "6": 1000, "7": 1400, "8": 1900, "9": 2500, "10": 3200,
+    "11": 4000, "12": 5000, "13": 6200, "14": 7600, "15": 9200,
+    "16": 11000, "17": 13000, "18": 15500, "19": 18500, "20": 22000,
+    "21": 26000, "22": 30500, "23": 35500, "24": 41000, "25": 47000,
+    "26": 53500, "27": 60500, "28": 68000, "29": 76000, "30": 85000,
+    "31": 95000, "32": 106000, "33": 118000, "34": 131000, "35": 145000,
+    "36": 160000, "37": 176000, "38": 193000, "39": 211000, "40": 230000,
+    "41": 250000, "42": 272000, "43": 295000, "44": 320000, "45": 347000,
+    "46": 376000, "47": 407000, "48": 440000, "49": 475000, "50": 512000,
+    "51": 552000, "52": 595000, "53": 641000, "54": 690000, "55": 742000,
+    "56": 797000, "57": 855000, "58": 917000, "59": 982000, "60": 1050000,
+    "61": 1122000, "62": 1198000, "63": 1278000, "64": 1362000, "65": 1450000,
+    "66": 1543000, "67": 1641000, "68": 1744000, "69": 1852000, "70": 1965000,
+    "71": 2084000, "72": 2209000, "73": 2340000, "74": 2478000, "75": 2623000,
+    "76": 2775000, "77": 2935000, "78": 3103000, "79": 3279000, "80": 3464000,
+    "81": 3658000, "82": 3862000, "83": 4076000, "84": 4301000, "85": 4537000,
+    "86": 4785000, "87": 5045000, "88": 5318000, "89": 5605000, "90": 5906000,
+    "91": 6222000, "92": 6554000, "93": 6903000, "94": 7270000, "95": 7656000,
+    "96": 8062000, "97": 8489000, "98": 8938000, "99": 9410000, "100": 9906000,
+    "101": 10427000, "102": 10975000, "103": 11551000, "104": 12156000, "105": 12792000,
+    "106": 13460000, "107": 14162000, "108": 14899000, "109": 15673000, "110": 16486000,
+    "111": 17340000, "112": 18237000, "113": 19179000, "114": 20168000, "115": 21207000,
+    "116": 22298000, "117": 23443000, "118": 24646000, "119": 25909000, "120": 27235000,
+    "121": 28627000, "122": 30089000, "123": 31624000, "124": 33236000, "125": 34928000,
+    "126": 36705000, "127": 38571000, "128": 40530000, "129": 42587000, "130": 44747000,
+    "131": 47015000, "132": 49396000, "133": 51896000, "134": 54521000, "135": 57278000,
+    "136": 60172000, "137": 63211000, "138": 66402000, "139": 69752000, "140": 73270000,
+    "141": 76964000, "142": 80842000, "143": 84915000, "144": 89191000, "145": 93681000,
+    "146": 98396000, "147": 103346000, "148": 108544000, "149": 114001000, "150": 119731000,
+    "151": 125748000, "152": 132066000, "153": 138699000, "154": 145664000, "155": 152978000,
+    "156": 160657000, "157": 168720000, "158": 177186000, "159": 186076000, "160": 195410000,
+    "161": 205211000, "162": 215501000, "163": 226306000, "164": 237652000, "165": 249565000,
+    "166": 262073000, "167": 275207000, "168": 288998000, "169": 303478000, "170": 318682000,
+    "171": 334646000, "172": 351409000, "173": 369009000, "174": 387490000, "175": 406895000,
+    "176": 427270000, "177": 448664000, "178": 471127000, "179": 494714000, "180": 519480000,
+    "181": 545484000, "182": 572788000, "183": 601458000, "184": 631561000, "185": 663169000,
+    "186": 696358000, "187": 731206000, "188": 767796000, "189": 806216000, "190": 846557000,
+    "191": 888915000, "192": 933391000, "193": 980091000, "194": 1029126000, "195": 1080612000,
+    "196": 1134673000, "197": 1191437000, "198": 1251039000, "199": 1313621000, "200": 1379332000
+  },
+
+  "level_stat_bonuses": {
+    "_comment": "Cumulative bonuses calculated based on level. Every 5 levels = +1 attack, every 10 levels = +1 damage, every 5 levels = +5 max HP",
+    "attack_per_5_levels": 1,
+    "damage_per_10_levels": 1,
+    "hp_per_5_levels": 5,
+    "gather_bonus_per_20_levels": 1,
+    "crit_chance_per_25_levels": 1
+  },
+
+  "level_rewards": {
+    "2": {"max_hp_bonus": 5, "message": "You feel stronger! +5 Max HP"},
+    "5": {"max_hp_bonus": 5, "title": "Novice", "message": "Level 5! +1 Attack, +5 Max HP, title: Novice"},
+    "10": {"max_hp_bonus": 5, "title": "Apprentice", "message": "Level 10! +1 Damage, +5 Max HP, title: Apprentice"},
+    "15": {"max_hp_bonus": 5, "message": "Level 15! +1 Attack, +5 Max HP"},
+    "20": {"max_hp_bonus": 5, "title": "Journeyman", "message": "Level 20! +1 Attack, +1 Damage, +1 Gather, +5 Max HP, title: Journeyman"},
+    "25": {"max_hp_bonus": 5, "message": "Level 25! +1 Attack, +1% Crit, +5 Max HP"},
+    "30": {"max_hp_bonus": 5, "title": "Adept", "message": "Level 30! +1 Attack, +1 Damage, +5 Max HP, title: Adept"},
+    "40": {"max_hp_bonus": 5, "title": "Expert", "message": "Level 40! +1 Attack, +1 Damage, +1 Gather, +5 Max HP, title: Expert"},
+    "50": {"max_hp_bonus": 10, "title": "Veteran", "message": "Level 50! Major milestone! +1 Attack, +1 Damage, +2% Crit, +10 Max HP, title: Veteran"},
+    "60": {"max_hp_bonus": 5, "title": "Elite", "message": "Level 60! +1 Attack, +1 Damage, +1 Gather, +5 Max HP, title: Elite"},
+    "75": {"max_hp_bonus": 10, "title": "Champion", "message": "Level 75! +1 Attack, +3% Crit, +10 Max HP, title: Champion"},
+    "100": {"max_hp_bonus": 20, "title": "Hero", "message": "Level 100! HERO STATUS! +2 Attack, +2 Damage, +2 Gather, +4% Crit, +20 Max HP, title: Hero"},
+    "125": {"max_hp_bonus": 10, "title": "Legend", "message": "Level 125! +1 Attack, +1 Damage, +5% Crit, +10 Max HP, title: Legend"},
+    "150": {"max_hp_bonus": 20, "title": "Mythic", "message": "Level 150! MYTHIC STATUS! +2 Attack, +2 Damage, +2 Gather, +6% Crit, +20 Max HP, title: Mythic"},
+    "175": {"max_hp_bonus": 15, "title": "Immortal", "message": "Level 175! +1 Attack, +1 Damage, +7% Crit, +15 Max HP, title: Immortal"},
+    "200": {"max_hp_bonus": 50, "title": "Godlike", "message": "LEVEL 200! MAXIMUM POWER! +2 Attack, +2 Damage, +8% Crit, +50 Max HP, title: Godlike"}
+  },
+
+  "xp_rewards": {
+    "quest_easy": 25,
+    "quest_medium": 50,
+    "quest_hard": 100,
+    "hunt_success": 15,
+    "hunt_critical": 30,
+    "gather_success": 5,
+    "gather_critical": 15,
+    "craft_item": 10,
+    "fish_catch": 10,
+    "fish_rare": 25,
+    "gamble_win": 5
+  }
+}

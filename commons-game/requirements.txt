@@ -1,0 +1,2 @@
+python-dotenv>=1.0,<2
+tzdata>=2024.1

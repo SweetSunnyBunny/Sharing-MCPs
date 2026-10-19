@@ -1,0 +1,674 @@
+{
+  "id": "data-nexus",
+  "name": "Data Nexus",
+  "subtitle": "The Black Serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "data-nexus",
+  "music": {
+    "region": "black_serenity"
+  },
+  "sky": "#111625",
+  "legend": {
+    ".": {
+      "name": "deck",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "bulkhead",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.0,
+    "y": 18.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Scavengers Reach",
+      "x": 18.5,
+      "y": 10.25,
+      "w": 3.0,
+      "h": 2.0,
+      "to": "scavengers-reach",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "note": "This transport route in the central middle part of the room leads to Scavengers Reach. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "teleporter"
+    },
+    {
+      "id": "travel-2",
+      "label": "The Crossroads",
+      "x": 22.0,
+      "y": 14.5,
+      "w": 3.0,
+      "h": 2.0,
+      "to": "the-crossroads",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "note": "This transport route in the central middle part of the room leads to The Crossroads. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "teleporter"
+    },
+    {
+      "id": "seat-1",
+      "label": "station chair",
+      "x": 6.2,
+      "y": 12.62,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 7.2,
+            "y": 13.12,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central left part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-2",
+      "label": "station chair",
+      "x": 9.8,
+      "y": 12.62,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 10.8,
+            "y": 13.12,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central left part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-3",
+      "label": "station chair",
+      "x": 6.2,
+      "y": 16.54,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 7.2,
+            "y": 17.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central left part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-4",
+      "label": "station chair",
+      "x": 9.8,
+      "y": 16.54,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 10.8,
+            "y": 17.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central left part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-5",
+      "label": "station chair",
+      "x": 29.4,
+      "y": 17.94,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 30.4,
+            "y": 18.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-6",
+      "label": "station chair",
+      "x": 33.0,
+      "y": 17.94,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 34.0,
+            "y": 18.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-7",
+      "label": "station chair",
+      "x": 34.6,
+      "y": 10.38,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 35.6,
+            "y": 10.88,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-8",
+      "label": "station chair",
+      "x": 19.0,
+      "y": 6.18,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 20.0,
+            "y": 6.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the upper middle part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-9",
+      "label": "station chair",
+      "x": 28.6,
+      "y": 10.38,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.6,
+            "y": 10.88,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-10",
+      "label": "station chair",
+      "x": 31.0,
+      "y": 10.38,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 32.0,
+            "y": 10.88,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-11",
+      "label": "station chair",
+      "x": 29.0,
+      "y": 12.9,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 30.0,
+            "y": 13.4,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-12",
+      "label": "station chair",
+      "x": 29.8,
+      "y": 14.02,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 30.8,
+            "y": 14.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-13",
+      "label": "station chair",
+      "x": 32.2,
+      "y": 13.74,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 33.2,
+            "y": 14.24,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the central right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-14",
+      "label": "station chair",
+      "x": 2.2,
+      "y": 19.62,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 3.2,
+            "y": 20.12,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the lower left part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-15",
+      "label": "station chair",
+      "x": 1.0,
+      "y": 21.02,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 2.0,
+            "y": 21.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the lower left part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-16",
+      "label": "station chair",
+      "x": 3.0,
+      "y": 21.86,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 4.0,
+            "y": 22.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the lower left part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-17",
+      "label": "station chair",
+      "x": 29.8,
+      "y": 21.58,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 30.8,
+            "y": 22.08,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the lower right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-18",
+      "label": "station chair",
+      "x": 31.0,
+      "y": 21.86,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 32.0,
+            "y": 22.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the lower right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-19",
+      "label": "station chair",
+      "x": 28.75,
+      "y": 22.0,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.75,
+            "y": 22.5,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Station chair, in the lower right part of the room, beside the blue-lit computer workstations. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "x": 23.0,
+      "y": 11.5,
+      "w": 2.0,
+      "h": 3.0,
+      "id": "door-mujvof4a",
+      "label": "new doorway",
+      "note": "This transport route in the central middle part of the room leads to Terraforming Station. Walk into the marked threshold to take that route.",
+      "invisible": true,
+      "fishable": false,
+      "to": "terraforming-station",
+      "arriveAt": {
+        "x": 13.5,
+        "y": 13.0
+      },
+      "kind": "teleporter"
+    },
+    {
+      "x": 18.0,
+      "y": 25.5,
+      "w": 3.75,
+      "h": 4.5,
+      "id": "door-mujvq3oi",
+      "label": "Back to Neon Underground",
+      "note": "This passage in the lower middle part of the room leads to Neon Underground. Walk into the marked threshold to take that route.",
+      "invisible": true,
+      "fishable": false,
+      "to": "neon-underground",
+      "arriveAt": {
+        "x": 13.5,
+        "y": 13.0
+      },
+      "kind": "door"
+    },
+    {
+      "x": 10.25,
+      "y": 21.25,
+      "w": 3.75,
+      "h": 4.5,
+      "id": "door-mujvruun",
+      "label": "Lower Decks",
+      "note": "This passage in the lower left part of the room leads to Lower Decks. Walk into the marked threshold to take that route.",
+      "invisible": true,
+      "fishable": false,
+      "to": "lower-decks",
+      "arriveAt": {
+        "x": 13.5,
+        "y": 13.0
+      },
+      "kind": "door"
+    },
+    {
+      "id": "terminal-northern-nexus-display",
+      "label": "Northern nexus display",
+      "kind": "terminal",
+      "x": 19,
+      "y": 5,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "game_terminal": "Public Terminal",
+      "note": "A display reading Travel, Explore, Connect stands above the central transport platform. This console connects to the Public Terminal network. Open it to recover cached data, read character dossiers, or transfer credits."
+    },
+    {
+      "id": "terminal-western-console-bank",
+      "label": "Western console bank",
+      "kind": "terminal",
+      "x": 6,
+      "y": 14,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "game_terminal": "Public Terminal",
+      "note": "Several screens, keyboards and station chairs fill the left-hand work bays. This console connects to the Public Terminal network. Open it to recover cached data, read character dossiers, or transfer credits."
+    },
+    {
+      "id": "terminal-eastern-server-and-console-bays",
+      "label": "Eastern server and console bays",
+      "kind": "terminal",
+      "x": 33,
+      "y": 17,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "game_terminal": "Corporate Database",
+      "note": "Dark server cabinets and blue screens line the right-hand side. This console connects to the Corporate Database network. Open it to recover cached data, read character dossiers, or transfer credits."
+    }
+  ],
+  "npcs": [],
+  "backdrop": "/assets/adventure/backgrounds/data_nexus.png?v=84c401eef3",
+  "description": "The Data Nexus is a dense ring of computer workstations around a glowing blue central transport circle. Banks of screens, server cabinets and chairs occupy the alcoves on both sides, picked out by blue and violet strip lights. A northern display reads Travel, Explore, Connect, while a sign beside the central platform lists destinations. Smaller screens show geometric diagrams, and a slanted holographic table glows blue in the upper-right bay. Dark metal floor panels leave narrow walkways between the console groups. Concentric rings and a luminous beam brighten the centre, with purple seating alcoves tucked into the lower corners.",
+  "landmarks": [
+    {
+      "id": "central-blue-transport-circle",
+      "label": "Central blue transport circle",
+      "kind": "transport platform",
+      "description": "Concentric blue rings form a luminous circular platform in the centre of the room.",
+      "x": 20,
+      "y": 14
+    },
+    {
+      "id": "northern-nexus-display",
+      "label": "Northern nexus display",
+      "kind": "terminal",
+      "description": "A display reading Travel, Explore, Connect stands above the central transport platform.",
+      "x": 20,
+      "y": 5
+    },
+    {
+      "id": "western-console-bank",
+      "label": "Western console bank",
+      "kind": "terminal",
+      "description": "Several screens, keyboards and station chairs fill the left-hand work bays.",
+      "x": 7,
+      "y": 14
+    },
+    {
+      "id": "eastern-holographic-table",
+      "label": "Eastern holographic table",
+      "kind": "scenery",
+      "description": "Circular blue holographic diagrams glow across a slanted projection table in the upper-right alcove.",
+      "x": 31,
+      "y": 7
+    },
+    {
+      "id": "eastern-server-and-console-bays",
+      "label": "Eastern server and console bays",
+      "kind": "terminal",
+      "description": "Dark server cabinets and blue screens line the right-hand side.",
+      "x": 34,
+      "y": 17
+    },
+    {
+      "id": "lower-nexus-entrance",
+      "label": "Lower nexus entrance",
+      "kind": "sign",
+      "description": "A lit Data Nexus sign marks the painted lower entrance.",
+      "x": 20,
+      "y": 25
+    }
+  ]
+}

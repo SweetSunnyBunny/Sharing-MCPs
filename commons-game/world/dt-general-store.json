@@ -1,0 +1,166 @@
+{
+  "id": "dt-general-store",
+  "name": "General Store",
+  "subtitle": "Supplies for the rugged frontier life.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/general_store.png",
+  "region": "dusty_trails",
+  "game_location": "general-store",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "############.###################################",
+    "############.###################################",
+    "###########....#################################",
+    "#########........###############################",
+    "##########..........############################",
+    "########..............##########################",
+    "########...............#########################",
+    "#########...............########################",
+    "##########..................######.#############",
+    "###########...................###...############",
+    "############...................#...#############",
+    "###############....................#############",
+    "################.....................###########",
+    "##################.................##.#########.",
+    "###################...............#####.#######.",
+    "##################..............############.#..",
+    "##################.............###########......",
+    "##################..............##########......",
+    "#################...............##########......"
+  ],
+  "spawn": {
+    "x": 21.0,
+    "y": 17.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Town Square",
+      "x": 18.984375,
+      "y": 30.46875,
+      "w": 5.34375,
+      "h": 2.75,
+      "to": "dt-town-square",
+      "arriveAt": {
+        "x": 14.0,
+        "y": 21.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Town Square. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "npc-katie",
+      "label": "Katie",
+      "game_npc": "katie",
+      "x": 23.5,
+      "y": 16.0,
+      "w": 1.2,
+      "h": 2,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Katie.",
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "checkerboard stool",
+      "x": 40.18,
+      "y": 31.4,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 41.28,
+            "y": 31.9,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Checkerboard stool, in the lower right part of the room, beside the stocked timber general store. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "katie",
+      "name": "Katie",
+      "role": "Shopkeeper"
+    }
+  ],
+  "description": "The frontier general store is a dense arrangement of wooden shelves, a long counter and barrels of supplies. Jars, tins, parcels and bottles fill the upper and left walls; hanging bundles and stacked boxes occupy the stock area behind the counter. A small rug brightens the open floor. In the lower foreground, barrels display colourful produce and dry goods, while crates marked Ammo stand to the right of the counter. A small checkerboard and its stool sit nearby. Oil lamps give the timber interior an amber glow, and a rear opening is marked Storage.",
+  "landmarks": [
+    {
+      "id": "general-store-counter",
+      "label": "General-store counter",
+      "kind": "counter",
+      "description": "A long wooden counter with papers and small goods divides the customer floor from the shelves.",
+      "x": 27,
+      "y": 16
+    },
+    {
+      "id": "produce-and-dry-goods-barrels",
+      "label": "Produce and dry-goods barrels",
+      "kind": "storage",
+      "description": "Open barrels of colourful produce and dry goods crowd the lower-left foreground.",
+      "x": 11,
+      "y": 27
+    },
+    {
+      "id": "ammunition-crates",
+      "label": "Ammunition crates",
+      "kind": "storage",
+      "description": "Wooden crates marked Ammo are stacked beside the counter.",
+      "x": 34,
+      "y": 24
+    },
+    {
+      "id": "rear-storage-doorway",
+      "label": "Rear storage doorway",
+      "kind": "scenery",
+      "description": "An opening behind the counter carries a Storage sign; it is part of the painted shop interior.",
+      "x": 27,
+      "y": 7
+    },
+    {
+      "id": "checkerboard-table",
+      "label": "Checkerboard table",
+      "kind": "table",
+      "description": "A small checkerboard is painted near the lower-right edge beside an authored stool.",
+      "x": 37,
+      "y": 30
+    }
+  ]
+}

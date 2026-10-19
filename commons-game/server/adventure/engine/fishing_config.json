@@ -1,0 +1,168 @@
+{
+  "description": "Fishing mini-game configuration",
+
+  "fishing_spots": {
+    "heros_journey": {
+      "enchanted-forest": {
+        "description": "A peaceful stream runs through the forest",
+        "fish": [
+          {"name": "Trout", "difficulty": 8, "value": 3, "rarity": "common", "weight": 40},
+          {"name": "Perch", "difficulty": 10, "value": 4, "rarity": "common", "weight": 30},
+          {"name": "Salmon", "difficulty": 12, "value": 6, "rarity": "uncommon", "weight": 20},
+          {"name": "Golden Carp", "difficulty": 16, "value": 15, "rarity": "rare", "weight": 8},
+          {"name": "Enchanted Koi", "difficulty": 18, "value": 30, "rarity": "rare", "weight": 2}
+        ]
+      },
+      "the-feywilds": {
+        "description": "Shimmering fey pools with mysterious fish",
+        "fish": [
+          {"name": "Pixie Fish", "difficulty": 10, "value": 5, "rarity": "common", "weight": 35},
+          {"name": "Moonfish", "difficulty": 12, "value": 8, "rarity": "uncommon", "weight": 30},
+          {"name": "Starlight Bass", "difficulty": 14, "value": 12, "rarity": "uncommon", "weight": 20},
+          {"name": "Fey Dragon Eel", "difficulty": 17, "value": 25, "rarity": "rare", "weight": 12},
+          {"name": "Prismatic Koi", "difficulty": 19, "value": 50, "rarity": "rare", "weight": 3}
+        ]
+      },
+      "wild-edge": {
+        "description": "A wild river with strong currents",
+        "fish": [
+          {"name": "Catfish", "difficulty": 9, "value": 4, "rarity": "common", "weight": 40},
+          {"name": "Bass", "difficulty": 11, "value": 5, "rarity": "common", "weight": 30},
+          {"name": "Pike", "difficulty": 13, "value": 8, "rarity": "uncommon", "weight": 20},
+          {"name": "Giant Catfish", "difficulty": 16, "value": 18, "rarity": "rare", "weight": 10}
+        ]
+      }
+    },
+    "dusty_trails": {
+      "dusty-river": {
+        "description": "A muddy river winding through the frontier",
+        "fish": [
+          {"name": "Mudcat", "difficulty": 8, "value": 2, "rarity": "common", "weight": 45},
+          {"name": "Channel Catfish", "difficulty": 10, "value": 4, "rarity": "common", "weight": 30},
+          {"name": "Largemouth Bass", "difficulty": 12, "value": 6, "rarity": "uncommon", "weight": 15},
+          {"name": "Alligator Gar", "difficulty": 15, "value": 15, "rarity": "rare", "weight": 8},
+          {"name": "Golden Sturgeon", "difficulty": 18, "value": 30, "rarity": "rare", "weight": 2}
+        ]
+      },
+      "saloon-district": {
+        "description": "An old water trough behind the saloon (don't ask)",
+        "fish": [
+          {"name": "Minnow", "difficulty": 6, "value": 1, "rarity": "common", "weight": 50},
+          {"name": "Crawdad", "difficulty": 8, "value": 2, "rarity": "common", "weight": 30},
+          {"name": "Mystery Fish", "difficulty": 14, "value": 10, "rarity": "uncommon", "weight": 15},
+          {"name": "Whiskey Bottle", "difficulty": 5, "value": 3, "rarity": "junk", "weight": 5}
+        ]
+      },
+      "canyon-overlook": {
+        "description": "A hidden spring in the canyon",
+        "fish": [
+          {"name": "Desert Trout", "difficulty": 11, "value": 5, "rarity": "common", "weight": 40},
+          {"name": "Canyon Bass", "difficulty": 13, "value": 7, "rarity": "uncommon", "weight": 30},
+          {"name": "Ghost Fish", "difficulty": 16, "value": 20, "rarity": "rare", "weight": 20},
+          {"name": "Ancient Cavefish", "difficulty": 18, "value": 35, "rarity": "rare", "weight": 10}
+        ]
+      }
+    },
+    "black_serenity": {
+      "lower-decks": {
+        "description": "Recycled water tanks in the lower decks",
+        "fish": [
+          {"name": "Synth-Fish", "difficulty": 8, "value": 3, "rarity": "common", "weight": 45},
+          {"name": "Bio-Eel", "difficulty": 11, "value": 6, "rarity": "common", "weight": 30},
+          {"name": "Mutant Guppy", "difficulty": 13, "value": 10, "rarity": "uncommon", "weight": 15},
+          {"name": "Glowing Jellyfish", "difficulty": 15, "value": 18, "rarity": "rare", "weight": 8},
+          {"name": "Nano-Leviathan", "difficulty": 18, "value": 40, "rarity": "rare", "weight": 2}
+        ]
+      },
+      "cargo-bay": {
+        "description": "Flooded cargo containers with escaped specimens",
+        "fish": [
+          {"name": "Cargo Crawler", "difficulty": 9, "value": 4, "rarity": "common", "weight": 40},
+          {"name": "Escaped Specimen", "difficulty": 12, "value": 8, "rarity": "uncommon", "weight": 30},
+          {"name": "Bioluminescent Ray", "difficulty": 14, "value": 15, "rarity": "uncommon", "weight": 20},
+          {"name": "Void Kraken Baby", "difficulty": 17, "value": 35, "rarity": "rare", "weight": 10}
+        ]
+      }
+    }
+  },
+
+  "fishing_gear": {
+    "basic_rod": {
+      "name": "Basic Fishing Rod",
+      "bonus": 1,
+      "description": "A simple rod for casual fishing"
+    },
+    "quality_rod": {
+      "name": "Quality Fishing Rod",
+      "bonus": 2,
+      "description": "A well-made rod that improves catch chance"
+    },
+    "master_rod": {
+      "name": "Master Fishing Rod",
+      "bonus": 4,
+      "description": "An expertly crafted rod for serious anglers"
+    },
+    "enchanted_rod": {
+      "name": "Enchanted Fishing Rod",
+      "bonus": 6,
+      "description": "A magical rod that attracts rare fish"
+    }
+  },
+
+  "bait": {
+    "worms": {
+      "name": "Worms",
+      "bonus": 1,
+      "uses": 5,
+      "cost": 2
+    },
+    "minnows": {
+      "name": "Live Minnows",
+      "bonus": 2,
+      "uses": 3,
+      "cost": 5
+    },
+    "magic_lure": {
+      "name": "Magic Lure",
+      "bonus": 3,
+      "rare_bonus": 5,
+      "uses": 10,
+      "cost": 15
+    }
+  },
+
+  "cooldown": 45,
+
+  "messages": {
+    "cast": [
+      "You cast your line into the water...",
+      "The line sails through the air and lands with a soft splash...",
+      "You settle in and watch the bobber...",
+      "You flick your wrist and the line arcs gracefully into the water..."
+    ],
+    "bite": [
+      "You feel a tug on the line!",
+      "Something's biting!",
+      "The bobber disappears beneath the surface!",
+      "A strong pull nearly yanks the rod from your hands!"
+    ],
+    "success": [
+      "You reel in your catch triumphantly!",
+      "After a brief struggle, you land the fish!",
+      "With a mighty heave, you pull in your prize!",
+      "The fish breaks the surface, sparkling in the light!"
+    ],
+    "fail": [
+      "The fish got away...",
+      "Your line snaps! The fish escapes.",
+      "It slips off the hook at the last moment!",
+      "Too slow! The fish spits out the bait and swims off."
+    ],
+    "nothing": [
+      "The waters are still. Nothing bites.",
+      "You wait patiently but the fish aren't interested today.",
+      "A few nibbles, but nothing takes the bait.",
+      "The fish seem to be avoiding your spot."
+    ]
+  }
+}

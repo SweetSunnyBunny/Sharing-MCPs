@@ -1,0 +1,398 @@
+{
+  "shop_name": "Dusty Trails General Store",
+  "last_restock": "2025-11-25",
+  "currency": "dollars",
+  "inventory": {
+    "firearms": {
+      "Colt Revolver": {
+        "stock": 4,
+        "max_stock": 6,
+        "price": 25.0,
+        "description": "A reliable six-shooter. Standard sidearm for any frontier traveler.",
+        "rarity": "common"
+      },
+      "Derringer": {
+        "stock": 3,
+        "max_stock": 5,
+        "price": 15.0,
+        "description": "A small, concealable two-shot pistol. Good for emergencies.",
+        "rarity": "common"
+      },
+      "Winchester Rifle": {
+        "stock": 3,
+        "max_stock": 4,
+        "price": 45.0,
+        "description": "Lever-action rifle. Accurate at range and quick to reload.",
+        "rarity": "uncommon"
+      },
+      "Double-Barrel Shotgun": {
+        "stock": 2,
+        "max_stock": 3,
+        "price": 35.0,
+        "description": "Two barrels of stopping power. Best for close encounters.",
+        "rarity": "uncommon"
+      },
+      "Revolver Ammo (20)": {
+        "stock": 30,
+        "max_stock": 50,
+        "price": 3.0,
+        "description": "Box of 20 .45 caliber rounds.",
+        "rarity": "common"
+      },
+      "Rifle Ammo (20)": {
+        "stock": 25,
+        "max_stock": 40,
+        "price": 4.0,
+        "description": "Box of 20 rifle cartridges.",
+        "rarity": "common"
+      },
+      "Shotgun Shells (10)": {
+        "stock": 20,
+        "max_stock": 30,
+        "price": 3.5,
+        "description": "Box of 10 shotgun shells.",
+        "rarity": "common"
+      }
+    },
+    "hunting_gear": {
+      "Hunting Bow": {
+        "stock": 3,
+        "max_stock": 6,
+        "price": 18.0,
+        "description": "A sturdy bow for hunting game. Quiet and reliable.",
+        "rarity": "common"
+      },
+      "Arrows (20)": {
+        "stock": 24,
+        "max_stock": 40,
+        "price": 4.0,
+        "description": "Bundle of 20 hunting arrows.",
+        "rarity": "common"
+      },
+      "Hunting Knife": {
+        "stock": 6,
+        "max_stock": 10,
+        "price": 8.0,
+        "description": "Sharp blade for skinning game and general use.",
+        "rarity": "common"
+      },
+      "Trapping Kit": {
+        "stock": 4,
+        "max_stock": 6,
+        "price": 12.0,
+        "description": "Set of snares and traps for catching small game.",
+        "rarity": "common"
+      },
+      "Skinning Knife": {
+        "stock": 5,
+        "max_stock": 8,
+        "price": 6.0,
+        "description": "Specialized blade for cleaning pelts.",
+        "rarity": "common"
+      }
+    },
+    "tools": {
+      "Pickaxe": {
+        "stock": 5,
+        "max_stock": 8,
+        "price": 10.0,
+        "description": "Essential for mining ore and breaking rock.",
+        "rarity": "common"
+      },
+      "Shovel": {
+        "stock": 6,
+        "max_stock": 10,
+        "price": 6.0,
+        "description": "Good for digging and prospecting.",
+        "rarity": "common"
+      },
+      "Gold Pan": {
+        "stock": 4,
+        "max_stock": 6,
+        "price": 5.0,
+        "description": "For panning gold from streams and rivers.",
+        "rarity": "common"
+      },
+      "Hammer": {
+        "stock": 5,
+        "max_stock": 8,
+        "price": 4.0,
+        "description": "Basic hammer for repairs and construction.",
+        "rarity": "common"
+      },
+      "Hatchet": {
+        "stock": 5,
+        "max_stock": 8,
+        "price": 7.0,
+        "description": "Small axe for chopping wood and clearing brush.",
+        "rarity": "common"
+      }
+    },
+    "supplies": {
+      "Rope (50ft)": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 3.0,
+        "description": "Sturdy hemp rope. A thousand uses on the frontier.",
+        "rarity": "common"
+      },
+      "Lasso": {
+        "stock": 5,
+        "max_stock": 8,
+        "price": 5.0,
+        "description": "Braided rope with a loop for roping cattle or horses.",
+        "rarity": "common"
+      },
+      "Lantern": {
+        "stock": 6,
+        "max_stock": 10,
+        "price": 6.0,
+        "description": "Oil lantern for lighting your way.",
+        "rarity": "common"
+      },
+      "Lantern Oil": {
+        "stock": 15,
+        "max_stock": 25,
+        "price": 1.5,
+        "description": "Fuel for lanterns. Burns clean.",
+        "rarity": "common"
+      },
+      "Canteen": {
+        "stock": 8,
+        "max_stock": 12,
+        "price": 3.0,
+        "description": "Metal water container. Essential for travel.",
+        "rarity": "common"
+      },
+      "Bedroll": {
+        "stock": 6,
+        "max_stock": 10,
+        "price": 5.0,
+        "description": "Rolled blanket for sleeping under the stars.",
+        "rarity": "common"
+      },
+      "Tent (2-person)": {
+        "stock": 3,
+        "max_stock": 5,
+        "price": 15.0,
+        "description": "Canvas tent for shelter on the trail.",
+        "rarity": "common"
+      },
+      "Saddlebags": {
+        "stock": 4,
+        "max_stock": 6,
+        "price": 8.0,
+        "description": "Leather bags for carrying goods on horseback.",
+        "rarity": "common"
+      },
+      "Matches (box)": {
+        "stock": 20,
+        "max_stock": 30,
+        "price": 0.5,
+        "description": "Box of friction matches for starting fires.",
+        "rarity": "common"
+      },
+      "Compass": {
+        "stock": 3,
+        "max_stock": 5,
+        "price": 8.0,
+        "description": "Navigation tool. Don't get lost out there.",
+        "rarity": "uncommon"
+      }
+    },
+    "rations": {
+      "Trail Rations (1 day)": {
+        "stock": 40,
+        "max_stock": 60,
+        "price": 1.0,
+        "description": "Hardtack, jerky, and dried fruit. Keeps you going.",
+        "rarity": "common"
+      },
+      "Beef Jerky (5 pieces)": {
+        "stock": 25,
+        "max_stock": 40,
+        "price": 2.0,
+        "description": "Dried, salted beef. Lasts for weeks.",
+        "rarity": "common"
+      },
+      "Canned Beans": {
+        "stock": 20,
+        "max_stock": 30,
+        "price": 1.5,
+        "description": "Tin of beans. Good campfire food.",
+        "rarity": "common"
+      },
+      "Coffee (1lb)": {
+        "stock": 15,
+        "max_stock": 20,
+        "price": 3.0,
+        "description": "Ground coffee beans. Essential for mornings.",
+        "rarity": "common"
+      },
+      "Flour (5lb)": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 2.5,
+        "description": "For baking biscuits and bread.",
+        "rarity": "common"
+      },
+      "Salt (1lb)": {
+        "stock": 12,
+        "max_stock": 20,
+        "price": 1.0,
+        "description": "For preserving meat and seasoning food.",
+        "rarity": "common"
+      },
+      "Sugar (1lb)": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 1.5,
+        "description": "Sweet stuff. Good in coffee.",
+        "rarity": "common"
+      }
+    },
+    "clothing": {
+      "Cowboy Hat": {
+        "stock": 5,
+        "max_stock": 8,
+        "price": 6.0,
+        "description": "Wide-brimmed hat for sun and rain protection.",
+        "rarity": "common"
+      },
+      "Bandana": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 1.0,
+        "description": "Useful for dust, sweat, and keeping warm.",
+        "rarity": "common"
+      },
+      "Leather Gloves": {
+        "stock": 6,
+        "max_stock": 10,
+        "price": 4.0,
+        "description": "Protects hands while working.",
+        "rarity": "common"
+      },
+      "Boots": {
+        "stock": 4,
+        "max_stock": 6,
+        "price": 12.0,
+        "description": "Sturdy leather boots for riding and walking.",
+        "rarity": "common"
+      },
+      "Poncho": {
+        "stock": 4,
+        "max_stock": 6,
+        "price": 8.0,
+        "description": "Wool poncho for cold nights and rain.",
+        "rarity": "common"
+      }
+    },
+    "taming_supplies": {
+      "Animal Treats": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 3.0,
+        "description": "+2 to taming rolls for 30 min",
+        "rarity": "common"
+      },
+      "Raw Meat": {
+        "stock": 8,
+        "max_stock": 12,
+        "price": 2.0,
+        "description": "+3 to taming carnivores for 10 min",
+        "rarity": "common"
+      },
+      "Calming Incense": {
+        "stock": 3,
+        "max_stock": 5,
+        "price": 8.0,
+        "description": "+4 to taming rolls for 15 min",
+        "rarity": "uncommon"
+      },
+      "Beast Whistle": {
+        "stock": 2,
+        "max_stock": 3,
+        "price": 15.0,
+        "description": "+5 to your next taming attempt (5 min)",
+        "rarity": "rare"
+      },
+      "Honey Cake": {
+        "stock": 5,
+        "max_stock": 8,
+        "price": 4.0,
+        "description": "+3 to taming bears and small critters",
+        "rarity": "common"
+      }
+    },
+    "medicine": {
+      "Bandages": {
+        "stock": 15,
+        "max_stock": 25,
+        "price": 1.5,
+        "description": "Clean cloth strips for binding wounds.",
+        "rarity": "common"
+      },
+      "Whiskey (Medicinal)": {
+        "stock": 8,
+        "max_stock": 12,
+        "price": 4.0,
+        "description": "For cleaning wounds. Or drinking. Your choice.",
+        "rarity": "common"
+      },
+      "Snake Bite Kit": {
+        "stock": 4,
+        "max_stock": 6,
+        "price": 6.0,
+        "description": "Suction device and antiseptic for rattlesnake bites.",
+        "rarity": "uncommon"
+      },
+      "Laudanum": {
+        "stock": 3,
+        "max_stock": 5,
+        "price": 8.0,
+        "description": "Opium tincture for severe pain. Use sparingly.",
+        "rarity": "uncommon"
+      },
+      "Salve": {
+        "stock": 6,
+        "max_stock": 10,
+        "price": 3.0,
+        "description": "Herbal ointment for burns and scrapes.",
+        "rarity": "common"
+      }
+    }
+  },
+  "buy_prices": {
+    "Hunting Bow": 10.00,
+    "Colt Revolver": 15.00,
+    "Derringer": 8.00,
+    "Winchester Rifle": 25.00,
+    "Double-Barrel Shotgun": 20.00,
+    "Pickaxe": 6.00,
+    "Shovel": 4.00,
+    "Gold Pan": 3.00,
+    "Hammer": 2.00,
+    "Hatchet": 4.00,
+    "Lasso": 3.00,
+    "Tent (2-person)": 10.00,
+    "Saddlebags": 5.00,
+    "Compass": 5.00,
+    "Cowboy Hat": 4.00,
+    "Boots": 8.00,
+    "Poncho": 5.00,
+    "gold nuggets": 8.00,
+    "silver ore": 4.00,
+    "copper ore": 2.00,
+    "coal": 1.50,
+    "Rabbit Pelt": 1.50,
+    "Wolf Pelt": 5.00,
+    "Coyote Pelt": 4.00,
+    "Pronghorn Hide": 6.00,
+    "Bison Hide": 15.00,
+    "Rattlesnake Skin": 5.00,
+    "Snake Venom": 8.00,
+    "Bandit Bounty": 20.00,
+    "Stolen Goods": 8.00
+  }
+}

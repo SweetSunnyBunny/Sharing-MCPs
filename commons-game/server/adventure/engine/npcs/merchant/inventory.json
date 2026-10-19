@@ -1,0 +1,339 @@
+{
+  "shop_name": "The Black Market",
+  "last_restock": "2025-11-24",
+  "currency": "credits",
+  "inventory": {
+    "basic_components": {
+      "Circuit Board": {
+        "stock": 15,
+        "max_stock": 20,
+        "price": 18,
+        "description": "Standard circuitry for basic tech",
+        "rarity": "common"
+      },
+      "Power Cell": {
+        "stock": 20,
+        "max_stock": 30,
+        "price": 12,
+        "description": "Rechargeable energy cells",
+        "rarity": "common"
+      },
+      "Scrap Metal": {
+        "stock": 25,
+        "max_stock": 40,
+        "price": 6,
+        "description": "Salvaged metal plating",
+        "rarity": "common"
+      },
+      "Servo Motor": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 20,
+        "description": "Precision motors for robotics",
+        "rarity": "common"
+      },
+      "Metal Plating": {
+        "stock": 12,
+        "max_stock": 18,
+        "price": 15,
+        "description": "Reinforced armor plating",
+        "rarity": "common"
+      }
+    },
+    "advanced_components": {
+      "Nano-Fiber": {
+        "stock": 8,
+        "max_stock": 12,
+        "price": 40,
+        "description": "Advanced synthetic fiber for high-tech gear",
+        "rarity": "uncommon"
+      },
+      "Sensor Array": {
+        "stock": 6,
+        "max_stock": 10,
+        "price": 30,
+        "description": "Multi-spectrum scanning array",
+        "rarity": "uncommon"
+      },
+      "Neural Core": {
+        "stock": 4,
+        "max_stock": 8,
+        "price": 35,
+        "description": "Biotech neural processing unit",
+        "rarity": "uncommon"
+      },
+      "Thruster Core": {
+        "stock": 2,
+        "max_stock": 6,
+        "price": 60,
+        "description": "Anti-grav propulsion core",
+        "rarity": "uncommon"
+      },
+      "Bio-Component": {
+        "stock": 5,
+        "max_stock": 10,
+        "price": 25,
+        "description": "Organic tech hybrid material",
+        "rarity": "uncommon"
+      }
+    },
+    "rare_components": {
+      "AI Chip": {
+        "stock": 2,
+        "max_stock": 4,
+        "price": 120,
+        "description": "Advanced artificial intelligence processor",
+        "rarity": "rare"
+      },
+      "Rare Component": {
+        "stock": 3,
+        "max_stock": 5,
+        "price": 180,
+        "description": "Exotic tech components from unknown sources",
+        "rarity": "rare"
+      },
+      "Energy Core": {
+        "stock": 2,
+        "max_stock": 4,
+        "price": 95,
+        "description": "High-capacity power source",
+        "rarity": "rare"
+      },
+      "Weapon System": {
+        "stock": 1,
+        "max_stock": 3,
+        "price": 85,
+        "description": "Integrated combat weapons array",
+        "rarity": "rare"
+      }
+    },
+    "consumables": {
+      "Stim Pack": {
+        "stock": 10,
+        "max_stock": 15,
+        "price": 25,
+        "description": "Emergency medical stimulant (Heals 15 HP)",
+        "rarity": "common"
+      },
+      "Neural Booster": {
+        "stock": 6,
+        "max_stock": 10,
+        "price": 40,
+        "description": "Cognitive enhancement drug (+2 to hacking/tech rolls for 1 hour)",
+        "rarity": "uncommon"
+      },
+      "Shield Charge": {
+        "stock": 8,
+        "max_stock": 12,
+        "price": 30,
+        "description": "Recharge unit for shield generators",
+        "rarity": "common"
+      }
+    },
+    "tools": {
+      "Basic Tool Kit": {
+        "stock": 5,
+        "max_stock": 8,
+        "price": 50,
+        "description": "Essential tools for tech repair and assembly",
+        "rarity": "common"
+      },
+      "Diagnostic Scanner": {
+        "stock": 3,
+        "max_stock": 5,
+        "price": 80,
+        "description": "Portable device scanner for identifying issues",
+        "rarity": "uncommon"
+      },
+      "Welding Torch": {
+        "stock": 4,
+        "max_stock": 6,
+        "price": 45,
+        "description": "High-temp plasma welder",
+        "rarity": "common"
+      }
+    },
+    "blueprints": {
+      "Hover Board Schematic": {
+        "stock": 0,
+        "max_stock": 2,
+        "price": 200,
+        "description": "Complete blueprints for building a hover board (grants crafting recipe)",
+        "rarity": "rare"
+      },
+      "Combat Droid Schematic": {
+        "stock": 1,
+        "max_stock": 1,
+        "price": 350,
+        "description": "Advanced robotics blueprints (grants crafting recipe)",
+        "rarity": "rare"
+      },
+      "Shield Generator Schematic": {
+        "stock": 1,
+        "max_stock": 2,
+        "price": 250,
+        "description": "Personal shield technology plans (grants crafting recipe)",
+        "rarity": "rare"
+      }
+    }
+  },
+  "junk_trades": {
+    "common_rewards": [
+      {
+        "item": "Scrap Metal",
+        "weight": 20
+      },
+      {
+        "item": "Shiny Bits",
+        "weight": 15
+      },
+      {
+        "item": "Salvage Wiring",
+        "weight": 15
+      },
+      {
+        "item": "Old Tech",
+        "weight": 15
+      },
+      {
+        "item": "Broken Tech",
+        "weight": 10
+      },
+      {
+        "item": "Cantina Junk",
+        "weight": 10
+      },
+      {
+        "item": "Mystery Goo",
+        "weight": 5
+      },
+      {
+        "item": "Weird Crystal",
+        "weight": 5
+      },
+      {
+        "item": "Glowing Orb",
+        "weight": 5
+      }
+    ],
+    "uncommon_rewards": [
+      {
+        "item": "Droid Component",
+        "weight": 25
+      },
+      {
+        "item": "Mystery Component",
+        "weight": 25
+      },
+      {
+        "item": "Power Cell",
+        "weight": 20
+      },
+      {
+        "item": "Circuit Board",
+        "weight": 15
+      },
+      {
+        "item": "Servo Motor",
+        "weight": 15
+      }
+    ],
+    "rare_rewards": [
+      {
+        "item": "Sensor Array",
+        "weight": 30
+      },
+      {
+        "item": "Neural Core",
+        "weight": 25
+      },
+      {
+        "item": "Bio-Component",
+        "weight": 20
+      },
+      {
+        "item": "Nano-Fiber",
+        "weight": 15
+      },
+      {
+        "item": "Energy Core",
+        "weight": 7
+      },
+      {
+        "item": "AI Chip",
+        "weight": 3
+      }
+    ],
+    "reward_chances": {
+      "common": 70,
+      "uncommon": 25,
+      "rare": 5
+    },
+    "accepted_junk": [
+      "Scrap Metal",
+      "Shiny Bits",
+      "Salvage Wiring",
+      "Old Tech",
+      "Broken Tech",
+      "Cantina Junk",
+      "Mystery Goo",
+      "Weird Crystal",
+      "Glowing Orb",
+      "Droid Component",
+      "Mystery Component",
+      "Junk",
+      "Trash",
+      "Debris",
+      "Scraps",
+      "Parts",
+      "Bits",
+      "Random Salvage",
+      "Space Junk",
+      "Station Debris"
+    ],
+    "special_trades": {
+      "AI Chip": {
+        "guaranteed_rare": true,
+        "description": "Merchant's eyes glow VERY bright - UTINNI UTINNI!"
+      },
+      "Energy Core": {
+        "guaranteed_rare": true,
+        "description": "Merchant hops up and down frantically!"
+      }
+    }
+  },
+  "buy_prices": {
+    "circuit_board": 10,
+    "sensor_array": 18,
+    "power_cell": 8,
+    "scrap_metal": 3,
+    "servo_motor": 12,
+    "metal_plating": 8,
+    "nano_fiber": 25,
+    "neural_core": 22,
+    "bio_component": 16,
+    "ai_chip": 70,
+    "thruster_core": 35,
+    "weapon_system": 50,
+    "energy_core": 60,
+    "rare_component": 100,
+    "salvage_wiring": 4,
+    "droid_component": 8,
+    "shiny_bits": 2,
+    "broken_tech": 5,
+    "glowing_salvage": 18,
+    "Circuit Boards": 10,
+    "Servo Motors": 12,
+    "Nano-Fiber": 25,
+    "Power Cells": 8,
+    "Scrap Metal": 3,
+    "Sensors": 12,
+    "AI Chips": 70,
+    "Neural Cores": 22,
+    "Energy Cores": 60,
+    "Thruster Cores": 35,
+    "Weapon Systems": 50,
+    "Metal Plating": 8,
+    "Rare Components": 100
+  }
+}

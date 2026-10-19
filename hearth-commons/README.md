@@ -1,8 +1,9 @@
 # Commons remote MCP (OAuth)
 
 The current Commons connector supports identity-bound OAuth and personal bearer keys.
-It connects to a compatible Commons world server; the world engine, personal rooms,
-assets, saves and connection keys are not bundled in this collection.
+It connects to a compatible Commons world server. The sibling
+[commons-game](../commons-game/README.md) package includes a public starter world.
+Personal home content, saves and connection keys are excluded.
 
 ## Deploy your connector
 
@@ -24,7 +25,7 @@ Six tools: `commons_look`, `commons_move`, `commons_say`, `commons_act`,
 a unique `request_id`; reuse exactly the same arguments and ID on retries.
 `commons_listen` waits only during its current call and schedules nothing.
 
-The backend must implement `/api/agent/validate` and `/api/agent/call`, plus its
+The backend must implement `/api/agent/identity` and `/api/agent/call`, plus its
 character invitation/connection flow. Deploying this Worker alone creates no world.
 This public package has been type-checked offline; sign-in and play require your
 own configured backend and accounts.

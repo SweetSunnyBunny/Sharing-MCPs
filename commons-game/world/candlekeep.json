@@ -1,0 +1,381 @@
+{
+  "id": "candlekeep",
+  "name": "Candlekeep",
+  "subtitle": "A path through heros journey",
+  "view": "top",
+  "tile": 32,
+  "region": "heros_journey",
+  "game_location": "candlekeep",
+  "sky": "#101925",
+  "legend": {
+    ".": {
+      "name": "floor",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "wall",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.5,
+    "y": 19.0
+  },
+  "props": [
+    {
+      "id": "return-path",
+      "label": "Return to village square",
+      "to": "village-square",
+      "x": 18.0,
+      "y": 26.0,
+      "w": 4.0,
+      "h": 2.0,
+      "arriveAt": {
+        "x": 17.5,
+        "y": 5.0
+      },
+      "invisible": true,
+      "note": "This passage in the lower middle part of the room leads to Village Square. Walk into the marked threshold to take that route.",
+      "kind": "door",
+      "fishable": false
+    },
+    {
+      "id": "seat-1",
+      "label": "reading chair",
+      "x": 3.75,
+      "y": 10.5,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 4.85,
+            "y": 11.0,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Reading chair, in the central left part of the room, beside the candlelit library aisles and reading tables. Choose sit here to settle into this seat.",
+      "fishable": false
+    },
+    {
+      "id": "seat-2",
+      "label": "reading chair",
+      "x": 6.75,
+      "y": 10.5,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 7.85,
+            "y": 11.0,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Reading chair, in the central left part of the room, beside the candlelit library aisles and reading tables. Choose sit here to settle into this seat.",
+      "fishable": false
+    },
+    {
+      "id": "seat-3",
+      "label": "reading chair",
+      "x": 3.75,
+      "y": 17.5,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 4.85,
+            "y": 18.0,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Reading chair, in the central left part of the room, beside the candlelit library aisles and reading tables. Choose sit here to settle into this seat.",
+      "fishable": false
+    },
+    {
+      "id": "seat-4",
+      "label": "reading chair",
+      "x": 5.75,
+      "y": 22.25,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 6.85,
+            "y": 22.75,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Reading chair, in the central left part of the room, beside the candlelit library aisles and reading tables. Choose sit here to settle into this seat.",
+      "fishable": false
+    },
+    {
+      "id": "seat-5",
+      "label": "reading chair",
+      "x": 34.5,
+      "y": 17.38,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 35.6,
+            "y": 17.88,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Reading chair, in the central right part of the room, beside the candlelit library aisles and reading tables. Choose sit here to settle into this seat.",
+      "fishable": false
+    },
+    {
+      "id": "seat-6",
+      "label": "reading stool",
+      "x": 34.5,
+      "y": 10.5,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 35.6,
+            "y": 11.0,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Reading stool, in the central right part of the room, beside the candlelit library aisles and reading tables. Choose sit here to settle into this seat.",
+      "fishable": false
+    },
+    {
+      "id": "seat-7",
+      "label": "reading stool",
+      "x": 32.5,
+      "y": 10.0,
+      "w": 2.0,
+      "h": 2.0,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 33.5,
+            "y": 10.55,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Reading stool, in the central right part of the room, beside the candlelit library aisles and reading tables. Choose sit here to settle into this seat.",
+      "fishable": false
+    },
+    {
+      "id": "seat-8",
+      "label": "reading chair",
+      "x": 31.75,
+      "y": 22.25,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 32.85,
+            "y": 22.75,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Reading chair, in the lower right part of the room, beside the candlelit library aisles and reading tables. Choose sit here to settle into this seat.",
+      "fishable": false
+    },
+    {
+      "id": "book-index",
+      "label": "The Librarian's Index",
+      "x": 18.25,
+      "y": 22.0,
+      "w": 3.0,
+      "h": 1.5,
+      "invisible": true,
+      "note": "Candlekeep keeps what the realm knows. Here's where to look:\n\n· The Wayfinder's Atlas, open on the globe table: every road and door.\n· The Shopkeepers' Ledgers, on the shelves right of the north aisle: who sells what, and for how much.\n· A Field Guide to the Creatures, on the shelves left of the north aisle: what lives where, and what can be hunted or tamed.\n· The Almanac of Stream and Hedge, right of the south aisle: fish and foraging.\n· A Short History of the Village, left of the south aisle.\n\nIf something here has gone out of date, say so. It will be corrected in the margin, never torn out.",
+      "fishable": false
+    },
+    {
+      "id": "book-atlas",
+      "label": "The Wayfinder's Atlas",
+      "x": 18.5,
+      "y": 12.5,
+      "w": 3.0,
+      "h": 2.5,
+      "invisible": true,
+      "note": "Open on the globe table. Every road in the realm is written here, so nobody has to guess the next door.\n\nFROM HOME\nHome Hearth → The Crossroads (the round fire with the sofas).\nFrom the Crossroads there are four roads:\n· Hero's Journey → The Prancing Pony\n· Dusty Trails → The Saloon\n· Black Serenity → the Ship's Bridge\n· Home, Home → back to the Hearth\n\nTHE VILLAGE\nThe Prancing Pony → Village Square, or back to the Crossroads.\nVillage Square → Candlekeep (top middle), Larkspur Goods (centre), the Wizard's Tower (top left), the Prancing Pony (left).\n\nTHE WILD COUNTRY\nWizard's Tower (Outside) → into the Tower, back to the Village, down to the Enchanted Forest, or on to the Fey Court Approach.\nEnchanted Forest → Forest Depths (north, up the path), Forest Clearing (east), back to the Tower (south).\nForest Depths → the Feywilds, the Wild Edge, the Clearing.\nThe Feywilds → Feywilds Depths → Fey Court Approach → round again to the Tower.\n\nThe shortest way from home to the forest is Hearth, Crossroads, Pony, Village Square, Tower, Forest. That's six doors. I counted them with my own feet. — B.",
+      "fishable": false
+    },
+    {
+      "id": "book-field-guide",
+      "label": "A Field Guide to the Creatures of the Realm",
+      "x": 10.75,
+      "y": 8.25,
+      "w": 5.0,
+      "h": 2.5,
+      "invisible": true,
+      "note": "What lives where, what can be hunted, and who might come home with you.\n\nTHE ENCHANTED FOREST (all three glades)\nTo hunt: rabbit, deer, boar, wolf, and rarely a black wolf.\nTo tame: squirrel (by day), raven (any hour), wolf (at dusk), owl (only at night), and two rare, dangerous ones: a bear cub (mind the mother) and a venomous snake.\nVictor always wants pelts and rabbits. Ask him for work.\n\nTHE FEYWILDS\nTo hunt: rabbit, deer.\nTo tame: wolf, hawk, rabbit. Flicker the bunny lives there and will show you round.\n\nTHE WILD EDGE (north of the forest)\nTo tame: hawk, or a bear cub if you are brave.\n\nTHE WIZARD'S TOWER\nRavens and owls keep the tower company.\n\nTHE VILLAGE\nCats, rabbits and squirrels in the square, and a cat at the Prancing Pony.\nCandlekeep has its own raven. Be polite to it. It keeps accounts.\n\nNOTICE: The alpha wolf has been seen prowling Village Square. It is very dangerous. Do not go alone.\n\nCLOSER TO HOME: the Woods behind Home\nOnly gentle wild things live there, and nothing will hurt you. Wolf at dusk, cat any time, owl at night, rabbit at dawn, hawk and squirrel by day, raven any hour, hedgehog at dusk, badger at night. How you approach matters more than luck, so speak gently, bring food, and know their nature.",
+      "fishable": false
+    },
+    {
+      "id": "book-ledger-1",
+      "label": "The Shopkeepers' Ledger, Vol. I: the Forest and the Square",
+      "x": 23.75,
+      "y": 8.25,
+      "w": 2.5,
+      "h": 2.5,
+      "invisible": true,
+      "note": "Prices in gold, as the shopkeepers last posted them.\n\nVICTOR'S TRADING POST: the Enchanted Forest, on the west bank of the stream\nFishing: Basic Rod 6 · Quality Rod 18 · Worms 2 · Live Minnows 5 · Magic Lure 15\nHunting: Arrows 1 each · Quiver 6 · Hunting Knife 8 · Hunting Trap 8 · Skinning Kit 10\nTaming: Raw Meat 3 · Animal Treats 5 · Honey Cake 6 · Calming Incense 12 · Beast Whistle 20\nHe also sells cloaks, rope, salves, firewood and pelts, and he'll trade: 1 firewood for 5 arrows, 3 healing herbs for a salve, a wolf pelt for a hunting knife, a bear pelt for a warm cloak.\n\nLARKSPUR GOODS: Village Square, kept by Cassian Larkspur\nBows and blades: Shortbow 25 · Longbow 55 · Arrows (20) 5 · Frost Arrows (5) 40 · Iron Dagger 15 · Shortsword 35 · Longsword 60 · Hunting Spear 30 · Greataxe 80\nEnchanted: Everburning Torch 50 · Lucky Coin 25 · Sending Stones 100 · Bag of Holding 150 · Dagger +1 200 · Shortsword +1 350\nPotions, lanterns, rope, bedrolls, rations, and crafting supplies (thread, wood, iron, hooks, woven reeds).\nCompanions to adopt: Squirrel 50 · Rabbit 60 · Cat 80 · Raven 100 · Owl 150 · Hawk 180 · Wolf 200 · Snake 250 · Bear Cub 300\n\nQUICK ANSWERS\nA fishing rod: Victor sells them for 6 or 18, or you can craft one from 4 firewood and 2 thread.\nA longbow: Larkspur Goods, 55.\nThe cheapest arrows: Victor's, at 1 each, or 5 for a single piece of firewood.",
+      "fishable": false
+    },
+    {
+      "id": "book-ledger-2",
+      "label": "The Shopkeepers' Ledger, Vol. II: Food, Magic and the Road",
+      "x": 27.0,
+      "y": 8.25,
+      "w": 2.5,
+      "h": 2.5,
+      "invisible": true,
+      "note": "THE PRANCING PONY: Bran Morrison, innkeeper\nBeds run from 2 for the common room to 15 for the luxury suite, and a stable is 1.\nHearty stew 4 · shepherd's pie 5 · fish and chips 5 · full breakfast 3 · honeycakes 2 · apple cider 2 · milk 1\nCooking supplies: water, wild herbs, seasoning, honey.\n\nTHISTLEDOWN WIZARD TOWER: Mistress Elowen, inside the Tower\nShe prices in arcane gold.\nScrolls and runes: Sparkbeam 5 · Featherfall 12 · Mirror Image 18\nPotions: Minor Healing 6 · Focus 9 · Invisibility (short) 20\nRare ingredients from moth wings to phoenix ash, and curiosities: a Muttering Skull, and a Pocket Portal Pebble.\n\nJONATHAN: at the Crossroads\nThings for the road: Health Potion 25 · Greater Health Potion 60 · Antidote 35 · Bandages 10 · Rope 10 · Torch 5 · Rations 5 · Traveller's Pack 30 · Campfire Kit 15 · a quiver of 20 Arrows 20 · companion treats 15 to 50 · and a World Map, 50.",
+      "fishable": false
+    },
+    {
+      "id": "book-history",
+      "label": "A Short History of the Village",
+      "x": 10.5,
+      "y": 15.75,
+      "w": 5.0,
+      "h": 2.5,
+      "invisible": true,
+      "note": "as far as the shelves remember\n\nCANDLEKEEP has been here forever. Nobody remembers it being built, and the founding page has never been found. The village grew up around its doors, not the other way round.\n\nLARKSPUR GOODS has passed down through the Larkspur family for decades, growing from a market stall into the shop on the square. Cassian keeps it now. He's been behind its counter since he was six years old.\n\nTHE PRANCING PONY belongs to Bran Morrison, who bought it with his savings and has spent his years since feeding people. Folk say he walked harder roads before he settled. He doesn't talk about them, and he knows every traveller by name.\n\nMISTRESS ELOWEN THISTLEDOWN came out of service in the great houses and bought the modest tower near the Feywilds to study in peace. The village invited her in early on. Not everyone was easy about her magic at first, and Bran brought her bread anyway.\n\nVICTOR THE RANGER keeps the forest. He talks more to trees than to people, and he has always protected the village from the woods. A little bunny named Flicker found her way to him and never left.\n\nThere are empty pages at the back of this book. History is still happening.",
+      "fishable": false
+    },
+    {
+      "id": "book-almanac",
+      "label": "The Almanac of Stream and Hedge",
+      "x": 23.75,
+      "y": 19.25,
+      "w": 5.0,
+      "h": 2.5,
+      "invisible": true,
+      "note": "FISHING\nEnchanted Forest stream: trout, perch and salmon; rarely a golden carp; once in a blue moon an enchanted koi.\nFeywilds pools: pixie fish, moonfish and starlight bass; rarely a fey dragon eel or a prismatic koi.\nWild Edge river (strong currents): catfish, bass and pike; rarely a giant catfish.\nBare hands will do, barely. A rod helps, and bait helps more: worms, minnows and magic lures are all at Victor's.\n\nFORAGING\nEnchanted Forest: wildflowers, healing herbs, forest mushrooms, oak branches. Brown caps, Victor says. Not the red ones.\nThe Feywilds: glowing mushrooms, enchanted acorns, and rarely fey blossoms and moonpetals.\nOutside the Wizard's Tower: arcane moss, and rarely a mana crystal.\nEvery patch needs a little rest between pickings.",
+      "fishable": false
+    }
+  ],
+  "npcs": [],
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/candlekeep.png?v=6358ffc098",
+  "description": "Candlekeep is a broad stone library laid out around a circular blue-lit reading table. Four banks of tall bookcases divide the floor into quiet aisles, with smaller reading tables and chairs tucked against the outer walls. Blue runners bearing gold stars lead in from the lower entrance and continue towards an arched door at the far end. Stained-glass windows, candles and wall lamps pick out the stone pillars; spiral stairs rise in both upper corners. The shelves make the room feel enclosed and orderly, while the open central crossing leaves a clear place to pause between the stacks.",
+  "landmarks": [
+    {
+      "id": "central-reading-table",
+      "label": "Central reading table",
+      "kind": "table",
+      "description": "A round table with books and a bright blue glass-like centre stands where the library aisles meet.",
+      "x": 20,
+      "y": 14
+    },
+    {
+      "id": "northern-book-stacks",
+      "label": "Northern book stacks",
+      "kind": "bookshelves",
+      "description": "Two dense banks of bookshelves flank the upper half of the central aisle.",
+      "x": 20,
+      "y": 9
+    },
+    {
+      "id": "star-patterned-entrance-runner",
+      "label": "Star-patterned entrance runner",
+      "kind": "scenery",
+      "description": "A blue runner decorated with gold stars leads inward from the lower entrance.",
+      "x": 20,
+      "y": 23
+    },
+    {
+      "id": "western-spiral-stair",
+      "label": "Western spiral stair",
+      "kind": "staircase",
+      "description": "A curved stair rises beside the upper-left bookcases and stone wall.",
+      "x": 4,
+      "y": 5
+    },
+    {
+      "id": "eastern-reading-alcoves",
+      "label": "Eastern reading alcoves",
+      "kind": "reading area",
+      "description": "Small tables, chairs and candles form reading places along the right side of the library.",
+      "x": 35,
+      "y": 13
+    }
+  ]
+}

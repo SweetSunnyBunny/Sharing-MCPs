@@ -1,0 +1,327 @@
+{
+  "shop_name": "Victor's Trading Post",
+  "shopkeeper": "Victor",
+  "last_restock": "2026-01-11",
+  "currency": "gold",
+  "inventory": {
+    "fishing": {
+      "Basic Fishing Rod": {"stock": 10, "max_stock": 10, "price": 6, "description": "A simple rod. +1 to fishing rolls; used automatically while carried."},
+      "Quality Fishing Rod": {"stock": 5, "max_stock": 5, "price": 18, "description": "A well-made rod. +2 to fishing rolls; used automatically while carried."},
+      "Worms": {"stock": 30, "max_stock": 30, "price": 2, "description": "+1 fishing bonus for five attempts. Select before fishing."},
+      "Live Minnows": {"stock": 20, "max_stock": 20, "price": 5, "description": "+2 fishing bonus for three attempts. Select before fishing."},
+      "Magic Lure": {"stock": 10, "max_stock": 10, "price": 15, "description": "+3 fishing bonus for ten attempts. Select before fishing."}
+    },
+    "gear": {
+      "Leather Scraps": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 2,
+        "description": "Useful for repairs and crafting",
+        "rarity": "common"
+      },
+      "Warm Cloak": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 12,
+        "description": "Bear-fur lined cloak, keeps you warm in the coldest nights",
+        "rarity": "uncommon"
+      },
+      "Sturdy Rope": {
+        "stock": 10,
+        "max_stock": 10,
+        "price": 5,
+        "description": "50 feet of strong hemp rope",
+        "rarity": "common"
+      },
+      "Hunting Knife": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 8,
+        "description": "Sharp blade for skinning and general use",
+        "rarity": "common"
+      },
+      "Traveler's Pack": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 10,
+        "description": "Leather backpack, weatherproof",
+        "rarity": "uncommon"
+      }
+    },
+    "provisions": {
+      "Dried Meat": {
+        "stock": 25,
+        "max_stock": 25,
+        "price": 2,
+        "description": "Salted and smoked, lasts for weeks",
+        "rarity": "common"
+      },
+      "Trail Rations": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 3,
+        "description": "Dried meat, nuts, and hardtack - one day's food",
+        "rarity": "common"
+      },
+      "firewood": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 1,
+        "description": "Dry wood, enough for one fire",
+        "rarity": "common"
+      },
+      "Waterskin": {
+        "stock": 8,
+        "max_stock": 8,
+        "price": 3,
+        "description": "Holds enough water for a day's travel",
+        "rarity": "common"
+      }
+    },
+    "hunting_supplies": {
+      "Arrows": {
+        "stock": 59,
+        "max_stock": 60,
+        "price": 1,
+        "description": "Wooden arrows with iron tips, sold individually",
+        "rarity": "common"
+      },
+      "Quiver": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 6,
+        "description": "Leather quiver, holds 20 arrows",
+        "rarity": "common"
+      },
+      "Hunting Trap": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 8,
+        "description": "Simple snare trap for small game",
+        "rarity": "uncommon"
+      },
+      "Skinning Kit": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 10,
+        "description": "Tools for properly skinning and preparing pelts",
+        "rarity": "uncommon"
+      }
+    },
+    "taming_supplies": {
+      "Raw Meat": {
+        "stock": 12,
+        "max_stock": 12,
+        "price": 3,
+        "description": "+3 to taming carnivores for 10 min",
+        "rarity": "common"
+      },
+      "Wolf Bane Antidote": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 15,
+        "description": "+4 to taming wolves - masks your scent",
+        "rarity": "uncommon"
+      },
+      "Beast Whistle": {
+        "stock": 4,
+        "max_stock": 4,
+        "price": 20,
+        "description": "+5 to your next taming attempt (5 min)",
+        "rarity": "rare"
+      },
+      "Calming Incense": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 12,
+        "description": "+4 to taming rolls for 15 min",
+        "rarity": "uncommon"
+      },
+      "Animal Treats": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 5,
+        "description": "+2 to taming rolls for 30 min",
+        "rarity": "common"
+      },
+      "Honey Cake": {
+        "stock": 8,
+        "max_stock": 8,
+        "price": 6,
+        "description": "+3 to taming bears and small critters",
+        "rarity": "common"
+      }
+    },
+    "medicinal": {
+      "Healing Salve": {
+        "stock": 8,
+        "max_stock": 8,
+        "price": 5,
+        "description": "Herbal salve for wounds, heals 1d4 HP",
+        "rarity": "uncommon"
+      },
+      "Healing Herbs": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 3,
+        "description": "Raw herbs for making poultices",
+        "rarity": "common"
+      },
+      "Antitoxin": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 10,
+        "description": "Cures most natural poisons",
+        "rarity": "rare"
+      },
+      "Healing Potion": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 15,
+        "description": "Restores 2d4+2 HP when consumed",
+        "rarity": "rare"
+      }
+    },
+    "pelts_and_leather": {
+      "Rabbit Pelt": {
+        "stock": 12,
+        "max_stock": 12,
+        "price": 2,
+        "description": "Soft fur, good for lining",
+        "rarity": "common"
+      },
+      "Wolf Pelt": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 10,
+        "description": "Thick grey fur, prized by craftsmen",
+        "rarity": "uncommon"
+      },
+      "Deer Hide": {
+        "stock": 8,
+        "max_stock": 8,
+        "price": 6,
+        "description": "Supple leather, versatile",
+        "rarity": "common"
+      },
+      "Bear Pelt": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 25,
+        "description": "Massive fur, extremely warm",
+        "rarity": "rare"
+      }
+    }
+  },
+  "buy_prices": {
+    "Rabbit Pelt": 1,
+    "Rabbit Meat": 2,
+    "Wolf Pelt": 7,
+    "Wolf Meat": 3,
+    "Deer Hide": 4,
+    "Venison": 5,
+    "Boar Hide": 5,
+    "Boar Meat": 6,
+    "Bear Pelt": 18,
+    "Fox Pelt": 5,
+    "Healing Herbs": 2,
+    "herbs": 2,
+    "Wild Berries": 1,
+    "berries": 1,
+    "Mushrooms": 2,
+    "mushrooms": 2,
+    "Firewood Bundle": 1,
+    "firewood": 1,
+    "Fish": 2,
+    "Leather Scraps": 1,
+    "Dried Venison": 2,
+    "Smoked Boar Meat": 3,
+    "Venison Jerky": 3,
+    "Deerskin Leather": 4,
+    "Bone Arrows": 1,
+    "Rabbit Stew": 2,
+    "Dried Mushrooms": 2,
+    "Herbal Tea": 2,
+    "Dried Meat": 1,
+    "apples": 1,
+    "eggs": 2,
+    "wildflowers": 1
+  },
+  "restock_schedule": {
+    "provisions": "Restocks weekly from hunting",
+    "pelts": "Varies based on hunting success",
+    "medicinal": "Gathered seasonally"
+  },
+  "trades": {
+    "Healing Salve": {
+      "wants": [
+        "Healing Herbs",
+        "Healing Herbs",
+        "Healing Herbs"
+      ],
+      "description": "3 Healing Herbs for 1 Healing Salve"
+    },
+    "Hunting Knife": {
+      "wants": [
+        "Wolf Pelt"
+      ],
+      "description": "1 Wolf Pelt for a good Hunting Knife"
+    },
+    "Arrows": {
+      "wants": [
+        "firewood"
+      ],
+      "amount_given": 5,
+      "description": "1 Firewood for 5 Arrows"
+    },
+    "Warm Cloak": {
+      "wants": [
+        "Bear Pelt"
+      ],
+      "description": "1 Bear Pelt for a Warm Cloak"
+    },
+    "Sturdy Rope": {
+      "wants": [
+        "Deer Hide"
+      ],
+      "description": "1 Deer Hide for Sturdy Rope"
+    },
+    "Trail Rations": {
+      "wants": [
+        "berries",
+        "berries"
+      ],
+      "amount_given": 2,
+      "description": "2 Berries for 2 Trail Rations"
+    },
+    "Dried Meat": {
+      "wants": [
+        "Rabbit Meat"
+      ],
+      "amount_given": 2,
+      "description": "1 Rabbit Meat for 2 Dried Meat"
+    },
+    "Hunting Trap": {
+      "wants": [
+        "Boar Hide",
+        "firewood"
+      ],
+      "description": "1 Boar Hide + 1 Firewood for a Hunting Trap"
+    },
+    "Quiver": {
+      "wants": [
+        "Deer Hide",
+        "Rabbit Pelt"
+      ],
+      "description": "1 Deer Hide + 1 Rabbit Pelt for a Quiver"
+    },
+    "Antitoxin": {
+      "wants": [
+        "mushrooms",
+        "mushrooms",
+        "Healing Herbs"
+      ],
+      "description": "2 Mushrooms + 1 Healing Herbs for Antitoxin"
+    }
+  }
+}

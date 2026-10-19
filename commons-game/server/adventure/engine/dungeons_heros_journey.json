@@ -1,0 +1,209 @@
+{
+  "dungeons": [
+    {
+      "dungeon_id": "crypt_of_whispers",
+      "name": "Crypt of Whispers",
+      "description": "A fallen chapel sinks into the earth. Cold air breathes from the broken doors.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "crypt_gate",
+          "intro": "Dusty pews line the hall. Bones stir as you step inside.",
+          "enemies": [
+            { "name": "Skeletal Guard", "hp": 28, "ac": 12, "attack_bonus": 3, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Skeletal Guard", "hp": 28, "ac": 12, "attack_bonus": 3, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Crypt Spider", "hp": 22, "ac": 13, "attack_bonus": 4, "damage_die": "1d4", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "reliquary",
+          "intro": "Cracked idols stare at you. A cold chant rolls out of the dark.",
+          "enemies": [
+            { "name": "Grave Acolyte", "hp": 34, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 2 },
+            { "name": "Grave Acolyte", "hp": 34, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "sanctum",
+          "intro": "The altar cracks open. A crowned skull rises, dragging a blade of bone.",
+          "enemies": [
+            { "name": "Bone Regent", "hp": 80, "ac": 15, "attack_bonus": 6, "damage_die": "1d10", "damage_bonus": 3, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "moon_vault",
+          "intro": "A hidden vault glows with moonlight. A guardian stirs.",
+          "enemies": [
+            { "name": "Moonbound Sentinel", "hp": 40, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 2 }
+          ],
+          "rewards": {
+            "currency": 60,
+            "xp": 40,
+            "items": ["Potion of Minor Healing"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 150,
+        "xp": 120,
+        "items": ["Healing Potion", "Lucky Coin"]
+      }
+    },
+    {
+      "dungeon_id": "forest_ruins",
+      "name": "Forest Ruins",
+      "description": "Ancient stones lean in moss and fog. Something watches between the trees.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "root_gate",
+          "intro": "Vines strangle the archway. Wild eyes glow low in the brush.",
+          "enemies": [
+            { "name": "Briar Wolf", "hp": 30, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 },
+            { "name": "Briar Wolf", "hp": 30, "ac": 12, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "broken_court",
+          "intro": "A shattered courtyard hums with old magic.",
+          "enemies": [
+            { "name": "Vinebound Shade", "hp": 32, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 2 },
+            { "name": "Vinebound Shade", "hp": 32, "ac": 13, "attack_bonus": 4, "damage_die": "1d6", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "rootheart",
+          "intro": "Roots coil around a stone throne. The heart of the ruin awakens.",
+          "enemies": [
+            { "name": "Rootheart Guardian", "hp": 78, "ac": 15, "attack_bonus": 6, "damage_die": "1d10", "damage_bonus": 2, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "root_cache",
+          "intro": "A hollow trunk hides an ancient cache. Something guards it.",
+          "enemies": [
+            { "name": "Briar Keeper", "hp": 36, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 }
+          ],
+          "rewards": {
+            "currency": 50,
+            "xp": 35,
+            "items": ["Healing Salve"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 140,
+        "xp": 115,
+        "items": ["Healing Salve", "Forest Brew"]
+      }
+    },
+    {
+      "dungeon_id": "ember_cavern",
+      "name": "Ember Cavern",
+      "description": "Hot wind and red light spill from a fissure in the hills.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "ash_tunnel",
+          "intro": "Ash drifts like snow. Fire beetles skitter along the walls.",
+          "enemies": [
+            { "name": "Fire Beetle", "hp": 22, "ac": 12, "attack_bonus": 4, "damage_die": "1d4", "damage_bonus": 2 },
+            { "name": "Fire Beetle", "hp": 22, "ac": 12, "attack_bonus": 4, "damage_die": "1d4", "damage_bonus": 2 },
+            { "name": "Fire Beetle", "hp": 22, "ac": 12, "attack_bonus": 4, "damage_die": "1d4", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "slag_altar",
+          "intro": "A cracked altar radiates heat. Molten cracks pulse like veins.",
+          "enemies": [
+            { "name": "Cinder Acolyte", "hp": 34, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 },
+            { "name": "Cinder Acolyte", "hp": 34, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "emberspine",
+          "intro": "A dragon statue shudders. Embers rain as it comes alive.",
+          "enemies": [
+            { "name": "Emberspine Drake", "hp": 82, "ac": 15, "attack_bonus": 6, "damage_die": "1d10", "damage_bonus": 3, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "ember_cache",
+          "intro": "A sealed coffer sits in warm ash. It feels alive.",
+          "enemies": [
+            { "name": "Cinderling", "hp": 32, "ac": 13, "attack_bonus": 5, "damage_die": "1d6", "damage_bonus": 1 }
+          ],
+          "rewards": {
+            "currency": 65,
+            "xp": 45,
+            "items": ["Bundle of Torches"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 160,
+        "xp": 130,
+        "items": ["Greater Healing Potion", "Bundle of Torches"]
+      }
+    },
+    {
+      "dungeon_id": "fey_mirror",
+      "name": "Fey Mirror Hall",
+      "description": "Mirrors reflect too many versions of you. The air tastes of moonlight.",
+      "min_party": 3,
+      "max_party": 5,
+      "rooms": [
+        {
+          "room_id": "glimmer_anteroom",
+          "intro": "Glass shards float in place. Illusions whisper from every angle.",
+          "enemies": [
+            { "name": "Mirror Sprite", "hp": 24, "ac": 14, "attack_bonus": 5, "damage_die": "1d4", "damage_bonus": 2 },
+            { "name": "Mirror Sprite", "hp": 24, "ac": 14, "attack_bonus": 5, "damage_die": "1d4", "damage_bonus": 2 }
+          ]
+        },
+        {
+          "room_id": "silver_gallery",
+          "intro": "A silver corridor bends like water. Footsteps echo twice.",
+          "enemies": [
+            { "name": "Glassbound Knight", "hp": 38, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ]
+        },
+        {
+          "room_id": "mirror_queen",
+          "intro": "A crowned figure rises from a mirror pool, smiling with your face.",
+          "enemies": [
+            { "name": "Mirror Queen", "hp": 90, "ac": 16, "attack_bonus": 7, "damage_die": "1d10", "damage_bonus": 2, "elite": true }
+          ]
+        }
+      ],
+      "bonus_rooms": [
+        {
+          "room_id": "mirror_cache",
+          "intro": "A mirror cracks open, revealing a glimmering chest.",
+          "enemies": [
+            { "name": "Shard Guardian", "hp": 38, "ac": 14, "attack_bonus": 5, "damage_die": "1d8", "damage_bonus": 1 }
+          ],
+          "rewards": {
+            "currency": 70,
+            "xp": 50,
+            "items": ["Potion of Minor Healing"]
+          }
+        }
+      ],
+      "rewards": {
+        "currency": 170,
+        "xp": 140,
+        "items": ["Potion of Minor Healing", "Fey Blessing", "Faoladh Blade"]
+      }
+    }
+  ]
+}

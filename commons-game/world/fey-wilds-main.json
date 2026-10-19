@@ -1,0 +1,417 @@
+{
+  "id": "fey-wilds-main",
+  "name": "The Feywilds",
+  "subtitle": "A realm where reality bends and fey creatures dance.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/fey-wilds-main.png",
+  "region": "heros_journey",
+  "game_location": "the-feywilds",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################...#####################",
+    "########################...#####################",
+    "#######################....#####################",
+    "######################.....#####################",
+    "#####################.....######################",
+    "###################......#######################",
+    "###################.....########################",
+    "##################......########################",
+    "################.........#######################",
+    "#################.............##################",
+    "###################...........##################",
+    "####################..............##############",
+    "######################...........###############",
+    "#######################..........###############",
+    "######################............##############",
+    "#####################...............############",
+    "#################.........##..........##########",
+    "##############..........#######.........########",
+    "#########............############.#......#######",
+    "########..........##################.....#######",
+    "#######..........###################....########",
+    "######..........###################....#########",
+    "#####............################.....##########",
+    "########...........############......###########",
+    "########..............#######.......############",
+    "##########........................##############",
+    "###############..................###############",
+    "#################...............################",
+    "##################.............#################",
+    "##################............##################",
+    "##################...........###################",
+    "################...........#####################"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Enchanted Forest",
+      "x": 18.34375,
+      "y": 28.03125,
+      "w": 1.875,
+      "h": 1.875,
+      "to": "enchanted-forest-north",
+      "arriveAt": {
+        "x": 27.0,
+        "y": 11.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Forest Depths (North). Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Fey Wilds",
+      "x": 18.40625,
+      "y": 3.9375,
+      "w": 1.875,
+      "h": 1.875,
+      "to": "fey-wilds-north1",
+      "arriveAt": {
+        "x": 21.0,
+        "y": 19.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the upper middle part of the room leads to Feywilds Depths. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "npc-flicker",
+      "label": "Flicker",
+      "game_npc": "flicker",
+      "x": 23.5,
+      "y": 16.0,
+      "w": 1.2,
+      "h": 2,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Flicker.",
+      "npc_sheet": "assets/adventure/sprites/conversational NPCs/flicker sprite.png",
+      "npc_frame": 32,
+      "kind": "npc"
+    }
+  ],
+  "npcs": [
+    {
+      "id": "flicker",
+      "name": "Flicker",
+      "role": "Fey guide"
+    }
+  ],
+  "fishing_zones": [
+    {
+      "points": [
+        [
+          18.3,
+          12.0
+        ],
+        [
+          18.07,
+          12.71
+        ],
+        [
+          17.38,
+          13.35
+        ],
+        [
+          16.32,
+          13.86
+        ],
+        [
+          14.98,
+          14.19
+        ],
+        [
+          13.5,
+          14.3
+        ],
+        [
+          12.02,
+          14.19
+        ],
+        [
+          10.68,
+          13.86
+        ],
+        [
+          9.62,
+          13.35
+        ],
+        [
+          8.93,
+          12.71
+        ],
+        [
+          8.7,
+          12.0
+        ],
+        [
+          8.93,
+          11.29
+        ],
+        [
+          9.62,
+          10.65
+        ],
+        [
+          10.68,
+          10.14
+        ],
+        [
+          12.02,
+          9.81
+        ],
+        [
+          13.5,
+          9.7
+        ],
+        [
+          14.98,
+          9.81
+        ],
+        [
+          16.32,
+          10.14
+        ],
+        [
+          17.38,
+          10.65
+        ],
+        [
+          18.07,
+          11.29
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          39.2,
+          8.0
+        ],
+        [
+          38.99,
+          8.71
+        ],
+        [
+          38.4,
+          9.35
+        ],
+        [
+          37.47,
+          9.86
+        ],
+        [
+          36.3,
+          10.19
+        ],
+        [
+          35.0,
+          10.3
+        ],
+        [
+          33.7,
+          10.19
+        ],
+        [
+          32.53,
+          9.86
+        ],
+        [
+          31.6,
+          9.35
+        ],
+        [
+          31.01,
+          8.71
+        ],
+        [
+          30.8,
+          8.0
+        ],
+        [
+          31.01,
+          7.29
+        ],
+        [
+          31.6,
+          6.65
+        ],
+        [
+          32.53,
+          6.14
+        ],
+        [
+          33.7,
+          5.81
+        ],
+        [
+          35.0,
+          5.7
+        ],
+        [
+          36.3,
+          5.81
+        ],
+        [
+          37.47,
+          6.14
+        ],
+        [
+          38.4,
+          6.65
+        ],
+        [
+          38.99,
+          7.29
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          33.1,
+          21.5
+        ],
+        [
+          32.77,
+          22.21
+        ],
+        [
+          31.8,
+          22.85
+        ],
+        [
+          30.3,
+          23.36
+        ],
+        [
+          28.4,
+          23.69
+        ],
+        [
+          26.3,
+          23.8
+        ],
+        [
+          24.2,
+          23.69
+        ],
+        [
+          22.3,
+          23.36
+        ],
+        [
+          20.8,
+          22.85
+        ],
+        [
+          19.83,
+          22.21
+        ],
+        [
+          19.5,
+          21.5
+        ],
+        [
+          19.83,
+          20.79
+        ],
+        [
+          20.8,
+          20.15
+        ],
+        [
+          22.3,
+          19.64
+        ],
+        [
+          24.2,
+          19.31
+        ],
+        [
+          26.3,
+          19.2
+        ],
+        [
+          28.4,
+          19.31
+        ],
+        [
+          30.3,
+          19.64
+        ],
+        [
+          31.8,
+          20.15
+        ],
+        [
+          32.77,
+          20.79
+        ]
+      ]
+    }
+  ],
+  "description": "A winding stone path enters a woodland of oversized mushrooms, luminous pools and richly coloured flowers. Tall blue mushroom caps shelter the upper-left bank, with smaller pink and purple caps rising below them. A cluster of violet crystals stands farther up the path. Round turquoise pools dotted with floating leaves fill the hollows between the stones, and pale waterfalls shine along the right-hand tree line. Small points of golden light hang beneath the canopy. The ordinary greens of the forest give way here to saturated blues, violet stone and flowers as large as the surrounding leaves.",
+  "landmarks": [
+    {
+      "id": "blue-mushroom-grove",
+      "label": "Blue mushroom grove",
+      "kind": "vegetation",
+      "description": "Oversized turquoise mushroom caps rise above smaller pink and purple mushrooms on the left.",
+      "x": 7,
+      "y": 7
+    },
+    {
+      "id": "violet-crystal-outcrop",
+      "label": "Violet crystal outcrop",
+      "kind": "crystal",
+      "description": "Several tall violet crystals stand beside the upper bend of the stone path.",
+      "x": 21,
+      "y": 7
+    },
+    {
+      "id": "lower-luminous-pool",
+      "label": "Lower luminous pool",
+      "kind": "water",
+      "description": "A turquoise pool dotted with pale floating leaves lies beside the lower path.",
+      "x": 18,
+      "y": 24
+    },
+    {
+      "id": "eastern-waterfall",
+      "label": "Eastern waterfall",
+      "kind": "water",
+      "description": "A narrow pale waterfall shines between flowers and the right-hand trees.",
+      "x": 37,
+      "y": 9
+    },
+    {
+      "id": "oversized-flower-bank",
+      "label": "Oversized flower bank",
+      "kind": "vegetation",
+      "description": "Large peach, pink and yellow flowers rise above the path edge on the right.",
+      "x": 42,
+      "y": 14
+    }
+  ]
+}

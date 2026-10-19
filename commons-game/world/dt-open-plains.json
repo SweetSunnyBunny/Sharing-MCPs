@@ -1,0 +1,212 @@
+{
+  "id": "dt-open-plains",
+  "name": "Open Plains",
+  "subtitle": "Vast dusty plains stretching to the horizon.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/open_plains_start.png",
+  "region": "dusty_trails",
+  "game_location": "open-plains",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    ".............................................###",
+    "..........................................######",
+    "..........................................######",
+    ".........................................#######",
+    "##......................................###.....",
+    "####............................................",
+    "#####..........................................#",
+    "######...................................##.####",
+    "#######........................##...######.#####",
+    "###.........................###########..#######",
+    "............................#.........##########",
+    ".................................#..############",
+    "................................################",
+    "######...####.......................############",
+    "################.......................#########",
+    "#################.....................##########",
+    "##################....................#########.",
+    "#######################.###.............##......",
+    "###########################.....................",
+    "###########################.....................",
+    "########################........................",
+    "#######################.........................",
+    "#####################..........................."
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Town Square",
+      "x": 30.78125,
+      "y": 30.46875,
+      "w": 4.4375,
+      "h": 2.375,
+      "to": "dt-town-square",
+      "arriveAt": {
+        "x": 14.0,
+        "y": 21.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower right part of the room leads to Town Square. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Plains North",
+      "x": 21.515625,
+      "y": 13.859375,
+      "w": 2.78125,
+      "h": 1.71875,
+      "to": "dt-plains-north",
+      "arriveAt": {
+        "x": 17.0,
+        "y": 21.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the central middle part of the room leads to Northern Plains. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-2",
+      "label": "Campfire",
+      "x": 8.25,
+      "y": 20.46875,
+      "w": 3.5,
+      "h": 3.0,
+      "to": "dt-campfire",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 7.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the central left part of the room leads to Campfire. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "path-dusty-river",
+      "label": "Dusty River",
+      "to": "dusty-river",
+      "x": 5,
+      "y": 22,
+      "w": 2,
+      "h": 2,
+      "arriveAt": {
+        "x": 19.5,
+        "y": 19
+      },
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower left part of the room leads to Dusty River. Walk into the marked threshold to take that route."
+    }
+  ],
+  "npcs": [],
+  "fishing_zones": [
+    {
+      "id": "water-1",
+      "points": [
+        [
+          0.0,
+          24.96
+        ],
+        [
+          4.8,
+          24.32
+        ],
+        [
+          11.04,
+          25.28
+        ],
+        [
+          15.84,
+          27.2
+        ],
+        [
+          13.92,
+          29.12
+        ],
+        [
+          6.72,
+          30.08
+        ],
+        [
+          0.0,
+          29.44
+        ]
+      ]
+    }
+  ],
+  "fishing_pool": "dusty-river",
+  "description": "The open plains spread across a sunlit frontier valley beneath distant red mesas. A dusty track winds from the lower-right foreground through yellow grass and scrub, while a small blue pond fills a rocky hollow on the left. Low fences, timber structures and scattered barrels mark a modest working patch farther back. Boulders, cactus-like plants and sparse trees break up the open ground. Beyond them, broad flat-topped ridges stand against a blue sky with pale clouds. The path, pond and distant mesas give the plain depth without enclosing it; much of the scene is open grass and earth.",
+  "landmarks": [
+    {
+      "id": "plains-pond",
+      "label": "Plains pond",
+      "kind": "water",
+      "description": "A small blue pond lies among pale rocks and scrub on the lower left.",
+      "x": 12,
+      "y": 25
+    },
+    {
+      "id": "winding-plains-track",
+      "label": "Winding plains track",
+      "kind": "path",
+      "description": "A dusty track bends through the grass from the lower-right foreground.",
+      "x": 32,
+      "y": 25
+    },
+    {
+      "id": "low-frontier-fencing",
+      "label": "Low frontier fencing",
+      "kind": "scenery",
+      "description": "Short wooden fences and small structures divide patches of the open ground.",
+      "x": 25,
+      "y": 16
+    },
+    {
+      "id": "distant-red-mesas",
+      "label": "Distant red mesas",
+      "kind": "rock",
+      "description": "Flat-topped red and ochre ridges rise beyond the grassy valley.",
+      "x": 27,
+      "y": 6
+    },
+    {
+      "id": "eastern-scrub-bank",
+      "label": "Eastern scrub bank",
+      "kind": "vegetation",
+      "description": "Sparse trees, cactus-like plants and low bushes surround the rocks on the right.",
+      "x": 40,
+      "y": 20
+    }
+  ]
+}

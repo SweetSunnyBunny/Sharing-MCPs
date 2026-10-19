@@ -1,0 +1,134 @@
+{
+  "hunts_per_day": 4,
+  "grounds": {
+    "the deep wood": [
+      "wild hare",
+      "grouse",
+      "pheasant",
+      "red deer",
+      "wild boar"
+    ]
+  },
+  "quarry": {
+    "wild hare": {
+      "difficulty": 8,
+      "rarity": "common",
+      "line": "A hare breaks from the bracken in one long grey streak.",
+      "success": "Clean and quick. The hare comes home as meat and hide, and nothing is wasted.",
+      "escapes": [
+        "The hare turns once where the ground falls away and is gone before you can follow.",
+        "The hare doubles back through the bracken; by the time you read the track, it is cold."
+      ],
+      "loot": {
+        "hare meat": {
+          "min": 1,
+          "max": 1,
+          "yields": "game"
+        },
+        "hare hide": {
+          "min": 1,
+          "max": 1,
+          "yields": "hide"
+        }
+      }
+    },
+    "grouse": {
+      "difficulty": 9,
+      "rarity": "common",
+      "line": "The grouse erupts almost underfoot, wings hammering the quiet apart.",
+      "success": "One sure shot through the trees. Meat and feathers come home.",
+      "escapes": [
+        "The grouse is already behind three trunks before the bow is level.",
+        "A burst of wings, one falling feather, and empty air."
+      ],
+      "loot": {
+        "grouse meat": {
+          "min": 1,
+          "max": 1,
+          "yields": "game"
+        },
+        "grouse feathers": {
+          "min": 1,
+          "max": 2,
+          "yields": "feather"
+        }
+      }
+    },
+    "pheasant": {
+      "difficulty": 10,
+      "rarity": "common",
+      "line": "Copper and green flash low between the hazels, bright enough to betray the bird.",
+      "success": "The pheasant drops cleanly. The long flight feathers are kept with the meat.",
+      "escapes": [
+        "The pheasant climbs hard through a gap in the canopy and clears the wood.",
+        "You catch the colour a heartbeat too late; it is already over the hedge."
+      ],
+      "loot": {
+        "pheasant meat": {
+          "min": 1,
+          "max": 1,
+          "yields": "game"
+        },
+        "pheasant feathers": {
+          "min": 1,
+          "max": 2,
+          "yields": "feather"
+        }
+      }
+    },
+    "red deer": {
+      "difficulty": 13,
+      "rarity": "uncommon",
+      "line": "A red deer stands beyond the birches, listening with its whole body.",
+      "success": "A hard hunt, ended cleanly. Venison, hide, and what the antlers give come home.",
+      "escapes": [
+        "The deer catches the wind, bounds once, and the whole herd pours away behind it.",
+        "One branch snaps under your heel. The deer is gone before the sound finishes."
+      ],
+      "loot": {
+        "venison": {
+          "min": 2,
+          "max": 3,
+          "yields": "game"
+        },
+        "red deer hide": {
+          "min": 1,
+          "max": 1,
+          "yields": "hide"
+        },
+        "shed antler": {
+          "min": 0,
+          "max": 1,
+          "yields": "antler"
+        }
+      }
+    },
+    "wild boar": {
+      "difficulty": 15,
+      "rarity": "uncommon",
+      "line": "The boar works the roots under an oak, black-backed and heavier than it first looked.",
+      "success": "The boar is brought down cleanly. Meat, hide, and tusk are carried out together.",
+      "escapes": [
+        "The boar crashes straight through cover too dense to follow and keeps going.",
+        "It wheels at the last instant and vanishes down an old run under the holly."
+      ],
+      "loot": {
+        "boar meat": {
+          "min": 2,
+          "max": 3,
+          "yields": "game"
+        },
+        "boar hide": {
+          "min": 1,
+          "max": 1,
+          "yields": "hide"
+        },
+        "boar tusk": {
+          "min": 0,
+          "max": 1,
+          "yields": "antler"
+        }
+      }
+    }
+  }
+}

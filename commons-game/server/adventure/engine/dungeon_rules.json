@@ -1,0 +1,94 @@
+{
+  "base_stat": 10,
+  "level_divisor": 2,
+  "type_bonuses": {
+    "all": { "str": 0, "dex": 0, "int": 0, "wis": 0, "cha": 0 },
+    "lycanthrope": { "str": 2, "dex": 1, "int": 0, "wis": 0, "cha": 0 },
+    "lycanthrope_alpha": { "str": 3, "dex": 1, "int": 0, "wis": 0, "cha": 0 },
+    "celestial": { "str": 1, "dex": 0, "int": 0, "wis": 2, "cha": 1 },
+    "catfolk": { "str": 0, "dex": 2, "int": 0, "wis": 0, "cha": 1 },
+    "unicorn": { "str": 0, "dex": 0, "int": 0, "wis": 2, "cha": 1 },
+    "magus": { "str": 0, "dex": 0, "int": 2, "wis": 1, "cha": 0 },
+    "demigod": { "str": 2, "dex": 2, "int": 2, "wis": 2, "cha": 2 }
+  },
+  "bonus_room_chance": 0.25,
+  "boss_chest_chance": 0.35,
+  "boss_chest_currency_bonus": {
+    "min": 20,
+    "max": 40
+  },
+  "room_affixes": [
+    {
+      "id": "gloom",
+      "name": "Gloom",
+      "description": "A heavy shadow dulls every strike.",
+      "effects": { "player_attack": -1 }
+    },
+    {
+      "id": "frenzied",
+      "name": "Frenzied",
+      "description": "Enemies move faster than they should.",
+      "effects": { "enemy_attack": 1 }
+    },
+    {
+      "id": "ravaging",
+      "name": "Ravaging",
+      "description": "Every blow bites deeper.",
+      "effects": { "enemy_damage": 1 }
+    },
+    {
+      "id": "shifting",
+      "name": "Shifting",
+      "description": "The room bends, throwing off aim.",
+      "effects": { "enemy_ac": 1 }
+    }
+  ],
+  "dungeon_titles": {
+    "heros_journey": [
+      { "renown": 3, "title": "Cryptwalker" },
+      { "renown": 6, "title": "Moonblade" },
+      { "renown": 10, "title": "Feybound" }
+    ],
+    "dusty_trails": [
+      { "renown": 3, "title": "Trailblazer" },
+      { "renown": 6, "title": "Steel Rider" },
+      { "renown": 10, "title": "Ghost of the West" }
+    ],
+    "black_serenity": [
+      { "renown": 3, "title": "Void Drifter" },
+      { "renown": 6, "title": "Signalbreaker" },
+      { "renown": 10, "title": "Starforged" }
+    ]
+  },
+  "roles": {
+    "bard": {
+      "abilities": ["inspire", "sing"],
+      "buff_attack": 2
+    },
+    "caster": {
+      "abilities": ["focus", "fireball"],
+      "spell_attack_bonus": 1,
+      "fireball_damage": "3d6"
+    },
+    "fighter": {
+      "abilities": ["guard", "taunt"],
+      "damage_bonus": 1
+    },
+    "ranger": {
+      "abilities": ["guard", "taunt"],
+      "ranged_attack_bonus": 1
+    },
+    "rogue": {
+      "abilities": ["guard", "taunt"],
+      "first_strike_attack_bonus": 1
+    },
+    "cleric": {
+      "abilities": ["aid", "guard"],
+      "aid_heal_bonus": 5
+    },
+    "barbarian": {
+      "abilities": ["guard", "taunt"],
+      "ac_bonus": 2
+    }
+  }
+}

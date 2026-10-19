@@ -1,0 +1,310 @@
+{
+  "id": "canyon-overlook",
+  "name": "Canyon Overlook",
+  "subtitle": "A path through dusty trails",
+  "view": "top",
+  "tile": 32,
+  "region": "dusty_trails",
+  "game_location": "canyon-overlook",
+  "sky": "#101925",
+  "legend": {
+    ".": {
+      "name": "floor",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "wall",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 35.25,
+    "y": 22.5
+  },
+  "props": [
+    {
+      "id": "return-path",
+      "label": "Return to dt plains north2",
+      "to": "dt-plains-north2",
+      "x": 32.5,
+      "y": 26.5,
+      "w": 4.0,
+      "h": 2.0,
+      "arriveAt": {
+        "x": 28.5,
+        "y": 14.5
+      },
+      "invisible": true,
+      "note": "This passage in the lower right part of the room leads to Far Northern Plains. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    }
+  ],
+  "npcs": [],
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/canyon-overlook.png?v=c6b323270b",
+  "fishing_zones": [
+    {
+      "id": "water-1",
+      "points": [
+        [
+          13.2,
+          0.0
+        ],
+        [
+          17.2,
+          0.0
+        ],
+        [
+          16.8,
+          2.24
+        ],
+        [
+          18.8,
+          4.48
+        ],
+        [
+          22.8,
+          6.16
+        ],
+        [
+          27.2,
+          8.12
+        ],
+        [
+          30.0,
+          8.96
+        ],
+        [
+          28.0,
+          9.8
+        ],
+        [
+          22.8,
+          9.52
+        ],
+        [
+          20.0,
+          7.84
+        ],
+        [
+          18.8,
+          5.88
+        ],
+        [
+          17.2,
+          4.76
+        ],
+        [
+          14.8,
+          3.64
+        ],
+        [
+          13.6,
+          1.96
+        ]
+      ]
+    },
+    {
+      "id": "water-2",
+      "points": [
+        [
+          0.0,
+          10.92
+        ],
+        [
+          4.8,
+          10.36
+        ],
+        [
+          8.4,
+          10.64
+        ],
+        [
+          12.8,
+          12.04
+        ],
+        [
+          18.0,
+          12.32
+        ],
+        [
+          18.8,
+          14.56
+        ],
+        [
+          18.8,
+          16.24
+        ],
+        [
+          14.0,
+          15.68
+        ],
+        [
+          10.0,
+          14.56
+        ],
+        [
+          8.4,
+          13.44
+        ],
+        [
+          6.0,
+          14.56
+        ],
+        [
+          8.0,
+          16.52
+        ],
+        [
+          13.2,
+          17.08
+        ],
+        [
+          11.6,
+          18.2
+        ],
+        [
+          6.4,
+          17.64
+        ],
+        [
+          3.2,
+          15.96
+        ],
+        [
+          1.2,
+          14.56
+        ],
+        [
+          0.0,
+          14.56
+        ]
+      ]
+    },
+    {
+      "id": "water-3",
+      "points": [
+        [
+          20.4,
+          12.6
+        ],
+        [
+          25.2,
+          13.16
+        ],
+        [
+          30.0,
+          12.88
+        ],
+        [
+          35.2,
+          12.88
+        ],
+        [
+          40.0,
+          11.48
+        ],
+        [
+          40.0,
+          19.04
+        ],
+        [
+          37.2,
+          19.88
+        ],
+        [
+          32.4,
+          18.76
+        ],
+        [
+          28.8,
+          17.64
+        ],
+        [
+          24.8,
+          17.64
+        ],
+        [
+          21.2,
+          16.8
+        ]
+      ]
+    }
+  ],
+  "fishing_pool": "canyon-overlook",
+  "wildlife_location": "open-plains",
+  "description": "Canyon Overlook faces a broad frontier landscape cut by a blue river. The water bends between ochre rock banks and dry grassy islands, with a timber bridge crossing near the centre. A dusty path approaches the bridge from the lower foreground, passing scattered boulders, low shrubs and prickly plants. Clumps of green trees follow the water, while reddish cliffs and mesas rise farther back. A painted sign on the upper-left bank reads Dusty River. The open ground and winding water make this a long view into the landscape, rather than a sheltered indoor room.",
+  "landmarks": [
+    {
+      "id": "river-bridge",
+      "label": "River bridge",
+      "kind": "bridge",
+      "description": "A narrow timber bridge crosses the river where the foreground path reaches the water.",
+      "x": 20,
+      "y": 13
+    },
+    {
+      "id": "winding-frontier-river",
+      "label": "Winding frontier river",
+      "kind": "water",
+      "description": "Blue water bends around dry islands and tree-lined banks across the upper half of the scene.",
+      "x": 24,
+      "y": 8
+    },
+    {
+      "id": "dusty-approach-path",
+      "label": "Dusty approach path",
+      "kind": "path",
+      "description": "A pale dirt path climbs from the lower foreground towards the bridge.",
+      "x": 22,
+      "y": 23
+    },
+    {
+      "id": "western-river-sign",
+      "label": "Western river sign",
+      "kind": "sign",
+      "description": "A small sign reading Dusty River stands near the upper-left bank.",
+      "x": 4,
+      "y": 3
+    },
+    {
+      "id": "red-rock-banks",
+      "label": "Red rock banks",
+      "kind": "rock",
+      "description": "Ochre and reddish rock shelves frame the water and the scrub-covered ground.",
+      "x": 35,
+      "y": 15
+    }
+  ]
+}

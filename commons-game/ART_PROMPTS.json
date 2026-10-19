@@ -1,0 +1,18 @@
+{
+  "generator": "Built-in image generation tool",
+  "date": "2026-10-19",
+  "images": [
+    {
+      "id": "main-house",
+      "prompt": "Use case: stylized-concept. Original landscape 3:2 background for a top-down 2D browser RPG, ideally 1536x1024. Orthographic bird's-eye game map; polished hand-painted cozy storybook art, fine painterly textures, detailed edge furnishings, harmonious muted greens, honey wood and warm lantern accents. One complete continuous environment, no panels. A shared cottage living room, comfortable moss-green sofas and amber armchairs tucked along the outermost walls, bookshelves, plants and a lit fireplace at the extreme upper edge. A broad empty honey oak floor with a subtle woven runner fills the central 75 percent. Keep the central 75 percent unobstructed and clearly walkable, with all furniture, large vegetation, structures and solid objects pushed to the outermost perimeter. This is an illustrative background beneath independently rendered characters, doorways and fixtures. No people, animals, silhouettes, character sprites, text, lettering, labels, UI, logos, watermarks, grid lines, personal references, private household memorabilia or perspective horizon.",
+      "sha256": "6de8827305069695bd6ad6dfc05f94e98f7d4515749a17de398bbb43fa1a175f",
+      "file": "maps/public-home/main-house.png"
+    },
+    {
+      "id": "garden",
+      "prompt": "Use case: stylized-concept. Original landscape 3:2 background for a top-down 2D browser RPG, ideally 1536x1024. Orthographic bird's-eye game map; polished hand-painted cozy storybook art, fine painterly textures, detailed edge furnishings, harmonious muted greens, honey wood and warm lantern accents. One complete continuous environment, no panels. A walled kitchen garden, four modest raised vegetable beds, potting tools, trellises and flowers tucked into the perimeter, a little greenhouse roof just at one corner. Broad empty green ground and pale stone paths fill the central 75 percent, with room for player-planted crops. Keep the central 75 percent unobstructed and clearly walkable, with all furniture, large vegetation, structures and solid objects pushed to the outermost perimeter. This is an illustrative background beneath independently rendered characters, doorways and fixtures. No people, animals, silhouettes, character sprites, text, lettering, labels, UI, logos, watermarks, grid lines, personal references, private household memorabilia or perspective horizon.",
+      "sha256": "400706e2a121e32337c777ca68e8cc755fc8a0bff7e0ba5ea9cd3eb0fab84527",
+      "file": "maps/public-home/garden.png"
+    }
+  ]
+}

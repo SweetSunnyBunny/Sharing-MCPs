@@ -1,0 +1,274 @@
+{
+  "quest_pool": [
+    {
+      "quest_id": "collect_wanted_posters",
+      "title": "Post These Wanted Posters",
+      "given_by": "Sheriff",
+      "action_type": "collect",
+      "objective": "Post 5 wanted posters around the campfire",
+      "description": "We got some outlaws causin' trouble. Post these wanted posters around the campfire.",
+      "target_item": "posters",
+      "target_amount": 5,
+      "required_location": "around-the-campfire",
+      "reward_currency": 10.00,
+      "reward_items": [],
+      "difficulty": "easy"
+    },
+    
+    {
+      "quest_id": "hunt_coyotes",
+      "title": "Coyote Problem",
+      "given_by": "Sheriff",
+      "action_type": "hunt",
+      "objective": "Hunt 3 coyotes in the abandoned mine",
+      "description": "Coyotes been hiding in that old mine. Deal with 'em.",
+      "target_item": "coyote",
+      "target_amount": 3,
+      "required_location": "abandoned-mine",
+      "reward_currency": 25.00,
+      "reward_items": ["Coyote Pelt"],
+      "difficulty": "medium"
+    },
+    
+    {
+      "quest_id": "collect_gold_nuggets",
+      "title": "Gold Rush",
+      "given_by": "Miss_Kitty",
+      "action_type": "collect",
+      "objective": "Collect 8 gold nuggets from the abandoned mine",
+      "description": "There's still gold in that old mine, sugar! Bring me some nuggets and I'll pay fair.",
+      "target_item": "gold nuggets",
+      "target_amount": 8,
+      "required_location": "abandoned-mine",
+      "reward_currency": 30.00,
+      "reward_items": ["Whiskey Bottle"],
+      "difficulty": "medium"
+    },
+    
+    {
+      "quest_id": "hunt_bandits",
+      "title": "Bandit Trouble",
+      "given_by": "Sheriff",
+      "action_type": "hunt",
+      "objective": "Hunt down 2 bandits hiding near the campfire",
+      "description": "Got reports of bandits lurking around. Bring 'em to justice!",
+      "target_item": "bandit",
+      "target_amount": 2,
+      "required_location": "around-the-campfire",
+      "reward_currency": 50.00,
+      "reward_items": ["Deputy Badge"],
+      "difficulty": "hard"
+    },
+    
+    {
+      "quest_id": "hunt_rabbits",
+      "title": "Fresh Meat",
+      "given_by": "Miss_Kitty",
+      "action_type": "hunt",
+      "objective": "Hunt 5 rabbits on the open plains",
+      "description": "Darlin', I need fresh meat for the kitchen. Could you hunt me some rabbits out on the plains?",
+      "target_item": "rabbit",
+      "target_amount": 5,
+      "required_location": "open-plains",
+      "reward_currency": 20.00,
+      "reward_items": ["Steak Dinner"],
+      "difficulty": "easy"
+    },
+
+    {
+      "quest_id": "hunt_pronghorn",
+      "title": "Big Game",
+      "given_by": "Miss_Kitty",
+      "action_type": "hunt",
+      "objective": "Hunt 2 pronghorn on the open plains",
+      "description": "I got a special order, sugar. Need some pronghorn for a fancy dinner. Think you can handle it?",
+      "target_item": "pronghorn",
+      "target_amount": 2,
+      "required_location": "open-plains",
+      "reward_currency": 35.00,
+      "reward_items": ["Fine Bourbon"],
+      "difficulty": "medium"
+    },
+
+    {
+      "quest_id": "gather_sage",
+      "title": "Herbal Remedies",
+      "given_by": "Miss_Kitty",
+      "action_type": "gather",
+      "objective": "Gather 6 sage from the open plains",
+      "description": "Doc needs some sage for medicine, darlin'. Folks been gettin' sick and we're runnin' low.",
+      "target_item": "sage",
+      "target_amount": 6,
+      "required_location": "open-plains",
+      "reward_currency": 15.00,
+      "reward_items": ["Bandages"],
+      "difficulty": "easy"
+    },
+
+    {
+      "quest_id": "mine_silver",
+      "title": "Silver Strike",
+      "given_by": "Miss_Kitty",
+      "action_type": "gather",
+      "objective": "Mine 5 silver ore from the abandoned mine",
+      "description": "A jeweler's comin' through town next week. Get me some silver ore and I'll make it worth your while.",
+      "target_item": "silver ore",
+      "target_amount": 5,
+      "required_location": "abandoned-mine",
+      "reward_currency": 35.00,
+      "reward_items": [],
+      "difficulty": "medium"
+    },
+
+    {
+      "quest_id": "hunt_wolves",
+      "title": "Wolf Pack",
+      "given_by": "Sheriff",
+      "action_type": "hunt",
+      "objective": "Hunt 2 wolves on the open plains",
+      "description": "Wolves been spookin' the cattle. Ranchers are complainin'. Handle it.",
+      "target_item": "wolf",
+      "target_amount": 2,
+      "required_location": "open-plains",
+      "reward_currency": 40.00,
+      "reward_items": ["Wolf Pelt"],
+      "difficulty": "medium"
+    },
+
+    {
+      "quest_id": "hunt_rattlesnakes",
+      "title": "Snake Pit",
+      "given_by": "Sheriff",
+      "action_type": "hunt",
+      "objective": "Clear 4 rattlesnakes from the abandoned mine",
+      "description": "Miners found a nest of rattlers down in the old shaft. Make it safe for 'em.",
+      "target_item": "rattlesnake",
+      "target_amount": 4,
+      "required_location": "abandoned-mine",
+      "reward_currency": 25.00,
+      "reward_items": ["Snake Bite Kit"],
+      "difficulty": "medium"
+    },
+
+    {
+      "quest_id": "gather_coal",
+      "title": "Fuel for the Forge",
+      "given_by": "Sheriff",
+      "action_type": "gather",
+      "objective": "Gather 10 coal from the abandoned mine",
+      "description": "Blacksmith needs coal. Town's runnin' low and winter's comin'.",
+      "target_item": "coal",
+      "target_amount": 10,
+      "required_location": "abandoned-mine",
+      "reward_currency": 20.00,
+      "reward_items": [],
+      "difficulty": "easy"
+    },
+
+    {
+      "quest_id": "tame_horse",
+      "title": "Wild Mustang",
+      "given_by": "Sheriff",
+      "action_type": "tame",
+      "objective": "Tame a wild horse on the open plains",
+      "description": "Town could use more horses. There's wild mustangs out on the plains. Bring one back.",
+      "target_item": "wild horse",
+      "target_amount": 1,
+      "required_location": "open-plains",
+      "reward_currency": 50.00,
+      "reward_items": ["Lasso"],
+      "difficulty": "hard"
+    },
+
+    {
+      "quest_id": "hunt_bison",
+      "title": "The Great Hunt",
+      "given_by": "Miss_Kitty",
+      "action_type": "hunt",
+      "objective": "Hunt 1 bison on the open plains",
+      "description": "Sugar, I need bison meat for the biggest feast this town's ever seen. Think you're up for it?",
+      "target_item": "bison",
+      "target_amount": 1,
+      "required_location": "open-plains",
+      "reward_currency": 60.00,
+      "reward_items": ["Fine Bourbon", "Steak Dinner"],
+      "difficulty": "hard"
+    },
+
+    {
+      "quest_id": "gather_wild_herbs",
+      "title": "Trail Medicine",
+      "given_by": "Miss_Kitty",
+      "action_type": "gather",
+      "objective": "Gather 4 wild herbs from the open plains",
+      "description": "Travelers comin' through need medicine for the road. Get me some wild herbs, would ya?",
+      "target_item": "wild herbs",
+      "target_amount": 4,
+      "required_location": "open-plains",
+      "reward_currency": 18.00,
+      "reward_items": [],
+      "difficulty": "easy"
+    },
+
+    {
+      "quest_id": "tame_hawk",
+      "title": "Eyes in the Sky",
+      "given_by": "Sheriff",
+      "action_type": "tame",
+      "objective": "Tame a hawk on the open plains",
+      "description": "A trained hawk would help us spot trouble comin'. There's hawks out on the plains.",
+      "target_item": "hawk",
+      "target_amount": 1,
+      "required_location": "open-plains",
+      "reward_currency": 45.00,
+      "reward_items": [],
+      "difficulty": "hard"
+    },
+
+    {
+      "quest_id": "hunt_hawks",
+      "title": "Chicken Thieves",
+      "given_by": "Miss_Kitty",
+      "action_type": "hunt",
+      "objective": "Hunt 3 hawks on the open plains",
+      "description": "Hawks been stealin' chickens from the farms, darlin'. Farmers are mighty upset.",
+      "target_item": "hawk",
+      "target_amount": 3,
+      "required_location": "open-plains",
+      "reward_currency": 25.00,
+      "reward_items": ["Hawk Feathers"],
+      "difficulty": "medium"
+    },
+
+    {
+      "quest_id": "gather_dynamite",
+      "title": "Explosive Situation",
+      "given_by": "Sheriff",
+      "action_type": "gather",
+      "objective": "Carefully recover 2 dynamite from the abandoned mine",
+      "description": "Old dynamite in that mine is dangerous. Retrieve it careful-like before someone gets hurt.",
+      "target_item": "dynamite",
+      "target_amount": 2,
+      "required_location": "abandoned-mine",
+      "reward_currency": 40.00,
+      "reward_items": [],
+      "difficulty": "hard"
+    }
+  ],
+  "quest_cooldown_hours": 1,
+
+  "difficulty_rewards": {
+    "easy": {
+      "dollar_range": [10.00, 20.00],
+      "bonus_items": []
+    },
+    "medium": {
+      "dollar_range": [20.00, 35.00],
+      "bonus_items": ["Whiskey Bottle"]
+    },
+    "hard": {
+      "dollar_range": [35.00, 60.00],
+      "bonus_items": ["Deputy Badge", "Fine Cigar"]
+    }
+  }
+}

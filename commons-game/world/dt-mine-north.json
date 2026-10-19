@@ -1,0 +1,126 @@
+{
+  "id": "dt-mine-north",
+  "name": "Mine Depths",
+  "subtitle": "The deepest part of the mine. What lies here?",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/abandoned_mine_north.png",
+  "region": "dusty_trails",
+  "game_location": "abandoned-mine",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "#############################.....##############",
+    "#############################.....##############",
+    "#############################.....##############",
+    "#############################....###############",
+    "############################.....###############",
+    "##########################.....#################",
+    "#########################.....##################",
+    "#######################......###################",
+    "##..##################......####################",
+    ".....###############........####################",
+    "......#############.........####################",
+    ".......###########.........#####################",
+    "........#########..........#####################",
+    "........########..............##################",
+    "........########................################",
+    "........#######................#################",
+    "........#####..................#################",
+    "##.......##....................#################",
+    "###............................#################",
+    "#####..........................#################",
+    "######.........................#################",
+    "########.##.......................##############",
+    "##############....................##############",
+    "###############......................###########",
+    "################......................##########",
+    "###############......................###########",
+    "###############.....................############",
+    "###############.....................############"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Mine Interior",
+      "x": 4.5,
+      "y": 20.1875,
+      "w": 3.875,
+      "h": 6.4375,
+      "to": "dt-mine-inside",
+      "arriveAt": {
+        "x": 13.0,
+        "y": 11.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the central left part of the room leads to Mine Interior. Walk into the marked threshold to take that route."
+    }
+  ],
+  "npcs": [],
+  "description": "The mine depths narrow around a rail line that curves from the lower-left foreground towards a dark passage at the upper right. Heavy beams and braced posts hold the rock overhead, each lit in places by hanging lanterns. Barrels, crates and small buckets are pressed against the walls, and coils or loose tools lie on the rough earth beside the tracks. A mine cart rests along the upper-left side. The strongest light falls on the central floor and the supports nearest the viewer; beyond them, the track disappears beneath darker timber and stone.",
+  "landmarks": [
+    {
+      "id": "rail-towards-the-deeper-passage",
+      "label": "Rail towards the deeper passage",
+      "kind": "path",
+      "description": "The rail curves across the chamber towards the shadowed upper-right tunnel.",
+      "x": 25,
+      "y": 16
+    },
+    {
+      "id": "braced-timber-supports",
+      "label": "Braced timber supports",
+      "kind": "scenery",
+      "description": "Heavy wooden posts and crossbeams divide the rock chamber into narrow bays.",
+      "x": 31,
+      "y": 9
+    },
+    {
+      "id": "coiled-floor-equipment",
+      "label": "Coiled floor equipment",
+      "kind": "scenery",
+      "description": "A coil and loose mining implements lie beside the lower-right section of track.",
+      "x": 36,
+      "y": 25
+    },
+    {
+      "id": "upper-mine-cart",
+      "label": "Upper mine cart",
+      "kind": "machinery",
+      "description": "A mine cart sits against the left side beneath the lantern-lit supports.",
+      "x": 14,
+      "y": 10
+    },
+    {
+      "id": "shadowed-rock-passage",
+      "label": "Shadowed rock passage",
+      "kind": "tunnel",
+      "description": "The upper-right track disappears under dark rock and roof timbers.",
+      "x": 34,
+      "y": 5
+    }
+  ]
+}

@@ -1,0 +1,397 @@
+{
+  "id": "fey-wilds-north2",
+  "name": "Fey Court Approach",
+  "subtitle": "The path to the Fey Court itself.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/fey-wilds-north2.png",
+  "region": "heros_journey",
+  "game_location": "the-feywilds",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "#######################...######################",
+    "#######################..#######################",
+    "#######################...######################",
+    "######################....######################",
+    "######################.....#####################",
+    "######################......####################",
+    "#######################.....####################",
+    "#######################.....####################",
+    "####################.........###################",
+    "####################..........##################",
+    "####################..........##################",
+    "####################............################",
+    "####################.............###############",
+    "####################..............##############",
+    "####################...............#############",
+    "####################...............#############",
+    "###################................#############",
+    "###################................#############",
+    "##################................##############",
+    "##################.................#############",
+    "###################................#############",
+    "###################.................############",
+    "####################.................###########",
+    "####################.................###########",
+    "####################.................###########",
+    "####################.................###########",
+    "####################.................###########",
+    "###################..................###########",
+    "##################....................##########",
+    "#################....................###########",
+    "##############.......................###########",
+    "############.........................###########"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Fey Wilds",
+      "x": 16.5,
+      "y": 31.25,
+      "w": 12.0,
+      "h": 1.75,
+      "to": "fey-wilds-north1",
+      "arriveAt": {
+        "x": 23.5,
+        "y": 8.0
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the lower middle part of the room leads to Feywilds Depths. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "travel-1",
+      "label": "Wizard's Tower",
+      "x": 23.16,
+      "y": 8.06,
+      "w": 1.88,
+      "h": 1.88,
+      "to": "wizards-tower-outside",
+      "arriveAt": {
+        "x": 34.0,
+        "y": 16.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the upper middle part of the room leads to Wizard's Tower (Outside). Walk into the marked threshold to take that route.",
+      "kind": "door"
+    }
+  ],
+  "npcs": [],
+  "fishing_zones": [
+    {
+      "points": [
+        [
+          18.8,
+          15.2
+        ],
+        [
+          18.52,
+          15.97
+        ],
+        [
+          17.69,
+          16.67
+        ],
+        [
+          16.41,
+          17.22
+        ],
+        [
+          14.79,
+          17.58
+        ],
+        [
+          13.0,
+          17.7
+        ],
+        [
+          11.21,
+          17.58
+        ],
+        [
+          9.59,
+          17.22
+        ],
+        [
+          8.31,
+          16.67
+        ],
+        [
+          7.48,
+          15.97
+        ],
+        [
+          7.2,
+          15.2
+        ],
+        [
+          7.48,
+          14.43
+        ],
+        [
+          8.31,
+          13.73
+        ],
+        [
+          9.59,
+          13.18
+        ],
+        [
+          11.21,
+          12.82
+        ],
+        [
+          13.0,
+          12.7
+        ],
+        [
+          14.79,
+          12.82
+        ],
+        [
+          16.41,
+          13.18
+        ],
+        [
+          17.69,
+          13.73
+        ],
+        [
+          18.52,
+          14.43
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          38.8,
+          10.0
+        ],
+        [
+          38.61,
+          10.46
+        ],
+        [
+          38.07,
+          10.88
+        ],
+        [
+          37.23,
+          11.21
+        ],
+        [
+          36.17,
+          11.43
+        ],
+        [
+          35.0,
+          11.5
+        ],
+        [
+          33.83,
+          11.43
+        ],
+        [
+          32.77,
+          11.21
+        ],
+        [
+          31.93,
+          10.88
+        ],
+        [
+          31.39,
+          10.46
+        ],
+        [
+          31.2,
+          10.0
+        ],
+        [
+          31.39,
+          9.54
+        ],
+        [
+          31.93,
+          9.12
+        ],
+        [
+          32.77,
+          8.79
+        ],
+        [
+          33.83,
+          8.57
+        ],
+        [
+          35.0,
+          8.5
+        ],
+        [
+          36.17,
+          8.57
+        ],
+        [
+          37.23,
+          8.79
+        ],
+        [
+          38.07,
+          9.12
+        ],
+        [
+          38.61,
+          9.54
+        ]
+      ]
+    },
+    {
+      "points": [
+        [
+          18.0,
+          24.5
+        ],
+        [
+          17.61,
+          25.37
+        ],
+        [
+          16.47,
+          26.15
+        ],
+        [
+          14.7,
+          26.77
+        ],
+        [
+          12.47,
+          27.16
+        ],
+        [
+          10.0,
+          27.3
+        ],
+        [
+          7.53,
+          27.16
+        ],
+        [
+          5.3,
+          26.77
+        ],
+        [
+          3.53,
+          26.15
+        ],
+        [
+          2.39,
+          25.37
+        ],
+        [
+          2.0,
+          24.5
+        ],
+        [
+          2.39,
+          23.63
+        ],
+        [
+          3.53,
+          22.85
+        ],
+        [
+          5.3,
+          22.23
+        ],
+        [
+          7.53,
+          21.84
+        ],
+        [
+          10.0,
+          21.7
+        ],
+        [
+          12.47,
+          21.84
+        ],
+        [
+          14.7,
+          22.23
+        ],
+        [
+          16.47,
+          22.85
+        ],
+        [
+          17.61,
+          23.63
+        ]
+      ]
+    }
+  ],
+  "description": "The approach towards the Fey Court remains a wooded path rather than a visible palace. Pale stones lead up between several blue-green pools, each bordered by moss, rounded rocks and dense flowers. Enormous blue mushrooms lean over the left side, violet crystals rise above the upper path, and golden points of light hang among the trees. On the right, a slender waterfall and large peach-coloured flowers brighten the darker woodland. The lower foreground is full of curled ferns and small mushrooms; the upper centre opens into a hazy, brighter passage through the trees.",
+  "landmarks": [
+    {
+      "id": "court-approach-path",
+      "label": "Court approach path",
+      "kind": "path",
+      "description": "A pale stone path winds through the pools towards a brighter woodland opening.",
+      "x": 25,
+      "y": 17
+    },
+    {
+      "id": "violet-crystal-bank",
+      "label": "Violet crystal bank",
+      "kind": "crystal",
+      "description": "Purple crystals stand above the water beside the upper path.",
+      "x": 19,
+      "y": 7
+    },
+    {
+      "id": "eastern-luminous-pool",
+      "label": "Eastern luminous pool",
+      "kind": "water",
+      "description": "A narrow waterfall reaches a glowing blue-green pool on the right.",
+      "x": 38,
+      "y": 12
+    },
+    {
+      "id": "great-blue-mushrooms",
+      "label": "Great blue mushrooms",
+      "kind": "vegetation",
+      "description": "Huge blue mushroom caps shelter the smaller growth on the left.",
+      "x": 6,
+      "y": 6
+    },
+    {
+      "id": "fern-curled-foreground",
+      "label": "Fern-curled foreground",
+      "kind": "vegetation",
+      "description": "Spiral fern forms, moss and small mushrooms fill the lower edge of the painting.",
+      "x": 11,
+      "y": 27
+    }
+  ]
+}

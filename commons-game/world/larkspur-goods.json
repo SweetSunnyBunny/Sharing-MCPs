@@ -1,0 +1,190 @@
+{
+  "id": "larkspur-goods",
+  "name": "Larkspur Goods",
+  "subtitle": "Cassian's general store - supplies for every adventure.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/the-village-square%20Larkspur%20Goods.png",
+  "region": "heros_journey",
+  "game_location": "village-square",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "#################.#..###########################",
+    "#################....###########################",
+    "################.....###########################",
+    "#############..........#########################",
+    "############............########################",
+    "##########................######################",
+    "#####.###..................#####################",
+    "#######.###................######..#############",
+    "###########.................#....###############",
+    "###########.....................################",
+    "###########.....#...............################",
+    "###########...####............##################",
+    "###########.#######..........###################",
+    "#####################........##################.",
+    "######################.......#################..",
+    "#######################........############.....",
+    "#######################..........#########......",
+    "#######################..........########.......",
+    "#######################..............###........",
+    "####################............................",
+    "###################............................."
+  ],
+  "spawn": {
+    "x": 26.25,
+    "y": 26.0
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Village Square",
+      "x": 41.75,
+      "y": 31.0,
+      "w": 6.0,
+      "h": 4.0,
+      "to": "village-square",
+      "arriveAt": {
+        "x": 22.5,
+        "y": 16.0
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the lower right part of the room leads to Village Square. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "npc-cassian",
+      "label": "Cassian",
+      "game_npc": "cassian",
+      "x": 18.94,
+      "y": 11.59,
+      "w": 1.2,
+      "h": 2.0,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Cassian.",
+      "npc_sheet": "assets/adventure/sprites/conversational NPCs/cassian sprite.png",
+      "npc_frame": 64,
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "counter stool",
+      "x": 28.18,
+      "y": 18.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.28,
+            "y": 19.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Counter stool, in the central middle part of the room, beside the shop counter and stone fireplace. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "fireside chair",
+      "x": 13.78,
+      "y": 9.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 14.88,
+            "y": 9.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Fireside chair, in the upper left part of the room, beside the shop counter and stone fireplace. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "cassian",
+      "name": "Cassian",
+      "role": "Shopkeeper"
+    }
+  ],
+  "description": "Larkspur Goods is a compact timber shop packed with supplies. Bottles, jars, parcels and small boxes fill the tall shelves along the upper and right walls. A long counter with two stools divides the shop floor from the stock behind it. On the left, a stone fireplace burns beside stacked barrels and a chair, and a circular orange rug fills the open boards in the middle. Smaller tables hold glassware and tools near the lower edge, with bundles, sacks and crates tucked into the corners. Lanterns and the fire throw amber light across the wood, giving the stocked room a bright, close interior.",
+  "landmarks": [
+    {
+      "id": "supply-counter",
+      "label": "Supply counter",
+      "kind": "counter",
+      "description": "A long wooden counter displays jars and small supplies, with stools on the room side.",
+      "x": 24,
+      "y": 12
+    },
+    {
+      "id": "stone-shop-fireplace",
+      "label": "Stone shop fireplace",
+      "kind": "fireplace",
+      "description": "A lit stone fireplace and stacked barrels occupy the left wall.",
+      "x": 8,
+      "y": 11
+    },
+    {
+      "id": "round-floor-rug",
+      "label": "Round floor rug",
+      "kind": "scenery",
+      "description": "An orange circular rug leaves a clear standing space between the counter and the fire.",
+      "x": 23,
+      "y": 21
+    },
+    {
+      "id": "eastern-stock-shelves",
+      "label": "Eastern stock shelves",
+      "kind": "bookshelves",
+      "description": "Deep shelves contain jars, parcels, bags and folded goods along the right wall.",
+      "x": 42,
+      "y": 14
+    },
+    {
+      "id": "glassware-display-table",
+      "label": "Glassware display table",
+      "kind": "table",
+      "description": "Bottles, colourful glassware and small implements cover the table near the lower edge.",
+      "x": 15,
+      "y": 28
+    }
+  ]
+}

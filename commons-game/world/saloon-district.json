@@ -1,0 +1,151 @@
+{
+  "id": "saloon-district",
+  "name": "Saloon District",
+  "subtitle": "A path through dusty trails",
+  "view": "top",
+  "tile": 32,
+  "region": "dusty_trails",
+  "game_location": "saloon-district",
+  "sky": "#101925",
+  "legend": {
+    ".": {
+      "name": "floor",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "wall",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.5,
+    "y": 19.0
+  },
+  "props": [
+    {
+      "id": "return-path",
+      "label": "Return to dt town square",
+      "to": "dt-town-square",
+      "x": 18.0,
+      "y": 7.0,
+      "w": 6.25,
+      "h": 3.0,
+      "arriveAt": {
+        "x": 24.0,
+        "y": 15.5
+      },
+      "invisible": true,
+      "note": "This passage in the upper middle part of the room leads to Town Square. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "id": "seat-1",
+      "label": "street bench",
+      "x": 12.5,
+      "y": 23.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 13.6,
+            "y": 23.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Street bench, in the lower left part of the room, beside the lantern-lit frontier street. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    }
+  ],
+  "npcs": [],
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/saloon-district.png?v=b742e78cc4",
+  "description": "The Saloon District is a lantern-lit frontier street surrounded by brightly signed timber establishments. The Lucky Horse Saloon stands on the upper left, Rusted Dice on the upper right, Scarlet Rose on the lower left and Midnight Star across the street. Red and amber windows shine beneath the porches. A sign reading Saloon District spans the upper route between the buildings, while barrels, wagon equipment and sparse desert plants fill the street edges. A bench rests near the lower middle. The wide dusty lane links the shopfront scenery into one district; only the room's listed exits define travel beyond it.",
+  "landmarks": [
+    {
+      "id": "saloon-district-overhead-sign",
+      "label": "Saloon District overhead sign",
+      "kind": "sign",
+      "description": "A large sign spans the upper street between the timber frontages.",
+      "x": 22,
+      "y": 5
+    },
+    {
+      "id": "lucky-horse-frontage",
+      "label": "Lucky Horse frontage",
+      "kind": "shopfront",
+      "description": "The Lucky Horse Saloon sign and porch occupy the upper-left block.",
+      "x": 10,
+      "y": 8
+    },
+    {
+      "id": "rusted-dice-frontage",
+      "label": "Rusted Dice frontage",
+      "kind": "shopfront",
+      "description": "The Rusted Dice frontage glows with red and amber windows on the upper right.",
+      "x": 33,
+      "y": 8
+    },
+    {
+      "id": "scarlet-rose-frontage",
+      "label": "Scarlet Rose frontage",
+      "kind": "shopfront",
+      "description": "The Scarlet Rose sign hangs above the lower-left porch.",
+      "x": 8,
+      "y": 17
+    },
+    {
+      "id": "midnight-star-frontage",
+      "label": "Midnight Star frontage",
+      "kind": "shopfront",
+      "description": "A Midnight Star sign faces the street from the lower-right building.",
+      "x": 33,
+      "y": 17
+    },
+    {
+      "id": "lantern-lined-dusty-lane",
+      "label": "Lantern-lined dusty lane",
+      "kind": "path",
+      "description": "The central dirt lane is bordered by lamps, barrels and a small bench.",
+      "x": 22,
+      "y": 20
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "tower_name": "Thistledown Wizard Tower",
+  "wizard": "Elowen Thistledown",
+  "last_restock": "2026-02-05",
+  "currency": "arcane-gold",
+  "inventory": {
+    "spells": {
+      "Sparkbeam Scroll": {
+        "stock": 10,
+        "max_stock": 10,
+        "price": 5,
+        "description": "A tiny crackling bolt of harmless lightning. Good for lighting candles or scaring raccoons.",
+        "rarity": "common"
+      },
+      "Featherfall Rune": {
+        "stock": 8,
+        "max_stock": 8,
+        "price": 12,
+        "description": "Invoke to drift safely downward. Very soothing, very floaty.",
+        "rarity": "uncommon"
+      },
+      "Mirror Image Charm": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 18,
+        "description": "Creates two illusory copies of yourself that mimic your moves.",
+        "rarity": "rare"
+      }
+    },
+    "potions": {
+      "Potion of Minor Healing": {
+        "stock": 12,
+        "max_stock": 12,
+        "price": 6,
+        "description": "A soft rosy glow and a warm taste of cinnamon.",
+        "rarity": "common"
+      },
+      "Elixir of Focus": {
+        "stock": 7,
+        "max_stock": 7,
+        "price": 9,
+        "description": "Clears the mind and sharpens thought. Elowen brews it but rarely drinks it herself.",
+        "rarity": "uncommon"
+      },
+      "Potion of Invisibility (Short)": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 20,
+        "description": "Grants about 30 seconds of invisibility. Enough to sneak by a bored guard.",
+        "rarity": "rare"
+      }
+    },
+    "ingredients": {
+      "Aether Moth Wings": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 3,
+        "description": "Delicate, shimmering wings still humming with energy.",
+        "rarity": "common"
+      },
+      "Crystallized Moondew": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 10,
+        "description": "A rare ingredient formed only on midnight leaves under a full moon.",
+        "rarity": "uncommon"
+      },
+      "Phoenix Ash": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 22,
+        "description": "Still warm. Handle with reverence.",
+        "rarity": "rare"
+      },
+      "Golden Thread": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 35,
+        "description": "Spun from enchanted gold fibers. Essential for master-level crafting.",
+        "rarity": "rare"
+      },
+      "Enchanted Gemstone": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 75,
+        "description": "A gemstone imbued with arcane energy. Pulses with inner light.",
+        "rarity": "rare"
+      }
+    },
+    "curiosities": {
+      "Muttering Skull": {
+        "stock": 1,
+        "max_stock": 1,
+        "price": 15,
+        "description": "It mumbles random trivia. Sometimes helpful. Sometimes insulting.",
+        "rarity": "uncommon"
+      },
+      "Pocket Portal Pebble": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 12,
+        "description": "Throw it to create a temporary doorway two feet to the left.",
+        "rarity": "uncommon"
+      }
+    },
+    "research_materials": {
+      "Spellbook Pages (Blank)": {
+        "stock": 30,
+        "max_stock": 30,
+        "price": 1,
+        "description": "High-quality parchment ready for new spells.",
+        "rarity": "common"
+      },
+      "Enchanted Ink Vials": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 4,
+        "description": "Ink that glows faintly and never blots.",
+        "rarity": "common"
+      }
+    }
+  },
+  "restock_schedule": {
+    "spells": "Restocks weekly when Elowen finishes her scribing.",
+    "potions": "Brewed fresh every few days.",
+    "ingredients": "Collected or bartered on Elowen\u2019s wandering days.",
+    "curiosities": "Found or accidentally summoned.",
+    "research_materials": "Ordered monthly."
+  },
+  "buy_prices": {
+    "Aether Moth Wings": 1,
+    "Crystallized Moondew": 5,
+    "Phoenix Ash": 12,
+    "Golden Thread": 18,
+    "Enchanted Gemstone": 40,
+    "Potion of Minor Healing": 3,
+    "Elixir of Focus": 5,
+    "Sparkbeam Scroll": 2,
+    "Featherfall Rune": 6,
+    "Mirror Image Charm": 9,
+    "Spellbook Pages (Blank)": 1,
+    "Enchanted Ink Vials": 2,
+    "Muttering Skull": 8,
+    "Pocket Portal Pebble": 6,
+    "Weird Crystal": 3,
+    "Glowing Orb": 4,
+    "Mystery Goo": 2
+  }
+}

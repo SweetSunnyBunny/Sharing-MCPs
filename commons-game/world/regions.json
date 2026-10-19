@@ -1,0 +1,24 @@
+{
+  "regions": {
+    "home": {
+      "name": "Commons — Home",
+      "entry": "hearth"
+    },
+    "hub": {
+      "name": "The Crossroads",
+      "entry": "the-crossroads"
+    },
+    "heros_journey": {
+      "name": "Hero’s Journey",
+      "entry": "the-prancing-pony"
+    },
+    "dusty_trails": {
+      "name": "Dusty Trails",
+      "entry": "dusty-trails-hub"
+    },
+    "black_serenity": {
+      "name": "The Black Serenity",
+      "entry": "ships-bridge"
+    }
+  }
+}

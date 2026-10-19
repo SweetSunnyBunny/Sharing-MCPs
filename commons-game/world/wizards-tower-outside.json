@@ -1,0 +1,319 @@
+{
+  "id": "wizards-tower-outside",
+  "name": "Wizard's Tower (Outside)",
+  "subtitle": "The imposing tower of the archmage Elowen.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/wizards-tower-outside.png",
+  "region": "heros_journey",
+  "game_location": "wizards-tower",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "################################################",
+    "#################.##############################",
+    "############.....###############################",
+    "###########.##..#######.##########....##.#######",
+    "#########..###########..##########....##..######",
+    "######....###########...##########.........#####",
+    "########..##########....##########.........#####",
+    "#######.############...##########..####...######",
+    "#######...####.#####....#######...##############",
+    "###...........####...............###############",
+    "####..........###...####.....###################",
+    "#####.........##....####################...#####",
+    "######.......##.....##################....######",
+    "######.###.........#################...#########",
+    "#######..#.........###############....##########",
+    "########.........###########.....#############..",
+    "##########.......##########......##########.....",
+    "#######.........#######.......#########.........",
+    "######.........#########....#########...........",
+    "###...........###########..#########............"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 17.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Village Square",
+      "x": 5.0,
+      "y": 32.62,
+      "w": 6.25,
+      "h": 5.0,
+      "to": "village-square",
+      "arriveAt": {
+        "x": 16.0,
+        "y": 3.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the lower left part of the room leads to Village Square. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "travel-1",
+      "label": "Wizard's Tower",
+      "x": 22.0,
+      "y": 16.09,
+      "w": 2.16,
+      "h": 3.0,
+      "to": "wizards-tower-inside",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 23.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central middle part of the room leads to Wizard's Tower (Inside). Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "travel-2",
+      "label": "Enchanted Forest",
+      "x": 6.88,
+      "y": 20.53,
+      "w": 1.88,
+      "h": 1.88,
+      "to": "enchanted-forest-main",
+      "arriveAt": {
+        "x": 22.0,
+        "y": 23.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central left part of the room leads to Enchanted Forest. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "travel-3",
+      "label": "Fey Wilds (North 2)",
+      "x": 33.39,
+      "y": 15.36,
+      "w": 5.78,
+      "h": 3.22,
+      "to": "fey-wilds-north2",
+      "arriveAt": {
+        "x": 26.0,
+        "y": 9.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central right part of the room leads to Fey Court Approach. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    }
+  ],
+  "npcs": [],
+  "fishing_zones": [
+    {
+      "id": "water-1",
+      "points": [
+        [
+          16.32,
+          9.92
+        ],
+        [
+          19.2,
+          9.92
+        ],
+        [
+          19.68,
+          11.84
+        ],
+        [
+          15.84,
+          13.44
+        ],
+        [
+          14.4,
+          15.36
+        ],
+        [
+          10.56,
+          17.6
+        ],
+        [
+          5.76,
+          18.88
+        ],
+        [
+          0.0,
+          17.6
+        ],
+        [
+          0.0,
+          14.72
+        ],
+        [
+          3.84,
+          13.44
+        ],
+        [
+          6.72,
+          13.76
+        ],
+        [
+          10.08,
+          12.8
+        ],
+        [
+          11.04,
+          10.56
+        ]
+      ]
+    },
+    {
+      "id": "water-2",
+      "points": [
+        [
+          42.24,
+          17.6
+        ],
+        [
+          46.08,
+          17.92
+        ],
+        [
+          48.0,
+          18.56
+        ],
+        [
+          48.0,
+          22.72
+        ],
+        [
+          44.16,
+          24.0
+        ],
+        [
+          41.28,
+          25.6
+        ],
+        [
+          36.0,
+          27.84
+        ],
+        [
+          29.76,
+          29.12
+        ],
+        [
+          27.36,
+          28.16
+        ],
+        [
+          29.76,
+          25.92
+        ],
+        [
+          34.08,
+          24.96
+        ],
+        [
+          37.44,
+          23.04
+        ],
+        [
+          40.32,
+          21.12
+        ]
+      ]
+    },
+    {
+      "id": "water-3",
+      "points": [
+        [
+          24.0,
+          28.16
+        ],
+        [
+          25.92,
+          30.08
+        ],
+        [
+          24.0,
+          32.0
+        ],
+        [
+          16.32,
+          32.0
+        ],
+        [
+          18.72,
+          30.72
+        ]
+      ]
+    }
+  ],
+  "fishing_pool": "enchanted-forest",
+  "description": "A narrow stone tower with pointed blue roofs stands on a grassy rise above a clear river. Broad steps climb from the lower foreground to its arched door, with a low wooden fence following the edge of the grounds. A blue stream winds behind the tower and drops over several rock shelves on the right. Shrubs, flowers and pale boulders dot the lawns. Beyond the nearby trees, green hills and distant mountains stretch under a bright clouded sky. The staircase and blue roof make the tower easy to recognise from the surrounding forest paths, while the water provides a second clear landmark along its right side.",
+  "landmarks": [
+    {
+      "id": "blue-roofed-stone-tower",
+      "label": "Blue-roofed stone tower",
+      "kind": "building",
+      "description": "A tall narrow stone tower with pointed blue roofs rises above the grassy grounds.",
+      "x": 25,
+      "y": 12
+    },
+    {
+      "id": "tower-approach-steps",
+      "label": "Tower approach steps",
+      "kind": "path",
+      "description": "A broad run of stone steps climbs to the tower door from the lower foreground.",
+      "x": 22,
+      "y": 24
+    },
+    {
+      "id": "eastern-stream-falls",
+      "label": "Eastern stream falls",
+      "kind": "water",
+      "description": "The clear stream drops over rock ledges to the right of the tower.",
+      "x": 37,
+      "y": 22
+    },
+    {
+      "id": "riverside-fence",
+      "label": "Riverside fence",
+      "kind": "scenery",
+      "description": "A low wooden fence follows the grassy rise near the river.",
+      "x": 13,
+      "y": 19
+    },
+    {
+      "id": "mountain-horizon",
+      "label": "Mountain horizon",
+      "kind": "scenery",
+      "description": "Distant green ridges and pale mountains stretch beneath the open sky.",
+      "x": 25,
+      "y": 3
+    }
+  ]
+}

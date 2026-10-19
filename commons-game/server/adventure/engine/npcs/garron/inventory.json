@@ -1,0 +1,215 @@
+{
+  "forge_name": "Garron's Forge",
+  "blacksmith": "Garron Ironheart",
+  "last_restock": "2025-11-26",
+  "currency": "credits",
+  "services": {
+    "repair": {
+      "description": "Fix broken and damaged items",
+      "base_cost": 15,
+      "repairs": {
+        "Broken Tech": {
+          "result": "Salvaged Tech",
+          "cost": 20,
+          "components": [],
+          "description": "Restore broken technology to working condition"
+        },
+        "Broken Weapon": {
+          "result": "Repaired Weapon",
+          "cost": 30,
+          "components": ["Scrap Metal"],
+          "description": "Fix a broken weapon"
+        },
+        "Broken Armor": {
+          "result": "Repaired Armor",
+          "cost": 35,
+          "components": ["Metal Plating"],
+          "description": "Restore damaged armor plating"
+        },
+        "Broken Droid": {
+          "result": "Functional Droid",
+          "cost": 50,
+          "components": ["Circuit Board", "Servo Motor"],
+          "description": "Rebuild a broken droid"
+        },
+        "Damaged Shield Generator": {
+          "result": "Shield Generator",
+          "cost": 40,
+          "components": ["Power Cell"],
+          "description": "Repair a damaged shield unit"
+        },
+        "Broken Scanner": {
+          "result": "Diagnostic Scanner",
+          "cost": 25,
+          "components": ["Circuit Board"],
+          "description": "Fix scanning equipment"
+        },
+        "Damaged Thruster": {
+          "result": "Thruster Core",
+          "cost": 45,
+          "components": ["Power Cell", "Scrap Metal"],
+          "description": "Restore thruster functionality"
+        }
+      }
+    },
+    "reinforce": {
+      "description": "Upgrade and strengthen equipment",
+      "upgrades": {
+        "Repaired Weapon": {
+          "result": "Reinforced Weapon",
+          "cost": 50,
+          "components": ["Metal Plating", "Scrap Metal"],
+          "stat_bonus": "+2 damage",
+          "description": "Strengthen a weapon for better performance"
+        },
+        "Repaired Armor": {
+          "result": "Reinforced Armor",
+          "cost": 60,
+          "components": ["Metal Plating", "Metal Plating"],
+          "stat_bonus": "+3 defense",
+          "description": "Add extra plating for better protection"
+        },
+        "Shield Generator": {
+          "result": "Reinforced Shield Generator",
+          "cost": 70,
+          "components": ["Energy Core", "Nano-Fiber"],
+          "stat_bonus": "+5 shield capacity",
+          "description": "Boost shield output significantly"
+        },
+        "Basic Tool Kit": {
+          "result": "Enhanced Tool Kit",
+          "cost": 40,
+          "components": ["Servo Motor", "Circuit Board"],
+          "stat_bonus": "+2 to repair rolls",
+          "description": "Upgrade tools for better precision"
+        },
+        "Diagnostic Scanner": {
+          "result": "Advanced Scanner",
+          "cost": 55,
+          "components": ["Sensor Array", "Neural Core"],
+          "stat_bonus": "+3 to scanning/tech rolls",
+          "description": "Enhance scanning capabilities"
+        },
+        "Welding Torch": {
+          "result": "Plasma Cutter",
+          "cost": 45,
+          "components": ["Power Cell", "Nano-Fiber"],
+          "stat_bonus": "Can cut through reinforced materials",
+          "description": "Upgrade to plasma-based cutting"
+        },
+        "Stim Pack": {
+          "result": "Enhanced Stim Pack",
+          "cost": 35,
+          "components": ["Bio-Component"],
+          "stat_bonus": "Heals 50 HP instead of 30",
+          "description": "Boost healing effectiveness"
+        }
+      }
+    }
+  },
+  "crafting": {
+    "description": "Forge new items from components",
+    "recipes": {
+      "Makeshift Weapon": {
+        "components": ["Scrap Metal", "Scrap Metal"],
+        "cost": 10,
+        "description": "A crude but effective weapon",
+        "stat_bonus": "+1 damage"
+      },
+      "Scrap Armor": {
+        "components": ["Scrap Metal", "Scrap Metal", "Salvage Wiring"],
+        "cost": 15,
+        "description": "Cobbled-together protective gear",
+        "stat_bonus": "+1 defense"
+      },
+      "Power Cell": {
+        "components": ["Salvage Wiring", "Salvage Wiring", "Old Tech"],
+        "cost": 20,
+        "description": "Rechargeable energy cell",
+        "stat_bonus": null
+      },
+      "Circuit Board": {
+        "components": ["Old Tech", "Salvage Wiring", "Shiny Bits"],
+        "cost": 25,
+        "description": "Basic circuitry for repairs",
+        "stat_bonus": null
+      },
+      "Servo Motor": {
+        "components": ["Scrap Metal", "Circuit Board", "Salvage Wiring"],
+        "cost": 30,
+        "description": "Precision motor for robotics",
+        "stat_bonus": null
+      },
+      "Metal Plating": {
+        "components": ["Scrap Metal", "Scrap Metal", "Scrap Metal"],
+        "cost": 15,
+        "description": "Reinforced armor plating",
+        "stat_bonus": null
+      },
+      "Sensor Array": {
+        "components": ["Circuit Board", "Circuit Board", "Power Cell"],
+        "cost": 45,
+        "description": "Multi-spectrum scanning array",
+        "stat_bonus": null
+      },
+      "Combat Drone": {
+        "components": ["Servo Motor", "Servo Motor", "Circuit Board", "Weapon System"],
+        "cost": 100,
+        "description": "Autonomous combat assistant",
+        "stat_bonus": "Companion: +3 to combat rolls"
+      },
+      "Personal Shield": {
+        "components": ["Energy Core", "Nano-Fiber", "Circuit Board"],
+        "cost": 80,
+        "description": "Portable energy shield",
+        "stat_bonus": "Absorbs first 10 damage per encounter"
+      },
+      "Jet Boots": {
+        "components": ["Thruster Core", "Metal Plating", "Power Cell"],
+        "cost": 90,
+        "description": "Short-range flight capability",
+        "stat_bonus": "+3 to mobility/escape rolls"
+      },
+      "Neural Interface": {
+        "components": ["Neural Core", "Bio-Component", "Circuit Board"],
+        "cost": 75,
+        "description": "Direct brain-computer connection",
+        "stat_bonus": "+2 to all tech rolls"
+      },
+      "EMP Grenade": {
+        "components": ["Power Cell", "Circuit Board", "Salvage Wiring"],
+        "cost": 35,
+        "description": "Disables electronics in area (single use)",
+        "stat_bonus": "Stuns droids and disables shields"
+      },
+      "Repair Kit": {
+        "components": ["Basic Tool Kit", "Scrap Metal", "Salvage Wiring"],
+        "cost": 25,
+        "description": "Portable repair supplies",
+        "stat_bonus": "Can repair items in the field"
+      },
+      "Hacking Module": {
+        "components": ["Neural Core", "Circuit Board", "AI Chip"],
+        "cost": 120,
+        "description": "Advanced system intrusion device",
+        "stat_bonus": "+5 to hacking rolls"
+      }
+    }
+  },
+  "buy_prices": {
+    "Scrap Metal": 4,
+    "Salvage Wiring": 5,
+    "Old Tech": 6,
+    "Broken Tech": 8,
+    "Shiny Bits": 3,
+    "Circuit Board": 12,
+    "Power Cell": 8,
+    "Servo Motor": 15,
+    "Metal Plating": 10,
+    "Broken Weapon": 10,
+    "Broken Armor": 12,
+    "Broken Droid": 20,
+    "Damaged Shield Generator": 15,
+    "Damaged Thruster": 18
+  }
+}

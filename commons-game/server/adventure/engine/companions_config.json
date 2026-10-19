@@ -1,0 +1,862 @@
+{
+  "companions": {
+    "wolf": {
+      "name": "Wolf",
+      "description": "A wild wolf - requires taming but becomes fiercely loyal",
+      "emoji": "🐺",
+      "rarity": "uncommon",
+      "personality": "aggressive",
+      "starting_loyalty": 20,
+      "loyalty_requirement": 60,
+      "bonuses": {
+        "attack": 2,
+        "damage": 1,
+        "tracking": 2,
+        "hunting": 2,
+        "taming": 1
+      },
+      "penalties": {
+        "attack": -1,
+        "damage": -1
+      },
+      "special_abilities": [
+        "pack_tactics",
+        "keen_hearing"
+      ],
+      "price": 200,
+      "acquisition": ["purchase", "tame"],
+      "notes": "Wild wolves can resist or attack during an untamed approach. Once bonded, a healthy wolf following you helps without loyalty penalties and will not flee or attack its owner."
+    },
+    "raven": {
+      "name": "Raven",
+      "description": "An intelligent raven with an independent nature and a helpful bond",
+      "emoji": "🐦‍⬛",
+      "rarity": "common",
+      "personality": "independent",
+      "starting_loyalty": 50,
+      "loyalty_requirement": 40,
+      "bonuses": {
+        "perception": 3,
+        "search": 2,
+        "social": 1,
+        "hunting": 1,
+        "taming": 2
+      },
+      "penalties": {
+        "search": -1
+      },
+      "special_abilities": [
+        "keen_sight",
+        "messenger"
+      ],
+      "price": 100,
+      "acquisition": ["purchase", "tame"],
+      "notes": "Keeps its independent nature. Once bonded, a healthy raven following you contributes its help without a loyalty threshold."
+    },
+    "cat": {
+      "name": "Cat",
+      "description": "A stealthy cat with an independent nature and a helpful bond",
+      "emoji": "🐱",
+      "rarity": "common",
+      "personality": "independent",
+      "starting_loyalty": 45,
+      "loyalty_requirement": 35,
+      "bonuses": {
+        "stealth": 3,
+        "perception": 1,
+        "social": 1,
+        "hunting": 1,
+        "taming": 1
+      },
+      "penalties": {
+        "stealth": -1
+      },
+      "special_abilities": [
+        "shadow_step",
+        "nine_lives"
+      ],
+      "price": 80,
+      "acquisition": ["purchase", "tame"],
+      "notes": "Cats keep their own personalities. A healthy bonded cat following you still contributes its help without loyalty penalties."
+    },
+    "owl": {
+      "name": "Owl",
+      "description": "A wise owl - naturally loyal and eager to bond",
+      "emoji": "🦉",
+      "rarity": "uncommon",
+      "personality": "loyal",
+      "starting_loyalty": 70,
+      "loyalty_requirement": 50,
+      "bonuses": {
+        "perception": 2,
+        "magic": 2,
+        "wisdom": 2,
+        "hunting": 1,
+        "taming": 2
+      },
+      "penalties": {},
+      "special_abilities": [
+        "night_vision",
+        "silent_flight"
+      ],
+      "price": 150,
+      "acquisition": ["purchase", "tame"],
+      "notes": "Bonds quickly and stays loyal. A reliable companion."
+    },
+    "fox": {
+      "name": "Fox",
+      "description": "A cunning fox - playful but does its own thing",
+      "emoji": "🦊",
+      "rarity": "uncommon",
+      "personality": "independent",
+      "starting_loyalty": 55,
+      "loyalty_requirement": 40,
+      "bonuses": {
+        "stealth": 2,
+        "perception": 2,
+        "evasion": 1,
+        "hunting": 2,
+        "taming": 1
+      },
+      "penalties": {
+        "evasion": -1
+      },
+      "special_abilities": [
+        "cunning",
+        "quick_reflexes"
+      ],
+      "price": 120,
+      "acquisition": ["purchase", "tame"],
+      "notes": "Clever and tricky in the wild. A bonded fox remains protected and contributes its help while healthy and following you."
+    },
+    "bear_cub": {
+      "name": "Bear Cub",
+      "description": "A wild bear cub - an untamed approach can be dangerous",
+      "emoji": "🐻",
+      "rarity": "rare",
+      "personality": "aggressive",
+      "starting_loyalty": 15,
+      "loyalty_requirement": 65,
+      "bonuses": {
+        "attack": 1,
+        "damage": 2,
+        "intimidation": 2,
+        "hunting": 1,
+        "taming": 1
+      },
+      "penalties": {
+        "attack": -2,
+        "damage": -1
+      },
+      "special_abilities": [
+        "mighty_roar",
+        "thick_hide"
+      ],
+      "price": 300,
+      "acquisition": ["purchase", "tame", "quest_reward"],
+      "notes": "An untamed cub or its nearby mother can attack during an approach. Once bonded, the cub will not attack its owner or flee because of low loyalty."
+    },
+    "hawk": {
+      "name": "Hawk",
+      "description": "A majestic hawk - bonds through hunting together",
+      "emoji": "🦅",
+      "rarity": "uncommon",
+      "personality": "loyal",
+      "starting_loyalty": 65,
+      "loyalty_requirement": 45,
+      "bonuses": {
+        "perception": 4,
+        "attack": 1,
+        "tracking": 1,
+        "hunting": 2,
+        "taming": 1
+      },
+      "penalties": {},
+      "special_abilities": [
+        "eagle_eye",
+        "dive_attack"
+      ],
+      "price": 180,
+      "acquisition": ["purchase", "tame"],
+      "notes": "Proud but loyal. Hunts by your side willingly."
+    },
+    "rabbit": {
+      "name": "Rabbit",
+      "description": "A timid rabbit - a gentle companion that benefits from food and care",
+      "emoji": "🐰",
+      "rarity": "common",
+      "personality": "timid",
+      "starting_loyalty": 80,
+      "loyalty_requirement": 60,
+      "bonuses": {
+        "luck": 2,
+        "evasion": 2,
+        "gathering": 1,
+        "hunting": 1,
+        "taming": 2
+      },
+      "penalties": {
+        "luck": -1
+      },
+      "special_abilities": [
+        "lucky_foot",
+        "quick_escape"
+      ],
+      "price": 60,
+      "acquisition": ["purchase", "tame"],
+      "notes": "A bonded rabbit may be injured while helping, but remains in the family even at zero HP. Food heals it so it can help again; it does not die or flee."
+    },
+    "snake": {
+      "name": "Snake",
+      "description": "A venomous snake - dangerous during an untamed approach",
+      "emoji": "🐍",
+      "rarity": "rare",
+      "personality": "aggressive",
+      "starting_loyalty": 25,
+      "loyalty_requirement": 70,
+      "bonuses": {
+        "attack": 2,
+        "stealth": 2,
+        "intimidation": 1,
+        "hunting": 1,
+        "taming": 1
+      },
+      "penalties": {
+        "attack": -1,
+        "stealth": -1
+      },
+      "special_abilities": [
+        "venomous_bite",
+        "heat_sense"
+      ],
+      "price": 250,
+      "acquisition": ["purchase", "tame", "quest_reward"],
+      "notes": "An untamed snake may attack or poison you during an approach. Once bonded, it will not turn on its owner because of low loyalty."
+    },
+    "squirrel": {
+      "name": "Squirrel",
+      "description": "An adorable squirrel - fragile but finds treasure!",
+      "emoji": "🐿️",
+      "rarity": "common",
+      "personality": "timid",
+      "starting_loyalty": 75,
+      "loyalty_requirement": 55,
+      "bonuses": {
+        "gathering": 3,
+        "perception": 1,
+        "evasion": 1,
+        "hunting": 1,
+        "taming": 1
+      },
+      "penalties": {
+        "gathering": -1
+      },
+      "special_abilities": [
+        "hoarder",
+        "nimble"
+      ],
+      "price": 50,
+      "acquisition": ["purchase", "tame"],
+      "notes": "A shy treasure finder. A bonded squirrel may need food after an injury, but stays in the family and will not flee because its owner was hurt."
+    },
+    "bat": {
+      "name": "Bat",
+      "description": "A cave-dwelling bat - sees in darkness and finds hidden treasures",
+      "emoji": "🦇",
+      "rarity": "uncommon",
+      "personality": "independent",
+      "starting_loyalty": 50,
+      "loyalty_requirement": 45,
+      "bonuses": {
+        "perception": 2,
+        "stealth": 2,
+        "gathering": 1,
+        "hunting": 1,
+        "taming": 1
+      },
+      "penalties": {
+        "perception": -1
+      },
+      "special_abilities": [
+        "echolocation",
+        "night_vision"
+      ],
+      "price": 90,
+      "acquisition": ["purchase", "tame"],
+      "notes": "Thrives in darkness. May be startled by bright lights."
+    },
+    "wild_horse": {
+      "name": "Wild Horse",
+      "description": "A majestic wild mustang - proud, fast, and fiercely independent",
+      "emoji": "🐴",
+      "rarity": "rare",
+      "personality": "independent",
+      "starting_loyalty": 35,
+      "loyalty_requirement": 55,
+      "bonuses": {
+        "speed": 4,
+        "travel": 3,
+        "evasion": 2,
+        "intimidation": 1,
+        "hunting": 1,
+        "taming": 1
+      },
+      "penalties": {
+        "speed": -2,
+        "evasion": -1
+      },
+      "special_abilities": [
+        "swift_travel",
+        "sure_footed",
+        "wild_spirit"
+      ],
+      "price": 300,
+      "acquisition": ["tame", "purchase"],
+      "notes": "Wild mustangs respond to patient, gentle approaches. Once bonded, they remain in the family; their independent nature does not cause loyalty penalties."
+    },
+    "coyote_pup": {
+      "name": "Coyote Pup",
+      "description": "A young coyote - clever and mischievous, bonds through play",
+      "emoji": "🐕",
+      "rarity": "uncommon",
+      "personality": "independent",
+      "starting_loyalty": 45,
+      "loyalty_requirement": 45,
+      "bonuses": {
+        "tracking": 2,
+        "stealth": 2,
+        "perception": 1,
+        "hunting": 2,
+        "taming": 1
+      },
+      "penalties": {
+        "tracking": -1
+      },
+      "special_abilities": [
+        "pack_tactics",
+        "cunning",
+        "night_hunter"
+      ],
+      "price": 120,
+      "acquisition": ["tame"],
+      "notes": "Playful and clever. A bonded pup benefits from food and care, and helps while healthy and following you without loyalty penalties."
+    },
+    "maintenance_droid": {
+      "care_type": "robot",
+      "max_hp": 40,
+      "name": "Maintenance Droid",
+      "description": "A small, helpful repair bot - eager to assist and surprisingly loyal",
+      "emoji": "🤖",
+      "rarity": "uncommon",
+      "personality": "loyal",
+      "starting_loyalty": 75,
+      "loyalty_requirement": 40,
+      "bonuses": {
+        "gathering": 3,
+        "repair": 2,
+        "perception": 1,
+        "hunting": 1,
+        "taming": 1
+      },
+      "penalties": {},
+      "special_abilities": [
+        "tech_scanner",
+        "self_repair"
+      ],
+      "price": 150,
+      "acquisition": ["purchase", "tame", "craft"],
+      "notes": "Beeps happily when it helps. Loves collecting spare parts."
+    },
+    "scrap_spider": {
+      "care_type": "robot",
+      "max_hp": 40,
+      "name": "Scrap Spider",
+      "description": "A mechanical arachnid built from salvage - creepy but incredibly useful",
+      "emoji": "🕷️",
+      "rarity": "uncommon",
+      "personality": "independent",
+      "starting_loyalty": 45,
+      "loyalty_requirement": 50,
+      "bonuses": {
+        "stealth": 3,
+        "gathering": 2,
+        "perception": 1,
+        "hunting": 1,
+        "taming": 1
+      },
+      "penalties": {
+        "stealth": -1
+      },
+      "special_abilities": [
+        "wall_crawl",
+        "salvage_instinct"
+      ],
+      "price": 120,
+      "acquisition": ["purchase", "tame", "craft"],
+      "notes": "Skitters into hard-to-reach places. Some people find it unsettling."
+    },
+    "direwolf": {
+      "name": "Direwolf",
+      "description": "A LEGENDARY alpha predator - formidable in the wild and a powerful bonded companion",
+      "emoji": "🐺",
+      "rarity": "legendary",
+      "personality": "aggressive",
+      "starting_loyalty": 10,
+      "loyalty_requirement": 80,
+      "adoptable": false,
+      "secret_reward": true,
+      "bonuses": {
+        "attack": 4,
+        "damage": 3,
+        "tracking": 3,
+        "intimidation": 3,
+        "hunting": 3,
+        "taming": 2
+      },
+      "penalties": {
+        "attack": -3,
+        "damage": -2
+      },
+      "special_abilities": [
+        "pack_tactics",
+        "keen_hearing",
+        "alpha_presence",
+        "fearsome"
+      ],
+      "price": 1000,
+      "acquisition": ["quest_reward", "special_event"],
+      "notes": "\u26a0\ufe0f SECRET COMPANION: Can only be obtained through special means."
+    },
+    "phoenix": {
+      "name": "Phoenix",
+      "description": "A LEGENDARY phoenix - chooses its master, bonds deeply",
+      "emoji": "🔥🦅",
+      "rarity": "legendary",
+      "adoptable": false,
+      "secret_reward": true,
+      "personality": "loyal",
+      "starting_loyalty": 90,
+      "loyalty_requirement": 75,
+      "bonuses": {
+        "magic": 5,
+        "attack": 3,
+        "social": 4,
+        "luck": 2,
+        "hunting": 2,
+        "taming": 3
+      },
+      "penalties": {},
+      "special_abilities": [
+        "rebirth",
+        "fire_aura",
+        "healing_tears",
+        "inspiring_presence"
+      ],
+      "price": 2000,
+      "acquisition": ["quest_reward", "special_event"],
+      "notes": "\u26a0\ufe0f SECRET COMPANION: The phoenix chooses its master. Can only be obtained through special means."
+    },
+    "service_droid": {
+      "care_type": "robot",
+      "max_hp": 40,
+      "name": "Service Droid",
+      "emoji": "🤖",
+      "description": "A crafted companion; activate it from your bag to have it follow and help.",
+      "acquisition": ["craft"],
+      "adoptable": false,
+      "starting_loyalty": 100,
+      "bonuses": {
+        "gathering": 1,
+        "hunting": 1,
+        "taming": 1
+      }
+    },
+    "combat_droid": {
+      "care_type": "robot",
+      "max_hp": 40,
+      "name": "Combat Droid",
+      "emoji": "🤖",
+      "description": "A crafted companion; activate it from your bag to have it follow and help.",
+      "acquisition": ["craft"],
+      "adoptable": false,
+      "starting_loyalty": 100,
+      "bonuses": {
+        "attack": 3,
+        "hunting": 1,
+        "taming": 1
+      }
+    },
+    "repair_bot": {
+      "care_type": "robot",
+      "max_hp": 40,
+      "name": "Repair Bot",
+      "emoji": "🤖",
+      "description": "A crafted companion; activate it from your bag to have it follow and help.",
+      "acquisition": ["craft"],
+      "adoptable": false,
+      "starting_loyalty": 100,
+      "bonuses": {
+        "repair": 1,
+        "hunting": 1,
+        "taming": 1
+      }
+    },
+    "medical_drone": {
+      "care_type": "robot",
+      "max_hp": 40,
+      "name": "Medical Assistance Drone",
+      "emoji": "🤖",
+      "description": "A crafted companion; activate it from your bag to have it follow and help.",
+      "acquisition": ["craft"],
+      "adoptable": false,
+      "starting_loyalty": 100,
+      "bonuses": {
+        "healing": 15,
+        "hunting": 1,
+        "taming": 2
+      }
+    }
+  },
+  "special_abilities": {
+    "pack_tactics": {
+      "name": "Pack Tactics",
+      "description": "+1 attack when hunting in groups"
+    },
+    "keen_hearing": {
+      "name": "Keen Hearing",
+      "description": "Better chance to detect ambushes"
+    },
+    "keen_sight": {
+      "name": "Keen Sight",
+      "description": "Improved perception and search rolls"
+    },
+    "messenger": {
+      "name": "Messenger",
+      "description": "Can deliver messages to other players"
+    },
+    "shadow_step": {
+      "name": "Shadow Step",
+      "description": "Bonus to stealth in darkness"
+    },
+    "nine_lives": {
+      "name": "Nine Lives",
+      "description": "Small chance to avoid fatal damage once per day"
+    },
+    "night_vision": {
+      "name": "Night Vision",
+      "description": "No penalties for darkness"
+    },
+    "silent_flight": {
+      "name": "Silent Flight",
+      "description": "Cannot be detected while flying"
+    },
+    "cunning": {
+      "name": "Cunning",
+      "description": "Better rewards from successful tricks"
+    },
+    "quick_reflexes": {
+      "name": "Quick Reflexes",
+      "description": "Increased chance to dodge attacks"
+    },
+    "mighty_roar": {
+      "name": "Mighty Roar",
+      "description": "Can intimidate enemies"
+    },
+    "thick_hide": {
+      "name": "Thick Hide",
+      "description": "Reduces damage taken"
+    },
+    "eagle_eye": {
+      "name": "Eagle Eye",
+      "description": "Spot items and enemies from great distances"
+    },
+    "dive_attack": {
+      "name": "Dive Attack",
+      "description": "First attack in combat gets bonus"
+    },
+    "lucky_foot": {
+      "name": "Lucky Foot",
+      "description": "Better loot from gathering"
+    },
+    "quick_escape": {
+      "name": "Quick Escape",
+      "description": "Can always flee from combat"
+    },
+    "venomous_bite": {
+      "name": "Venomous Bite",
+      "description": "Attacks may poison enemies"
+    },
+    "heat_sense": {
+      "name": "Heat Sense",
+      "description": "Can detect warm-blooded creatures"
+    },
+    "hoarder": {
+      "name": "Hoarder",
+      "description": "Finds extra items when gathering"
+    },
+    "nimble": {
+      "name": "Nimble",
+      "description": "Bonus to evasion"
+    },
+    "echolocation": {
+      "name": "Echolocation",
+      "description": "Can detect hidden objects and creatures in darkness"
+    },
+    "tech_scanner": {
+      "name": "Tech Scanner",
+      "description": "Better chance to find tech components when gathering"
+    },
+    "self_repair": {
+      "name": "Self Repair",
+      "description": "Slowly repairs itself over time, reducing maintenance"
+    },
+    "wall_crawl": {
+      "name": "Wall Crawl",
+      "description": "Can reach places others cannot - bonus to finding hidden items"
+    },
+    "salvage_instinct": {
+      "name": "Salvage Instinct",
+      "description": "Automatically identifies valuable scrap from junk"
+    },
+    "alpha_presence": {
+      "name": "Alpha Presence",
+      "description": "Other wolves respect you"
+    },
+    "fearsome": {
+      "name": "Fearsome",
+      "description": "Enemies may flee before combat"
+    },
+    "rebirth": {
+      "name": "Rebirth",
+      "description": "Once per week, revive from death"
+    },
+    "fire_aura": {
+      "name": "Fire Aura",
+      "description": "Deals fire damage to nearby enemies"
+    },
+    "healing_tears": {
+      "name": "Healing Tears",
+      "description": "Can heal allies with tears"
+    },
+    "inspiring_presence": {
+      "name": "Inspiring Presence",
+      "description": "Allies gain bonus to all rolls"
+    },
+    "swift_travel": {
+      "name": "Swift Travel",
+      "description": "Faster travel between locations, reduced cooldowns on travel"
+    },
+    "sure_footed": {
+      "name": "Sure-Footed",
+      "description": "Never stumbles - immune to terrain penalties"
+    },
+    "wild_spirit": {
+      "name": "Wild Spirit",
+      "description": "Cannot be fully broken - gains loyalty faster in wilderness areas"
+    },
+    "night_hunter": {
+      "name": "Night Hunter",
+      "description": "Bonus to hunting at night or in dark areas"
+    }
+  },
+  "companion_rules": {
+    "starting_slots": 2,
+    "max_slots": 5,
+    "slot_unlock_methods": {
+      "slot_3": "Complete 10 quests",
+      "slot_4": "Complete 25 quests",
+      "slot_5": "Complete 50 quests OR tame a legendary companion"
+    },
+    "note": "You can have multiple companions but only one following companion contributes assistance at a time.",
+    "loyalty_system": "Loyalty records use and care. Bonded companions have no passive loyalty decay, loyalty penalties, or owner-directed attacks and fleeing.",
+    "feeding": "Food heals animal companions; spare parts repair robots. An injured companion remains owned and rests from helping at zero HP.",
+    "inactive_companion_reaction_chance": 0.05
+  },
+  "personality_types": {
+    "aggressive": {
+      "description": "Bold animals that can be dangerous before they bond",
+      "traits": [
+        "Starts with very low loyalty (10-25%)",
+        "Untamed approaches can cause attacks or escape according to the species",
+        "Bonded followers provide their positive bonuses without loyalty penalties",
+        "Strong hunting and combat help once bonded",
+        "Wild approach risk ends when the companion joins the family"
+      ],
+      "examples": ["wolf", "bear_cub", "snake", "direwolf"]
+    },
+    "independent": {
+      "description": "Keeps its own personality while sharing a helpful bond",
+      "traits": [
+        "Starts with medium loyalty (45-55%)",
+        "Independent behavior is personality, not a chance to withhold owned-companion bonuses",
+        "No loyalty penalties for bonded followers",
+        "Configured help applies while healthy and following",
+        "Low maintenance"
+      ],
+      "examples": ["cat", "fox", "raven"]
+    },
+    "loyal": {
+      "description": "Naturally wants to bond - reliable and eager",
+      "traits": [
+        "Starts with high loyalty (65-90%)",
+        "No loyalty penalties for bonded followers",
+        "Consistent bonuses",
+        "Easy to maintain",
+        "Best for beginners"
+      ],
+      "examples": ["owl", "hawk", "phoenix"]
+    },
+    "timid": {
+      "description": "Shy companions that welcome gentle food and care",
+      "traits": [
+        "Starts with high loyalty (75-80%) - they trust you!",
+        "Injured followers remain owned and recoverable, even at zero HP",
+        "Timid behavior is personality, not a reason to lose the companion",
+        "Minor bonuses but special abilities (luck, gathering)",
+        "Food heals injuries; being away causes no passive decline"
+      ],
+      "examples": ["rabbit", "squirrel"]
+    }
+  },
+  "loyalty_mechanics": {
+    "loyalty_scale": "0-100, starts at companion's starting_loyalty value",
+    "loyalty_requirement": "Imported species threshold retained for compatibility; bonded hunting, taming and combat help does not require crossing it.",
+    "gain_loyalty": {
+      "successful_hunt": 5,
+      "successful_quest": 10,
+      "feeding": 3,
+      "protecting_companion": 8,
+      "time_together": 1
+    },
+    "lose_loyalty": {
+      "failed_hunt": -2,
+      "taking_damage": -3,
+      "companion_hurt": -5,
+      "ignoring_companion": -1,
+      "dismissing": -20
+    },
+    "bonuses_vs_penalties": "Commons uses the positive bonuses of a healthy following companion and applies no loyalty penalties. An injured companion rests from helping until healed or repaired."
+  },
+  "taming_info": {
+    "wolf": {
+      "can_tame": true,
+      "difficulty": 13,
+      "locations": ["enchanted-forest", "the-feywilds", "open-plains"],
+      "failure_effects": ["flees", "attacks"],
+      "taming_tip": "Approach slowly with food. Wolves respect strength."
+    },
+    "raven": {
+      "can_tame": true,
+      "difficulty": 10,
+      "locations": ["enchanted-forest", "wizards-tower", "candlekeep"],
+      "failure_effects": ["flees"],
+      "taming_tip": "Ravens are curious. Offer something shiny."
+    },
+    "cat": {
+      "can_tame": true,
+      "difficulty": 8,
+      "locations": ["village-square", "the-prancing-pony", "cozy-home", "general-store"],
+      "failure_effects": ["ignores"],
+      "taming_tip": "Cats choose you, not the other way around."
+    },
+    "owl": {
+      "can_tame": true,
+      "difficulty": 12,
+      "locations": ["enchanted-forest", "wizards-tower", "quiet-library"],
+      "failure_effects": ["flees"],
+      "taming_tip": "Owls bond through patience and respect."
+    },
+    "fox": {
+      "can_tame": true,
+      "difficulty": 14,
+      "locations": ["enchanted-forest", "the-feywilds", "wild-edge", "open-plains"],
+      "failure_effects": ["tricks_you", "flees"],
+      "taming_tip": "Foxes are cunning. You must outsmart them."
+    },
+    "bear_cub": {
+      "can_tame": true,
+      "difficulty": 17,
+      "locations": ["enchanted-forest", "abandoned-mine", "wild-edge"],
+      "failure_effects": ["attacks", "mother_appears"],
+      "taming_tip": "⚠️ DANGER: Mother bear may be nearby!"
+    },
+    "hawk": {
+      "can_tame": true,
+      "difficulty": 15,
+      "locations": ["the-feywilds", "terraforming-station", "wild-edge", "open-plains"],
+      "failure_effects": ["flees", "dive_attacks"],
+      "taming_tip": "Hawks respect hunters. Prove yourself worthy."
+    },
+    "rabbit": {
+      "can_tame": true,
+      "difficulty": 6,
+      "locations": ["the-feywilds", "the-garden", "village-square", "open-plains"],
+      "failure_effects": ["flees"],
+      "taming_tip": "Easy to catch, but very fragile. Protect it!"
+    },
+    "snake": {
+      "can_tame": true,
+      "difficulty": 18,
+      "locations": ["enchanted-forest", "abandoned-mine", "neon-underground"],
+      "failure_effects": ["attacks", "poisons"],
+      "taming_tip": "⚠️ DANGER: Venomous! Failed tame = poison damage."
+    },
+    "squirrel": {
+      "can_tame": true,
+      "difficulty": 7,
+      "locations": ["enchanted-forest", "the-garden", "village-square"],
+      "failure_effects": ["flees", "steals_item"],
+      "taming_tip": "Easy to befriend, but may steal from you!"
+    },
+    "bat": {
+      "can_tame": true,
+      "difficulty": 11,
+      "locations": ["abandoned-mine", "neon-underground"],
+      "failure_effects": ["flees", "startled_swarm"],
+      "taming_tip": "Approach quietly in darkness. Loud noises scare them."
+    },
+    "maintenance_droid": {
+      "can_tame": true,
+      "difficulty": 10,
+      "locations": ["the-forge", "landing-bay", "ships-bridge", "terraforming-station"],
+      "failure_effects": ["flees", "shuts_down"],
+      "taming_tip": "Abandoned droids respond to gentle commands and spare parts."
+    },
+    "scrap_spider": {
+      "can_tame": true,
+      "difficulty": 13,
+      "locations": ["neon-underground", "the-forge", "landing-bay"],
+      "failure_effects": ["flees", "hides"],
+      "taming_tip": "Built from salvage, they respect those who understand machinery."
+    },
+    "wild_horse": {
+      "can_tame": true,
+      "difficulty": 14,
+      "locations": ["open-plains"],
+      "failure_effects": ["flees", "kicks"],
+      "taming_tip": "Wild mustangs respect patience and confidence. Approach slowly, speak softly, and let them come to you."
+    },
+    "coyote_pup": {
+      "can_tame": true,
+      "difficulty": 12,
+      "locations": ["open-plains", "abandoned-mine", "around-the-campfire"],
+      "failure_effects": ["flees", "howls_for_pack"],
+      "taming_tip": "Coyote pups are curious but wary. Food and patience work best. Beware - the pack may hear its cries!"
+    },
+    "direwolf": {
+      "can_tame": false,
+      "difficulty": 22,
+      "locations": [],
+      "failure_effects": [],
+      "taming_tip": "CANNOT BE TAMED IN THE WILD. Quest reward only."
+    },
+    "phoenix": {
+      "can_tame": false,
+      "difficulty": 25,
+      "locations": [],
+      "failure_effects": [],
+      "taming_tip": "The phoenix chooses its master. Cannot be tamed."
+    }
+  },
+  "commons_assistance_notes": "Only the chosen healthy following companion contributes. Positive help starts when bonded; loyalty is a care meter with no passive decay, stat penalties, fleeing or attacks by owned companions. Injured companions remain in the family and can recover through food or robot repair. Untamed adventure wildlife retains its configured approach dangers; Home wilds keep their gentle failure rules. Numeric species stats, legacy penalty fields and thresholds remain intact for compatibility. Hunting and taming help are Commons additions; other numeric skills retain the original species and robot recipe values."
+}

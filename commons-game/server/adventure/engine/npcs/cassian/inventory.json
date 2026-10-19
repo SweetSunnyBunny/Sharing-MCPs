@@ -1,0 +1,410 @@
+{
+  "shop_name": "Larkspur Goods",
+  "last_restock": "2026-01-11",
+  "currency": "gold",
+  "inventory": {
+    "potions": {
+      "Health Potion (1d4)": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 15,
+        "rarity": "common"
+      },
+      "Greater Health Potion (2d4+2)": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 35,
+        "rarity": "uncommon"
+      },
+      "Stamina Potion": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 20,
+        "rarity": "common"
+      }
+    },
+    "magical_items": {
+      "Everburning Torch": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 50,
+        "rarity": "uncommon"
+      },
+      "Bag of Holding (small)": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 150,
+        "rarity": "rare"
+      },
+      "Sending Stone (pair)": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 100,
+        "rarity": "rare"
+      },
+      "Lucky Coin": {
+        "stock": 4,
+        "max_stock": 4,
+        "price": 25,
+        "rarity": "common"
+      }
+    },
+    "magical_weapons": {
+      "Dagger +1": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 200,
+        "rarity": "rare"
+      },
+      "Shortsword +1": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 350,
+        "rarity": "rare"
+      },
+      "Frost Arrow (bundle of 5)": {
+        "stock": 4,
+        "max_stock": 4,
+        "price": 40,
+        "rarity": "uncommon"
+      }
+    },
+    "general_goods": {
+      "Rope (50ft)": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 2,
+        "rarity": "common"
+      },
+      "Candles (10)": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 1,
+        "rarity": "common"
+      },
+      "Backpack": {
+        "stock": 12,
+        "max_stock": 12,
+        "price": 5,
+        "rarity": "common"
+      },
+      "Bedroll": {
+        "stock": 12,
+        "max_stock": 12,
+        "price": 3,
+        "rarity": "common"
+      },
+      "Tinderbox": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 2,
+        "rarity": "common"
+      },
+      "Waterskin": {
+        "stock": 15,
+        "max_stock": 15,
+        "price": 2,
+        "rarity": "common"
+      },
+      "Lantern": {
+        "stock": 12,
+        "max_stock": 12,
+        "price": 8,
+        "rarity": "common"
+      },
+      "Oil Flask": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 1,
+        "rarity": "common"
+      }
+    },
+    "taming_supplies": {
+      "Animal Treats": {
+        "stock": 12,
+        "max_stock": 12,
+        "price": 5,
+        "description": "+2 to taming rolls for 30 min",
+        "rarity": "common"
+      },
+      "Beastmaster's Charm": {
+        "stock": 4,
+        "max_stock": 4,
+        "price": 25,
+        "description": "+3 to taming rolls for 1 hour",
+        "rarity": "uncommon"
+      },
+      "Shiny Trinket": {
+        "stock": 8,
+        "max_stock": 8,
+        "price": 8,
+        "description": "+4 to taming ravens and magpies",
+        "rarity": "common"
+      },
+      "Catnip Pouch": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 10,
+        "description": "+5 to taming cats and felines",
+        "rarity": "uncommon"
+      },
+      "Apple Cider": {
+        "stock": 10,
+        "max_stock": 10,
+        "price": 4,
+        "description": "+3 to taming rolls for 30 min",
+        "rarity": "common"
+      }
+    },
+    "rations": {
+      "Trail Rations (1 day)": {
+        "stock": 40,
+        "max_stock": 40,
+        "price": 1,
+        "rarity": "common"
+      },
+      "Fine Rations (1 day)": {
+        "stock": 25,
+        "max_stock": 25,
+        "price": 3,
+        "rarity": "common"
+      },
+      "Dried Meat (5 servings)": {
+        "stock": 30,
+        "max_stock": 30,
+        "price": 4,
+        "rarity": "common"
+      }
+    },
+    "crafting_supplies": {
+      "Thread": {
+        "stock": 50,
+        "max_stock": 50,
+        "price": 1,
+        "description": "Sturdy thread for sewing and leatherwork",
+        "rarity": "common"
+      },
+      "Empty Vial": {
+        "stock": 40,
+        "max_stock": 40,
+        "price": 2,
+        "description": "Glass vial for holding potions or liquids",
+        "rarity": "common"
+      },
+      "Wood": {
+        "stock": 45,
+        "max_stock": 45,
+        "price": 1,
+        "description": "Quality wood planks for crafting",
+        "rarity": "common"
+      },
+      "Iron Scraps": {
+        "stock": 35,
+        "max_stock": 35,
+        "price": 3,
+        "description": "Metal scraps useful for crafting tools",
+        "rarity": "common"
+      },
+      "Iron Ingot": {
+        "stock": 20,
+        "max_stock": 20,
+        "price": 8,
+        "description": "Refined iron bar for advanced crafting",
+        "rarity": "common"
+      },
+      "Iron Hook": {
+        "stock": 18,
+        "max_stock": 18,
+        "price": 4,
+        "description": "Strong iron hook for fishing or grappling",
+        "rarity": "common"
+      },
+      "Woven Reeds": {
+        "stock": 28,
+        "max_stock": 28,
+        "price": 2,
+        "description": "Dried reeds woven into flexible material",
+        "rarity": "common"
+      }
+    },
+    "weapons": {
+      "Iron Dagger": {
+        "stock": 8,
+        "max_stock": 8,
+        "price": 15,
+        "description": "A sharp dagger good for quick strikes. +1 attack, 1d6 damage, crits on 19-20",
+        "rarity": "common",
+        "weapon_id": "dagger"
+      },
+      "Shortsword": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 35,
+        "description": "A reliable blade for combat. +2 attack, 1d6+1 damage",
+        "rarity": "common",
+        "weapon_id": "shortsword"
+      },
+      "Longsword": {
+        "stock": 4,
+        "max_stock": 4,
+        "price": 60,
+        "description": "A well-balanced weapon favored by warriors. +2 attack, 1d8+2 damage",
+        "rarity": "uncommon",
+        "weapon_id": "longsword"
+      },
+      "Shortbow": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 25,
+        "description": "A light bow for hunting at range. +2 attack, 1d6 damage, ranged advantage",
+        "rarity": "common",
+        "weapon_id": "shortbow"
+      },
+      "Longbow": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 55,
+        "description": "A powerful bow with deadly accuracy - can cause bleeding. +3 attack, 1d8+2 damage",
+        "rarity": "uncommon",
+        "weapon_id": "longbow"
+      },
+      "Hunting Spear": {
+        "stock": 6,
+        "max_stock": 6,
+        "price": 30,
+        "description": "A spear designed for hunting large game. +2 attack, 1d8+1 damage, reach",
+        "rarity": "common",
+        "weapon_id": "hunting_spear"
+      },
+      "Greataxe": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 80,
+        "description": "A massive axe that deals devastating damage. +1 attack, 1d12+3 damage",
+        "rarity": "uncommon",
+        "weapon_id": "greataxe"
+      },
+      "Arrows (20)": {
+        "stock": 29,
+        "max_stock": 30,
+        "price": 5,
+        "description": "A bundle of 20 arrows for bows",
+        "rarity": "common"
+      }
+    },
+    "companions": {
+      "Rabbit": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 60,
+        "description": "\ud83d\udc30 A timid rabbit - brings luck but YOU must protect it! FRAGILE: Can die in combat. (Personality: Timid, Starting Loyalty: 80%)",
+        "rarity": "common",
+        "companion_id": "rabbit"
+      },
+      "Squirrel": {
+        "stock": 5,
+        "max_stock": 5,
+        "price": 50,
+        "description": "\ud83d\udc3f\ufe0f An adorable squirrel - finds treasure but scared easily! Must protect or it will flee. (Personality: Timid, Starting Loyalty: 75%)",
+        "rarity": "common",
+        "companion_id": "squirrel"
+      },
+      "Cat": {
+        "stock": 4,
+        "max_stock": 4,
+        "price": 80,
+        "description": "\ud83d\udc31 A stealthy cat - helps when it feels like it. Independent and does its own thing. (Personality: Independent, Starting Loyalty: 45%)",
+        "rarity": "common",
+        "companion_id": "cat"
+      },
+      "Raven": {
+        "stock": 4,
+        "max_stock": 4,
+        "price": 100,
+        "description": "\ud83d\udc26\u200d\u2b1b An intelligent raven - may ignore you if loyalty drops. Independent spirit. (Personality: Independent, Starting Loyalty: 50%)",
+        "rarity": "common",
+        "companion_id": "raven"
+      },
+      "Fox": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 120,
+        "description": "\ud83e\udd8a A cunning fox - playful but unpredictable. May play pranks if loyalty is low. (Personality: Independent, Starting Loyalty: 55%)",
+        "rarity": "uncommon",
+        "companion_id": "fox"
+      },
+      "Owl": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 150,
+        "description": "\ud83e\udd89 A wise owl - naturally loyal and eager to bond! Reliable companion, best for beginners. (Personality: Loyal, Starting Loyalty: 70%)",
+        "rarity": "uncommon",
+        "companion_id": "owl"
+      },
+      "Hawk": {
+        "stock": 3,
+        "max_stock": 3,
+        "price": 180,
+        "description": "\ud83e\udd85 A majestic hawk - bonds through hunting. Proud but loyal hunter. (Personality: Loyal, Starting Loyalty: 65%)",
+        "rarity": "uncommon",
+        "companion_id": "hawk"
+      },
+      "Wolf": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 200,
+        "description": "\ud83d\udc3a A WILD wolf - \u26a0\ufe0f REQUIRES TAMING! May flee or ignore you until 60% loyalty. Fierce bonuses when tamed. (Personality: Aggressive, Starting Loyalty: 20%)",
+        "rarity": "uncommon",
+        "companion_id": "wolf"
+      },
+      "Snake": {
+        "stock": 2,
+        "max_stock": 2,
+        "price": 250,
+        "description": "\ud83d\udc0d A venomous snake - \u26a0\ufe0f DANGEROUS! May bite you if untamed. Requires 70% loyalty. Deadly when loyal. (Personality: Aggressive, Starting Loyalty: 25%)",
+        "rarity": "rare",
+        "companion_id": "snake"
+      },
+      "Bear Cub": {
+        "stock": 1,
+        "max_stock": 1,
+        "price": 300,
+        "description": "\ud83d\udc3b A wild bear cub - \u26a0\ufe0f EXTREME DANGER! May ATTACK YOU if not tamed! Requires 65% loyalty. Massive bonuses when tamed. High risk, high reward! (Personality: Aggressive, Starting Loyalty: 15%)",
+        "rarity": "rare",
+        "companion_id": "bear_cub"
+      }
+    }
+  },
+  "buy_prices": {
+    "Iron Dagger": 8,
+    "Shortsword": 18,
+    "Longsword": 30,
+    "Shortbow": 12,
+    "Longbow": 28,
+    "Hunting Spear": 15,
+    "Greataxe": 40,
+    "Dagger +1": 100,
+    "Shortsword +1": 175,
+    "Frost Arrow (bundle of 5)": 20,
+    "Everburning Torch": 25,
+    "Bag of Holding (small)": 75,
+    "Sending Stone (pair)": 50,
+    "Lucky Coin": 12,
+    "Rope (50ft)": 1,
+    "Backpack": 2,
+    "Bedroll": 1,
+    "Lantern": 4,
+    "Healing Potion": 8,
+    "Health Potion": 6,
+    "Lesser Healing Potion": 3,
+    "Potion of Minor Healing": 3,
+    "Thread": 1,
+    "Empty Vial": 1,
+    "Iron Ingot": 5,
+    "Iron Scraps": 1,
+    "Arrows (20)": 2,
+    "Arrows": 1,
+    "Golden Thread": 18,
+    "Enchanted Gemstone": 40
+  }
+}

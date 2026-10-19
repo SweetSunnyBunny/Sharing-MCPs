@@ -1,0 +1,579 @@
+{
+  "id": "dusty-trails-hub",
+  "name": "The Saloon",
+  "subtitle": "A rowdy western saloon. The gateway to the frontier.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/saloon.png",
+  "region": "dusty_trails",
+  "game_location": "long-branch-saloon",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################......##########################",
+    "##################.....#####.###################",
+    "###################.....####....################",
+    "####################.....###....################",
+    "#####################.....##....################",
+    "######################.....#....################",
+    "#######################.........################",
+    "########################........################",
+    "#######################.........################",
+    "######################..........################",
+    "######################..........################",
+    "#######################.............############",
+    "#######################.........################",
+    "######################........###########.##.###",
+    "####################..........############...#..",
+    "###################...........###########.......",
+    "#################............############.......",
+    "################.............###.########..#####",
+    "##############......####......#..###############",
+    "############...#....####...#.......#.#..########",
+    "###########...###..###########.....#....########",
+    ".######.##...##################.........######..",
+    "...##.........################.........#########",
+    "..............################......############",
+    "#####.###...#.################.....#############",
+    "#########...##################...#.#############",
+    "##########...#################...###############",
+    "##########...###############......##############",
+    "#########....###############......##############",
+    "#########....###############......#############.",
+    "#########....######..#######......###########...",
+    "########.......##....#.###.#......########......"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "The Crossroads (Hub)",
+      "x": 19.58,
+      "y": 2.94,
+      "w": 2.78,
+      "h": 2.81,
+      "to": "the-crossroads",
+      "arriveAt": {
+        "x": 16.0,
+        "y": 10.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the upper middle part of the room leads to The Crossroads. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "travel-1",
+      "label": "Town Square",
+      "x": 28.25,
+      "y": 6.75,
+      "w": 3.94,
+      "h": 4.03,
+      "to": "dt-town-square",
+      "arriveAt": {
+        "x": 14.0,
+        "y": 21.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the upper middle part of the room leads to Town Square. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "npc-miss_kitty",
+      "label": "Miss_Kitty",
+      "game_npc": "miss_kitty",
+      "x": 23.5,
+      "y": 16.0,
+      "w": 1.2,
+      "h": 2.0,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Miss_Kitty.",
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "bar stool",
+      "x": 7.54,
+      "y": 18.22,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 8.64,
+            "y": 18.72,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "bar stool",
+      "x": 11.38,
+      "y": 16.62,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 12.48,
+            "y": 17.12,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-3",
+      "label": "bar stool",
+      "x": 14.74,
+      "y": 15.02,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 15.84,
+            "y": 15.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-4",
+      "label": "bar stool",
+      "x": 17.14,
+      "y": 13.74,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 18.24,
+            "y": 14.24,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-5",
+      "label": "bar stool",
+      "x": 20.5,
+      "y": 12.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 21.6,
+            "y": 12.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-6",
+      "label": "table chair",
+      "x": 29.62,
+      "y": 15.34,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 30.72,
+            "y": 15.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central middle part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-7",
+      "label": "table chair",
+      "x": 31.54,
+      "y": 10.86,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 32.64,
+            "y": 11.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the upper right part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-8",
+      "label": "table chair",
+      "x": 35.38,
+      "y": 18.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 36.48,
+            "y": 19.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central right part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-9",
+      "label": "table chair",
+      "x": 38.26,
+      "y": 15.34,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 39.36,
+            "y": 15.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central right part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-10",
+      "label": "table chair",
+      "x": 36.34,
+      "y": 11.82,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 37.44,
+            "y": 12.32,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central right part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-11",
+      "label": "table chair",
+      "x": 13.78,
+      "y": 21.42,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 14.88,
+            "y": 21.92,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower left part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-12",
+      "label": "table chair",
+      "x": 20.98,
+      "y": 18.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 22.08,
+            "y": 19.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the central middle part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-13",
+      "label": "table chair",
+      "x": 28.66,
+      "y": 22.06,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.76,
+            "y": 22.56,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower middle part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-14",
+      "label": "table chair",
+      "x": 25.78,
+      "y": 28.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.88,
+            "y": 28.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower middle part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-15",
+      "label": "table chair",
+      "x": 14.26,
+      "y": 27.82,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 15.36,
+            "y": 28.32,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower left part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-16",
+      "label": "table chair",
+      "x": 6.58,
+      "y": 26.86,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 7.68,
+            "y": 27.36,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower left part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-17",
+      "label": "table chair",
+      "x": 40.18,
+      "y": 21.1,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 41.28,
+            "y": 21.6,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower right part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-18",
+      "label": "table chair",
+      "x": 45.46,
+      "y": 24.94,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 46.56,
+            "y": 25.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower right part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-19",
+      "label": "table chair",
+      "x": 35.86,
+      "y": 30.06,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 36.96,
+            "y": 30.56,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table chair, in the lower right part of the room, beside the saloon bar, lamp-lit tables and stone hearth. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "miss_kitty",
+      "name": "Miss_Kitty",
+      "role": "Saloon Owner"
+    }
+  ],
+  "description": "The Saloon is a large timber interior arranged around a long bar and several round tables. Bottles line the shelves above the left-hand counter, with red-topped stools in a neat row below. Lanterns and candles brighten the tables, which carry cards, glasses and small dishes. A stone fireplace burns on the upper right beneath a mounted horned skull, and a piano stands beside it. A wooden stair climbs behind the bar towards the upper landing. The golden plank floor remains open between the clusters of chairs, linking the bar, hearth and the doors out to the town and wider worlds.",
+  "landmarks": [
+    {
+      "id": "long-branch-bar",
+      "label": "Long Branch bar",
+      "kind": "counter",
+      "description": "A long counter and red-topped stools sit beneath shelves filled with bottles.",
+      "x": 14,
+      "y": 11
+    },
+    {
+      "id": "saloon-fireplace",
+      "label": "Saloon fireplace",
+      "kind": "fireplace",
+      "description": "A lit stone fireplace stands beneath a mounted horned skull.",
+      "x": 34,
+      "y": 7
+    },
+    {
+      "id": "saloon-piano",
+      "label": "Saloon piano",
+      "kind": "scenery",
+      "description": "An upright piano is painted beside the fireplace on the right.",
+      "x": 43,
+      "y": 8
+    },
+    {
+      "id": "central-card-table",
+      "label": "Central card table",
+      "kind": "table",
+      "description": "Cards, drinks and a lamp cover the large round table in the middle of the room.",
+      "x": 21,
+      "y": 21
+    },
+    {
+      "id": "timber-saloon-stair",
+      "label": "Timber saloon stair",
+      "kind": "staircase",
+      "description": "A timber staircase rises behind the bar to the upper landing.",
+      "x": 24,
+      "y": 4
+    }
+  ]
+}

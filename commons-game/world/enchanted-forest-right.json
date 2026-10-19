@@ -1,0 +1,237 @@
+{
+  "id": "enchanted-forest-right",
+  "name": "Forest Clearing (East)",
+  "subtitle": "A peaceful clearing, sunlight filtering through leaves.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/enchanted-forest-right.png",
+  "region": "heros_journey",
+  "game_location": "enchanted-forest",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "################################################",
+    "################################################",
+    "###########################...##################",
+    "##########################....##################",
+    "##########################......################",
+    "##########################........##############",
+    "#########.################......################",
+    "#########.....###########.......################",
+    "#########......##########.......################",
+    "##########......##########......################",
+    "############.....##########......###############",
+    "###########.....###########.......##############",
+    "####...##.......############.......#############",
+    "##................##########........############",
+    "...................#########.........###########",
+    "....................########.........###########",
+    "####................#########.........########..",
+    "######..............########...........#####....",
+    "######.........##.....#####.............##......",
+    "######........#####.............................",
+    "#####........########...........................",
+    "####.......###########.........................#",
+    "##........############........................##",
+    "#.......#############.........................##",
+    ".....##############.......................######",
+    "....##############.....................#########",
+    "..###############......................#########",
+    "################....................############",
+    "##############.....................#############",
+    "#############....................###############",
+    "############.....................###############",
+    "###########......................###############"
+  ],
+  "spawn": {
+    "x": 21.0,
+    "y": 17.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Enchanted Forest",
+      "x": 0,
+      "y": 14.4375,
+      "w": 1.875,
+      "h": 1.875,
+      "to": "enchanted-forest-main",
+      "arriveAt": {
+        "x": 35.0,
+        "y": 18.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the central left part of the room leads to Enchanted Forest. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Enchanted Forest",
+      "x": 27.15625,
+      "y": 7.1875,
+      "w": 1.875,
+      "h": 1.875,
+      "to": "enchanted-forest-north",
+      "arriveAt": {
+        "x": 28.0,
+        "y": 24.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the upper middle part of the room leads to Forest Depths (North). Walk into the marked threshold to take that route."
+    }
+  ],
+  "npcs": [],
+  "fishing_zones": [
+    {
+      "points": [
+        [
+          0,
+          31
+        ],
+        [
+          0,
+          26
+        ],
+        [
+          4,
+          24
+        ],
+        [
+          13,
+          19
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          19,
+          16
+        ],
+        [
+          20,
+          14
+        ],
+        [
+          18,
+          12
+        ],
+        [
+          17,
+          10
+        ],
+        [
+          13,
+          8
+        ],
+        [
+          12,
+          6
+        ],
+        [
+          16,
+          6
+        ],
+        [
+          20,
+          8
+        ],
+        [
+          24,
+          10
+        ],
+        [
+          26,
+          12
+        ],
+        [
+          28,
+          14
+        ],
+        [
+          26,
+          17
+        ],
+        [
+          23,
+          19
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          16,
+          24
+        ],
+        [
+          10,
+          27
+        ],
+        [
+          7,
+          31
+        ]
+      ]
+    }
+  ],
+  "description": "The eastern clearing follows a bright stream through the forest. Water drops over a short ledge near the upper middle, winds between stones and grassy banks, then falls again towards the lower edge. A light earth path runs alongside it on the right, passing large tree roots and clusters of blue, pink and purple flowers. Vines hang from the upper canopy, and the broad trunks on either side leave the water and path visible through the centre. Sunlight picks out the grassy shelves between the cascades, giving this part of the forest a more open, layered shape.",
+  "landmarks": [
+    {
+      "id": "upper-stream-cascade",
+      "label": "Upper stream cascade",
+      "kind": "water",
+      "description": "Water spills over a low rock ledge into the central stream.",
+      "x": 23,
+      "y": 9
+    },
+    {
+      "id": "central-stream-bend",
+      "label": "Central stream bend",
+      "kind": "water",
+      "description": "The stream winds between smooth stones and small grassy banks.",
+      "x": 25,
+      "y": 19
+    },
+    {
+      "id": "eastern-bank-path",
+      "label": "Eastern bank path",
+      "kind": "path",
+      "description": "A light earth path follows the right bank beneath spreading roots.",
+      "x": 37,
+      "y": 18
+    },
+    {
+      "id": "lower-waterfall",
+      "label": "Lower waterfall",
+      "kind": "water",
+      "description": "The water drops between rocks near the bottom of the clearing.",
+      "x": 17,
+      "y": 28
+    },
+    {
+      "id": "canopy-vines",
+      "label": "Canopy vines",
+      "kind": "vegetation",
+      "description": "Long vines hang across the bright upper opening between the trees.",
+      "x": 28,
+      "y": 3
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "approaches_per_day": 4,
+  "wilds": {
+    "the wild wood": [
+      "wolf",
+      "cat",
+      "owl",
+      "rabbit",
+      "hawk",
+      "squirrel",
+      "raven",
+      "hedgehog",
+      "badger"
+    ]
+  },
+  "animals": {
+    "wolf": {
+      "weight": 4,
+      "when": "dusk",
+      "difficulty": 15,
+      "rarity": "rare",
+      "personality": "proud",
+      "starting_loyalty": 40,
+      "tip": "Approach slowly, with food, and do not pretend you are not afraid. Wolves respect honesty.",
+      "colour": "#6b7280",
+      "line": "Grey and unhurried, watching you from between the trees like a question.",
+      "slips": [
+        "The wolf holds your eye a long moment, then turns and is simply gone between the trees.",
+        "The wolf circles once at a distance, decides the day is not this day, and lopes off.",
+        "The wolf lifts its head, scents the air past you, and melts back into the thicket."
+      ],
+      "emoji": "🐺",
+      "bonuses": {
+        "hunting": 2,
+        "taming": 1
+      }
+    },
+    "cat": {
+      "weight": 8,
+      "when": "any",
+      "difficulty": 9,
+      "rarity": "common",
+      "personality": "independent",
+      "starting_loyalty": 55,
+      "tip": "Cats choose you, not the other way around. Sit down and pretend you came for the view.",
+      "colour": "#3d3a36",
+      "line": "A wood-cat, lean and self-possessed, doing an excellent impression of not having seen you.",
+      "slips": [
+        "The cat blinks slowly, stands, stretches every joint it owns, and walks away mid-sentence.",
+        "The cat watches you from the log with complete comprehension and zero interest.",
+        "The cat lets you get within an arm's length and then is somehow forty feet up a tree."
+      ],
+      "emoji": "🐱",
+      "bonuses": {
+        "hunting": 1,
+        "taming": 1
+      }
+    },
+    "owl": {
+      "weight": 5,
+      "when": "night",
+      "difficulty": 13,
+      "rarity": "uncommon",
+      "personality": "patient",
+      "starting_loyalty": 65,
+      "tip": "Owls bond through patience and respect. Lower your voice and take the long way in.",
+      "colour": "#8a7355",
+      "line": "Round-eyed on a low branch, turning its whole head to keep you exactly where it wants you.",
+      "slips": [
+        "The owl regards you for a long unblinking while, then lifts off without a single sound.",
+        "The owl closes its eyes, which is somehow the most complete refusal in the wood.",
+        "The owl shuffles one branch higher and resumes ignoring you from a better seat."
+      ],
+      "emoji": "🦉",
+      "bonuses": {
+        "hunting": 1,
+        "taming": 2
+      }
+    },
+    "rabbit": {
+      "weight": 9,
+      "when": "dawn",
+      "difficulty": 7,
+      "rarity": "common",
+      "personality": "timid",
+      "starting_loyalty": 75,
+      "tip": "Easy to befriend and quick to startle. Kneel, hold something green, and let it come to you.",
+      "colour": "#a68a6d",
+      "line": "Ears up, nose going, one back foot already deciding about the hedgerow.",
+      "slips": [
+        "The rabbit freezes, reconsiders its whole morning, and bolts for the hedgerow.",
+        "The rabbit lets you get almost close enough and then is a white tail in the bracken.",
+        "The rabbit thumps once - a message, and not for you - and vanishes."
+      ],
+      "emoji": "🐰",
+      "bonuses": {
+        "hunting": 1,
+        "taming": 2
+      }
+    },
+    "hawk": {
+      "weight": 3,
+      "when": "day",
+      "difficulty": 16,
+      "rarity": "rare",
+      "personality": "proud",
+      "starting_loyalty": 60,
+      "tip": "Hawks respect stillness and a steady eye. Do not reach; be a place worth landing.",
+      "colour": "#9c6b3f",
+      "line": "Mantled on a dead branch against the sky, and it has already counted everything in the clearing, including you.",
+      "slips": [
+        "The hawk opens its wings without hurry and rows away over the treetops.",
+        "The hawk screams once - at the sky, not at you - and rides a thermal out of the story.",
+        "The hawk watches your outstretched arm with what can only be called professional scepticism, then leaves."
+      ],
+      "emoji": "🦅",
+      "bonuses": {
+        "hunting": 2,
+        "taming": 1
+      }
+    },
+    "squirrel": {
+      "weight": 8,
+      "when": "day",
+      "difficulty": 8,
+      "rarity": "common",
+      "personality": "busy",
+      "starting_loyalty": 70,
+      "tip": "Easy to befriend, impossible to impress. Hazelnuts help. Guard your pockets.",
+      "colour": "#b0552e",
+      "line": "Upside down on a trunk, tail flagging, holding something it definitely just stole.",
+      "slips": [
+        "The squirrel takes the berry right out of your open hand and bolts up the nearest oak with it.",
+        "The squirrel scolds you at length from a branch - a whole speech - and departs.",
+        "The squirrel spirals round the trunk and out of sight, still chewing."
+      ],
+      "emoji": "🐿",
+      "bonuses": {
+        "hunting": 1,
+        "taming": 1
+      }
+    },
+    "raven": {
+      "weight": 5,
+      "when": "any",
+      "difficulty": 11,
+      "rarity": "uncommon",
+      "personality": "clever",
+      "starting_loyalty": 50,
+      "tip": "Ravens are curious and keep accounts. Offer something shiny and speak to it like it understands, because it does.",
+      "colour": "#23262e",
+      "line": "Black as spilled ink, head cocked, plainly assessing whether you are interesting or merely tall.",
+      "slips": [
+        "The raven says something in raven - it does not sound flattering - and flaps off.",
+        "The raven hops exactly one hop out of reach, and will do so forever.",
+        "The raven takes off, circles you once as if memorising your face for later, and goes."
+      ],
+      "emoji": "🐦",
+      "bonuses": {
+        "hunting": 1,
+        "taming": 2
+      }
+    },
+    "hedgehog": {
+      "weight": 6,
+      "when": "dusk",
+      "difficulty": 6,
+      "rarity": "common",
+      "personality": "gentle",
+      "starting_loyalty": 80,
+      "tip": "The gentlest yes in the wood. Move slow, sit low, and wait for the ball to unroll.",
+      "colour": "#7a6a54",
+      "line": "A small opinionated pincushion shuffling through the leaf litter like it pays rent here.",
+      "slips": [
+        "The hedgehog rolls up. That is the whole answer, and it is final.",
+        "The hedgehog trundles off under a bramble at a pace that somehow still outdistances you.",
+        "The hedgehog sniffs your fingers, huffs, and resumes its rounds without you."
+      ],
+      "emoji": "🦔",
+      "bonuses": {
+        "hunting": 1,
+        "taming": 2
+      }
+    },
+    "badger": {
+      "weight": 3,
+      "when": "night",
+      "difficulty": 14,
+      "rarity": "uncommon",
+      "personality": "steadfast",
+      "starting_loyalty": 45,
+      "tip": "Badgers keep old roads and old grudges. Stay off the sett path, keep your voice low, and bring something worth the interruption.",
+      "colour": "#4a4a4a",
+      "line": "Broad and striped and entirely unimpressed, pausing on a path its family has walked for three hundred years.",
+      "slips": [
+        "The badger looks straight through you and continues down its ancestral road as if you were weather.",
+        "The badger snorts once and backs into the dark of the sett, closing the subject.",
+        "The badger takes the long way around you - not afraid, just declining the acquaintance."
+      ],
+      "emoji": "🦡",
+      "bonuses": {
+        "hunting": 2,
+        "taming": 1
+      }
+    }
+  }
+}

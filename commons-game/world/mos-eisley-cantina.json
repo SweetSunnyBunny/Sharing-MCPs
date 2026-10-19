@@ -1,0 +1,909 @@
+{
+  "id": "mos-eisley-cantina",
+  "name": "Mos Eisley Cantina",
+  "subtitle": "The Black Serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "mos-eisley-cantina",
+  "music": {
+    "region": "black_serenity"
+  },
+  "sky": "#111625",
+  "legend": {
+    ".": {
+      "name": "deck",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "bulkhead",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.0,
+    "y": 18.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Data Nexus",
+      "x": 3,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "data-nexus",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower left part of the room leads to Data Nexus. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Neon Underground",
+      "x": 15,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "neon-underground",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Neon Underground. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-2",
+      "label": "The Crossroads",
+      "x": 27,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "the-crossroads",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower right part of the room leads to The Crossroads. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "npc-merchant",
+      "label": "Merchant",
+      "game_npc": "merchant",
+      "x": 24,
+      "y": 17,
+      "w": 1,
+      "h": 1,
+      "invisible": true,
+      "kind": "npc",
+      "note": "Merchant is available here in the central middle part of the room. Open People to speak with them and see their current shop and story options."
+    },
+    {
+      "id": "seat-1",
+      "label": "booth",
+      "x": 5.3,
+      "y": 9.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 6.4,
+            "y": 10.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Booth, in the upper left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "booth",
+      "x": 4.1,
+      "y": 9.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 5.2,
+            "y": 10.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Booth, in the upper left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-3",
+      "label": "booth",
+      "x": 2.5,
+      "y": 11.22,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 3.6,
+            "y": 11.72,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Booth, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-4",
+      "label": "booth",
+      "x": 5.7,
+      "y": 13.18,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 6.8,
+            "y": 13.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Booth, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-5",
+      "label": "booth",
+      "x": 7.3,
+      "y": 13.74,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 8.4,
+            "y": 14.24,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Booth, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-6",
+      "label": "booth",
+      "x": 32.9,
+      "y": 16.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 34.0,
+            "y": 17.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Booth, in the central right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-7",
+      "label": "booth",
+      "x": 34.1,
+      "y": 17.1,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 35.2,
+            "y": 17.6,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Booth, in the central right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-8",
+      "label": "booth",
+      "x": 27.7,
+      "y": 5.9,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 28.8,
+            "y": 6.4,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Booth, in the upper right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-9",
+      "label": "booth",
+      "x": 30.1,
+      "y": 6.18,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 31.2,
+            "y": 6.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Booth, in the upper right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-10",
+      "label": "table stool",
+      "x": 8.1,
+      "y": 16.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 9.2,
+            "y": 16.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-11",
+      "label": "table stool",
+      "x": 10.1,
+      "y": 16.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 11.2,
+            "y": 16.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-12",
+      "label": "table stool",
+      "x": 12.5,
+      "y": 16.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 13.6,
+            "y": 17.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-13",
+      "label": "table stool",
+      "x": 22.9,
+      "y": 16.54,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 24.0,
+            "y": 17.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the central middle part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-14",
+      "label": "table stool",
+      "x": 25.3,
+      "y": 16.82,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.4,
+            "y": 17.32,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the central right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-15",
+      "label": "table stool",
+      "x": 28.1,
+      "y": 18.5,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 29.2,
+            "y": 19.0,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the lower right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-16",
+      "label": "table stool",
+      "x": 30.1,
+      "y": 13.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 31.2,
+            "y": 13.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the central right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-17",
+      "label": "table stool",
+      "x": 32.1,
+      "y": 13.46,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 33.2,
+            "y": 13.96,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the central right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-18",
+      "label": "table stool",
+      "x": 30.1,
+      "y": 9.26,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 31.2,
+            "y": 9.76,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the upper right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-19",
+      "label": "table stool",
+      "x": 31.3,
+      "y": 10.38,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 32.4,
+            "y": 10.88,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Table stool, in the central right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-20",
+      "label": "bar stool",
+      "x": 12.1,
+      "y": 10.1,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 13.2,
+            "y": 10.6,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-21",
+      "label": "bar stool",
+      "x": 11.7,
+      "y": 10.94,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 12.8,
+            "y": 11.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-22",
+      "label": "bar stool",
+      "x": 11.7,
+      "y": 12.06,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 12.8,
+            "y": 12.56,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-23",
+      "label": "bar stool",
+      "x": 12.5,
+      "y": 13.18,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 13.6,
+            "y": 13.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central left part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-24",
+      "label": "bar stool",
+      "x": 13.7,
+      "y": 14.02,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 14.8,
+            "y": 14.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-25",
+      "label": "bar stool",
+      "x": 15.3,
+      "y": 14.58,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 16.4,
+            "y": 15.08,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-26",
+      "label": "bar stool",
+      "x": 17.3,
+      "y": 14.58,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 18.4,
+            "y": 15.08,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-27",
+      "label": "bar stool",
+      "x": 19.3,
+      "y": 14.58,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 20.4,
+            "y": 15.08,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-28",
+      "label": "bar stool",
+      "x": 21.3,
+      "y": 14.3,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 22.4,
+            "y": 14.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-29",
+      "label": "bar stool",
+      "x": 23.3,
+      "y": 14.02,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 24.4,
+            "y": 14.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-30",
+      "label": "bar stool",
+      "x": 24.9,
+      "y": 13.18,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.0,
+            "y": 13.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central middle part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-31",
+      "label": "bar stool",
+      "x": 26.1,
+      "y": 12.06,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 27.2,
+            "y": 12.56,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-32",
+      "label": "bar stool",
+      "x": 26.1,
+      "y": 10.94,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 27.2,
+            "y": 11.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the central right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-33",
+      "label": "bar stool",
+      "x": 25.7,
+      "y": 9.82,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.8,
+            "y": 10.32,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Bar stool, in the upper right part of the room, beside the cantina bar, small tables and outer booths. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "merchant",
+      "name": "Merchant",
+      "role": "Traveling scavenger and trader"
+    }
+  ],
+  "backdrop": "/assets/adventure/backgrounds/mos-eisley-cantina.png?v=9b3572322a",
+  "description": "The cantina is a broad stone-and-metal room arranged around an oval island bar. Bottles and amber lamps crowd the central counter, with stools circling it on every side. Round tables, small lamps and deep red upholstered booths fill the outer alcoves. On the upper left, a small raised stage is washed in purple light beside a bright sign. The lower entrance carries a large Cantina sign, and barrels and pipes are tucked into the corners near the side passages. The curved bar and repeated booth shapes make the room feel busy even where the open walkways between them remain clear.",
+  "landmarks": [
+    {
+      "id": "oval-island-bar",
+      "label": "Oval island bar",
+      "kind": "counter",
+      "description": "An oval bar surrounds shelves of bottles and amber lights, with stools around its edge.",
+      "x": 20,
+      "y": 11
+    },
+    {
+      "id": "purple-lit-stage",
+      "label": "Purple-lit stage",
+      "kind": "stage",
+      "description": "A small raised stage and instruments occupy the upper-left alcove beneath violet lighting.",
+      "x": 8,
+      "y": 5
+    },
+    {
+      "id": "outer-upholstered-booths",
+      "label": "Outer upholstered booths",
+      "kind": "seating area",
+      "description": "Red booth seating and small tables line the outer alcoves.",
+      "x": 33,
+      "y": 11
+    },
+    {
+      "id": "lower-cantina-sign",
+      "label": "Lower cantina sign",
+      "kind": "sign",
+      "description": "A large Cantina sign hangs above the painted lower entrance.",
+      "x": 20,
+      "y": 23
+    },
+    {
+      "id": "round-lamp-lit-tables",
+      "label": "Round lamp-lit tables",
+      "kind": "table",
+      "description": "Small round tables and lamps stand between the central bar and the booths.",
+      "x": 11,
+      "y": 17
+    },
+    {
+      "id": "pipe-and-barrel-corner",
+      "label": "Pipe and barrel corner",
+      "kind": "storage",
+      "description": "Pipes, barrels and industrial details crowd the right-hand corner.",
+      "x": 36,
+      "y": 18
+    }
+  ]
+}

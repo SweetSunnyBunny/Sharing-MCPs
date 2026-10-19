@@ -1,0 +1,328 @@
+{
+  "hunting_areas": {
+    "heros_journey": {
+      "enchanted-forest": {
+        "animals": [
+          {
+            "name": "rabbit",
+            "difficulty": 10,
+            "ac": 10,
+            "health": 3,
+            "damage": 0,
+            "cooldown": 45
+          },
+          {
+            "name": "deer",
+            "difficulty": 12,
+            "ac": 12,
+            "health": 5,
+            "damage": 3,
+            "cooldown": 60
+          },
+          {
+            "name": "boar",
+            "difficulty": 14,
+            "ac": 13,
+            "health": 6,
+            "damage": 8,
+            "cooldown": 60
+          },
+          {
+            "name": "fox",
+            "difficulty": 12,
+            "ac": 13,
+            "health": 4,
+            "damage": 2,
+            "cooldown": 50
+          },
+          {
+            "name": "wolf",
+            "difficulty": 13,
+            "ac": 12,
+            "health": 5,
+            "damage": 6,
+            "cooldown": 60
+          },
+          {
+            "name": "black wolf",
+            "difficulty": 16,
+            "ac": 14,
+            "health": 8,
+            "damage": 10,
+            "cooldown": 90,
+            "rare": true,
+            "spawn_chance": 0.3
+          }
+        ]
+      },
+      "the-feywilds": {
+        "animals": [
+          {
+            "name": "rabbit",
+            "difficulty": 10,
+            "ac": 10,
+            "health": 3,
+            "damage": 0,
+            "cooldown": 45
+          },
+          {
+            "name": "deer",
+            "difficulty": 12,
+            "ac": 12,
+            "health": 5,
+            "damage": 3,
+            "cooldown": 60
+          },
+          {
+            "name": "fox",
+            "difficulty": 11,
+            "ac": 13,
+            "health": 4,
+            "damage": 2,
+            "cooldown": 50
+          }
+        ]
+      },
+      "the-prancing-pony": {
+        "description": "Giant rats infest the tavern's cellar. Clear them for Tavern Troubles.",
+        "animals": [
+          {
+            "name": "giant rat",
+            "difficulty": 10,
+            "ac": 10,
+            "health": 4,
+            "damage": 2,
+            "cooldown": 45
+          }
+        ]
+      },
+      "village-square": {
+        "description": "The alpha wolf has been spotted prowling the village! This beast is a serious threat to the townspeople.",
+        "animals": [
+          {
+            "name": "alpha wolf",
+            "difficulty": 18,
+            "ac": 15,
+            "health": 12,
+            "damage": 12,
+            "cooldown": 180,
+            "rare": true,
+            "spawn_chance": 1.0
+          }
+        ]
+      }
+    },
+    "dusty_trails": {
+      "open-plains": {
+        "animals": [
+          {
+            "name": "rabbit",
+            "difficulty": 10,
+            "ac": 10,
+            "health": 3,
+            "damage": 0,
+            "cooldown": 45
+          },
+          {
+            "name": "prairie dog",
+            "difficulty": 9,
+            "ac": 9,
+            "health": 2,
+            "damage": 0,
+            "cooldown": 30
+          },
+          {
+            "name": "hawk",
+            "difficulty": 14,
+            "ac": 14,
+            "health": 4,
+            "damage": 4,
+            "cooldown": 60
+          },
+          {
+            "name": "coyote",
+            "difficulty": 13,
+            "ac": 12,
+            "health": 5,
+            "damage": 5,
+            "cooldown": 60
+          },
+          {
+            "name": "wolf",
+            "difficulty": 15,
+            "ac": 13,
+            "health": 7,
+            "damage": 7,
+            "cooldown": 90
+          },
+          {
+            "name": "rattlesnake",
+            "difficulty": 12,
+            "ac": 11,
+            "health": 3,
+            "damage": 10,
+            "cooldown": 45
+          },
+          {
+            "name": "pronghorn",
+            "difficulty": 14,
+            "ac": 13,
+            "health": 6,
+            "damage": 4,
+            "cooldown": 75
+          },
+          {
+            "name": "bison",
+            "difficulty": 17,
+            "ac": 14,
+            "health": 12,
+            "damage": 15,
+            "cooldown": 120
+          }
+        ],
+        "tameable": [
+          {
+            "name": "wild horse",
+            "difficulty": 15,
+            "tame_dc": 14,
+            "cooldown": 180
+          },
+          {
+            "name": "coyote pup",
+            "difficulty": 12,
+            "tame_dc": 12,
+            "cooldown": 120
+          },
+          {
+            "name": "hawk",
+            "difficulty": 14,
+            "tame_dc": 15,
+            "cooldown": 150
+          }
+        ]
+      },
+      "abandoned-mine": {
+        "animals": [
+          {
+            "name": "coyote",
+            "difficulty": 12,
+            "ac": 12,
+            "health": 5,
+            "damage": 5,
+            "cooldown": 60
+          },
+          {
+            "name": "rattlesnake",
+            "difficulty": 11,
+            "ac": 11,
+            "health": 3,
+            "damage": 10,
+            "cooldown": 45
+          },
+          {
+            "name": "bat",
+            "difficulty": 8,
+            "ac": 13,
+            "health": 2,
+            "damage": 1,
+            "cooldown": 30
+          }
+        ]
+      },
+      "around-the-campfire": {
+        "animals": [
+          {
+            "name": "bandit",
+            "difficulty": 14,
+            "ac": 14,
+            "health": 8,
+            "damage": 12,
+            "cooldown": 120
+          }
+        ]
+      }
+    },
+    "black_serenity": {
+      "cargo-bay": {
+        "animals": []
+      }
+    }
+  },
+  "processing_recipes": {
+    "rabbit": {
+      "products": ["Rabbit Meat", "Rabbit Pelt"],
+      "spoil_days": 7
+    },
+    "deer": {
+      "products": ["Venison", "Deer Hide"],
+      "spoil_days": 7
+    },
+    "boar": {
+      "products": ["Boar Meat", "Boar Hide"],
+      "spoil_days": 7
+    },
+    "fox": {
+      "products": ["Fox Meat", "Fox Pelt"],
+      "spoil_days": 7
+    },
+    "wolf": {
+      "products": ["Wolf Meat", "Wolf Pelt"],
+      "spoil_days": 7
+    },
+    "alpha wolf": {
+      "products": ["Alpha Wolf Pelt", "Wolf Meat", "Wolf Fang"],
+      "spoil_days": 14
+    },
+    "black wolf": {
+      "products": ["Black Wolf Pelt", "Wolf Meat", "Shadow Fang"],
+      "spoil_days": 14
+    },
+    "squirrel": {
+      "products": ["Squirrel Meat", "Squirrel Pelt"],
+      "spoil_days": 5
+    },
+    "raccoon": {
+      "products": ["Raccoon Meat", "Raccoon Pelt"],
+      "spoil_days": 7
+    },
+    "coyote": {
+      "products": ["Coyote Meat", "Coyote Pelt"],
+      "spoil_days": 7
+    },
+    "prairie dog": {
+      "products": ["Prairie Dog Meat"],
+      "spoil_days": 5
+    },
+    "hawk": {
+      "products": ["Hawk Feathers", "Hawk Talons"],
+      "spoil_days": 14
+    },
+    "rattlesnake": {
+      "products": ["Snake Meat", "Rattlesnake Skin", "Snake Venom"],
+      "spoil_days": 5
+    },
+    "pronghorn": {
+      "products": ["Pronghorn Meat", "Pronghorn Hide", "Antelope Horns"],
+      "spoil_days": 7
+    },
+    "bison": {
+      "products": ["Bison Meat", "Bison Hide", "Bison Horns"],
+      "spoil_days": 7
+    },
+    "bat": {
+      "products": ["Bat Wings", "Guano"],
+      "spoil_days": 3
+    },
+    "bandit": {
+      "products": ["Bandit Bounty", "Stolen Goods"],
+      "spoil_days": 999
+    }
+  },
+  "notes": {
+    "difficulty": "DC for tracking/finding the animal",
+    "ac": "Armor class for combat",
+    "health": "Damage needed to kill",
+    "damage": "Damage dealt to player on miss/fumble (0 = harmless prey)",
+    "cooldown": "Seconds before can hunt again"
+  }
+}

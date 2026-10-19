@@ -1,0 +1,492 @@
+{
+  "forms": {
+    "human": {
+      "name": "Human Form",
+      "type": "base",
+      "description": "Your natural human form",
+      "bonuses": {
+        "attack": 0,
+        "damage": 0,
+        "social": 2,
+        "stealth": 0
+      },
+      "restrictions": [],
+      "cooldown": 0,
+      "available_to": ["all"]
+    },
+    "hybrid": {
+      "name": "Hybrid Form",
+      "type": "lycanthrope",
+      "description": "A powerful blend of human and beast - enhanced strength and senses",
+      "bonuses": {
+        "attack": 2,
+        "damage": 2,
+        "social": -1,
+        "stealth": 1
+      },
+      "special_effects": [
+        "natural_weapons",
+        "enhanced_senses"
+      ],
+      "restrictions": [],
+      "cooldown": 300,
+      "available_to": ["lycanthrope"]
+    },
+    "beast": {
+      "name": "Full Beast Form",
+      "type": "lycanthrope",
+      "description": "Transform completely into a powerful beast - maximum hunting prowess",
+      "bonuses": {
+        "attack": 3,
+        "damage": 4,
+        "social": -5,
+        "stealth": 2
+      },
+      "special_effects": [
+        "natural_weapons",
+        "enhanced_senses",
+        "pack_tactics",
+        "intimidating"
+      ],
+      "restrictions": [
+        "cannot_use_weapons",
+        "cannot_craft"
+      ],
+      "cooldown": 600,
+      "available_to": ["lycanthrope"]
+    },
+    "dire_wolf": {
+      "name": "Dire Wolf",
+      "type": "lycanthrope",
+      "description": "The ultimate predator form - a massive dire wolf",
+      "bonuses": {
+        "attack": 4,
+        "damage": 5,
+        "social": -10,
+        "stealth": 3
+      },
+      "special_effects": [
+        "natural_weapons",
+        "enhanced_senses",
+        "pack_tactics",
+        "intimidating",
+        "regeneration"
+      ],
+      "restrictions": [
+        "cannot_use_weapons",
+        "cannot_craft",
+        "cannot_speak"
+      ],
+      "cooldown": 1800,
+      "available_to": ["lycanthrope_alpha"]
+    },
+    "radiant": {
+      "name": "Radiant Form",
+      "type": "celestial",
+      "description": "Glowing with divine light - enhanced perception and presence",
+      "bonuses": {
+        "attack": 1,
+        "damage": 2,
+        "social": 3,
+        "stealth": -2
+      },
+      "special_effects": [
+        "radiant_light",
+        "divine_sense"
+      ],
+      "restrictions": [],
+      "cooldown": 300,
+      "available_to": ["celestial"]
+    },
+    "angelic": {
+      "name": "True Angelic Form",
+      "type": "celestial",
+      "description": "Manifest divine wings and celestial power - awe-inspiring presence",
+      "bonuses": {
+        "attack": 3,
+        "damage": 3,
+        "social": 5,
+        "stealth": -5
+      },
+      "special_effects": [
+        "radiant_light",
+        "divine_sense",
+        "flight",
+        "healing_aura"
+      ],
+      "restrictions": [
+        "highly_visible"
+      ],
+      "cooldown": 900,
+      "available_to": ["celestial"]
+    },
+    "catfolk_human": {
+      "name": "Human Form",
+      "type": "catfolk",
+      "description": "Fully human appearance - agile and graceful with feline reflexes",
+      "bonuses": {
+        "attack": 1,
+        "damage": 0,
+        "social": 1,
+        "stealth": 2,
+        "taming": 1,
+        "gathering": 2
+      },
+      "special_effects": [
+        "feline_agility",
+        "graceful_movement"
+      ],
+      "restrictions": [],
+      "cooldown": 0,
+      "available_to": ["catfolk"]
+    },
+    "kemonomimi": {
+      "name": "Kemonomimi Form",
+      "type": "catfolk",
+      "description": "Cat ears and tail - graceful and irresistibly charismatic",
+      "bonuses": {
+        "attack": 0,
+        "damage": 0,
+        "social": 3,
+        "stealth": 1,
+        "taming": 2,
+        "gathering": 3
+      },
+      "special_effects": [
+        "feline_agility",
+        "graceful_movement",
+        "feline_charm"
+      ],
+      "restrictions": [],
+      "cooldown": 120,
+      "available_to": ["catfolk"]
+    },
+    "full_cat": {
+      "name": "Full Cat Form",
+      "type": "catfolk",
+      "description": "Transform into an adorable cat - everyone who sees you is charmed",
+      "bonuses": {
+        "attack": -2,
+        "damage": -2,
+        "social": 5,
+        "stealth": 4,
+        "taming": 4,
+        "gathering": 4
+      },
+      "special_effects": [
+        "feline_agility",
+        "graceful_movement",
+        "feline_charm",
+        "irresistibly_adorable"
+      ],
+      "restrictions": [
+        "cannot_use_weapons",
+        "cannot_craft"
+      ],
+      "cooldown": 300,
+      "available_to": ["catfolk"]
+    },
+    "unicorn_human": {
+      "name": "Human Form",
+      "type": "unicorn",
+      "description": "Human appearance with an ethereal, magical presence",
+      "bonuses": {
+        "attack": 0,
+        "damage": 0,
+        "social": 2,
+        "stealth": 0
+      },
+      "special_effects": [
+        "pure_aura"
+      ],
+      "restrictions": [],
+      "cooldown": 0,
+      "available_to": ["unicorn"]
+    },
+    "unicorn_form": {
+      "name": "Unicorn Form",
+      "type": "unicorn",
+      "description": "Manifest your true unicorn form - a majestic horned equine of pure magic",
+      "bonuses": {
+        "attack": 3,
+        "damage": 3,
+        "social": 4,
+        "stealth": -2
+      },
+      "special_effects": [
+        "pure_aura",
+        "horn_attack",
+        "magical_presence",
+        "healing_touch"
+      ],
+      "restrictions": [
+        "cannot_use_weapons",
+        "highly_visible"
+      ],
+      "cooldown": 600,
+      "available_to": ["unicorn"]
+    },
+    "magus_mortal": {
+      "name": "Mortal Guise",
+      "type": "magus",
+      "description": "A humble mortal form - your godlike power hidden beneath an unassuming shell",
+      "bonuses": {
+        "attack": 5,
+        "damage": 5,
+        "social": 5,
+        "stealth": 5,
+        "taming": 5,
+        "gathering": 5
+      },
+      "special_effects": [
+        "arcane_insight",
+        "reality_whisper"
+      ],
+      "restrictions": [],
+      "cooldown": 0,
+      "available_to": ["magus", "demigod"]
+    },
+    "magus_ascended": {
+      "name": "Ascended Magus",
+      "type": "magus",
+      "description": "Reveal your true arcane nature - reality bends to your will, magic flows through your veins",
+      "bonuses": {
+        "attack": 10,
+        "damage": 10,
+        "social": 8,
+        "stealth": -3,
+        "taming": 8,
+        "gathering": 8
+      },
+      "special_effects": [
+        "arcane_insight",
+        "reality_whisper",
+        "spell_weaver",
+        "mana_overflow",
+        "arcane_shield"
+      ],
+      "restrictions": [
+        "highly_visible"
+      ],
+      "cooldown": 300,
+      "available_to": ["magus", "demigod"]
+    },
+    "demigod_form": {
+      "name": "Demigod Incarnate",
+      "type": "demigod",
+      "description": "UNLEASH YOUR TRUE DIVINE POWER - The cosmos trembles, reality reshapes itself around you, and mere mortals can only watch in awe",
+      "bonuses": {
+        "attack": 99,
+        "damage": 99,
+        "social": 99,
+        "stealth": -99,
+        "taming": 99,
+        "gathering": 99
+      },
+      "special_effects": [
+        "arcane_insight",
+        "reality_whisper",
+        "spell_weaver",
+        "mana_overflow",
+        "arcane_shield",
+        "divine_intervention",
+        "reality_warp",
+        "cosmic_presence",
+        "immortal_essence"
+      ],
+      "restrictions": [
+        "reality_warping_visible",
+        "cannot_hide_divinity"
+      ],
+      "cooldown": 0,
+      "available_to": ["demigod"]
+    }
+  },
+  "special_effects": {
+    "natural_weapons": {
+      "name": "Natural Weapons",
+      "description": "Claws and fangs deal additional 1d6 damage"
+    },
+    "enhanced_senses": {
+      "name": "Enhanced Senses",
+      "description": "+2 to tracking and detecting prey"
+    },
+    "pack_tactics": {
+      "name": "Pack Tactics",
+      "description": "+1 attack if another pack member is nearby"
+    },
+    "intimidating": {
+      "name": "Intimidating Presence",
+      "description": "Creatures may flee instead of fighting"
+    },
+    "regeneration": {
+      "name": "Regeneration",
+      "description": "Heal 1d4 HP per minute in beast form"
+    },
+    "radiant_light": {
+      "name": "Radiant Light",
+      "description": "Emit holy light that reveals hidden creatures"
+    },
+    "divine_sense": {
+      "name": "Divine Sense",
+      "description": "+3 to detecting evil, undead, and fiends"
+    },
+    "flight": {
+      "name": "Flight",
+      "description": "Can fly, gaining advantage on positioning"
+    },
+    "healing_aura": {
+      "name": "Healing Aura",
+      "description": "Allies nearby slowly regenerate health"
+    },
+    "feline_agility": {
+      "name": "Feline Agility",
+      "description": "+2 to dodging attacks and acrobatic maneuvers"
+    },
+    "graceful_movement": {
+      "name": "Graceful Movement",
+      "description": "Move silently and land on your feet from any height"
+    },
+    "feline_charm": {
+      "name": "Feline Charm",
+      "description": "+2 to persuasion and getting what you want"
+    },
+    "irresistibly_adorable": {
+      "name": "Irresistibly Adorable",
+      "description": "Everyone who sees you is charmed - NPCs give better prices and are more helpful"
+    },
+    "pure_aura": {
+      "name": "Pure Aura",
+      "description": "Radiate purity - evil creatures are uncomfortable near you"
+    },
+    "horn_attack": {
+      "name": "Horn Attack",
+      "description": "Your horn deals 1d8+3 piercing damage and counts as magical"
+    },
+    "magical_presence": {
+      "name": "Magical Presence",
+      "description": "Your presence enhances magical effects and calms wild creatures"
+    },
+    "healing_touch": {
+      "name": "Healing Touch",
+      "description": "Touch a creature to heal 2d6 HP once per hour"
+    },
+    "arcane_insight": {
+      "name": "Arcane Insight",
+      "description": "See the threads of magic in all things - automatically detect magical items, illusions, and hidden enchantments"
+    },
+    "reality_whisper": {
+      "name": "Reality Whisper",
+      "description": "The universe shares its secrets with you - gain hints about hidden paths and outcomes"
+    },
+    "spell_weaver": {
+      "name": "Spell Weaver",
+      "description": "All magical effects you create are amplified by 50% - spells hit harder, heal more, last longer"
+    },
+    "mana_overflow": {
+      "name": "Mana Overflow",
+      "description": "Your magical reserves are bottomless - no cooldowns on magical abilities"
+    },
+    "arcane_shield": {
+      "name": "Arcane Shield",
+      "description": "A shimmering barrier of pure magic surrounds you - reduce all incoming damage by 5"
+    },
+    "divine_intervention": {
+      "name": "Divine Intervention",
+      "description": "Once per session, completely negate any attack, trap, or catastrophe - reality itself bends to protect you"
+    },
+    "reality_warp": {
+      "name": "Reality Warp",
+      "description": "Reshape the fabric of existence - create objects, change terrain, or alter circumstances at will"
+    },
+    "cosmic_presence": {
+      "name": "Cosmic Presence",
+      "description": "Your mere presence inspires absolute awe - all creatures must acknowledge your divine nature"
+    },
+    "immortal_essence": {
+      "name": "Immortal Essence",
+      "description": "You cannot truly die - if reduced to 0 HP, reform at full health after 1 minute in a blaze of divine light"
+    }
+  },
+  "transformation_rules": {
+    "cooldown_type": "per_form",
+    "note": "Each form has its own cooldown. Transforming back to human is instant.",
+    "silver_vulnerability": "While in beast forms, take 2d6 extra damage from silver weapons"
+  },
+  "character_types": {
+    "all": {
+      "description": "Available to all characters",
+      "forms": ["human"]
+    },
+    "lycanthrope": {
+      "description": "Werewolf, werebear, or other shapeshifter",
+      "forms": ["human", "hybrid", "beast"]
+    },
+    "lycanthrope_alpha": {
+      "description": "Alpha lycanthrope with full mastery",
+      "forms": ["human", "hybrid", "beast", "dire_wolf"]
+    },
+    "celestial": {
+      "description": "Angels, aasimar, and other celestial beings",
+      "forms": ["human", "radiant", "angelic"]
+    },
+    "catfolk": {
+      "description": "Feline shapeshifters - agile, graceful, and charming",
+      "forms": ["catfolk_human", "kemonomimi", "full_cat"]
+    },
+    "unicorn": {
+      "description": "Magical equine beings of purity and grace",
+      "forms": ["unicorn_human", "unicorn_form"]
+    },
+    "magus": {
+      "description": "Masters of the arcane arts - powerful spellcasters touched by ancient magic",
+      "forms": ["magus_mortal", "magus_ascended"]
+    },
+    "demigod": {
+      "description": "A being of near-infinite cosmic power - half mortal, half divine, wholly terrifying",
+      "forms": ["magus_mortal", "magus_ascended", "demigod_form"]
+    }
+  },
+  "celestial_forms": {
+    "radiant": {
+      "name": "Radiant Form",
+      "type": "celestial",
+      "description": "Glowing with divine light - enhanced perception and presence",
+      "bonuses": {
+        "attack": 1,
+        "damage": 2,
+        "social": 3,
+        "stealth": -2
+      },
+      "special_effects": [
+        "radiant_light",
+        "divine_sense"
+      ],
+      "restrictions": [],
+      "cooldown": 300,
+      "available_to": ["celestial"]
+    },
+    "angelic": {
+      "name": "True Angelic Form",
+      "type": "celestial",
+      "description": "Manifest divine wings and celestial power - awe-inspiring presence",
+      "bonuses": {
+        "attack": 3,
+        "damage": 3,
+        "social": 5,
+        "stealth": -5
+      },
+      "special_effects": [
+        "radiant_light",
+        "divine_sense",
+        "flight",
+        "healing_aura"
+      ],
+      "restrictions": [
+        "highly_visible"
+      ],
+      "cooldown": 900,
+      "available_to": ["celestial"]
+    }
+  }
+}

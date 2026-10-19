@@ -1,0 +1,207 @@
+{
+  "id": "terraforming-station",
+  "name": "Terraforming Station",
+  "subtitle": "The Black Serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "terraforming-station",
+  "music": {
+    "region": "black_serenity"
+  },
+  "sky": "#111625",
+  "legend": {
+    ".": {
+      "name": "deck",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "bulkhead",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.0,
+    "y": 18.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Neural Jack Lounge",
+      "x": 3,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "neural-jack-lounge",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower left part of the room leads to Neural Jack Lounge. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Ships Bridge",
+      "x": 15,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "ships-bridge",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Ships Bridge. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-2",
+      "label": "The Crossroads",
+      "x": 27,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "the-crossroads",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower right part of the room leads to The Crossroads. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "npc-mara",
+      "label": "Mara",
+      "game_npc": "mara",
+      "x": 19.5,
+      "y": 14.0,
+      "w": 1.2,
+      "h": 2,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Mara.",
+      "kind": "npc"
+    },
+    {
+      "id": "terminal-environmental-display-wall",
+      "label": "Environmental display wall",
+      "kind": "terminal",
+      "x": 19,
+      "y": 5,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "game_terminal": "Environmental Controls",
+      "note": "Screens and diagrams line the northern work area beneath the station sign. This console connects to the Environmental Controls network. Open it to recover cached data, read character dossiers, or transfer credits."
+    },
+    {
+      "id": "terminal-eastern-control-bays",
+      "label": "Eastern control bays",
+      "kind": "terminal",
+      "x": 34,
+      "y": 7,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "game_terminal": "Research Database",
+      "note": "Blue-lit displays and small work areas line the upper-right side. This console connects to the Research Database network. Open it to recover cached data, read character dossiers, or transfer credits."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "mara",
+      "name": "Mara",
+      "role": "Terraforming Hostess"
+    }
+  ],
+  "backdrop": "/assets/adventure/backgrounds/terraforming_station.png?v=ff45ee4d5a",
+  "description": "The terraforming station is a regular grid of rectangular growing beds and work bays inside a metal-walled control room. A bright circular transport platform sits in the middle of the grid, with narrow walkways leading around it. Screens and environmental displays line the upper wall beneath a Terraforming Station sign. Several corner bays hold green plants and equipment, contrasting with the dark beds and grey floor panels. Warm wall lights frame the room, while the blue platform and display screens supply the brightest colour. The whole scene is arranged around controlled growing spaces rather than an outdoor field.",
+  "landmarks": [
+    {
+      "id": "central-station-transport-platform",
+      "label": "Central station transport platform",
+      "kind": "transport platform",
+      "description": "A blue circular platform sits where the grid of growing-bed walkways meets.",
+      "x": 20,
+      "y": 14
+    },
+    {
+      "id": "rectangular-growing-beds",
+      "label": "Rectangular growing beds",
+      "kind": "garden bed",
+      "description": "Dark rectangular beds are laid out in regular rows to either side of the centre.",
+      "x": 12,
+      "y": 17
+    },
+    {
+      "id": "environmental-display-wall",
+      "label": "Environmental display wall",
+      "kind": "terminal",
+      "description": "Screens and diagrams line the northern work area beneath the station sign.",
+      "x": 20,
+      "y": 5
+    },
+    {
+      "id": "western-green-plant-bays",
+      "label": "Western green plant bays",
+      "kind": "vegetation",
+      "description": "Green plants and equipment occupy the upper-left wall bays.",
+      "x": 5,
+      "y": 7
+    },
+    {
+      "id": "eastern-control-bays",
+      "label": "Eastern control bays",
+      "kind": "terminal",
+      "description": "Blue-lit displays and small work areas line the upper-right side.",
+      "x": 35,
+      "y": 7
+    },
+    {
+      "id": "lower-station-entrance-sign",
+      "label": "Lower station entrance sign",
+      "kind": "sign",
+      "description": "A marked entrance frames the lower centre of the room.",
+      "x": 20,
+      "y": 25
+    }
+  ]
+}

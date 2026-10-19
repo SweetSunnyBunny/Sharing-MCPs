@@ -1,0 +1,557 @@
+{
+  "id": "the-forge",
+  "name": "The Forge",
+  "subtitle": "The Black Serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "the-forge",
+  "music": {
+    "region": "black_serenity"
+  },
+  "sky": "#111625",
+  "legend": {
+    ".": {
+      "name": "deck",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "bulkhead",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.0,
+    "y": 18.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Neon Underground",
+      "x": 3,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "neon-underground",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower left part of the room leads to Neon Underground. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Neural Jack Lounge",
+      "x": 15,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "neural-jack-lounge",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Neural Jack Lounge. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-2",
+      "label": "The Crossroads",
+      "x": 27,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "the-crossroads",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower right part of the room leads to The Crossroads. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "npc-garron",
+      "label": "Garron",
+      "game_npc": "garron",
+      "x": 19.5,
+      "y": 14.0,
+      "w": 1.2,
+      "h": 2,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Garron.",
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "workshop stool",
+      "x": 9.4,
+      "y": 10.66,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 10.4,
+            "y": 11.16,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central left part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "workshop stool",
+      "x": 9.8,
+      "y": 9.82,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 10.8,
+            "y": 10.32,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central left part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-3",
+      "label": "workshop stool",
+      "x": 12.6,
+      "y": 9.54,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 13.6,
+            "y": 10.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the upper left part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-4",
+      "label": "workshop stool",
+      "x": 12.6,
+      "y": 10.38,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 13.6,
+            "y": 10.88,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central left part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-5",
+      "label": "workshop stool",
+      "x": 12.2,
+      "y": 11.22,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 13.2,
+            "y": 11.72,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central left part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-6",
+      "label": "workshop stool",
+      "x": 10.6,
+      "y": 12.34,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 11.6,
+            "y": 12.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central left part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-7",
+      "label": "workshop stool",
+      "x": 23.8,
+      "y": 10.94,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 24.8,
+            "y": 11.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central middle part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-8",
+      "label": "workshop stool",
+      "x": 25.4,
+      "y": 11.5,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.4,
+            "y": 12.0,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central right part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-9",
+      "label": "workshop stool",
+      "x": 25.4,
+      "y": 9.54,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 26.4,
+            "y": 10.04,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the upper right part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-10",
+      "label": "workshop stool",
+      "x": 26.2,
+      "y": 10.1,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 27.2,
+            "y": 10.6,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central right part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-11",
+      "label": "workshop stool",
+      "x": 27.4,
+      "y": 11.78,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 28.4,
+            "y": 12.28,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central right part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-12",
+      "label": "workshop stool",
+      "x": 22.6,
+      "y": 15.98,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 23.6,
+            "y": 16.48,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central middle part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-13",
+      "label": "workshop stool",
+      "x": 23.8,
+      "y": 15.7,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 24.8,
+            "y": 16.2,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the central middle part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-14",
+      "label": "workshop stool",
+      "x": 19.4,
+      "y": 19.34,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 20.4,
+            "y": 19.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the lower middle part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-15",
+      "label": "workshop stool",
+      "x": 20.6,
+      "y": 19.34,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 21.6,
+            "y": 19.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the lower middle part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-16",
+      "label": "workshop stool",
+      "x": 17.8,
+      "y": 19.34,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 18.8,
+            "y": 19.84,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the lower middle part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-17",
+      "label": "workshop stool",
+      "x": 35.0,
+      "y": 20.18,
+      "w": 2,
+      "h": 2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 36.0,
+            "y": 20.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Workshop stool, in the lower right part of the room, beside the workshop benches and glowing furnaces. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "garron",
+      "name": "Garron",
+      "role": "Builder"
+    }
+  ],
+  "backdrop": "/assets/adventure/backgrounds/the-forge.png?v=a3e243e0a9",
+  "description": "The Forge is a large industrial workshop clustered around a tall central furnace and chimney. Orange fire shines from the furnace base onto the dark metal floor. Benches, small worktables and stools fill the side bays, with tools, scrap and mechanical parts covering many surfaces. Racks of equipment line the walls, and lamps hang among heavy pipes and structural beams. Another smaller glowing furnace sits on the left. The open strip through the middle connects the lower entrance to the main forge, while the crowded outer work areas make this a room of fabrication, repairs and stored hardware.",
+  "landmarks": [
+    {
+      "id": "main-forge-furnace",
+      "label": "Main forge furnace",
+      "kind": "machinery",
+      "description": "A tall central furnace and chimney glow orange at the base.",
+      "x": 20,
+      "y": 14
+    },
+    {
+      "id": "western-furnace-bay",
+      "label": "Western furnace bay",
+      "kind": "machinery",
+      "description": "A smaller lit furnace sits among tools and heavy workshop fittings on the left.",
+      "x": 6,
+      "y": 11
+    },
+    {
+      "id": "eastern-workbenches",
+      "label": "Eastern workbenches",
+      "kind": "workbench",
+      "description": "Worktables, stools, parts and lamps crowd the right-hand workshop bays.",
+      "x": 31,
+      "y": 17
+    },
+    {
+      "id": "northern-tool-racks",
+      "label": "Northern tool racks",
+      "kind": "storage",
+      "description": "Racks and shelves of equipment line the upper workshop wall.",
+      "x": 19,
+      "y": 5
+    },
+    {
+      "id": "lower-fabrication-tables",
+      "label": "Lower fabrication tables",
+      "kind": "workbench",
+      "description": "Several small work surfaces are arranged around the lower approach to the forge.",
+      "x": 23,
+      "y": 23
+    },
+    {
+      "id": "pipework-and-industrial-framing",
+      "label": "Pipework and industrial framing",
+      "kind": "scenery",
+      "description": "Heavy pipes and structural metal frame the workshop's side bays.",
+      "x": 34,
+      "y": 8
+    }
+  ]
+}

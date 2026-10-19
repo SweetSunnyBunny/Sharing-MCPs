@@ -1,0 +1,299 @@
+{
+  "id": "enchanted-forest-main",
+  "name": "Enchanted Forest",
+  "subtitle": "A mystical woodland filled with creatures and secrets.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/enchanted-forest-main.png",
+  "region": "heros_journey",
+  "game_location": "enchanted-forest",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "############################...#################",
+    "############################...#################",
+    "###########################....#################",
+    "###########################.....################",
+    "##########################.......###############",
+    "##########################........##############",
+    "##########################.......###############",
+    "###########################.....################",
+    "########.###################..##################",
+    "########....########...##.....##################",
+    "########......######...........#################",
+    "########.......#.......#.............###########",
+    "#########.........#######...........############",
+    "###########......###########.......#############",
+    "############......##########......##############",
+    "##..#########......########........#############",
+    "......................######........###########.",
+    "...............####.....#####..........#######..",
+    "............#########......##...................",
+    "..........#############.........................",
+    "........#################.......................",
+    ".###..######################....................",
+    "#########################.......................",
+    "#######################...................######",
+    "####################.....................#######",
+    "##################.................#############",
+    "###############...................##############",
+    "#############...................################",
+    "############...................#################",
+    "#########....................###################",
+    "########....................####################",
+    "#######.....................####################"
+  ],
+  "spawn": {
+    "x": 22.0,
+    "y": 16.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Wizard's Tower",
+      "x": 15.75,
+      "y": 31.0,
+      "w": 12.0,
+      "h": 2.0,
+      "to": "wizards-tower-outside",
+      "arriveAt": {
+        "x": 10.0,
+        "y": 22.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the lower middle part of the room leads to Wizard's Tower (Outside). Walk into the marked threshold to take that route.",
+      "kind": "door",
+      "fishable": false
+    },
+    {
+      "id": "travel-1",
+      "label": "Enchanted Forest",
+      "x": 44.5,
+      "y": 21.25,
+      "w": 3.0,
+      "h": 5.0,
+      "to": "enchanted-forest-right",
+      "arriveAt": {
+        "x": 8.0,
+        "y": 14.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central right part of the room leads to Forest Clearing (East). Walk into the marked threshold to take that route.",
+      "kind": "door",
+      "fishable": false
+    },
+    {
+      "id": "travel-2",
+      "label": "Enchanted Forest",
+      "x": 26.75,
+      "y": 8.25,
+      "w": 4.0,
+      "h": 8.0,
+      "to": "enchanted-forest-north",
+      "arriveAt": {
+        "x": 7.0,
+        "y": 19.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the upper middle part of the room leads to Forest Depths (North). Walk into the marked threshold to take that route.",
+      "kind": "door",
+      "fishable": false
+    },
+    {
+      "id": "npc-victor",
+      "label": "Victor",
+      "game_npc": "victor",
+      "x": 11.0,
+      "y": 15.0,
+      "w": 1.2,
+      "h": 2.0,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Victor.",
+      "npc_sheet": "assets/adventure/sprites/conversational NPCs/victor sprite.png",
+      "npc_frame": 64,
+      "kind": "npc",
+      "fishable": false,
+      "npc_art": "",
+      "npc_scale": 1.0
+    },
+    {
+      "x": 5.25,
+      "y": 24.0,
+      "w": 13.0,
+      "h": 3.75,
+      "id": "hotspot-muu9b7jc",
+      "label": "fishing water",
+      "note": "",
+      "invisible": true,
+      "fishable": true
+    }
+  ],
+  "npcs": [
+    {
+      "id": "victor",
+      "name": "Victor",
+      "role": "Quest Giver"
+    }
+  ],
+  "fishing_zones": [
+    {
+      "points": [
+        [
+          0,
+          31
+        ],
+        [
+          0,
+          26
+        ],
+        [
+          4,
+          25
+        ],
+        [
+          3,
+          23
+        ],
+        [
+          7,
+          21
+        ],
+        [
+          16,
+          19
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          16
+        ],
+        [
+          16,
+          15
+        ],
+        [
+          17,
+          13
+        ],
+        [
+          17,
+          11
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          16,
+          9
+        ],
+        [
+          21,
+          11
+        ],
+        [
+          20,
+          13
+        ],
+        [
+          27,
+          14
+        ],
+        [
+          28,
+          17
+        ],
+        [
+          25,
+          19
+        ],
+        [
+          24,
+          22
+        ],
+        [
+          18,
+          23
+        ],
+        [
+          12,
+          25
+        ],
+        [
+          8,
+          27
+        ],
+        [
+          7,
+          30
+        ]
+      ]
+    }
+  ],
+  "description": "Large, twisting trees frame a sunlit woodland path that bends from the lower centre towards a brighter opening above. A clear blue stream runs diagonally down the left side, stepping over mossy rocks in a small cascade. Roots spread across soft green ground, and clusters of pink, blue and violet flowers gather around the trunks. Pale mushrooms sit beneath the tree on the right, while hanging vines soften the canopy overhead. The path and stream make two distinct routes through the painting: one dry and open, the other edged with stones, water and dense undergrowth.",
+  "landmarks": [
+    {
+      "id": "mossy-stream",
+      "label": "Mossy stream",
+      "kind": "water",
+      "description": "A blue stream descends through rounded moss-covered stones along the left half of the woodland.",
+      "x": 12,
+      "y": 20
+    },
+    {
+      "id": "forking-woodland-path",
+      "label": "Forking woodland path",
+      "kind": "path",
+      "description": "The light earth path curves through the clearing and bends between the large trees.",
+      "x": 27,
+      "y": 17
+    },
+    {
+      "id": "eastern-mushroom-roots",
+      "label": "Eastern mushroom roots",
+      "kind": "vegetation",
+      "description": "Pale blue and lavender mushrooms cluster beneath exposed roots on the right.",
+      "x": 39,
+      "y": 24
+    },
+    {
+      "id": "old-western-tree",
+      "label": "Old western tree",
+      "kind": "tree",
+      "description": "A thick, gnarled trunk and trailing branches frame the left side of the stream.",
+      "x": 5,
+      "y": 10
+    },
+    {
+      "id": "blue-flower-beds",
+      "label": "Blue flower beds",
+      "kind": "vegetation",
+      "description": "Bright blue and pink blooms break up the grass beside the lower path.",
+      "x": 24,
+      "y": 26
+    }
+  ]
+}

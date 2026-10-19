@@ -1,0 +1,196 @@
+{
+  "event_settings": {
+    "frequency_days": 3,
+    "expiration_hours": 12,
+    "check_interval_minutes": 30
+  },
+
+  "reward_ranges": {
+    "xp": {
+      "min": 20,
+      "max": 50
+    }
+  },
+
+  "worlds": {
+    "heros_journey": {
+      "name": "Hero's Journey",
+      "announcement_channel": "village-square",
+      "ping_role": "@heros_journey",
+      "currency": "gold",
+      "themes": ["fantasy", "medieval", "magic", "adventure"],
+      "scenarios": [
+        {
+          "title": "The Toxic Donkey",
+          "hook": "Beware of Wren, the toxic donkey! He's in the garden eating the entire harvest! Stop him or we'll starve!",
+          "type": "creature"
+        },
+        {
+          "title": "Troll Trouble",
+          "hook": "A group of trolls has appeared in the Wilderness! Confront them with your wits or swords before they steal all the supplies!",
+          "type": "combat"
+        },
+        {
+          "title": "The Missing Merchant",
+          "hook": "Old Willem the merchant never arrived from the mountain pass. His cart was found abandoned, tracks leading into the dark forest...",
+          "type": "mystery"
+        },
+        {
+          "title": "Wolf Pack",
+          "hook": "A pack of wolves has been spotted near the village! The livestock are in danger - brave souls are needed to drive them off!",
+          "type": "creature"
+        },
+        {
+          "title": "The Cursed Well",
+          "hook": "The village well has turned black and foul. Strange whispers echo from its depths at night. Someone must investigate!",
+          "type": "mystery"
+        },
+        {
+          "title": "Goblin Raiders",
+          "hook": "Goblins have been raiding farms on the outskirts! Track them to their hideout and put an end to their mischief!",
+          "type": "combat"
+        },
+        {
+          "title": "The Wandering Spirit",
+          "hook": "A ghostly figure has been seen on the old road at midnight. The spirit seems distressed - perhaps it needs help moving on?",
+          "type": "mystery"
+        },
+        {
+          "title": "Festival Sabotage",
+          "hook": "Someone is sabotaging the harvest festival preparations! Decorations destroyed, food spoiled. Find the culprit before the celebration is ruined!",
+          "type": "social"
+        }
+      ]
+    },
+
+    "dusty_trails": {
+      "name": "Dusty Trails",
+      "announcement_channel": "long-branch-saloon",
+      "ping_role": "@dusty_trails",
+      "currency": "dollars",
+      "themes": ["western", "frontier", "outlaws", "gold rush"],
+      "scenarios": [
+        {
+          "title": "The Cattle Rustlers",
+          "hook": "Cattle have gone missing from the Johnson ranch three nights running. Fresh tracks head toward Dead Man's Gulch...",
+          "type": "crime"
+        },
+        {
+          "title": "Snake Oil Scandal",
+          "hook": "A traveling salesman's 'miracle tonic' has made half the town sick! He's trying to skip town - someone stop that wagon!",
+          "type": "chase"
+        },
+        {
+          "title": "Train Robbery",
+          "hook": "The 3:10 from Yuma was held up! The bandits took the payroll and are holed up somewhere in the canyon. There's a bounty for their capture!",
+          "type": "combat"
+        },
+        {
+          "title": "The Haunted Mine",
+          "hook": "Strange lights and sounds from the old Copper King mine. Miners refuse to work. Is it ghosts, or something more earthly?",
+          "type": "mystery"
+        },
+        {
+          "title": "Showdown at Noon",
+          "hook": "Black Bart McGraw has called out the Sheriff for a duel at high noon. The Sheriff's arm is injured - he needs backup!",
+          "type": "combat"
+        },
+        {
+          "title": "The Water War",
+          "hook": "Someone's been damming up the creek, leaving downstream ranches dry. Tensions are rising - find out who and why before guns are drawn!",
+          "type": "social"
+        },
+        {
+          "title": "Runaway Stagecoach",
+          "hook": "The stagecoach horses spooked and bolted! The driver's been thrown and passengers are trapped inside as it careens toward the cliff!",
+          "type": "rescue"
+        },
+        {
+          "title": "The Card Cheat",
+          "hook": "Someone at the saloon poker game is cheating, and accusations are flying. A fight's about to break out unless someone can prove who the real cheat is!",
+          "type": "social"
+        }
+      ]
+    },
+
+    "black_serenity": {
+      "name": "The Black Serenity",
+      "announcement_channel": "ships-bridge",
+      "ping_role": "@black_serenity",
+      "currency": "credits",
+      "themes": ["sci-fi", "space", "cyberpunk", "salvage"],
+      "scenarios": [
+        {
+          "title": "Distress Signal",
+          "hook": "A distress beacon from an unregistered vessel. Could be survivors, could be pirates. Either way, someone should check it out...",
+          "type": "mystery"
+        },
+        {
+          "title": "System Breach",
+          "hook": "Unknown code is propagating through the ship's systems. Life support fluctuating. Find the source before we're all breathing vacuum!",
+          "type": "tech"
+        },
+        {
+          "title": "Cargo Gone Wrong",
+          "hook": "Something in cargo bay 3 is making noise. The manifest says 'agricultural equipment' but that doesn't sound like any tractor I've ever heard...",
+          "type": "creature"
+        },
+        {
+          "title": "The Stowaway",
+          "hook": "Food stores are depleting faster than they should. Someone - or something - is hiding aboard. Find them before supplies run critical!",
+          "type": "mystery"
+        },
+        {
+          "title": "Pirate Ambush",
+          "hook": "Raiders dropping out of hyperspace! They're demanding we surrender our cargo. We can fight, flee, or negotiate - but we need to act fast!",
+          "type": "combat"
+        },
+        {
+          "title": "The AI's Request",
+          "hook": "The station AI is acting strange, asking crew members cryptic questions. It claims to have 'discovered something important' but won't say what...",
+          "type": "mystery"
+        },
+        {
+          "title": "Derelict Discovery",
+          "hook": "Long-range sensors picked up a drifting ship. No life signs, but the reactor's still warm. Salvage rights to whoever investigates!",
+          "type": "salvage"
+        },
+        {
+          "title": "Alien Artifact",
+          "hook": "The artifact we recovered is emitting strange readings. Crew members near it report vivid dreams. Is it valuable tech or dangerous cargo?",
+          "type": "mystery"
+        }
+      ]
+    },
+
+    "hearthlight": {
+      "name": "Hearthlight",
+      "announcement_channel": "cozy-home",
+      "ping_role": "@hearthlight",
+      "currency": null,
+      "themes": ["cozy", "gentle", "wholesome", "slice-of-life"],
+      "scenarios": [
+        {
+          "title": "The Lost Kitten",
+          "hook": "A tiny kitten has been spotted wandering the neighborhood, looking scared and hungry. Can someone help find where it belongs?",
+          "type": "rescue"
+        },
+        {
+          "title": "Garden Party Preparations",
+          "hook": "The community garden party is tomorrow and there's so much to do! Decorations, food, music - many hands make light work!",
+          "type": "social"
+        },
+        {
+          "title": "The Baking Disaster",
+          "hook": "Someone's attempt at baking has gone hilariously wrong. The kitchen needs rescuing, and maybe we can salvage something edible?",
+          "type": "social"
+        },
+        {
+          "title": "Stargazing Night",
+          "hook": "Clear skies tonight! Perfect for setting up blankets and hot cocoa. Who wants to watch for shooting stars together?",
+          "type": "social"
+        }
+      ]
+    }
+  }
+}

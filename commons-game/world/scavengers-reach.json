@@ -1,0 +1,157 @@
+{
+  "id": "scavengers-reach",
+  "name": "Scavengers Reach",
+  "subtitle": "The Black Serenity",
+  "view": "top",
+  "tile": 32,
+  "region": "black_serenity",
+  "game_location": "scavengers-reach",
+  "music": {
+    "region": "black_serenity"
+  },
+  "sky": "#111625",
+  "legend": {
+    ".": {
+      "name": "deck",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "bulkhead",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "########################################",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "#......................................#",
+    "########################################"
+  ],
+  "spawn": {
+    "x": 19.0,
+    "y": 18.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Ships Bridge",
+      "x": 3,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "ships-bridge",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower left part of the room leads to Ships Bridge. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-1",
+      "label": "Data Nexus",
+      "x": 15,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "data-nexus",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower middle part of the room leads to Data Nexus. Walk into the marked threshold to take that route."
+    },
+    {
+      "id": "travel-2",
+      "label": "The Crossroads",
+      "x": 27,
+      "y": 25,
+      "w": 3,
+      "h": 2,
+      "to": "the-crossroads",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 18.5
+      },
+      "color": "#69b9ce",
+      "invisible": true,
+      "kind": "door",
+      "note": "This passage in the lower right part of the room leads to The Crossroads. Walk into the marked threshold to take that route."
+    }
+  ],
+  "npcs": [],
+  "backdrop": "/assets/adventure/backgrounds/scavengers-reach.png?v=f3a145d872",
+  "description": "Scavengers Reach is an immense field of rusted wreckage under a distant planet and its smaller companion in the sky. Broken hull plates, shattered frames, wheels and machinery rise in heaps on both sides of a dusty central track. The path climbs towards an orange-lit horizon, where more ruined structures silhouette against the sky. The foreground is full of angular metal, cables and half-buried parts rather than neat stacks of cargo. Rust browns, ash greys and the low light make the wreck field feel expansive, while the gap between the heaps gives the eye a route into its distance.",
+  "landmarks": [
+    {
+      "id": "track-through-the-wreckage",
+      "label": "Track through the wreckage",
+      "kind": "path",
+      "description": "A dusty route threads between the scrap heaps towards the glowing horizon.",
+      "x": 22,
+      "y": 20
+    },
+    {
+      "id": "western-wreck-mound",
+      "label": "Western wreck mound",
+      "kind": "wreckage",
+      "description": "Broken hull plates, frames and machinery form a tall heap on the left.",
+      "x": 8,
+      "y": 12
+    },
+    {
+      "id": "eastern-wheel-and-hull-debris",
+      "label": "Eastern wheel and hull debris",
+      "kind": "wreckage",
+      "description": "Large circular machinery and ruined structural pieces rise from the right-hand pile.",
+      "x": 33,
+      "y": 9
+    },
+    {
+      "id": "planetary-sky",
+      "label": "Planetary sky",
+      "kind": "scenery",
+      "description": "A large planet and a smaller body hang above the distant wreck field.",
+      "x": 22,
+      "y": 3
+    },
+    {
+      "id": "foreground-scrap-plates",
+      "label": "Foreground scrap plates",
+      "kind": "wreckage",
+      "description": "Angular metal sheets, cables and damaged components crowd the lower-right foreground.",
+      "x": 34,
+      "y": 25
+    }
+  ]
+}

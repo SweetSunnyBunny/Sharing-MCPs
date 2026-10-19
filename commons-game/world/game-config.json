@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "entry": "hearth",
+  "adventure_entry": "the-crossroads",
+  "invited_players_only": true,
+  "starting_gold": 50,
+  "npc_provider": "disabled",
+  "music": {
+    "default_volume": 0.25,
+    "crossfade_seconds": 2,
+    "pause_hidden": true
+  }
+}

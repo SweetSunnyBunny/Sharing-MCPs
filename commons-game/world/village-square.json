@@ -1,0 +1,304 @@
+{
+  "id": "village-square",
+  "name": "Village Square",
+  "subtitle": "The heart of the village with shops and townsfolk.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/heros_journey/the-village-square%20main.png",
+  "region": "heros_journey",
+  "game_location": "village-square",
+  "music": {
+    "region": "heros_journey"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "###########..###################################",
+    "###########...##################################",
+    "############...#################################",
+    "############....################################",
+    "#############....##..###########################",
+    "##############......############################",
+    "###############.....############################",
+    "###############......###########################",
+    "###############.......###.######################",
+    "##############....##......######################",
+    "############...########....#####################",
+    "#####.........###########..#####################",
+    "######........##########..######################",
+    "#######........#########....####################",
+    "#############......###......####################",
+    "##############...........#..####################",
+    "#####..#########........#...####################",
+    "#####....###..###...........####################",
+    "######..........#.........#####################.",
+    "########........#.........#####################.",
+    "#########...................#....#############..",
+    "##########........................###########..#",
+    ".#########....#..................##########...##",
+    "..#########..#####.................#.##......###",
+    "..#######....#######........................####",
+    "...##......##########..................#########",
+    "##.......############..............#############",
+    "#####################...........################",
+    "####################...........#################",
+    "###################...........##################",
+    "#################............###################",
+    "###############..............###################"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 16.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Prancing Pony",
+      "x": 7.0,
+      "y": 20.12,
+      "w": 4.75,
+      "h": 3.5,
+      "to": "the-prancing-pony",
+      "arriveAt": {
+        "x": 32.0,
+        "y": 23.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central left part of the room leads to The Prancing Pony. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "travel-1",
+      "label": "Larkspur Goods",
+      "x": 26.25,
+      "y": 17.0,
+      "w": 1.88,
+      "h": 5.0,
+      "to": "larkspur-goods",
+      "arriveAt": {
+        "x": 25.5,
+        "y": 26.0
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central middle part of the room leads to Larkspur Goods. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "travel-2",
+      "label": "Wizard's Tower",
+      "x": 10.75,
+      "y": 1.0,
+      "w": 3.75,
+      "h": 2.0,
+      "to": "wizards-tower-outside",
+      "arriveAt": {
+        "x": 10.5,
+        "y": 26.0
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the upper left part of the room leads to Wizard's Tower (Outside). Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "path-candlekeep",
+      "label": "Candlekeep",
+      "to": "candlekeep",
+      "x": 19.5,
+      "y": 3.75,
+      "w": 2.0,
+      "h": 2.0,
+      "arriveAt": {
+        "x": 19.5,
+        "y": 19.0
+      },
+      "invisible": true,
+      "note": "This passage in the upper middle part of the room leads to Candlekeep. Walk into the marked threshold to take that route.",
+      "kind": "door"
+    },
+    {
+      "id": "seat-1",
+      "label": "village bench",
+      "x": 4.18,
+      "y": 16.94,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 5.28,
+            "y": 17.44,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Village bench, in the central left part of the room, beside the village fountain and paved shop lanes. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "village bench",
+      "x": 13.3,
+      "y": 18.22,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 14.4,
+            "y": 18.72,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Village bench, in the central left part of the room, beside the village fountain and paved shop lanes. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-3",
+      "label": "shop bench",
+      "x": 33.46,
+      "y": 16.3,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 34.56,
+            "y": 16.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Shop bench, in the central right part of the room, beside the village fountain and paved shop lanes. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-4",
+      "label": "garden bench",
+      "x": 42.58,
+      "y": 29.1,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 43.68,
+            "y": 29.6,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Garden bench, in the lower right part of the room, beside the village fountain and paved shop lanes. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [],
+  "fishing_zones": [
+    {
+      "id": "water-1",
+      "points": [
+        [
+          14.88,
+          9.92
+        ],
+        [
+          16.8,
+          8.96
+        ],
+        [
+          19.2,
+          8.96
+        ],
+        [
+          22.08,
+          10.24
+        ],
+        [
+          23.52,
+          11.2
+        ],
+        [
+          22.08,
+          12.8
+        ],
+        [
+          17.76,
+          13.12
+        ],
+        [
+          14.88,
+          11.84
+        ]
+      ]
+    }
+  ],
+  "fishing_pool": "enchanted-forest",
+  "description": "The village square is a bright paved meeting place built around a circular fountain. Half-timbered shopfronts surround it: the bakery lies on the upper left, the apothecary farther back, and the blue-roofed Larkspur Goods storefront fills the right side. Flower boxes, shrubs and climbing plants soften the stone paving. Wooden benches and black lamp posts line the lower paths, while steps lead upwards between the houses. The fountain basin and the shop awnings give the square its strongest landmarks; the winding lanes remain open between them, linking the nearby tavern, shops and the routes beyond the village.",
+  "landmarks": [
+    {
+      "id": "village-fountain",
+      "label": "Village fountain",
+      "kind": "water",
+      "description": "A circular stone basin and central fountain stand in the upper-middle part of the square.",
+      "x": 23,
+      "y": 12
+    },
+    {
+      "id": "larkspur-storefront",
+      "label": "Larkspur storefront",
+      "kind": "shopfront",
+      "description": "A blue-roofed shop with a striped awning and a large Larkspur Goods sign fills the right side.",
+      "x": 37,
+      "y": 15
+    },
+    {
+      "id": "bakery-awning",
+      "label": "Bakery awning",
+      "kind": "shopfront",
+      "description": "The bakery on the upper left has a striped awning and goods set outside.",
+      "x": 11,
+      "y": 8
+    },
+    {
+      "id": "apothecary-frontage",
+      "label": "Apothecary frontage",
+      "kind": "shopfront",
+      "description": "A narrow timber-fronted apothecary stands beyond the fountain.",
+      "x": 29,
+      "y": 6
+    },
+    {
+      "id": "lower-benches-and-lamps",
+      "label": "Lower benches and lamps",
+      "kind": "seating area",
+      "description": "Wooden benches, dark lamp posts and flower beds edge the lower paved paths.",
+      "x": 22,
+      "y": 26
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "id": "dt-town-square",
+  "name": "Town Square",
+  "subtitle": "The dusty main street of town. Storefronts line each side.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/dusty_trails/town_square.png",
+  "region": "dusty_trails",
+  "game_location": "dt-town-square",
+  "music": {
+    "region": "dusty_trails"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "######..........................................",
+    "########................##......................",
+    "##########...............#......................",
+    "#############...........##......................",
+    "##############..........###.....................",
+    "###############....########.....................",
+    "################..#########.....................",
+    "############################......######.###....",
+    "############################...###############..",
+    "############################...#################",
+    "############################..##################",
+    "############################..##################",
+    "#########################........###############",
+    "###########################....#################",
+    "#####################.#####....#################",
+    "#####################.##......##################",
+    "########..##########........####################",
+    "########..###########......#####################",
+    "########...########........#####################",
+    "#########....###...........#####################",
+    "#########................##########..###########",
+    "##########...............#######.#...###########",
+    "#########.................#####..#...###########",
+    "#####.##....................###......###########",
+    "####..........................#......###########",
+    "#####................................###########",
+    "#####................................###########",
+    "#####.....###.......................############",
+    "####......######......................##########",
+    ".#......#########.........................######",
+    ".......##########............................###",
+    "......##########................................"
+  ],
+  "spawn": {
+    "x": 19.25,
+    "y": 20.75
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Long Branch Saloon",
+      "x": 7.03,
+      "y": 18.08,
+      "w": 3.12,
+      "h": 3.16,
+      "to": "dusty-trails-hub",
+      "arriveAt": {
+        "x": 23.0,
+        "y": 10.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central left part of the room leads to The Saloon. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "id": "travel-1",
+      "label": "Mackenzie General Store",
+      "x": 33.75,
+      "y": 24.0,
+      "w": 4.19,
+      "h": 4.06,
+      "to": "dt-general-store",
+      "arriveAt": {
+        "x": 18.0,
+        "y": 21.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the lower right part of the room leads to General Store. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "id": "travel-2",
+      "label": "Sheriffs Office",
+      "x": 20.25,
+      "y": 15.75,
+      "w": 2.09,
+      "h": 2.34,
+      "to": "dt-sheriff",
+      "arriveAt": {
+        "x": 14.0,
+        "y": 17.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the central middle part of the room leads to Sheriff's Office. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "id": "travel-3",
+      "label": "Open Plains",
+      "x": 27.5,
+      "y": 11.5,
+      "w": 2.97,
+      "h": 2.69,
+      "to": "dt-open-plains",
+      "arriveAt": {
+        "x": 23.0,
+        "y": 9.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This passage in the upper middle part of the room leads to Open Plains. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "id": "path-saloon-district",
+      "label": "Saloon District",
+      "to": "saloon-district",
+      "x": 24.25,
+      "y": 31.5,
+      "w": 16.0,
+      "h": 2.0,
+      "arriveAt": {
+        "x": 19.5,
+        "y": 19.0
+      },
+      "invisible": true,
+      "note": "This passage in the lower right part of the room leads to Saloon District. Walk into the marked threshold to take that route.",
+      "fishable": false,
+      "kind": "door"
+    },
+    {
+      "id": "seat-1",
+      "label": "sheriff porch bench",
+      "x": 20.5,
+      "y": 16.3,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 21.6,
+            "y": 16.8,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Sheriff porch bench, in the central middle part of the room, beside the wooden porches facing the dusty street. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    },
+    {
+      "id": "seat-2",
+      "label": "saloon porch bench",
+      "x": 9.94,
+      "y": 20.78,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 11.04,
+            "y": 21.28,
+            "dir": "down"
+          }
+        ]
+      },
+      "note": "Saloon porch bench, in the central left part of the room, beside the wooden porches facing the dusty street. Choose sit here to settle into this seat.",
+      "fishable": false,
+      "kind": "seat"
+    }
+  ],
+  "npcs": [],
+  "description": "The frontier town square is a broad dusty street lined with timber storefronts. The two-storey Long Branch Saloon stands on the left, the Sheriff's Office is set farther back near the middle, and the Mackenzie General Store fills the right foreground. A church tower and a windmill rise behind the shops, with red hills beyond the town. Wooden porches, steps, barrels and crates edge the road. Lanterns hang on the shopfronts, and wagon equipment sits near the lower-left corner. The open central street makes the separate buildings easy to distinguish and leaves the routes between their porches visible.",
+  "landmarks": [
+    {
+      "id": "long-branch-frontage",
+      "label": "Long Branch frontage",
+      "kind": "shopfront",
+      "description": "A two-storey timber saloon with a large Long Branch sign stands on the left.",
+      "x": 8,
+      "y": 13
+    },
+    {
+      "id": "sheriff-office-frontage",
+      "label": "Sheriff office frontage",
+      "kind": "building",
+      "description": "A small front porch and Sheriff's Office sign mark the building farther back in the centre.",
+      "x": 23,
+      "y": 12
+    },
+    {
+      "id": "mackenzie-general-store",
+      "label": "Mackenzie General Store",
+      "kind": "shopfront",
+      "description": "The large right-hand storefront carries the Mackenzie General Store sign.",
+      "x": 37,
+      "y": 20
+    },
+    {
+      "id": "town-church-and-windmill",
+      "label": "Town church and windmill",
+      "kind": "scenery",
+      "description": "A church tower and a windmill rise above the shops in the upper distance.",
+      "x": 26,
+      "y": 7
+    },
+    {
+      "id": "dusty-central-street",
+      "label": "Dusty central street",
+      "kind": "path",
+      "description": "A broad dirt street passes between the porches, crates and barrels of the town.",
+      "x": 24,
+      "y": 25
+    }
+  ]
+}

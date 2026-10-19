@@ -1,0 +1,338 @@
+{
+  "id": "the-crossroads",
+  "name": "The Crossroads",
+  "subtitle": "The central hub connecting all worlds. Jonathan runs the shop here.",
+  "view": "top",
+  "tile": 32,
+  "backdrop": "/assets/adventure/backgrounds/CrossRoads.png",
+  "region": "hub",
+  "game_location": "the-crossroads",
+  "music": {
+    "region": "hub"
+  },
+  "legend": {
+    ".": {
+      "name": "path",
+      "solid": false,
+      "color": null
+    },
+    "#": {
+      "name": "boundary",
+      "solid": true,
+      "color": null
+    }
+  },
+  "rows": [
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................",
+    "................................................"
+  ],
+  "spawn": {
+    "x": 23.0,
+    "y": 14.5
+  },
+  "props": [
+    {
+      "id": "travel-0",
+      "label": "Black Serenity (Sci-Fi)",
+      "x": 6.5,
+      "y": 16.25,
+      "w": 3.75,
+      "h": 4.69,
+      "to": "ships-bridge",
+      "arriveAt": {
+        "x": 19.0,
+        "y": 14.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This transport route in the central left part of the room leads to Ships Bridge. Walk into the marked threshold to take that route.",
+      "kind": "teleporter"
+    },
+    {
+      "id": "travel-1",
+      "label": "Dusty Trails (Western)",
+      "x": 11.0,
+      "y": 7.75,
+      "w": 4.38,
+      "h": 5.0,
+      "to": "dusty-trails-hub",
+      "arriveAt": {
+        "x": 23.0,
+        "y": 10.5
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This transport route in the upper left part of the room leads to The Saloon. Walk into the marked threshold to take that route.",
+      "kind": "teleporter"
+    },
+    {
+      "id": "travel-2",
+      "label": "Hero's Journey (Fantasy)",
+      "x": 32.25,
+      "y": 8.75,
+      "w": 4.38,
+      "h": 5.0,
+      "to": "the-prancing-pony",
+      "arriveAt": {
+        "x": 26.5,
+        "y": 8.0
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This transport route in the upper right part of the room leads to The Prancing Pony. Walk into the marked threshold to take that route.",
+      "kind": "teleporter"
+    },
+    {
+      "id": "travel-3",
+      "label": "Home — Home",
+      "x": 38.25,
+      "y": 17.0,
+      "w": 3.75,
+      "h": 4.38,
+      "to": "hearth",
+      "arriveAt": {
+        "x": 24,
+        "y": 17
+      },
+      "color": "#bdaa72",
+      "invisible": true,
+      "note": "This transport route in the central right part of the room leads to The Hearth. Walk into the marked threshold to take that route.",
+      "kind": "teleporter"
+    },
+    {
+      "id": "npc-jonathan",
+      "label": "Jonathan",
+      "game_npc": "jonathan",
+      "x": 29.19,
+      "y": 20.31,
+      "w": 1.2,
+      "h": 2.0,
+      "invisible": true,
+      "note": "Talk, trade, or follow a story with Jonathan.",
+      "npc_sheet": "assets/adventure/sprites/conversational NPCs/jonathan.png",
+      "npc_frame": 64,
+      "kind": "npc"
+    },
+    {
+      "id": "seat-1",
+      "label": "fireside sofa",
+      "x": 24.34,
+      "y": 11.18,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 25.44,
+            "y": 11.68,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Fireside sofa, in the upper middle part of the room, beside the Crossroads hearth and circular seating area. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-2",
+      "label": "fireside sofa",
+      "x": 27.22,
+      "y": 11.5,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 28.32,
+            "y": 12.0,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Fireside sofa, in the central middle part of the room, beside the Crossroads hearth and circular seating area. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-3",
+      "label": "fireside sofa",
+      "x": 27.22,
+      "y": 15.02,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 28.32,
+            "y": 15.52,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Fireside sofa, in the central middle part of the room, beside the Crossroads hearth and circular seating area. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-4",
+      "label": "fireside sofa",
+      "x": 30.1,
+      "y": 14.06,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 31.2,
+            "y": 14.56,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Fireside sofa, in the central middle part of the room, beside the Crossroads hearth and circular seating area. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-5",
+      "label": "footstool",
+      "x": 18.1,
+      "y": 14.38,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 19.2,
+            "y": 14.88,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Footstool, in the central middle part of the room, beside the Crossroads hearth and circular seating area. Choose sit here to settle into this seat."
+    },
+    {
+      "id": "seat-6",
+      "label": "footstool",
+      "x": 18.58,
+      "y": 11.5,
+      "w": 2.2,
+      "h": 2.2,
+      "invisible": true,
+      "action": {
+        "name": "sit",
+        "label": "sit here",
+        "spots": [
+          {
+            "x": 19.68,
+            "y": 12.0,
+            "dir": "down"
+          }
+        ]
+      },
+      "kind": "seat",
+      "note": "Footstool, in the central middle part of the room, beside the Crossroads hearth and circular seating area. Choose sit here to settle into this seat."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "jonathan",
+      "name": "Jonathan",
+      "role": "Crossroads merchant"
+    }
+  ],
+  "rest_station": true,
+  "description": "The Crossroads is a paved central refuge arranged around a stone fireplace and a circle of orange upholstered seats. Four distinctive portals surround the space: a blue mechanical ring to the left, a fiery frontier arch at the upper left, a blue fantasy arch on the upper right and a warm amber doorway on the right. A small shop with stocked shelves and colourful goods fills the lower-right corner. On the lower left, a bright green cylinder marked with a heart stands on a circular pad. Plants, lanterns and autumn-coloured branches soften the enclosing stonework. The portals, hearth and shop make this both a meeting place and the junction between Home and the adventure regions.",
+  "landmarks": [
+    {
+      "id": "central-hearth-and-sofas",
+      "label": "Central hearth and sofas",
+      "kind": "seating area",
+      "description": "Orange sofas and low footstools surround a circular table in front of the stone fireplace.",
+      "x": 25,
+      "y": 13
+    },
+    {
+      "id": "stone-crossroads-fireplace",
+      "label": "Stone Crossroads fireplace",
+      "kind": "fireplace",
+      "description": "A lit stone hearth anchors the upper-middle wall.",
+      "x": 25,
+      "y": 7
+    },
+    {
+      "id": "mechanical-blue-portal",
+      "label": "Mechanical blue portal",
+      "kind": "transport platform",
+      "description": "A blue illuminated mechanical ring stands on the left side of the refuge.",
+      "x": 9,
+      "y": 15
+    },
+    {
+      "id": "frontier-and-fantasy-arches",
+      "label": "Frontier and fantasy arches",
+      "kind": "scenery",
+      "description": "Fiery and blue-lit arches flank the upper hearth area.",
+      "x": 23,
+      "y": 6
+    },
+    {
+      "id": "crossroads-shop-shelves",
+      "label": "Crossroads shop shelves",
+      "kind": "shopfront",
+      "description": "A compact shop display holds bottles, parcels and colourful supplies in the lower-right corner.",
+      "x": 38,
+      "y": 25
+    },
+    {
+      "id": "green-heart-marked-station",
+      "label": "Green heart-marked station",
+      "kind": "scenery",
+      "description": "A bright green cylinder with a heart emblem stands on a circular pad on the lower left.",
+      "x": 10,
+      "y": 23
+    }
+  ]
+}
