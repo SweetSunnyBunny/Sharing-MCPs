@@ -37,6 +37,17 @@ def private_file(path: Path) -> bool:
     )
 
 
+def line_ending_digests(data: bytes) -> set[str]:
+    """Digests of a file as stored, with LF endings, and with CRLF endings.
+
+    Git normalises text files (.gitattributes: text=auto), so the same
+    untouched file arrives with LF on macOS/Linux and CRLF on a default
+    Windows checkout. A line ending is not a change to the content.
+    """
+    lf = data.replace(b"\r\n", b"\n")
+    return {hashlib.sha256(v).hexdigest() for v in (data, lf, lf.replace(b"\n", b"\r\n"))}
+
+
 def main() -> int:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     errors: list[str] = []
@@ -56,7 +67,7 @@ def main() -> int:
         expected.add(relative)
         if not path.is_file():
             errors.append(f"Missing: {relative}")
-        elif hashlib.sha256(path.read_bytes()).hexdigest() != digest:
+        elif digest not in line_ending_digests(path.read_bytes()):
             errors.append(f"Changed: {relative}")
     for package in manifest["packages"]:
         package_root = (ROOT / package).resolve()

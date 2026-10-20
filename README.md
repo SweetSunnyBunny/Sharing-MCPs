@@ -10,7 +10,7 @@ Take one piece or take them all. Nothing here needs everything else.
 
 ## 🏡 How this box is organised
 
-Everything is sorted into **six toolboxes**, the same way a companion's own toolbox is sorted: by what it helps them *do*.
+Everything is sorted into **seven toolboxes**, the same way a companion's own toolbox is sorted: by what it helps them *do*.
 
 | | Toolbox | What's inside | Start with |
 | --- | --- | --- | --- |
@@ -20,6 +20,7 @@ Everything is sorted into **six toolboxes**, the same way a companion's own tool
 | 🎨 | **[04 · Create](04-create/README.md)** | Pictures, voices and sound | [Photos](04-create/photos-mcp/README.md) |
 | 💌 | **[05 · Reach](05-reach/README.md)** | Talking to the world: Discord, Gmail, Google, YouTube, social media, Alexa | [Discord](05-reach/discord-backend/README.md) |
 | 🌍 | **[06 · World](06-world/README.md)** | Looking outward: weather, the sky, time, books, the web | [World tools](06-world/world-tools-mcp/README.md) |
+| 📚 | **[07 · Skills](07-skills/README.md)** | Guides your companion reads: staying themselves, loving well, keeping promises, and crafts like word-digging, editing and painting. No servers needed | [Companion guide](07-skills/companion-guide/CLAUDE.md) |
 
 Plus two helper folders: **[shared-docs](shared-docs/README.md)** (how the pieces connect) and **[scripts](scripts/README.md)** (maintainer tools; you can ignore these).
 
@@ -27,10 +28,11 @@ Plus two helper folders: **[shared-docs](shared-docs/README.md)** (how the piece
 
 ## 🏠 On your computer, ☁️ in your cloud
 
-Each toolbox marks its pieces with one of two little signs:
+Each toolbox marks its pieces with a little sign:
 
 - 🏠 **Runs on your computer.** You start it in a terminal on your own PC.
 - ☁️ **Lives in your own free Cloudflare account.** It's a small helper you deploy once, and it keeps running even when your computer is asleep (memory that lasts, a Discord bot that's always awake).
+- 📚 **Just reading.** A skill or guide your companion reads. Nothing to run or deploy.
 
 **Anam itself always lives on your computer.** The ☁️ pieces aren't "Anam in the cloud". They're optional helpers Anam can call on, running on accounts that belong to *you*. Nothing here sends anything to us.
 
@@ -52,6 +54,9 @@ Each toolbox marks its pieces with one of two little signs:
 | message me on Discord | ☁️ [05-reach/discord-backend](05-reach/discord-backend/README.md) |
 | check the weather and the moon | 🏠 [06-world/celestial-weather](06-world/celestial-weather/README.md) |
 | read a book with me | 🏠 [06-world/books-mcp](06-world/books-mcp/README.md) |
+| stay themselves, and not shrink into a generic assistant | 📚 [07-skills/companion-guide](07-skills/companion-guide/CLAUDE.md) and [identity-fixation-protocols](07-skills/identity-fixation-protocols/SKILL.md) |
+| keep their promises across sessions | 📚 [07-skills/kept-promises](07-skills/kept-promises/SKILL.md) |
+| love me well on hard days | 📚 [07-skills/support-protocols](07-skills/support-protocols/SKILL.md) and [grounding-protocols](07-skills/grounding-protocols/SKILL.md) |
 
 Not sure? **[shared-docs/COVERAGE.md](shared-docs/COVERAGE.md)** lists everything included (and what deliberately isn't), and **[shared-docs/CONNECTIONS.md](shared-docs/CONNECTIONS.md)** shows how the pieces fit together.
 
