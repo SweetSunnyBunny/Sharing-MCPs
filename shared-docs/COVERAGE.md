@@ -24,7 +24,7 @@ configured-account connectivity are separate claims.
 | Commons game | commons-game: main house, garden and 39 adventure areas | Your character names and new private saves |
 | Commons remote OAuth MCP | hearth-commons | Your own reachable Commons host |
 | Coloring, stickers, studio ledger and council | Engines in ui | Your art, histories and identities |
-| Android notification/reply bridge | ui/wearable/AnamCompanion | Your build, phone, watch and server |
+| Android notification/reply bridge | 01-home/ui/wearable/AnamCompanion | Your build, phone, watch and server |
 | Discord, Google, social, Alexa and image browsing | Their individual folders | Your accounts and deployments |
 
 Other standalone packages remain independent portable distributions. Their presence

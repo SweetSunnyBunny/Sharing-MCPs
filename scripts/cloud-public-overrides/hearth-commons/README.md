@@ -2,7 +2,7 @@
 
 The current Commons connector supports identity-bound OAuth and personal bearer keys.
 It connects to a compatible Commons world server. The sibling
-[commons-game](../commons-game/README.md) package includes a public starter world.
+[commons-game](../../01-home/commons-game/README.md) package includes a public starter world.
 Personal home content, saves and connection keys are excluded.
 
 ## Deploy your connector

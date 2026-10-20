@@ -1,9 +1,9 @@
 # Sharing collection update — 2026-10-19
 
-There are now 37 independent packages. Added [Commons game](commons-game/README.md):
+There are now 37 independent packages. Added [Commons game](01-home/commons-game/README.md):
 a fresh illustrated main house and garden, plus the existing 39 adventure areas,
 their maps and game artwork. Private home content, saves, keys and personal
-configuration are excluded. See its [export review](commons-game/EXPORT_NOTES.md).
+configuration are excluded. See its [export review](01-home/commons-game/EXPORT_NOTES.md).
 
 Commons passed 63 isolated tests, browser/phone checks and a disposable AI
 connection check. The assembled package passed privacy and asset checks. The

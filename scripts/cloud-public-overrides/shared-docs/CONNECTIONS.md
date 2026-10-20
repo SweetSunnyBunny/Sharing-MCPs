@@ -7,11 +7,11 @@ are supplied by the person installing them. Generic `.env.example` and
 
 ## Current memory and emotional state setup
 
-1. Deploy [mind-backend](../mind-backend/README.md) for the current cloud Qualia.
+1. Deploy [mind-backend](../02-mind/mind-backend/README.md) for the current cloud Qualia.
    Its migrations, Worker code, retrieval modules, and setup instructions are
    included. Apply the schema to an empty database and configure your own
    identities using that package's starter instructions.
-2. Deploy [limbic](../limbic/README.md) if you want advisory drive state. Apply its
+2. Deploy [limbic](../02-mind/limbic/README.md) if you want advisory drive state. Apply its
    schema and configure your own drive definitions and baseline values. The
    generic starter examples demonstrate the structure without personal charts.
 3. Use the same identity identifier across your UI prompts, Qualia identity
@@ -28,10 +28,10 @@ legacy integrations are described in its own README.
 
 ## Connecting the UI
 
-An inactive `ui/mcp-servers.example.json` in the Sharing-MCPs collection shows the
+An inactive `01-home/ui/mcp-servers.example.json` in the Sharing-MCPs collection shows the
 exact HTTP configuration shape understood by the current UI bridge. After
 deploying services and replacing placeholders privately, merge only the entries
-you want into the `mcpServers` object in `ui/mcp-servers.json`. Keep the existing
+you want into the `mcpServers` object in `01-home/ui/mcp-servers.json`. Keep the existing
 tool taxonomy and review the enabled/critical server lists for your installation.
 The example JSON is never loaded automatically.
 
@@ -41,13 +41,13 @@ copies. Anam can also discover your own local Claude MCP configuration; another
 person's CLI credentials, plugin caches, and authentication files should never
 be copied to reproduce that discovery.
 
-For basic chat, follow the `ui/README.md` in the Sharing-MCPs collection. Add other services as
+For basic chat, follow the `01-home/ui/README.md` in the Sharing-MCPs collection. Add other services as
 needed. Run `python scripts/anam_doctor.py --json` from `ui` for passive connection
 diagnostics after configuring them.
 
 ## World Feed and optional image posts
 
-`world-feed/README.md` in the full collection explains the fictional social feed,
+`01-home/world-feed/README.md` in the full collection explains the fictional social feed,
 provides an original starter cast and shows how to create your own worlds. It
 uses the included UI server and local database; cloud memory is optional. Choose
 a supported background provider for the world's narrator. The ChatGPT browser
@@ -56,7 +56,7 @@ bridge currently supports ordinary chat but not World Feed background generation
 `photos-mcp` supplies the optional `photo_generate` image tool. Its generic MCP
 example uses server name `photos`; merge that entry into your own UI config after
 replacing paths and credentials. Set `PHOTOS_CHAT_DIR` to the running UI's actual
-image directory, normally `ui/data/images`. Restart the UI after configuration.
+image directory, normally `01-home/ui/data/images`. Restart the UI after configuration.
 The example entry is not loaded automatically. Text posts and DMs work without
 this image service.
 
@@ -65,11 +65,11 @@ this image service.
 | Integration | Required external item | Included setup |
 | --- | --- | --- |
 | Cloud Workers | Your Cloudflare account, newly created databases/indexes, and secrets | Each cloud package includes application code, schema, and Wrangler configuration |
-| Local computer tools | Your running computer, permitted files, and optional installed apps | [machine-agent](../machine-agent/README.md) includes its local tool implementations and proxy scaffolds |
+| Local computer tools | Your running computer, permitted files, and optional installed apps | [machine-agent](../03-hands/machine-agent/README.md) includes its local tool implementations and proxy scaffolds |
 | Krita / Obsidian | Krita and selected documents; for the standalone Obsidian package, a Markdown vault folder is sufficient | Their packages include the reusable bridge code; the Obsidian app is not required for that package |
-| Discord Scribe | Your bot and local speech model runtime; authenticated Claude CLI only for optional summaries | `discord-scribe/README.md` in the Sharing-MCPs collection lists Node and Python dependencies and startup steps |
-| Commons connector | A separately hosted Commons world server | [hearth-commons](../hearth-commons/README.md) contains the MCP connector; it does not contain a world-server implementation |
-| Alexa / smart home | Your Alexa skill and optional Home Assistant or music host | [alexa-skill](../alexa-skill/README.md) supplies Worker and interaction-model templates |
+| Discord Scribe | Your bot and local speech model runtime; authenticated Claude CLI only for optional summaries | `05-reach/discord-scribe/README.md` in the Sharing-MCPs collection lists Node and Python dependencies and startup steps |
+| Commons connector | A separately hosted Commons world server | [hearth-commons](../02-mind/hearth-commons/README.md) contains the MCP connector; it does not contain a world-server implementation |
+| Alexa / smart home | Your Alexa skill and optional Home Assistant or music host | [alexa-skill](../05-reach/alexa-skill/README.md) supplies Worker and interaction-model templates |
 | Voices / image generation | Your provider accounts, API keys, and chosen voices/models | Speech/image packages document their providers; no personal voice recordings or reference images are supplied |
 | OAuth tools | Your registered OAuth app, consent, and locally generated tokens | Google packages provide code and authorization helpers; token files are generated privately |
 

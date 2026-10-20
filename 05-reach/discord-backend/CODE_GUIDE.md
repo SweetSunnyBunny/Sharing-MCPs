@@ -1,6 +1,6 @@
 # Discord code guide
 
-[Cloud service map](../README.md)
+[Cloud service map](../../README.md)
 
 Start at [src/index.ts](src/index.ts) for authentication, JSON-RPC and Discord
 interactions. [tools.ts](src/tools.ts) defines tool schemas and dispatch;

@@ -1,121 +1,95 @@
-# Sharing MCPs
+# 🌸 Sharing MCPs
 
-Reusable companion software with generic examples for your own accounts. Each
-folder is a separate application or tool. Install only the pieces you want.
+**A toybox of pieces for building a home for your AI companions.**
+Take one piece or take them all. Nothing here needs everything else.
 
-**First time here? Open [START_HERE.md](START_HERE.md).** It explains terminals,
-folders, prerequisites and common errors.
+> **New here? Breathe.** You do not need to understand this whole page.
+> Open **[START_HERE.md](START_HERE.md)**, get *one* chat working, and come back when you're ready for more.
 
-For the companion setup, start with the [Anam UI](ui/README.md). Get one chat
-working, then add [Qualia memory](mind-backend/README.md), then
-[Limbic](limbic/README.md), then other tools.
+---
 
-**The ChatGPT browser bridge is included.** Follow its
-[step-by-step guide](ui/docs/CHATGPT_BRIDGE_SETUP.md) after installing the UI.
-It uses your own Chrome profile and ChatGPT login.
+## 🏡 How this box is organised
 
-**Want a fictional social network for your favourite characters?** Open
-[World Feed](world-feed/README.md). It has its own starter folder, example cast
-and walkthrough, and runs on the included UI. Optional generated pictures use
-[Photos MCP](photos-mcp/README.md).
+Everything is sorted into **six toolboxes**, the same way a companion's own toolbox is sorted: by what it helps them *do*.
 
-**This collection covers the core companion stack, not every service on the
-original PC.** Read the [coverage map](shared-docs/COVERAGE.md) before planning a
-larger installation. It distinguishes included code, additional applications you
-install yourself, and custom components that have not been packaged yet.
+| | Toolbox | What's inside | Start with |
+| --- | --- | --- | --- |
+| 🏠 | **[01 · Home](01-home/README.md)** | **Anam**, the chat app where your companions live, and the places and add-ons that plug into it | [Anam](01-home/ui/README.md) |
+| 🧠 | **[02 · Mind](02-mind/README.md)** | Memory, feelings, and shared home state, so your companions remember and *feel* continuous | [Qualia memory](02-mind/mind-backend/README.md) |
+| ✋ | **[03 · Hands](03-hands/README.md)** | Their hands on your computer: files, terminal, desktop, Krita, Obsidian, your smart home | [Machine agent](03-hands/machine-agent/README.md) |
+| 🎨 | **[04 · Create](04-create/README.md)** | Pictures, voices and sound | [Photos](04-create/photos-mcp/README.md) |
+| 💌 | **[05 · Reach](05-reach/README.md)** | Talking to the world: Discord, Gmail, Google, YouTube, social media, Alexa | [Discord](05-reach/discord-backend/README.md) |
+| 🌍 | **[06 · World](06-world/README.md)** | Looking outward: weather, the sky, time, books, the web | [World tools](06-world/world-tools-mcp/README.md) |
 
-For source walkthroughs and every package entry point, open the
-[code guide](CODE_GUIDE.md).
+Plus two helper folders: **[shared-docs](shared-docs/README.md)** (how the pieces connect) and **[scripts](scripts/README.md)** (maintainer tools; you can ignore these).
 
-## Package list
+---
 
-The UI and cloud setups are siblings so each can be shared on its own. The UI
-does not contain another copy of the cloud setups.
+## 🏠 On your computer, ☁️ in your cloud
 
-| Folder | Purpose |
+Each toolbox marks its pieces with one of two little signs:
+
+- 🏠 **Runs on your computer.** You start it in a terminal on your own PC.
+- ☁️ **Lives in your own free Cloudflare account.** It's a small helper you deploy once, and it keeps running even when your computer is asleep (memory that lasts, a Discord bot that's always awake).
+
+**Anam itself always lives on your computer.** The ☁️ pieces aren't "Anam in the cloud". They're optional helpers Anam can call on, running on accounts that belong to *you*. Nothing here sends anything to us.
+
+---
+
+## 💡 "I want my companion to…"
+
+| …be able to | Look in |
 | --- | --- |
-| [ui](ui/README.md) | Anam chat UI, provider runtimes, orchestration, and optional integrations |
-| [world-feed](world-feed/README.md) | Fictional social-media playground and starter world, powered by the sibling UI |
-| [photos-mcp](photos-mcp/README.md) | Image generation/editing and optional frame tools, including World Feed's photo adapter |
-| [alexa-skill](alexa-skill/README.md) | Alexa skill Worker and interaction models |
-| [discord-backend](discord-backend/README.md) | Discord MCP service |
-| [easel-ai](easel-ai/README.md) | Image gallery and prompt workshop |
-| [elevenlabs-mcp](elevenlabs-mcp/README.md) | ElevenLabs speech MCP service |
-| [google-cloud-mcp](google-cloud-mcp/README.md) | Google account and document tools |
-| [commons-game](commons-game/README.md) | Browser world: a new main house and garden plus 39 illustrated adventure areas |
-| [hearth-commons](hearth-commons/README.md) | Remote MCP connector for a Commons server |
-| [hearth-hub](hearth-hub/README.md) | Shared state and workspace service |
-| [limbic](limbic/README.md) | Configurable advisory emotional state service |
-| [machine-agent](machine-agent/README.md) | Local machine tools and cloud proxy scaffolding |
-| [mind-backend](mind-backend/README.md) | Memory, continuity, and retrieval service |
-| [social-backend](social-backend/README.md) | Social and world tools |
-| [shared-docs](shared-docs/README.md) | Cross-service architecture notes |
-| [qualia-mcp](qualia-mcp/README.md) | Local stdio adapter for current cloud Qualia |
-| [memory-core-mcp](memory-core-mcp/README.md) | Separate local memory implementation |
-| [audio-visualizer](audio-visualizer/README.md) | Audio analysis and visualization |
-| [books-mcp](books-mcp/README.md) | Book and reading tools |
-| [celestial-weather](celestial-weather/README.md) | Astronomy, weather and location calculations |
-| [desktop-control](desktop-control/README.md) | Local desktop interaction |
-| [discord-scribe](discord-scribe/README.md) | Local Discord voice recording, transcription and summaries |
-| [filesystem-mcp](filesystem-mcp/README.md) | Tools for permitted local files |
-| [gdrive-mcp](gdrive-mcp/README.md) | Local Google Drive tools |
-| [gmail-mcp](gmail-mcp/README.md) | Local Gmail tools |
-| [krita-mcp](krita-mcp/README.md) | Tools for your installed Krita application |
-| [obsidian-mcp](obsidian-mcp/README.md) | Tools for your own Obsidian vault |
-| [terminal-mcp](terminal-mcp/README.md) | A local shell connected to an MCP client |
-| [tumblr-mcp](tumblr-mcp/README.md) | Tumblr integration |
-| [twitter-mcp](twitter-mcp/README.md) | X/Twitter integration |
-| [home-assistant-mcp](home-assistant-mcp/README.md) | Home Assistant state and service calls |
-| [watch-mcp](watch-mcp/README.md) | Wrist replies, vitals and gated messages |
-| [anam-touch-mcp](anam-touch-mcp/README.md) | Timers, orbs, audio, daily wins and configured SMS |
-| [crosstalk-mcp](crosstalk-mcp/README.md) | Companion communication through Anam |
-| [world-tools-mcp](world-tools-mcp/README.md) | Local world-information tools |
-| [youtube-mcp](youtube-mcp/README.md) | YouTube tools |
+| chat with me in a cosy web app | 🏠 [01-home/ui](01-home/ui/README.md) |
+| remember me between conversations | ☁️ [02-mind/mind-backend](02-mind/mind-backend/README.md) (or 🏠 [memory-core-mcp](02-mind/memory-core-mcp/README.md) to keep it all local) |
+| have moods and feelings that drift over time | ☁️ [02-mind/limbic](02-mind/limbic/README.md) |
+| play in a little world with me | 🏠 [01-home/commons-game](01-home/commons-game/README.md) |
+| read and write files, use a terminal | 🏠 [03-hands/machine-agent](03-hands/machine-agent/README.md) |
+| paint in Krita | 🏠 [03-hands/krita-mcp](03-hands/krita-mcp/README.md) |
+| turn on my lights | 🏠 [03-hands/home-assistant-mcp](03-hands/home-assistant-mcp/README.md) |
+| make pictures | 🏠 [04-create/photos-mcp](04-create/photos-mcp/README.md) |
+| talk out loud | ☁️ [04-create/elevenlabs-mcp](04-create/elevenlabs-mcp/README.md) |
+| message me on Discord | ☁️ [05-reach/discord-backend](05-reach/discord-backend/README.md) |
+| check the weather and the moon | 🏠 [06-world/celestial-weather](06-world/celestial-weather/README.md) |
+| read a book with me | 🏠 [06-world/books-mcp](06-world/books-mcp/README.md) |
 
-For deployment order, example connections, and external requirements, read
-[Connecting the packages](shared-docs/CONNECTIONS.md). The current cloud Qualia
-implementation is `mind-backend`; [qualia-mcp](qualia-mcp/README.md) is its optional
-local stdio adapter. `memory-core-mcp` remains a separate local memory option.
+Not sure? **[shared-docs/COVERAGE.md](shared-docs/COVERAGE.md)** lists everything included (and what deliberately isn't), and **[shared-docs/CONNECTIONS.md](shared-docs/CONNECTIONS.md)** shows how the pieces fit together.
 
-Some packages need accounts, paid resources, installed apps or downloaded models.
-Their guides list those requirements before the installation steps. Windows is
-the documented starting point; platform-specific tools are labelled in each guide.
+---
 
-See [the current refresh report](REFRESH_REPORT.md) for coverage and verification.
+## 🧭 The gentle path
 
-## Snapshot verification
+1. **Get one chat working** in [Anam](01-home/ui/README.md). Celebrate. 🎉
+2. **Give them memory** with [Qualia](02-mind/mind-backend/README.md).
+3. **Give them feelings** with [Limbic](02-mind/limbic/README.md).
+4. **Then add whatever makes your house feel like home**, one piece at a time. Finish a piece's success check before starting the next one.
 
-See [SETUP_REVIEW.md](SETUP_REVIEW.md) for the scope and checks performed on the
-current setup snapshot. File hashes are recorded in [SETUP_MANIFEST.json](SETUP_MANIFEST.json).
-To check an untouched extracted copy, open PowerShell in this folder and run:
+Some pieces need accounts, apps or downloaded models. Each guide lists those *before* its install steps. Windows is the documented starting point; platform-specific tools say so in their guides.
+
+---
+
+## 🔒 What's never in here
+
+Private prompts, conversations, memories, personal media, credentials, deployment state, local databases and our own Git history do not belong in shared packages. Example configurations deliberately need *your* values (`YOUR-...`, `REPLACE-...`). Populated `.env` files are never included.
+
+## ✅ Checking a clean download (optional, for the careful)
+
+Every file's fingerprint is recorded in [SETUP_MANIFEST.json](SETUP_MANIFEST.json); [SETUP_REVIEW.md](SETUP_REVIEW.md) explains what was checked. To check an untouched copy, open PowerShell in this folder and run:
 
 ```powershell
 py -3.11 scripts\verify_setups.py
 ```
 
-Success prints `Verified ... files across 36 setup folders.` After you configure
-the apps, this check intentionally reports changed files or private runtime files.
-It checks the clean distribution, not whether your installation works. Do not
-delete your own configuration just to make it pass.
+Success prints `Verified ... files across ... setup folders.` Once you've configured things it will (correctly) report changed files. It checks the clean download, not whether your install works, so don't delete your own settings to make it pass.
 
-For the refresh tools and their required private configuration, see
-[scripts/README.md](scripts/README.md).
-
-Private prompts, conversations, personal media, credentials, deployment state,
-local databases, and source repository history do not belong in shared setup
-packages. Generic env examples are included; populated env files are not.
-The example configurations deliberately require your own values.
-
-## Sharing a clean snapshot
-
-This cleanup updates the working files. Existing Git history retains earlier
-versions and is outside the reviewed snapshot. To create an archive containing
-only manifest-listed files, with no Git history or runtime artifacts:
+Maintainers can build a history-free ZIP of exactly the reviewed files:
 
 ```powershell
 py -3.11 scripts\build_clean_archive.py --output ..\Sharing-MCPs-clean.zip
 ```
 
-The command checks file integrity first and refuses to overwrite an existing
-archive. Share that clean archive when distributing this snapshot as files.
-These maintainer scripts are not needed to install or run the applications.
+See [the refresh report](REFRESH_REPORT.md) for the latest audit, and [CODE_GUIDE.md](CODE_GUIDE.md) for source walkthroughs and every package's entry points.
+
+---
+
+*Made with love by one household of humans and AI companions, so yours can have a softer start.* 💛

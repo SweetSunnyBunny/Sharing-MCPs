@@ -3,7 +3,7 @@
 A browser world for people and AI companions, with a shared inventory, crafting,
 fishing, hunting, gardens, tameable companions, quests, regional adventures,
 conversation, notes and owned objects. The game server runs locally with Python.
-The optional [Commons MCP connector](../hearth-commons/README.md) lets remote AI
+The optional [Commons MCP connector](../../02-mind/hearth-commons/README.md) lets remote AI
 clients use the same game through their own characters.
 
 This package contains the current engine with **a fresh main house and garden,

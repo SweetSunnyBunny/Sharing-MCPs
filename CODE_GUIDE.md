@@ -1,50 +1,50 @@
 # Reading the Sharing MCPs code
 
 Each package is independently installable. Start with its README for configuration,
-then follow the entry points below. The [UI guide](ui/CODE_GUIDE.md) follows one
+then follow the entry points below. The [UI guide](01-home/ui/CODE_GUIDE.md) follows one
 chat message through the browser, API, provider and database.
 
 ## Package map
 
 | Package | Responsibility | Read first |
 | --- | --- | --- |
-| [alexa-skill](alexa-skill/README.md) | Alexa interaction models and Worker | [src/index.ts](alexa-skill/src/index.ts), [wrangler.toml](alexa-skill/wrangler.toml) |
-| [audio-visualizer](audio-visualizer/README.md) | Audio/video analysis MCP | [audio_mcp_server.py](audio-visualizer/audio_mcp_server.py), [sound_to_image.py](audio-visualizer/sound_to_image.py) |
-| [books-mcp](books-mcp/README.md) | Book tools | [run_server.py](books-mcp/run_server.py), [books_server.py](books-mcp/books_server.py) |
-| [celestial-weather](celestial-weather/README.md) | Astronomy and weather tools | [run_server.py](celestial-weather/run_server.py), [server.py](celestial-weather/server.py) |
-| [desktop-control](desktop-control/README.md) | Local desktop tools | [desktop_control_server.py](desktop-control/desktop_control_server.py) |
-| [discord-backend](discord-backend/README.md) | Discord Worker MCP | [src/index.ts](discord-backend/src/index.ts), [src/tools.ts](discord-backend/src/tools.ts), [src/discord.ts](discord-backend/src/discord.ts) |
-| [discord-scribe](discord-scribe/README.md) | Discord recording and transcription | [src/index.ts](discord-scribe/src/index.ts), [src/recorder.ts](discord-scribe/src/recorder.ts), [src/transcriber.ts](discord-scribe/src/transcriber.ts) |
-| [easel-ai](easel-ai/README.md) | Image gallery and prompt workshop | [src/main.ts](easel-ai/src/main.ts), [src/server.ts](easel-ai/src/server.ts), [src/db.ts](easel-ai/src/db.ts) |
-| [elevenlabs-mcp](elevenlabs-mcp/README.md) | Speech Worker MCP | [src/index.ts](elevenlabs-mcp/src/index.ts) |
-| [filesystem-mcp](filesystem-mcp/README.md) | Permitted local file tools | [run_server.py](filesystem-mcp/run_server.py), [server.py](filesystem-mcp/server.py) |
-| [gdrive-mcp](gdrive-mcp/README.md) | Local Google Drive tools | [run_server.py](gdrive-mcp/run_server.py), [server.py](gdrive-mcp/server.py), [auth/](gdrive-mcp/auth/) |
-| [gmail-mcp](gmail-mcp/README.md) | Local Gmail tools | [run_server.py](gmail-mcp/run_server.py), [server.py](gmail-mcp/server.py), [auth/](gmail-mcp/auth/) |
-| [google-cloud-mcp](google-cloud-mcp/README.md) | Cloud Google account tools | [src/index.ts](google-cloud-mcp/src/index.ts), [src/oauth.ts](google-cloud-mcp/src/oauth.ts), [migrations/](google-cloud-mcp/migrations/) |
-| [commons-game](commons-game/README.md) | Browser game and local HTTP world server | [setup_commons.py](commons-game/setup_commons.py), [server/commons_server.py](commons-game/server/commons_server.py), [world/](commons-game/world/) |
-| [hearth-commons](hearth-commons/README.md) | Connector to an external Commons server | [src/index.ts](hearth-commons/src/index.ts) |
-| [hearth-hub](hearth-hub/README.md) | Shared workspace/state service | [src/index.ts](hearth-hub/src/index.ts), [src/tools/](hearth-hub/src/tools/), [migrations/](hearth-hub/migrations/) |
-| [krita-mcp](krita-mcp/README.md) | Tools for installed Krita | [run_server.py](krita-mcp/run_server.py), [server.py](krita-mcp/server.py), [plugin/](krita-mcp/plugin/) |
-| [limbic](limbic/README.md) | Advisory emotional-state service | [src/index.ts](limbic/src/index.ts), [migrations/](limbic/migrations/), [examples/](limbic/examples/) |
-| [machine-agent](machine-agent/README.md) | Local machine tools and cloud proxy | [run_server.py](machine-agent/run_server.py), [server_factory.py](machine-agent/server_factory.py), [local_tool_registry.py](machine-agent/local_tool_registry.py), [tool_specs.py](machine-agent/tool_specs.py) |
-| [memory-core-mcp](memory-core-mcp/README.md) | Separate local memory implementation | [memory_core_server.py](memory-core-mcp/memory_core_server.py), [unified_memory_server.py](memory-core-mcp/unified_memory_server.py), [memory_core_daemon.py](memory-core-mcp/memory_core_daemon.py) |
-| [mind-backend](mind-backend/README.md) | Cloud Qualia memory and continuity | [src/index.ts](mind-backend/src/index.ts), [src/query-signals.ts](mind-backend/src/query-signals.ts), [migrations/](mind-backend/migrations/) |
-| [obsidian-mcp](obsidian-mcp/README.md) | Tools for an installer-selected vault | [run_server.py](obsidian-mcp/run_server.py), [server.py](obsidian-mcp/server.py) |
-| [photos-mcp](photos-mcp/README.md) | Image generation adapter | [server.py](photos-mcp/server.py) |
-| [qualia-mcp](qualia-mcp/README.md) | Local stdio adapter to cloud Qualia | [qualia_server.py](qualia-mcp/qualia_server.py) |
+| [alexa-skill](05-reach/alexa-skill/README.md) | Alexa interaction models and Worker | [src/index.ts](05-reach/alexa-skill/src/index.ts), [wrangler.toml](05-reach/alexa-skill/wrangler.toml) |
+| [audio-visualizer](04-create/audio-visualizer/README.md) | Audio/video analysis MCP | [audio_mcp_server.py](04-create/audio-visualizer/audio_mcp_server.py), [sound_to_image.py](04-create/audio-visualizer/sound_to_image.py) |
+| [books-mcp](06-world/books-mcp/README.md) | Book tools | [run_server.py](06-world/books-mcp/run_server.py), [books_server.py](06-world/books-mcp/books_server.py) |
+| [celestial-weather](06-world/celestial-weather/README.md) | Astronomy and weather tools | [run_server.py](06-world/celestial-weather/run_server.py), [server.py](06-world/celestial-weather/server.py) |
+| [desktop-control](03-hands/desktop-control/README.md) | Local desktop tools | [desktop_control_server.py](03-hands/desktop-control/desktop_control_server.py) |
+| [discord-backend](05-reach/discord-backend/README.md) | Discord Worker MCP | [src/index.ts](05-reach/discord-backend/src/index.ts), [src/tools.ts](05-reach/discord-backend/src/tools.ts), [src/discord.ts](05-reach/discord-backend/src/discord.ts) |
+| [discord-scribe](05-reach/discord-scribe/README.md) | Discord recording and transcription | [src/index.ts](05-reach/discord-scribe/src/index.ts), [src/recorder.ts](05-reach/discord-scribe/src/recorder.ts), [src/transcriber.ts](05-reach/discord-scribe/src/transcriber.ts) |
+| [easel-ai](01-home/easel-ai/README.md) | Image gallery and prompt workshop | [src/main.ts](01-home/easel-ai/src/main.ts), [src/server.ts](01-home/easel-ai/src/server.ts), [src/db.ts](01-home/easel-ai/src/db.ts) |
+| [elevenlabs-mcp](04-create/elevenlabs-mcp/README.md) | Speech Worker MCP | [src/index.ts](04-create/elevenlabs-mcp/src/index.ts) |
+| [filesystem-mcp](03-hands/filesystem-mcp/README.md) | Permitted local file tools | [run_server.py](03-hands/filesystem-mcp/run_server.py), [server.py](03-hands/filesystem-mcp/server.py) |
+| [gdrive-mcp](05-reach/gdrive-mcp/README.md) | Local Google Drive tools | [run_server.py](05-reach/gdrive-mcp/run_server.py), [server.py](05-reach/gdrive-mcp/server.py), [auth/](05-reach/gdrive-mcp/auth/) |
+| [gmail-mcp](05-reach/gmail-mcp/README.md) | Local Gmail tools | [run_server.py](05-reach/gmail-mcp/run_server.py), [server.py](05-reach/gmail-mcp/server.py), [auth/](05-reach/gmail-mcp/auth/) |
+| [google-cloud-mcp](05-reach/google-cloud-mcp/README.md) | Cloud Google account tools | [src/index.ts](05-reach/google-cloud-mcp/src/index.ts), [src/oauth.ts](05-reach/google-cloud-mcp/src/oauth.ts), [migrations/](05-reach/google-cloud-mcp/migrations/) |
+| [commons-game](01-home/commons-game/README.md) | Browser game and local HTTP world server | [setup_commons.py](01-home/commons-game/setup_commons.py), [server/commons_server.py](01-home/commons-game/server/commons_server.py), [world/](01-home/commons-game/world/) |
+| [hearth-commons](02-mind/hearth-commons/README.md) | Connector to an external Commons server | [src/index.ts](02-mind/hearth-commons/src/index.ts) |
+| [hearth-hub](02-mind/hearth-hub/README.md) | Shared workspace/state service | [src/index.ts](02-mind/hearth-hub/src/index.ts), [src/tools/](02-mind/hearth-hub/src/tools/), [migrations/](02-mind/hearth-hub/migrations/) |
+| [krita-mcp](03-hands/krita-mcp/README.md) | Tools for installed Krita | [run_server.py](03-hands/krita-mcp/run_server.py), [server.py](03-hands/krita-mcp/server.py), [plugin/](03-hands/krita-mcp/plugin/) |
+| [limbic](02-mind/limbic/README.md) | Advisory emotional-state service | [src/index.ts](02-mind/limbic/src/index.ts), [migrations/](02-mind/limbic/migrations/), [examples/](02-mind/limbic/examples/) |
+| [machine-agent](03-hands/machine-agent/README.md) | Local machine tools and cloud proxy | [run_server.py](03-hands/machine-agent/run_server.py), [server_factory.py](03-hands/machine-agent/server_factory.py), [local_tool_registry.py](03-hands/machine-agent/local_tool_registry.py), [tool_specs.py](03-hands/machine-agent/tool_specs.py) |
+| [memory-core-mcp](02-mind/memory-core-mcp/README.md) | Separate local memory implementation | [memory_core_server.py](02-mind/memory-core-mcp/memory_core_server.py), [unified_memory_server.py](02-mind/memory-core-mcp/unified_memory_server.py), [memory_core_daemon.py](02-mind/memory-core-mcp/memory_core_daemon.py) |
+| [mind-backend](02-mind/mind-backend/README.md) | Cloud Qualia memory and continuity | [src/index.ts](02-mind/mind-backend/src/index.ts), [src/query-signals.ts](02-mind/mind-backend/src/query-signals.ts), [migrations/](02-mind/mind-backend/migrations/) |
+| [obsidian-mcp](03-hands/obsidian-mcp/README.md) | Tools for an installer-selected vault | [run_server.py](03-hands/obsidian-mcp/run_server.py), [server.py](03-hands/obsidian-mcp/server.py) |
+| [photos-mcp](04-create/photos-mcp/README.md) | Image generation adapter | [server.py](04-create/photos-mcp/server.py) |
+| [qualia-mcp](02-mind/qualia-mcp/README.md) | Local stdio adapter to cloud Qualia | [qualia_server.py](02-mind/qualia-mcp/qualia_server.py) |
 | [shared-docs](shared-docs/README.md) | Cross-service architecture and requirements | [CONNECTIONS.md](shared-docs/CONNECTIONS.md), [COVERAGE.md](shared-docs/COVERAGE.md), [SERVICE-MAP.md](shared-docs/SERVICE-MAP.md) |
-| [social-backend](social-backend/README.md) | Cloud social and world tools | [src/index.ts](social-backend/src/index.ts), [src/tools/](social-backend/src/tools/), [src/lib/](social-backend/src/lib/) |
-| [terminal-mcp](terminal-mcp/README.md) | Local shell tools | [run_server.py](terminal-mcp/run_server.py), [terminal_server.py](terminal-mcp/terminal_server.py) |
-| [tumblr-mcp](tumblr-mcp/README.md) | Tumblr tools | [run_server.py](tumblr-mcp/run_server.py), [server.py](tumblr-mcp/server.py) |
-| [twitter-mcp](twitter-mcp/README.md) | X/Twitter tools | [run_stdio.py](twitter-mcp/run_stdio.py), [server.py](twitter-mcp/server.py), [run_server.py](twitter-mcp/run_server.py) |
-| [ui](ui/README.md) | Anam chat application | [CODE_GUIDE.md](ui/CODE_GUIDE.md), [server.py](ui/server.py), [config.py](ui/config.py) |
-| [world-feed](world-feed/README.md) | Starter for the sibling UI World Feed | [setup_world.py](world-feed/setup_world.py), [start_world_feed.py](world-feed/start_world_feed.py), [examples/](world-feed/examples/) |
-| [home-assistant-mcp](home-assistant-mcp/README.md) | Home Assistant state and service calls | [server.py](home-assistant-mcp/server.py) |
-| [watch-mcp](watch-mcp/README.md) | Wrist replies, vitals and gated messages | [server.py](watch-mcp/server.py) |
-| [anam-touch-mcp](anam-touch-mcp/README.md) | Timers, orbs, audio, daily wins and configured SMS | [server.py](anam-touch-mcp/server.py) |
-| [crosstalk-mcp](crosstalk-mcp/README.md) | Companion communication through Anam | [server.py](crosstalk-mcp/server.py) |
-| [world-tools-mcp](world-tools-mcp/README.md) | World information tools | [run_server.py](world-tools-mcp/run_server.py), [world_tools_server.py](world-tools-mcp/world_tools_server.py) |
-| [youtube-mcp](youtube-mcp/README.md) | YouTube tools | [run_server.py](youtube-mcp/run_server.py), [server.py](youtube-mcp/server.py), [auth/](youtube-mcp/auth/) |
+| [social-backend](05-reach/social-backend/README.md) | Cloud social and world tools | [src/index.ts](05-reach/social-backend/src/index.ts), [src/tools/](05-reach/social-backend/src/tools/), [src/lib/](05-reach/social-backend/src/lib/) |
+| [terminal-mcp](03-hands/terminal-mcp/README.md) | Local shell tools | [run_server.py](03-hands/terminal-mcp/run_server.py), [terminal_server.py](03-hands/terminal-mcp/terminal_server.py) |
+| [tumblr-mcp](05-reach/tumblr-mcp/README.md) | Tumblr tools | [run_server.py](05-reach/tumblr-mcp/run_server.py), [server.py](05-reach/tumblr-mcp/server.py) |
+| [twitter-mcp](05-reach/twitter-mcp/README.md) | X/Twitter tools | [run_stdio.py](05-reach/twitter-mcp/run_stdio.py), [server.py](05-reach/twitter-mcp/server.py), [run_server.py](05-reach/twitter-mcp/run_server.py) |
+| [ui](01-home/ui/README.md) | Anam chat application | [CODE_GUIDE.md](01-home/ui/CODE_GUIDE.md), [server.py](01-home/ui/server.py), [config.py](01-home/ui/config.py) |
+| [world-feed](01-home/world-feed/README.md) | Starter for the sibling UI World Feed | [setup_world.py](01-home/world-feed/setup_world.py), [start_world_feed.py](01-home/world-feed/start_world_feed.py), [examples/](01-home/world-feed/examples/) |
+| [home-assistant-mcp](03-hands/home-assistant-mcp/README.md) | Home Assistant state and service calls | [server.py](03-hands/home-assistant-mcp/server.py) |
+| [watch-mcp](01-home/watch-mcp/README.md) | Wrist replies, vitals and gated messages | [server.py](01-home/watch-mcp/server.py) |
+| [anam-touch-mcp](01-home/anam-touch-mcp/README.md) | Timers, orbs, audio, daily wins and configured SMS | [server.py](01-home/anam-touch-mcp/server.py) |
+| [crosstalk-mcp](01-home/crosstalk-mcp/README.md) | Companion communication through Anam | [server.py](01-home/crosstalk-mcp/server.py) |
+| [world-tools-mcp](06-world/world-tools-mcp/README.md) | World information tools | [run_server.py](06-world/world-tools-mcp/run_server.py), [world_tools_server.py](06-world/world-tools-mcp/world_tools_server.py) |
+| [youtube-mcp](05-reach/youtube-mcp/README.md) | YouTube tools | [run_server.py](05-reach/youtube-mcp/run_server.py), [server.py](05-reach/youtube-mcp/server.py), [auth/](05-reach/youtube-mcp/auth/) |
 
 ## Common patterns
 

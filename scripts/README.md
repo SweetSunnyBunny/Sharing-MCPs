@@ -92,3 +92,13 @@ the exporter refuses to overlay the older file. Reconcile current code and
 public adaptations, test, then update the baseline. Private profiles stay outside
 this distribution. Run "python scripts/test_local_adapters.py" for offline
 adapter contracts; these checks send no app or device requests.
+
+## Toolbox layout (2026-10-20)
+
+Packages now live inside six toolbox folders: `01-home`, `02-mind`, `03-hands`,
+`04-create`, `05-reach` and `06-world`. The exporters still write flat package
+folders into their staging directory. After reviewing an export, copy each package
+into its toolbox (for example `02-mind/limbic`, `05-reach/discord-backend`), then
+update `SETUP_MANIFEST.json` paths and hashes and run `verify_setups.py`. The three
+Anam add-ons (`anam-touch-mcp`, `watch-mcp`, `crosstalk-mcp`) must stay in
+`01-home` beside `ui`, because they find Anam by looking in the folder next door.

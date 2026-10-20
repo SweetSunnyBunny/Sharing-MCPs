@@ -1,6 +1,6 @@
 # Easel code guide
 
-[Cloud service map](../README.md)
+[Cloud service map](../../README.md)
 
 Easel is a Node application. Start at [src/main.ts](src/main.ts) for environment
 loading and startup, then [src/server.ts](src/server.ts) for Hono HTTP and static routes.

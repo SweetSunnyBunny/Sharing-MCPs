@@ -5,19 +5,19 @@ install or run here.
 
 ## Read these in order
 
-1. Open `ui/README.md` in the full Sharing-MCPs collection and get one chat
+1. Open `01-home/ui/README.md` in the full Sharing-MCPs collection and get one chat
    working. If you downloaded only cloud folders, you can instead connect a
    service to another MCP client.
-2. Follow the [Qualia guide](../mind-backend/README.md) for persistent memory.
+2. Follow the [Qualia guide](../02-mind/mind-backend/README.md) for persistent memory.
    Stop when its connection check works.
-3. Follow the [Limbic guide](../limbic/README.md) for drive state. Use the same
+3. Follow the [Limbic guide](../02-mind/limbic/README.md) for drive state. Use the same
    lowercase identity IDs that you chose for Qualia and the UI.
 4. Read [CONNECTIONS.md](CONNECTIONS.md) to connect those services to a client.
    Its table identifies the external accounts, apps and services you must supply.
 5. Use [SERVICE-MAP.md](SERVICE-MAP.md) to find which package owns each component.
 6. Check [COVERAGE.md](COVERAGE.md) before adding phone, smart-home, browser or
    world features. It lists the optional custom components not packaged here yet.
-7. For a fictional social network, open `world-feed/README.md` in the full
+7. For a fictional social network, open `01-home/world-feed/README.md` in the full
    collection. Its starter uses the UI; `photos-mcp` adds optional generated images.
 
 ## How to tell you are finished

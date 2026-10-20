@@ -1,6 +1,6 @@
 # Alexa code guide
 
-[Cloud service map](../README.md)
+[Cloud service map](../../README.md)
 
 Read [src/index.ts](src/index.ts) first. The Worker receives an Alexa request,
 returns a quick acknowledgement, then asks Anam's Avery route in the background.

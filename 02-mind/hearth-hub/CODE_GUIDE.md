@@ -1,6 +1,6 @@
 # Hearth code guide
 
-[Cloud service map](../README.md)
+[Cloud service map](../../README.md)
 
 Start at [src/index.ts](src/index.ts), then choose the interface being changed:
 [tools/sanctuary.ts](src/tools/sanctuary.ts) handles MCP tools and

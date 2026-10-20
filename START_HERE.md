@@ -12,8 +12,9 @@ download; check the [coverage map](shared-docs/COVERAGE.md) before choosing them
 ## 1. Extract the download
 
 1. Right-click the clean ZIP and choose **Extract All**.
-2. Open the extracted `Sharing-MCPs` folder. You should see `ui`, `mind-backend`,
-   `limbic`, and this file beside each other.
+2. Open the extracted `Sharing-MCPs` folder. You should see six toolbox folders
+   (`01-home`, `02-mind`, `03-hands`, `04-create`, `05-reach`, `06-world`) and this
+   file beside them. Anam is in `01-home\ui`; Qualia and Limbic are in `02-mind`.
 3. Keep the folders together. Some optional tools find each other by looking in
    the folder next door.
 4. Use a normal folder you can write to, such as
@@ -24,12 +25,12 @@ download; check the [coverage map](shared-docs/COVERAGE.md) before choosing them
 
 | I want to… | Open this guide first | What else is required? |
 | --- | --- | --- |
-| Have a chat in the web UI | [ui/README.md](ui/README.md) | One configured model provider |
-| Play on a fictional social network with my favourite characters | [world-feed/README.md](world-feed/README.md) | The included UI and a supported background model provider; pictures are optional |
-| Use my signed-in ChatGPT account through the UI | [ChatGPT bridge guide](ui/docs/CHATGPT_BRIDGE_SETUP.md) | The UI, Chrome, and your own ChatGPT login |
-| Give companions cloud memory | [mind-backend/README.md](mind-backend/README.md) | Your own Cloudflare account and resources |
-| Add emotional drive state | [limbic/README.md](limbic/README.md) | Your own Cloudflare account; matching identity IDs |
-| Connect current Qualia to a client that only supports local tools | [qualia-mcp/README.md](qualia-mcp/README.md) | A deployed `mind-backend` service |
+| Have a chat in the web UI | [01-home/ui/README.md](01-home/ui/README.md) | One configured model provider |
+| Play on a fictional social network with my favourite characters | [01-home/world-feed/README.md](01-home/world-feed/README.md) | The included UI and a supported background model provider; pictures are optional |
+| Use my signed-in ChatGPT account through the UI | [ChatGPT bridge guide](01-home/ui/docs/CHATGPT_BRIDGE_SETUP.md) | The UI, Chrome, and your own ChatGPT login |
+| Give companions cloud memory | [02-mind/mind-backend/README.md](02-mind/mind-backend/README.md) | Your own Cloudflare account and resources |
+| Add emotional drive state | [02-mind/limbic/README.md](02-mind/limbic/README.md) | Your own Cloudflare account; matching identity IDs |
+| Connect current Qualia to a client that only supports local tools | [02-mind/qualia-mcp/README.md](02-mind/qualia-mcp/README.md) | A deployed `mind-backend` service |
 | Use one particular tool | Find its folder in the [package list](README.md#package-list) | Only that folder's listed requirements |
 
 For the full companion setup, get a basic chat working first. Then add Qualia,
@@ -116,7 +117,7 @@ all 32 packages.
 
 ## A shared browser world
 
-[Commons game](commons-game/README.md) runs independently of the chat UI. It includes
+[Commons game](01-home/commons-game/README.md) runs independently of the chat UI. It includes
 a new main house and garden, illustrated adventures, game mechanics and optional
-AI access through [the Commons connector](hearth-commons/README.md). Start with
+AI access through [the Commons connector](02-mind/hearth-commons/README.md). Start with
 its Python installation steps.

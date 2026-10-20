@@ -170,7 +170,7 @@ repeatedly submitting the same post.
 
 You can upload your own images without an image-generation provider.
 
-For generated pictures, follow [photos-mcp/README.md](../photos-mcp/README.md).
+For generated pictures, follow [photos-mcp/README.md](../../04-create/photos-mcp/README.md).
 That package supplies the `photo_generate` tool used by Photo Studio. Its chat
 output directory must point at **this UI's `data/images` directory** so the feed
 can attach the generated file. Add the supplied generic MCP entry to your own

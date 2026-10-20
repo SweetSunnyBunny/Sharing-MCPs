@@ -1,6 +1,6 @@
 # Social code guide
 
-[Cloud service map](../README.md)
+[Cloud service map](../../README.md)
 
 Start at [src/index.ts](src/index.ts) for authentication, service entry and
 tool registration. [lib/mcp.ts](src/lib/mcp.ts) handles MCP envelopes,
