@@ -123,6 +123,15 @@ def adapt(root: Path, projects: set[str]) -> None:
     edit("hearth-hub", "src/tools/sanctuary.ts", rooms)
 
     edit("social-backend", "wrangler.toml", lambda t: re.sub(r'(?m)^# Home coordinates[^\n]*\nWT_HOME_LAT = .*?\nWT_HOME_LON = .*?\n', '# Configure your own weather coordinates (example: Greenwich).\nWT_HOME_LAT = "51.4779"\nWT_HOME_LON = "0.0015"\n', t))
+    # Weather coordinates are always the Greenwich example in public files.
+    def example_coordinates(text):
+        text = re.sub(r'(?m)^(WT_HOME_LAT\s*=\s*)"[^"\n]*"', r'\1"51.4779"', text)
+        return re.sub(r'(?m)^(WT_HOME_LON\s*=\s*)"[^"\n]*"', r'\1"0.0015"', text)
+    edit("hearth-hub", "wrangler.toml", example_coordinates)
+    def example_coordinate_defaults(text):
+        text = re.sub(r"(env\.WT_HOME_LAT\s*\|\|\s*)'[^']*'", r"\1'51.4779'", text)
+        return re.sub(r"(env\.WT_HOME_LON\s*\|\|\s*)'[^']*'", r"\1'0.0015'", text)
+    edit("social-backend", "src/tools/world-tools.ts", example_coordinate_defaults)
     edit("mind-backend", "wrangler.toml", lambda t: re.sub(r'# The Limbic Layer.*\Z', '# Optional LIMBIC service binding can be added after deploying your own limbic Worker.\n', t, flags=re.S))
     edit("limbic", "wrangler.toml", lambda t: re.sub(r'# No cron, deliberately.*\Z', '# Decay is computed lazily at read time; no cron is required.\n', t, flags=re.S))
 
@@ -242,3 +251,14 @@ const TOUCH_KINDS: Record<string, { deltas: Record<string, number>; note: string
             text = path.read_text(encoding="utf-8")
             text = re.sub(r"(?m)(?:^[ \t]*//[^\n]*(?:\n|$))+", lambda m: "" if anecdote.search(m.group(0)) else m.group(0), text)
             path.write_text(text, encoding="utf-8")
+
+    # Stop the export if any file sets the weather coordinates to anything but the example.
+    allowed = {"51.4779", "0.0015"}
+    coordinate = re.compile(r"WT_HOME_(?:LAT|LON)\b[^\n]{0,40}?(-?\d{1,3}\.\d+)")
+    for project in projects:
+        for path in (root / project).rglob("*"):
+            if not path.is_file() or path.suffix.lower() not in {".toml", ".ts", ".js", ".mjs", ".json", ".md", ".py", ".example", ".txt", ".yml", ".yaml"}:
+                continue
+            found = coordinate.findall(path.read_text(encoding="utf-8", errors="ignore"))
+            if any(value not in allowed for value in found):
+                raise RuntimeError(f"Non-example weather coordinates in {path.relative_to(root)}; export stopped.")

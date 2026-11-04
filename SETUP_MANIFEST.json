@@ -1626,7 +1626,7 @@
     "scripts/README.md": "36fc62c4af98e4d061bb38294f4b809e3608111d40ccc8bfe99a66c7c64369a6",
     "scripts/build_clean_archive.py": "615329db20453ee66b072e2ebbb09815528c40e3ec87c992c7c72ad82944007c",
     "scripts/cloud-public-overrides/README.md": "e1d0a3c7f7c2080dfa932139ceb77331ef518c1a9f788adcbdfaa1a3842dd094",
-    "scripts/cloud-public-overrides/adapt.py": "672da7d4ec8a9ad0a2e65a8a3343aa734bde6d739ffe9bd59b706cfce6515868",
+    "scripts/cloud-public-overrides/adapt.py": "537ae7b156f5cce46aa2888de8f71fa819451670cf99c7379a2fd109769b4ad7",
     "scripts/cloud-public-overrides/alexa-skill/README.md": "dead8f79c8744c10e64d4ad3c67f50bed41aa27ba554c37868d400a8489a238b",
     "scripts/cloud-public-overrides/discord-backend/.dev.vars.example": "6816c9361fa2449096d1c56a9a03809fb9ef3038f401bd41722ef2c069ef5641",
     "scripts/cloud-public-overrides/discord-backend/.mcp.json.example": "0c8f36c03dbbb02120c6bae48cda9958159db6539abd4a76f9e33a22ffe7d98f",
