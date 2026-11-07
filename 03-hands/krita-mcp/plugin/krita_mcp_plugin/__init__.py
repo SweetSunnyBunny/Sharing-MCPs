@@ -887,7 +887,7 @@ class KritaMCPServer(Extension):
     def start_server(self):
         """Start the HTTP server in a background thread."""
         try:
-            self.server = ThreadingTCPServer(("", PORT), CommandHandler)
+            self.server = ThreadingTCPServer(("127.0.0.1", PORT), CommandHandler)  # loopback only: this server has no auth
             self.server_thread = threading.Thread(target=self.server.serve_forever)
             self.server_thread.daemon = True
             self.server_thread.start()
